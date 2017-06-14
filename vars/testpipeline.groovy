@@ -8,7 +8,7 @@ def call(repo){
     //echo 'Checking out the component repo...'
     //checkout([$class: 'GitSCM', branches: [[name: "*/${env.BRANCH_NAME}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${repo}"]]])
     echo 'Loading export.groovy...'
-    load "vars/*.groovy"
+    load 'vars/export.groovy'
     //def myexport = load 'vars/export.groovy'
     stage('Clean'){
       echo 'Cleaning'
@@ -23,7 +23,8 @@ def call(repo){
     }
     stage('Build'){
       echo 'Starting build...'
-      myexport()
+      export()
+      //myexport()
       //myexport.call()
     }
     stage('Cleanup'){
