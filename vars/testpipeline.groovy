@@ -6,8 +6,8 @@ def call(repo){
   node('dcafbuild01'){
     checkoutComponent(repo, env.BRANCH_NAME)
     
-    echo 'Loading export.groovy...'
-    def exportScript = load 'vars/export.groovy'
+    echo 'Loading component build steps...'
+    def buildSteps = load 'vars/build.groovy'
     
     stage('Clean'){
       echo 'Cleaning'
@@ -22,7 +22,7 @@ def call(repo){
     }
     stage('Build'){
       echo 'Starting build...'
-      exportScript()
+      buildSteps.call()
     }
     stage('Cleanup'){
       echo 'Cleaning up workspace...'
