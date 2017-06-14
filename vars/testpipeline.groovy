@@ -11,6 +11,7 @@ def call(component){
     stage('Clean'){
       echo 'Cleaning'
       deleteDir()
+      bat 'set'
     }
     stage('Checkout'){
       echo 'Attempting to get source from repo...'
