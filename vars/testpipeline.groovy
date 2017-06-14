@@ -4,7 +4,6 @@ def call(component){
   echo 'Starting the pipeline build...'
   
   node('dcafbuild01'){
-    bat set
     echo 'Checking out the component repo...'
     checkout([$class: 'GitSCM', branches: [[name: '*/dynamic-load']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/buckd/componentbuild']]])
     echo 'Loading export.groovy...'
