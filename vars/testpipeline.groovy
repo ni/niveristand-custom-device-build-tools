@@ -5,7 +5,7 @@ def call(component){
   
   node('dcafbuild01'){
     echo 'Checking out the component repo...'
-    checkout([$class: 'GitSCM', branches: [[name: '*/dynamic-load']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/buckd/componentbuild']]])
+    checkout([$class: 'GitSCM', branches: [[name: '*/dynamic-load']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/buckd/${component}']]])
     echo 'Loading export.groovy...'
     def myexport = load 'vars/export.groovy'
     stage('Clean'){
