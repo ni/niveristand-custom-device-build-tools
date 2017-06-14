@@ -8,9 +8,10 @@ def call(component){
     checkout([$class: 'GitSCM', branches: [[name: '*/dynamic-load']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/buckd/componentbuild']]])
     echo 'Loading export.groovy...'
     load 'vars/export.groovy'
+    export()
     stage('Build'){
       echo 'Starting build...'
-      export()
+      //export()
     }
   }
 }
