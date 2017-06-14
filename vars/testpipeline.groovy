@@ -5,15 +5,12 @@ def call(repo){
   
   node('dcafbuild01'){
     //checkoutComponent(repo, env.BRANCH_NAME)
+    bat 'set'
     def buildSteps
-    
-    //echo 'Loading component build steps...'
-    //def buildSteps = load 'vars/build.groovy'
     
     stage('Clean'){
       echo 'Cleaning'
       deleteDir()
-      bat 'set'
     }
     stage('Checkout'){
       echo 'Attempting to get source from repo...'
