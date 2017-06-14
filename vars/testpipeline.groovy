@@ -5,11 +5,10 @@ def call(repo){
   
   node('dcafbuild01'){
     checkoutComponent(repo, env.BRANCH_NAME)
-    //echo 'Checking out the component repo...'
-    //checkout([$class: 'GitSCM', branches: [[name: "*/${env.BRANCH_NAME}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${repo}"]]])
+    
     echo 'Loading export.groovy...'
-    load 'vars/export.groovy'
-    //def myexport = load 'vars/export.groovy'
+    def exportScript = load 'vars/export.groovy'
+    
     stage('Clean'){
       echo 'Cleaning'
       deleteDir()
@@ -23,9 +22,7 @@ def call(repo){
     }
     stage('Build'){
       echo 'Starting build...'
-      export()
-      //myexport()
-      //myexport.call()
+      exportScript()
     }
     stage('Cleanup'){
       echo 'Cleaning up workspace...'
