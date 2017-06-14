@@ -12,6 +12,12 @@ def call(component){
       echo 'Cleaning'
       deleteDir()
     }
+    stage('Checkout'){
+      echo 'Attempting to get source from repo...'
+      timeout(time: 5, unit: 'MINUTES'){
+        checkout scm
+      }
+    }
     stage('Build'){
       echo 'Starting build...'
       myexport.call()
