@@ -18,7 +18,7 @@ def call(repo){
         checkout scm
       }
       echo 'Loading component build steps...'
-      buildSteps = load 'vars/build.groovy'
+      buildSteps = load 'vars/buildSteps.groovy'
     }
     stage('Build'){
       echo 'Starting build...'
