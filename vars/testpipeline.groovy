@@ -22,7 +22,7 @@ def call(repo){
     }
     stage('Build'){
       echo 'Starting build...'
-      buildSteps.call()
+      buildSteps.build()
     }
     stage('Cleanup'){
       echo 'Cleaning up workspace...'
