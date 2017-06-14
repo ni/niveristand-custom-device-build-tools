@@ -1,10 +1,16 @@
 #!/usr/bin/env groovy
 
-def call(repo){
+//note: this script assumes that it will be invoked from another script after that script has defined the necessary parameters
+
+//These are: [none] at the moment
+
+//This script further assumes that Jenkins is configured (via the Pipeline Shared Libraries plugin) to implicitly include https://github.com/buckd/commonbuild
+//This script also requires the calling component to include a vars/buildSteps.groovy file that defines a function, build()
+
+def call(){
   echo 'Starting the pipeline build...'
   
   node('dcafbuild01'){
-    //checkoutComponent(repo, env.BRANCH_NAME)
     bat 'set'
     def buildSteps
     
