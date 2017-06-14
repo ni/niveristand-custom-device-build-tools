@@ -22,5 +22,9 @@ def call(component){
       echo 'Starting build...'
       myexport.call()
     }
+    stage('Cleanup'){
+      echo 'Cleaning up workspace...'
+      deleteDir()
+    }
   }
 }
