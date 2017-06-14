@@ -1,6 +1,7 @@
 #!/usr/bin/env groovy
 
 def call(component){
+  bat set
   echo 'Starting the pipeline build...'
   
   node('dcafbuild01'){
