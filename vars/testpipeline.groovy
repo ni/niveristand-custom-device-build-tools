@@ -4,10 +4,11 @@ def call(repo){
   echo 'Starting the pipeline build...'
   
   node('dcafbuild01'){
-    checkoutComponent(repo, env.BRANCH_NAME)
+    //checkoutComponent(repo, env.BRANCH_NAME)
+    def buildSteps
     
-    echo 'Loading component build steps...'
-    def buildSteps = load 'vars/build.groovy'
+    //echo 'Loading component build steps...'
+    //def buildSteps = load 'vars/build.groovy'
     
     stage('Clean'){
       echo 'Cleaning'
@@ -19,6 +20,8 @@ def call(repo){
       timeout(time: 5, unit: 'MINUTES'){
         checkout scm
       }
+      echo 'Loading component build steps...'
+      buildSteps = load 'vars/build.groovy'
     }
     stage('Build'){
       echo 'Starting build...'
