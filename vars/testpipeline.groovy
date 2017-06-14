@@ -10,7 +10,7 @@ def call(component){
     def myexport = load 'vars/export.groovy'
     stage('Build'){
       echo 'Starting build...'
-      myexport.export()
+      myexport.call()
     }
   }
 }
