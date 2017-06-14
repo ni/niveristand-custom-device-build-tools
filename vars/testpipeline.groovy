@@ -22,7 +22,8 @@ def call(repo){
     }
     stage('Build'){
       echo 'Starting build...'
-      myexport.call()
+      myexport()
+      //myexport.call()
     }
     stage('Cleanup'){
       echo 'Cleaning up workspace...'
