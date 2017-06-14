@@ -4,7 +4,7 @@ def call(repo){
   echo 'Starting the pipeline build...'
   
   node('dcafbuild01'){
-    checkoutComponent(repo, ${env.BRANCH_NAME})
+    checkoutComponent(${repo}, ${env.BRANCH_NAME})
     //echo 'Checking out the component repo...'
     //checkout([$class: 'GitSCM', branches: [[name: "*/${env.BRANCH_NAME}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${repo}"]]])
     echo 'Loading export.groovy...'
