@@ -7,10 +7,10 @@
 //This script further assumes that Jenkins is configured (via the Pipeline Shared Libraries plugin) to implicitly include https://github.com/buckd/commonbuild
 //This script also requires the calling component to include a vars/buildSteps.groovy file that defines a function, build()
 
-def call(){
+def call(nodeLabel){
   echo 'Starting the pipeline build...'
   
-  node('dcafbuild01'){
+  node(nodeLabel){
     bat 'set'
     def buildSteps
     
