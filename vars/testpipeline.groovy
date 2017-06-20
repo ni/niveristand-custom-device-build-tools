@@ -31,6 +31,12 @@ def call(nodeLabel){
       buildSteps = load 'vars/buildSteps.groovy'
     }
     
+    stage('Pre-Build Setup'){
+      echo 'Setting up build environment...'
+      buildSteps.setup()
+      echo 'Setup Complete.'
+    }
+    
     stage('Build'){
       echo 'Starting build...'
       buildSteps.build()
