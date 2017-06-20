@@ -45,7 +45,7 @@ def call(nodeLabel){
     
     stage('Cleanup'){
       echo 'Cleaning up workspace after successful build.'
-      deleteDir()
+      //deleteDir()
     }
   }
 }
