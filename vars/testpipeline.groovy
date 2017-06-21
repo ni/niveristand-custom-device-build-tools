@@ -17,7 +17,7 @@ def call(nodeLabel){
     
     stage('Initial Clean'){
       echo 'Cleaning the workspace before building.'
-      deleteDir()
+      //deleteDir()
     }
     
     stage('Checkout'){
