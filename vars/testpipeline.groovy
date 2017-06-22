@@ -7,8 +7,6 @@
 //This script further assumes that Jenkins is configured (via the Pipeline Shared Libraries plugin) to implicitly include https://github.com/buckd/commonbuild
 //This script also requires the calling component to include a vars/buildSteps.groovy file that defines a function, build()
 
-BUILD_STEPS_PATH = 'vars/buildSteps.groovy'
-
 def call(nodeLabel, lvVersion){
   echo 'Starting the testpipeline...'
   
@@ -29,7 +27,7 @@ def call(nodeLabel, lvVersion){
       
       //Load buildSteps here so they can be used by any subsequent stages
       echo 'Loading component build steps.'
-      buildSteps = load BUILD_STEPS_PATH
+      buildSteps = load 'vars/buildSteps.groovy'
     }
     
     stage('Pre-Build Setup'){
