@@ -1,10 +1,14 @@
-def call(commonbuild_dir){
-  commonbuild_dir = 'commonbuild'
-  bat "mkdir ${commonbuild_dir}"
+def call(branch){
+  commonbuildDir = 'commonbuild'
+  bat "mkdir ${commonbuildDir}"
   
-  dir("${commonbuild_dir}"){
-    git url: 'https://github.com/buckd/commonbuild', branch: 'dynamic-load'
+  if(!branch){
+    branch = 'master'
   }
   
-  return commonbuild_dir
+  dir("${commonbuildDirr}"){
+    git url: 'https://github.com/buckd/commonbuild', branch: ${branch}
+  }
+  
+  return commonbuildDir
 }
