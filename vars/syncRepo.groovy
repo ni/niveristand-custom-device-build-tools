@@ -1,5 +1,5 @@
 def call(repo, branch){
-  echo "Synching $repo to workspace."
+  echo "Syncing $repo to workspace."
   syncDir = repo.tokenize("/").last()
   
   bat "mkdir $syncDir"
