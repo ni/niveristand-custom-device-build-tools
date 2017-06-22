@@ -29,7 +29,7 @@ def call(nodeLabel, lvVersion){
       
       //Load buildSteps here so they can be used by any subsequent stages
       echo 'Loading component build steps.'
-      buildSteps = load "$BUILD_STEPS_PATH"
+      buildSteps = load BUILD_STEPS_PATH
     }
     
     stage('Pre-Build Setup'){
