@@ -6,7 +6,7 @@ def call(branch){
     branch = 'master'
   }
   
-  dir("${commonbuildDirr}"){
+  dir("${commonbuildDir}"){
     git url: 'https://github.com/buckd/commonbuild', branch: ${branch}
   }
   
