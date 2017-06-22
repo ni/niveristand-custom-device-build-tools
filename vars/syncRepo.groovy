@@ -1,6 +1,16 @@
 def call(repo, branch){
-  echo "${repo}"
-  //syncDir = "${repo}" =~ /\/[a-zA-Z0-9_]+$/
+  echo "Synching ${repo} to workspace."
   syncDir = repo.tokenize("/").last()
-  echo "${syncDir}"
+  
+  bat "mkdir ${syncDir}"
+  
+  if(!branch){
+    branch = 'master'
+  }
+  
+  dir(syncDir){
+    git url: repo, branch: branch
+  }
+  
+  return syncDir
 }
