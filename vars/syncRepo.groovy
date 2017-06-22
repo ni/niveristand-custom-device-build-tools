@@ -1,4 +1,4 @@
 def call(repo, branch){
-  syncDir = repo =~ /\/*$/
+  syncDir = ${repo} =~ /\/*$/
   echo ${syncDir}
 }
