@@ -1,8 +1,8 @@
 def call(repo, branch){
-  echo "Synching ${repo} to workspace."
+  echo "Synching $repo to workspace."
   syncDir = repo.tokenize("/").last()
   
-  bat "mkdir ${syncDir}"
+  bat "mkdir $syncDir"
   
   if(!branch){
     branch = 'master'
