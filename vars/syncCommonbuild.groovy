@@ -10,5 +10,7 @@ def call(branch){
     git url: 'https://github.com/buckd/commonbuild', branch: branch
   }
   
+  syncRepo('https://github.com/buckd/commonbuild', 'testbranch')
+  
   return commonbuildDir
 }
