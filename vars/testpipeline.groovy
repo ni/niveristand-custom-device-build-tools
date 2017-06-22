@@ -12,7 +12,6 @@ def call(nodeLabel){
   
   node(nodeLabel){
     bat 'set'
-    //Make buildSteps accessible to all stages in case we need custom steps for different stages
     def buildSteps
     
     stage('Initial Clean'){
@@ -25,8 +24,8 @@ def call(nodeLabel){
       timeout(time: 5, unit: 'MINUTES'){
         checkout scm
       }
+      
       //Load buildSteps here so they can be used by any subsequent stages
-      //Currently only used by the 'Build' stage
       echo 'Loading component build steps.'
       buildSteps = load 'vars/buildSteps.groovy'
     }
