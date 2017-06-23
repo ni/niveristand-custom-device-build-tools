@@ -5,10 +5,10 @@
 //These are: nodeLabel
 
 //This script further assumes that Jenkins is configured (via the Pipeline Shared Libraries plugin) to implicitly include https://github.com/buckd/commonbuild
-//This script also requires the calling component to include a vars/buildSteps.groovy file that defines a function, build()
+//This script also requires the calling component to include a vars/buildSteps.groovy file that defines the functions setup() and build()
 
 def call(nodeLabel, lvVersion){
-  echo 'Starting the testpipeline...'
+  echo 'Starting the build pipeline...'
   
   node(nodeLabel){
     bat 'set'
