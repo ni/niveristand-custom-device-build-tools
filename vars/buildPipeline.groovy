@@ -36,10 +36,18 @@ def call(nodeLabel, lvVersion){
       echo 'Setup Complete.'
     }
     
+    stage('Run Unit Tests'){
+      echo 'Running unit tests.'
+    }
+    
     stage('Build'){
       echo 'Starting build...'
       buildSteps.build(lvVersion)
       echo 'Build Complete.'
+    }
+    
+    stage('Archive'){
+      echo 'Archiving build...'
     }
     
     stage('Cleanup'){
