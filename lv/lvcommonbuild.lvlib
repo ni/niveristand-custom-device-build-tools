@@ -8,5 +8,7 @@
 
 </Property>
 	<Item Name="lvBuild.vi" Type="VI" URL="../lvBuild.vi"/>
+	<Item Name="lvBuildAllTargets.vi" Type="VI" URL="../lvBuildAllTargets.vi"/>
 	<Item Name="subBuildSingleTarget.vi" Type="VI" URL="../subBuildSingleTarget.vi"/>
+	<Item Name="subFindTargetsWithBuildSpec.vi" Type="VI" URL="../subFindTargetsWithBuildSpec.vi"/>
 </Library>
