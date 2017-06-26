@@ -36,7 +36,7 @@ def call(nodeLabel, lvVersion){
       echo 'Setup Complete.'
     }
     
-    stage('Run Unit Tests'){
+    stage('Unit Testing'){
       echo 'Running unit tests.'
     }
     
