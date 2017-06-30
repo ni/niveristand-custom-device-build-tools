@@ -48,6 +48,8 @@ def call(nodeLabel, lvVersions){
       lvVersions.each{lvVersion->
         echo "Building for LV Version $lvVersion..."
         buildSteps.build(lvVersion)
+        def outputdir = buildSteps.BUILT_DIR
+        echo "Output dir is $outputdir."
         echo "Build for LV Version $lvVersion complete."
       }
       echo 'Build Complete.'
