@@ -7,7 +7,7 @@
 //This script further assumes that Jenkins is configured (via the Pipeline Shared Libraries plugin) to implicitly include https://github.com/buckd/commonbuild
 //This script also requires the calling component to include a vars/buildSteps.groovy file that defines the functions setup() and build()
 
-def call(nodeLabel, lvVersion){
+def call(nodeLabel, lvVersions){
   echo 'Starting the build pipeline...'
   
   node(nodeLabel){
@@ -32,7 +32,9 @@ def call(nodeLabel, lvVersion){
     
     stage('Pre-Build Setup'){
       echo 'Setting up build environment...'
-      buildSteps.setup(lvVersion)
+      lvVersions.each{lvVersion->
+        buildSteps.setup(lvVersion)
+      }
       echo 'Setup Complete.'
     }
     
@@ -42,7 +44,11 @@ def call(nodeLabel, lvVersion){
     
     stage('Build'){
       echo 'Starting build...'
-      buildSteps.build(lvVersion)
+      lvVersions.each{lvVersion->
+        echo "Building for LV Version $lvVersion..."
+        buildSteps.build(lvVersion)
+        echo "Build for LV Version $lvVersion complete."
+      }
       echo 'Build Complete.'
     }
     
