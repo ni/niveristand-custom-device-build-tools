@@ -7,6 +7,8 @@
 //This script further assumes that Jenkins is configured (via the Pipeline Shared Libraries plugin) to implicitly include https://github.com/buckd/commonbuild
 //This script also requires the calling component to include a vars/buildSteps.groovy file that defines the functions setup() and build()
 
+EXPORT_DIR = 'export'
+
 def call(nodeLabel, lvVersions){
   echo 'Starting the build pipeline...'
   
@@ -45,13 +47,20 @@ def call(nodeLabel, lvVersions){
     
     stage('Build'){
       echo 'Starting build...'
+      
+      bat "mkdir $EXPORT_DIR"
+      
       lvVersions.each{lvVersion->
         echo "Building for LV Version $lvVersion..."
         buildSteps.build(lvVersion)
-        def outputdir = buildSteps.BUILT_DIR
-        echo "Output dir is $outputdir."
+        
+        //Move build output to versioned directory
+        def builtDir = buildSteps.BUILT_DIR
+        bat "move \"$buildDir\" \"$EXPORT_DIR\\$lvVersion\""
+        
         echo "Build for LV Version $lvVersion complete."
       }
+      
       echo 'Build Complete.'
     }
     
