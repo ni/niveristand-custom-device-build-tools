@@ -33,8 +33,9 @@ def call(nodeLabel, lvVersions){
     stage('Pre-Build Setup'){
       echo 'Setting up build environment...'
       lvVersions.each{lvVersion->
-        buildSteps.setup(lvVersion)
+        buildSteps.setupLv(lvVersion)
       }
+      buildSteps.prepareSource()
       echo 'Setup Complete.'
     }
     
@@ -54,6 +55,10 @@ def call(nodeLabel, lvVersions){
     
     stage('Archive'){
       echo 'Archiving build...'
+      lvVersions.each{lvVersion->
+        buildSteps.archive(lvVersion)
+      }
+      echo 'Archive complete.'
     }
     
     stage('Cleanup'){
