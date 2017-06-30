@@ -13,6 +13,7 @@ def call(nodeLabel, lvVersions){
   node(nodeLabel){
     bat 'set'
     def buildSteps
+    def exportDir = 'export'
     
     stage('Initial Clean'){
       echo 'Cleaning the workspace before building.'
@@ -46,16 +47,14 @@ def call(nodeLabel, lvVersions){
     stage('Build'){
       echo 'Starting build...'
       
-      bat "mkdir export"
+      bat "mkdir $exportDir"
       
       lvVersions.each{lvVersion->
         echo "Building for LV Version $lvVersion..."
         buildSteps.build(lvVersion)
         
         //Move build output to versioned directory
-        def builtDir = buildSteps.BUILT_DIR
-        bat "move \"$buildDir\" \"$EXPORT_DIR\\$lvVersion\""
-        
+        bat "move \"${buildSteps.BUILT_DIR}\" \"$exportDir\\$lvVersion\""
         echo "Build for LV Version $lvVersion complete."
       }
       
@@ -64,7 +63,7 @@ def call(nodeLabel, lvVersions){
     
     stage('Archive'){
       echo 'Archiving build...'
-      buildSteps.archive()
+      buildSteps.archive(exportDir)
     }
     
     stage('Cleanup'){
