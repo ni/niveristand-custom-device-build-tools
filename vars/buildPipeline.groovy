@@ -64,7 +64,8 @@ def call(nodeLabel, lvVersions){
     
     stage('Archive'){
       echo 'Archiving build...'
-      archiveBuild(exportDir)
+      def archiveDir = buildSteps.ARCHIVE_DIR
+      archiveBuild(exportDir, archiveDir)
     }
     
     stage('Cleanup'){
