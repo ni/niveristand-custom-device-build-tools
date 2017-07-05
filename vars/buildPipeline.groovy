@@ -7,8 +7,6 @@
 //This script further assumes that Jenkins is configured (via the Pipeline Shared Libraries plugin) to implicitly include https://github.com/buckd/commonbuild
 //This script also requires the calling component to include a vars/buildSteps.groovy file that defines the functions setup() and build()
 
-EXPORT_DIR = 'export'
-
 def call(nodeLabel, lvVersions){
   echo 'Starting the build pipeline...'
   
@@ -50,7 +48,7 @@ def call(nodeLabel, lvVersions){
       echo 'Starting build...'
       
       //bat "mkdir $exportDir"
-      bak "mkdir $EXPORT_DIR"
+      bak "mkdir $exportDir"
       
       lvVersions.each{lvVersion->
         echo "Building for LV Version $lvVersion..."
@@ -58,7 +56,7 @@ def call(nodeLabel, lvVersions){
         
         //Move build output to versioned directory
         //bat "move \"${buildSteps.BUILT_DIR}\" \"$exportDir\\$lvVersion\""
-        bat "move \"${buildSteps.BUILT_DIR}\" \"$EXPORT_DIR\\$lvVersion\""
+        bat "move \"${buildSteps.BUILT_DIR}\" \"$exportDir\\$lvVersion\""
         echo "Build for LV Version $lvVersion complete."
       }
       
@@ -67,13 +65,13 @@ def call(nodeLabel, lvVersions){
     
     stage('Archive'){
       echo 'Archiving build...'
-      def archiveDir = "${buildSteps.ARCHIVE_DIR}\\$EXPORT_DIR"
+      def archiveDir = "${buildSteps.ARCHIVE_DIR}\\$exportDir"
       //don't do this delete with the actual archive
       //this is for testing purposes only
       if(fileExists(archiveDir)){
         bat "rmdir $archiveDir /s /q"
       }
-      bat "xcopy $EXPORT_DIR $archiveDir /e /i"
+      bat "xcopy $exportDir $archiveDir /e /i"
       //buildSteps.archive(exportDir)
     }
     
