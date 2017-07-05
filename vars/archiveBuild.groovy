@@ -1,6 +1,5 @@
-def call(){
-  def $exportDir = 'export'
-  def archiveDir = "${buildSteps.ARCHIVE_DIR}\\$exportDir"
+def call(exportDir){
+    def archiveDir = "${buildSteps.ARCHIVE_DIR}\\$exportDir"
   //don't do this delete with the actual archive
   //this is for testing purposes only
   if(fileExists(archiveDir)){
