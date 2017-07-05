@@ -47,8 +47,7 @@ def call(nodeLabel, lvVersions){
     stage('Build'){
       echo 'Starting build...'
       
-      //bat "mkdir $exportDir"
-      bak "mkdir $exportDir"
+      bat "mkdir $exportDir"
       
       lvVersions.each{lvVersion->
         echo "Building for LV Version $lvVersion..."
