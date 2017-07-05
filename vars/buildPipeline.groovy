@@ -54,7 +54,6 @@ def call(nodeLabel, lvVersions){
         buildSteps.build(lvVersion)
         
         //Move build output to versioned directory
-        //bat "move \"${buildSteps.BUILT_DIR}\" \"$exportDir\\$lvVersion\""
         bat "move \"${buildSteps.BUILT_DIR}\" \"$exportDir\\$lvVersion\""
         echo "Build for LV Version $lvVersion complete."
       }
@@ -70,7 +69,7 @@ def call(nodeLabel, lvVersions){
     
     stage('Cleanup'){
       echo 'Cleaning up workspace after successful build.'
-      //deleteDir()
+      deleteDir()
     }
   }
 }
