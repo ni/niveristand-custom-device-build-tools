@@ -34,9 +34,8 @@ def call(nodeLabel, lvVersions){
     stage('Pre-Build Setup'){
       echo 'Setting up build environment...'
       lvVersions.each{lvVersion->
-        buildSteps.setupLv(lvVersion)
+        buildSteps.setup(lvVersion)
       }
-      buildSteps.prepareSource()
       echo 'Setup Complete.'
     }
     
