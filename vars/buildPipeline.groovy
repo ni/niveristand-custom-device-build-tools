@@ -7,7 +7,7 @@
 //This script further assumes that Jenkins is configured (via the Pipeline Shared Libraries plugin) to implicitly include https://github.com/buckd/commonbuild
 //This script also requires the calling component to include a vars/buildSteps.groovy file that defines the functions setup() and build()
 
-def call(nodeLabel, lvVersions){
+def call(nodeLabel, lvVersions, sourceVersion){
   echo 'Starting the build pipeline...'
   
   node(nodeLabel){
@@ -41,6 +41,8 @@ def call(nodeLabel, lvVersions){
     
     stage('Unit Testing'){
       echo 'Running unit tests.'
+      //Make sure correct dependencies are loaded to run unit tests
+      buildSteps.prepareSource(sourceVersion)
     }
     
     stage('Build'){
@@ -50,6 +52,7 @@ def call(nodeLabel, lvVersions){
       
       lvVersions.each{lvVersion->
         echo "Building for LV Version $lvVersion..."
+        buildSteps.prepareSource(lvVersion)
         buildSteps.build(lvVersion)
         
         //Move build output to versioned directory
