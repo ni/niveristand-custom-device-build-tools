@@ -13,6 +13,7 @@ def call(nodeLabel, lvVersions, sourceVersion){
   node(nodeLabel){
     bat 'set'
     def buildSteps
+    def buildStepsLocation = 'vars/buildSteps.groovy'
     def exportDir = 'export'
     
     stage('Initial Clean'){
@@ -28,7 +29,7 @@ def call(nodeLabel, lvVersions, sourceVersion){
       
       //Load buildSteps here so they can be used by any subsequent stages
       echo 'Loading component build steps.'
-      buildSteps = load 'vars/buildSteps.groovy'
+      buildSteps = load buildStepsLocation
     }
     
     stage('Pre-Build Setup'){
