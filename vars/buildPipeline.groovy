@@ -1,11 +1,9 @@
 #!/usr/bin/env groovy
 
-//note: this script assumes that it will be invoked from another script after that script has defined the necessary parameters
-
-//These are: nodeLabel
-
-//This script further assumes that Jenkins is configured (via the Pipeline Shared Libraries plugin) to implicitly include https://github.com/buckd/commonbuild
-//This script also requires the calling component to include a vars/buildSteps.groovy file that defines the functions setup() and build()
+// note: this script assumes that it will be invoked from another script after that script has defined the necessary parameters
+// This script further assumes that Jenkins is configured (via the Pipeline Shared Libraries plugin)
+// to implicitly include https://github.com/buckd/commonbuild
+// For usage, see the readme in this repo
 
 def call(nodeLabel, lvVersions, sourceVersion){
   echo 'Starting the build pipeline...'
