@@ -35,6 +35,8 @@ def call(nodeLabel, lvVersions, sourceVersion){
       echo 'Setting up build environment...'
       
       syncCommonbuild('dynamic-load')
+      
+      echo 'Syncing dependencies.'
       buildSteps.syncDependencies()
       
       lvVersions.each{lvVersion->
