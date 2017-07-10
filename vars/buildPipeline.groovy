@@ -33,9 +33,14 @@ def call(nodeLabel, lvVersions, sourceVersion){
     
     stage('Pre-Build Setup'){
       echo 'Setting up build environment...'
+      
+      syncCommonbuild('dynamic-load')
+      buildSteps.syncDependencies()
+      
       lvVersions.each{lvVersion->
-        buildSteps.setup(lvVersion)
+        buildSteps.setupLv(lvVersion)
       }
+      
       echo 'Setup Complete.'
     }
     
@@ -65,8 +70,7 @@ def call(nodeLabel, lvVersions, sourceVersion){
     
     stage('Archive'){
       echo 'Archiving build...'
-      def archiveDir = buildSteps.ARCHIVE_DIR
-      archiveLocation = archiveBuild(exportDir, archiveDir)
+      archiveLocation = archiveBuild(exportDir, buildSteps.ARCHIVE_DIR)
     }
     
     stage('Package'){
