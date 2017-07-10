@@ -34,14 +34,11 @@ def call(nodeLabel, lvVersions, sourceVersion){
     stage('Pre-Build Setup'){
       echo 'Setting up build environment...'
       
+      // Ensure the VIs for executing scripts are in the workspace
       syncCommonbuild('dynamic-load')
       
       echo 'Syncing dependencies.'
       buildSteps.syncDependencies()
-      
-      lvVersions.each{lvVersion->
-        buildSteps.setupLv(lvVersion)
-      }
       
       echo 'Setup Complete.'
     }
@@ -50,6 +47,7 @@ def call(nodeLabel, lvVersions, sourceVersion){
       echo 'Running unit tests.'
       //Make sure correct dependencies are loaded to run unit tests
       buildSteps.prepareSource(sourceVersion)
+      buildSteps.setupLV(sourceVersion)
     }
     
     stage('Build'){
@@ -60,6 +58,7 @@ def call(nodeLabel, lvVersions, sourceVersion){
       lvVersions.each{lvVersion->
         echo "Building for LV Version $lvVersion..."
         buildSteps.prepareSource(lvVersion)
+        buildSteps.setupLV(lvVersion)
         buildSteps.build(lvVersion)
         
         //Move build output to versioned directory
