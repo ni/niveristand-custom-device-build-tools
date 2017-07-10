@@ -11,6 +11,7 @@ def call(nodeLabel, lvVersions, sourceVersion){
   node(nodeLabel){
     bat 'set'
     def buildSteps
+    def archiveLocation
     def buildStepsLocation = 'vars/buildSteps.groovy'
     def exportDir = 'export'
     
@@ -65,7 +66,15 @@ def call(nodeLabel, lvVersions, sourceVersion){
     stage('Archive'){
       echo 'Archiving build...'
       def archiveDir = buildSteps.ARCHIVE_DIR
-      archiveBuild(exportDir, archiveDir)
+      archiveLocation = archiveBuild(exportDir, archiveDir)
+    }
+    
+    stage('Package'){
+      echo "Building NIPM package from build at $archiveLocation."
+    }
+    
+    stage('Publish'){
+      echo 'Publishing NIPM package.'
     }
     
     stage('Cleanup'){
