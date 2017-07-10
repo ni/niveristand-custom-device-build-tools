@@ -57,8 +57,9 @@ def call(nodeLabel, lvVersions, sourceVersion){
       
       lvVersions.each{lvVersion->
         echo "Building for LV Version $lvVersion..."
-        buildSteps.prepareSource(lvVersion)
-        buildSteps.setupLv(lvVersion)
+        //buildSteps.prepareSource(lvVersion)
+        //buildSteps.setupLv(lvVersion)
+        preBuild(buildSteps, lvVersion)
         buildSteps.build(lvVersion)
         
         //Move build output to versioned directory
