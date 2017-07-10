@@ -47,7 +47,7 @@ def call(nodeLabel, lvVersions, sourceVersion){
       echo 'Running unit tests.'
       //Make sure correct dependencies are loaded to run unit tests
       buildSteps.prepareSource(sourceVersion)
-      buildSteps.setupLV(sourceVersion)
+      buildSteps.setupLv(sourceVersion)
     }
     
     stage('Build'){
@@ -58,7 +58,7 @@ def call(nodeLabel, lvVersions, sourceVersion){
       lvVersions.each{lvVersion->
         echo "Building for LV Version $lvVersion..."
         buildSteps.prepareSource(lvVersion)
-        buildSteps.setupLV(lvVersion)
+        buildSteps.setupLv(lvVersion)
         buildSteps.build(lvVersion)
         
         //Move build output to versioned directory
