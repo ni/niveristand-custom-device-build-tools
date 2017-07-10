@@ -17,6 +17,7 @@ This script has been designed such that the calling component must define the be
   - buildSteps.groovy **must** define the following constants/functions
      - BUILT_DIR: The directory where the the LabVIEW build spec places the output
      - ARCHIVE_DIR: The directory where the output should be archived
-     - setup(lvVersion): A function responsible for copying any dependencies or setting any environment variables required to build or test
+     - syncDependencies(): A function responsible for syncing/cloning remote repositories to the build machine
+     - setupLv(lvVersion): A function responsible for copying any dependencies or setting any environment variables required to build or test
      - prepareSource(lvVersion): A function responsible for configuring any settings required for correctly loading the LV source code in the specified lvVersion
      - build(lvVersion): A function responsible for sequecing the steps to build the LV source to the BUILT_DIR
