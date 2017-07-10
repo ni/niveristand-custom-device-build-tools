@@ -8,4 +8,6 @@ def call(exportDir, archiveDir){
   }
   
   bat "xcopy \"$exportDir\" \"$archiveLocation\" /e /i"
+  
+  return archiveLocation
 }
