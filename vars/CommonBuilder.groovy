@@ -48,7 +48,16 @@ class CommonBuilder implements Serializable {
   }
   
   public def archive() {
-    this.archiveLocation = this.script.archiveBuild(EXPORT_DIR, this.buildSteps.ARCHIVE_DIR)
+    //this.archiveLocation = this.script.archiveBuild(EXPORT_DIR, this.buildSteps.ARCHIVE_DIR)
+    this.archiveLocation = "${this.buildSteps.ARCHIVE_DIR}\\$EXPORT_DIR"
+  
+    //don't do this delete with the actual archive
+    //this is for testing purposes only
+    if(this.script.fileExists(this.archiveLocation)){
+      this.script.bat "rmdir \"${this.archiveLocation}\" /s /q"
+    }
+  
+    this.script.bat "xcopy \"$EXPORT_DIR\" \"${this.archiveLocation}\" /e /i"
   }
   
   public def deploy() {
