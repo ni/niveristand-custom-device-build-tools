@@ -44,6 +44,7 @@ class CommonBuilder implements Serializable {
       //Move build output to versioned directory
       bat "move \"${this.buildSteps.BUILT_DIR}\" \"$EXPORT_DIR\\$lvVersion\""
       echo "Build for LV Version $lvVersion complete."
+    }
   }
   
   public boolean archive() {
