@@ -20,7 +20,7 @@ class CommonBuilder implements Serializable {
     return this.buildSteps
   }
   
-  public boolean setup() {
+  public def setup() {
     // Ensure the VIs for executing scripts are in the workspace
     this.script.syncCommonbuild('dynamic-load')
     
@@ -28,12 +28,12 @@ class CommonBuilder implements Serializable {
     this.buildSteps.syncDependencies()
   }
   
-  public boolean runUnitTests() {
+  public def runUnitTests() {
     //Make sure correct dependencies are loaded to run unit tests
     this.preBuild(this.sourceVersion)
   }
   
-  public boolean build() {
+  public def build() {
     this.script.bat "mkdir $EXPORT_DIR"
     
     lvVersions.toList().each{lvVersion->
@@ -47,13 +47,14 @@ class CommonBuilder implements Serializable {
     }
   }
   
-  public boolean archive() {
+  public def archive() {
+    this.archiveLocation = this.script.archiveBuild(EXPORT_DIR, this.buildSteps.ARCHIVE_DIR)
   }
   
-  public boolean deploy() {
+  public def deploy() {
   }
   
-  public boolean publish() {
+  public def publish() {
   }
   
   private def preBuild(lvVersion) {
