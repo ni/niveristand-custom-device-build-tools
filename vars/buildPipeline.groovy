@@ -30,44 +30,37 @@ def call(nodeLabel, lvVersions, sourceVersion){
       //Load buildSteps here so they can be used by any subsequent stages
       echo 'Loading component build steps.'
       buildSteps = mybuilder.loadBuildSteps()
-      //buildSteps = load buildStepsLocation
     }
     
     stage('Pre-Build Setup'){
       echo 'Setting up build environment...'
-      
-      // Ensure the VIs for executing scripts are in the workspace
-      mybuilder.setup()
-      
-      //echo 'Syncing dependencies.'
-      //buildSteps.syncDependencies()
-      
+      mybuilder.setup()      
       echo 'Setup Complete.'
     }
     
     stage('Unit Testing'){
       echo 'Running unit tests.'
-      //Make sure correct dependencies are loaded to run unit tests
       mybuilder.runUnitTests()
-      //buildSteps.prepareSource(sourceVersion)
-      //buildSteps.setupLv(sourceVersion)
+      echo 'Unit tests complete.'
     }
     
     stage('Build'){
       echo 'Starting build...'
       
-      bat "mkdir $exportDir"
+      //bat "mkdir $exportDir"
       
-      lvVersions.each{lvVersion->
-        echo "Building for LV Version $lvVersion..."
+      mybuilder.build()
+      
+      //lvVersions.each{lvVersion->
+        //echo "Building for LV Version $lvVersion..."
         //buildSteps.prepareSource(lvVersion)
         //buildSteps.setupLv(lvVersion)
-        preBuild(buildSteps, lvVersion)
-        buildSteps.build(lvVersion)
+        //preBuild(buildSteps, lvVersion)
+        //buildSteps.build(lvVersion)
         
         //Move build output to versioned directory
-        bat "move \"${buildSteps.BUILT_DIR}\" \"$exportDir\\$lvVersion\""
-        echo "Build for LV Version $lvVersion complete."
+        //bat "move \"${buildSteps.BUILT_DIR}\" \"$exportDir\\$lvVersion\""
+        //echo "Build for LV Version $lvVersion complete."
       }
       
       echo 'Build Complete.'
@@ -76,6 +69,7 @@ def call(nodeLabel, lvVersions, sourceVersion){
     stage('Archive'){
       echo 'Archiving build...'
       archiveLocation = archiveBuild(exportDir, buildSteps.ARCHIVE_DIR)
+      echo 'Archive complete.'
     }
     
     stage('Package'){
