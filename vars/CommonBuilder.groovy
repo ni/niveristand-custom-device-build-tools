@@ -8,12 +8,14 @@ class CommonBuilder implements Serializable {
   private String sourceVersion
   private String archiveLocation
   private def buildSteps
+  private def script
   
-  public CommonBuilder(nodeLabel, lvVersions, sourceVersion) {
+  public CommonBuilder(script, nodeLabel, lvVersions, sourceVersion) {
+    this.script = script
     this.nodeLabel = nodeLabel
     this.lvVersions = lvVersions
     this.sourceVersion = sourceVersion
-    println "CommonBuilder initialized with nodeLabel ${this.nodeLabel}, lvVersions ${this.lvVersions}, sourceVersion ${this.sourceVersion}"
+    echo "CommonBuilder initialized with nodeLabel ${this.nodeLabel}, lvVersions ${this.lvVersions}, sourceVersion ${this.sourceVersion}"
   }
   
   public boolean loadBuildSteps() {
@@ -36,5 +38,9 @@ class CommonBuilder implements Serializable {
   }
   
   public boolean publish() {
+  }
+  
+  private def echo(String text) {
+    script.echo text
   }
 }
