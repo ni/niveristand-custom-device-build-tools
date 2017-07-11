@@ -48,8 +48,9 @@ def call(nodeLabel, lvVersions, sourceVersion){
     stage('Unit Testing'){
       echo 'Running unit tests.'
       //Make sure correct dependencies are loaded to run unit tests
-      buildSteps.prepareSource(sourceVersion)
-      buildSteps.setupLv(sourceVersion)
+      mybuilder.runUnitTests()
+      //buildSteps.prepareSource(sourceVersion)
+      //buildSteps.setupLv(sourceVersion)
     }
     
     stage('Build'){
