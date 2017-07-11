@@ -25,6 +25,7 @@ class CommonBuilder implements Serializable {
   
   public boolean setup() {
     this.script.echo 'CommonBuilder setup'
+    return true
   }
   
   public boolean runUnitTests() {
