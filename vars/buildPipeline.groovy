@@ -14,7 +14,7 @@ def call(nodeLabel, lvVersions, sourceVersion){
     def archiveLocation
     def buildStepsLocation = 'vars/buildSteps.groovy'
     def exportDir = 'export'
-    def mybuilder = new CommonBuilder(this, nodeLabel, lvVersions, sourceVersion)
+    def mybuilder = new CommonBuilder(this, lvVersions, sourceVersion)
     
     stage('Initial Clean'){
       echo 'Cleaning the workspace before building.'
@@ -29,7 +29,8 @@ def call(nodeLabel, lvVersions, sourceVersion){
       
       //Load buildSteps here so they can be used by any subsequent stages
       echo 'Loading component build steps.'
-      buildSteps = load buildStepsLocation
+      buildSteps = mybuilder.loadBuildSteps()
+      //buildSteps = load buildStepsLocation
     }
     
     stage('Pre-Build Setup'){
@@ -37,7 +38,6 @@ def call(nodeLabel, lvVersions, sourceVersion){
       
       // Ensure the VIs for executing scripts are in the workspace
       mybuilder.setup()
-      //syncCommonbuild('dynamic-load')
       
       echo 'Syncing dependencies.'
       buildSteps.syncDependencies()
