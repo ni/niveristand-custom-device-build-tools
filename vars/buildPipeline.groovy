@@ -68,7 +68,8 @@ def call(nodeLabel, lvVersions, sourceVersion){
     
     stage('Archive'){
       echo 'Archiving build...'
-      archiveLocation = archiveBuild(exportDir, buildSteps.ARCHIVE_DIR)
+      mybuilder.archive()
+      //archiveLocation = archiveBuild(exportDir, buildSteps.ARCHIVE_DIR)
       echo 'Archive complete.'
     }
     
