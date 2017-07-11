@@ -14,7 +14,7 @@ def call(nodeLabel, lvVersions, sourceVersion){
     def archiveLocation
     def buildStepsLocation = 'vars/buildSteps.groovy'
     def exportDir = 'export'
-    def mybuilder = new CommonBuilder(nodeLabel, lvVersions, sourceVersion)
+    def mybuilder = new CommonBuilder(this, nodeLabel, lvVersions, sourceVersion)
     
     stage('Initial Clean'){
       echo 'Cleaning the workspace before building.'
