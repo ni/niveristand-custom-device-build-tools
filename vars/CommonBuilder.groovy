@@ -4,7 +4,7 @@ class CommonBuilder implements Serializable {
   private static final String BUILD_STEPS_LOCATION = 'vars/buildSteps.groovy'
   
   private def script
-  private String[] lvVersions
+  private List<String> lvVersions
   private String sourceVersion
   private String archiveLocation
   private def buildSteps
@@ -41,7 +41,7 @@ class CommonBuilder implements Serializable {
   public void build() {
     script.bat "mkdir $EXPORT_DIR"
     
-    buildInformation.lvVersions.toList().each{lvVersion->
+    buildInformation.lvVersions.each{lvVersion->
       script.echo "Building for LV Version $lvVersion..."
       preBuild(lvVersion)
       buildSteps.build(lvVersion)
