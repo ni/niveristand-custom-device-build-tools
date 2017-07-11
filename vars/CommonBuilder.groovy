@@ -3,11 +3,11 @@ class CommonBuilder implements Serializable {
   private static final String EXPORT_DIR = 'export'
   private static final String BUILD_STEPS_LOCATION = 'vars/buildSteps.groovy'
   
+  private def script
   private String[] lvVersions
   private String sourceVersion
   private String archiveLocation
   private def buildSteps
-  private def script
   
   public CommonBuilder(script, lvVersions, sourceVersion) {
     this.script = script
@@ -21,6 +21,7 @@ class CommonBuilder implements Serializable {
   }
   
   public boolean setup() {
+    // Ensure the VIs for executing scripts are in the workspace
     this.script.syncCommonbuild('dynamic-load')
     
     this.script.echo 'Syncing dependencies.'
@@ -28,11 +29,21 @@ class CommonBuilder implements Serializable {
   }
   
   public boolean runUnitTests() {
-    this.script.echo 'Commonbuild run unit tests'
+    //Make sure correct dependencies are loaded to run unit tests
     this.preBuild(this.sourceVersion)
   }
   
   public boolean build() {
+    this.script.bat "mkdir $EXPORT_DIR"
+    
+    lvVersions.each{lvVersion->
+      echo "Building for LV Version $lvVersion..."
+      this.preBuild(lvVersion)
+      this.buildSteps.build(lvVersion)
+      
+      //Move build output to versioned directory
+      bat "move \"${this.buildSteps.BUILT_DIR}\" \"$EXPORT_DIR\\$lvVersion\""
+      echo "Build for LV Version $lvVersion complete."
   }
   
   public boolean archive() {
@@ -45,7 +56,6 @@ class CommonBuilder implements Serializable {
   }
   
   private def preBuild(lvVersion) {
-    this.script.echo "Commonbuild preBuild using LV version $lvVersion"
     this.buildSteps.prepareSource(lvVersion)
     this.buildSteps.setupLv(lvVersion)
   }
