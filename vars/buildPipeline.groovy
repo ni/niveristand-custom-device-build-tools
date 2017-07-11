@@ -61,7 +61,7 @@ def call(nodeLabel, lvVersions, sourceVersion){
         //Move build output to versioned directory
         //bat "move \"${buildSteps.BUILT_DIR}\" \"$exportDir\\$lvVersion\""
         //echo "Build for LV Version $lvVersion complete."
-      }
+      //}
       
       echo 'Build Complete.'
     }
