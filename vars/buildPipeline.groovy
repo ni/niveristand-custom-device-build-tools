@@ -40,6 +40,7 @@ def call(nodeLabel, lvVersions, sourceVersion){
       
       echo 'Syncing dependencies.'
       buildSteps.syncDependencies()
+      mybuilder.setup()
       
       echo 'Setup Complete.'
     }
