@@ -25,7 +25,7 @@ class CommonBuilder implements Serializable {
   
   public boolean setup() {
     this.script.echo 'CommonBuilder setup'
-    return true
+    this.script.syncCommonbuild('dynamic-load')
   }
   
   public boolean runUnitTests() {
