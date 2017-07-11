@@ -28,6 +28,8 @@ class CommonBuilder implements Serializable {
   }
   
   public boolean runUnitTests() {
+    this.script.echo 'Commonbuild run unit tests'
+    this.preBuild(this.sourceVersion)
   }
   
   public boolean build() {
@@ -40,5 +42,11 @@ class CommonBuilder implements Serializable {
   }
   
   public boolean publish() {
+  }
+  
+  private def preBuild(lvVersion) {
+    this.script.echo "Commonbuild preBuild using LV version $lvVersion"
+    this.buildSteps.prepareSource(lvVersion)
+    this.buildSteps.setupLv(lvVersion)
   }
 }
