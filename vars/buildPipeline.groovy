@@ -55,7 +55,7 @@ def call(nodeLabel, lvVersions, sourceVersion){
     
     stage('Package'){
       echo 'Building NIPM package...'
-      builder.package()
+      builder.buildPackage()
       echo 'Package complete.'
     }
     
