@@ -9,7 +9,7 @@
 def call(BuildInformation buildInformation)
   echo 'Starting the build pipeline...'
   
-  node(nodeLabel){
+  node(buildInformation.nodeLabel){
     echo "Environment before build:"
     bat 'set'
     //def builder = new CommonBuilder(this, lvVersions, sourceVersion)
