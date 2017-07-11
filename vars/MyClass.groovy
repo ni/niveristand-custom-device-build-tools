@@ -1,4 +1,4 @@
-class MyClass{
+class MyClass implements Serializable {
   String name
   Integer age
   
