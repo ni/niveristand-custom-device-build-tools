@@ -15,7 +15,7 @@ class CommonBuilder implements Serializable {
     this.sourceVersion = sourceVersion
   }
   
-  public boolean loadBuildSteps() {
+  public def loadBuildSteps() {
     buildSteps = load BUILD_STEPS_LOCATION
   }
   
