@@ -15,7 +15,8 @@ class CommonBuilder implements Serializable {
     this.nodeLabel = nodeLabel
     this.lvVersions = lvVersions
     this.sourceVersion = sourceVersion
-    this.script.echo "CommonBuilder initialized with nodeLabel ${this.nodeLabel}, lvVersions ${this.lvVersions}, sourceVersion ${this.sourceVersion}"
+    def text = "CommonBuilder initialized with nodeLabel ${this.nodeLabel}, lvVersions ${this.lvVersions}, sourceVersion ${this.sourceVersion}"
+    echo text
   }
   
   public boolean loadBuildSteps() {
@@ -38,5 +39,9 @@ class CommonBuilder implements Serializable {
   }
   
   public boolean publish() {
+  }
+  
+  private def echo(text) {
+    this.script.echo text
   }
 }
