@@ -42,7 +42,7 @@ class CommonBuilder implements Serializable {
       this.buildSteps.build(lvVersion)
       
       //Move build output to versioned directory
-      bat "move \"${this.buildSteps.BUILT_DIR}\" \"$EXPORT_DIR\\$lvVersion\""
+      this.script.bat "move \"${this.buildSteps.BUILT_DIR}\" \"$EXPORT_DIR\\$lvVersion\""
       this.script.echo "Build for LV Version $lvVersion complete."
     }
   }
