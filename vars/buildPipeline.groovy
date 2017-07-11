@@ -5,14 +5,12 @@
 // to implicitly include https://github.com/buckd/commonbuild
 // For usage, see the readme in this repo
 
-//def call(nodeLabel, lvVersions, sourceVersion){
 def call(BuildInformation buildInformation) {
   echo 'Starting the build pipeline...'
   
   node(buildInformation.nodeLabel){
     echo "Environment before build:"
     bat 'set'
-    //def builder = new CommonBuilder(this, lvVersions, sourceVersion)
     def builder = new CommonBuilder(this, buildInformation)
     
     stage('Initial Clean'){
