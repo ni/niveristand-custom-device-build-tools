@@ -36,7 +36,7 @@ class CommonBuilder implements Serializable {
   public boolean build() {
     this.script.bat "mkdir $EXPORT_DIR"
     
-    for(lvVersion in lvVersions) {
+    for(lvVersion in lvVersions.toList()) {
       this.script.echo "Building for LV Version $lvVersion..."
       this.preBuild(lvVersion)
       this.buildSteps.build(lvVersion)
