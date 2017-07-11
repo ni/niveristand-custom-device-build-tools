@@ -6,7 +6,7 @@
 // For usage, see the readme in this repo
 
 //def call(nodeLabel, lvVersions, sourceVersion){
-def call(BuildInformation buildInformation)
+def call(BuildInformation buildInformation) {
   echo 'Starting the build pipeline...'
   
   node(buildInformation.nodeLabel){
