@@ -58,13 +58,13 @@ class CommonBuilder implements Serializable {
     script.bat "xcopy \"$EXPORT_DIR\" \"$archiveLocation\" /e /i"
   }
   
-  public void package() {
-    script.echo "CommonBuilder package()"
-  }
+\\  public void package() {
+\\    script.echo "CommonBuilder package()"
+\\  }
   
-  public void publish() {
-    script.echo "CommonBuilder publish()"
-  }
+\\  public void publish() {
+\\    script.echo "CommonBuilder publish()"
+\\  }
   
   private void preBuild(lvVersion) {
     buildSteps.prepareSource(lvVersion)
