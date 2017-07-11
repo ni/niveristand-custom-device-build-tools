@@ -39,8 +39,8 @@ def call(nodeLabel, lvVersions, sourceVersion){
       // Ensure the VIs for executing scripts are in the workspace
       mybuilder.setup()
       
-      echo 'Syncing dependencies.'
-      buildSteps.syncDependencies()
+      //echo 'Syncing dependencies.'
+      //buildSteps.syncDependencies()
       
       echo 'Setup Complete.'
     }
