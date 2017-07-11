@@ -37,13 +37,13 @@ class CommonBuilder implements Serializable {
     this.script.bat "mkdir $EXPORT_DIR"
     
     lvVersions.each{lvVersion->
-      echo "Building for LV Version $lvVersion..."
+      this.script.echo "Building for LV Version $lvVersion..."
       this.preBuild(lvVersion)
       this.buildSteps.build(lvVersion)
       
       //Move build output to versioned directory
       bat "move \"${this.buildSteps.BUILT_DIR}\" \"$EXPORT_DIR\\$lvVersion\""
-      echo "Build for LV Version $lvVersion complete."
+      this.script.echo "Build for LV Version $lvVersion complete."
     }
   }
   
