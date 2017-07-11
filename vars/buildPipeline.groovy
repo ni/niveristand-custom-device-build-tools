@@ -30,6 +30,7 @@ def call(nodeLabel, lvVersions, sourceVersion){
       //Load buildSteps here so they can be used by any subsequent stages
       echo 'Loading component build steps.'
       buildSteps = load buildStepsLocation
+      echo "${myclass.name} is ${myclass.age} years old."
     }
     
     stage('Pre-Build Setup'){
