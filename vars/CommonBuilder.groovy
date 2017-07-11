@@ -42,6 +42,6 @@ class CommonBuilder implements Serializable {
   }
   
   private void echo(text) {
-    this.script.echo(text)
+    script.echo(text)
   }
 }
