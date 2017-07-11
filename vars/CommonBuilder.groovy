@@ -16,7 +16,7 @@ class CommonBuilder implements Serializable {
   }
   
   public def loadBuildSteps() {
-    buildSteps = load BUILD_STEPS_LOCATION
+    buildSteps = this.script.load BUILD_STEPS_LOCATION
   }
   
   public boolean setup() {
