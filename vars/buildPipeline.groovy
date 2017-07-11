@@ -14,7 +14,7 @@ def call(nodeLabel, lvVersions, sourceVersion){
     def archiveLocation
     def buildStepsLocation = 'vars/buildSteps.groovy'
     def exportDir = 'export'
-    def myclass = new MyClass(name: 'Donovan', age:33)
+    def mybuilder = new CommonBuilder(nodeLabel, lvVersions, sourceVersion)
     
     stage('Initial Clean'){
       echo 'Cleaning the workspace before building.'
@@ -30,7 +30,6 @@ def call(nodeLabel, lvVersions, sourceVersion){
       //Load buildSteps here so they can be used by any subsequent stages
       echo 'Loading component build steps.'
       buildSteps = load buildStepsLocation
-      echo "${myclass.name} is ${myclass.age} years old."
     }
     
     stage('Pre-Build Setup'){
