@@ -9,12 +9,9 @@ def call(nodeLabel, lvVersions, sourceVersion){
   echo 'Starting the build pipeline...'
   
   node(nodeLabel){
+    echo "Environment before build:"
     bat 'set'
-    def buildSteps
-    def archiveLocation
-    def buildStepsLocation = 'vars/buildSteps.groovy'
-    def exportDir = 'export'
-    def mybuilder = new CommonBuilder(this, lvVersions, sourceVersion)
+    def builder = new CommonBuilder(this, lvVersions, sourceVersion)
     
     stage('Initial Clean'){
       echo 'Cleaning the workspace before building.'
@@ -29,56 +26,43 @@ def call(nodeLabel, lvVersions, sourceVersion){
       
       //Load buildSteps here so they can be used by any subsequent stages
       echo 'Loading component build steps.'
-      buildSteps = mybuilder.loadBuildSteps()
+      builder.loadBuildSteps()
     }
     
     stage('Pre-Build Setup'){
       echo 'Setting up build environment...'
-      mybuilder.setup()      
+      builder.setup()      
       echo 'Setup Complete.'
     }
     
     stage('Unit Testing'){
       echo 'Running unit tests.'
-      mybuilder.runUnitTests()
+      builder.runUnitTests()
       echo 'Unit tests complete.'
     }
     
     stage('Build'){
-      echo 'Starting build...'
-      
-      //bat "mkdir $exportDir"
-      
-      mybuilder.build()
-      
-      //lvVersions.each{lvVersion->
-        //echo "Building for LV Version $lvVersion..."
-        //buildSteps.prepareSource(lvVersion)
-        //buildSteps.setupLv(lvVersion)
-        //preBuild(buildSteps, lvVersion)
-        //buildSteps.build(lvVersion)
-        
-        //Move build output to versioned directory
-        //bat "move \"${buildSteps.BUILT_DIR}\" \"$exportDir\\$lvVersion\""
-        //echo "Build for LV Version $lvVersion complete."
-      //}
-      
+      echo 'Starting build...'      
+      builder.build()      
       echo 'Build Complete.'
     }
     
     stage('Archive'){
       echo 'Archiving build...'
-      mybuilder.archive()
-      //archiveLocation = archiveBuild(exportDir, buildSteps.ARCHIVE_DIR)
+      builder.archive()
       echo 'Archive complete.'
     }
     
     stage('Package'){
-      echo "Building NIPM package from build at $archiveLocation."
+      echo 'Building NIPM package...'
+      builder.package()
+      echo 'Package complete.
     }
     
     stage('Publish'){
       echo 'Publishing NIPM package.'
+      builder.publish()
+      echo 'Publish complete.'
     }
     
     stage('Cleanup'){
