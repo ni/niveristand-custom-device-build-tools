@@ -17,12 +17,14 @@ class CommonBuilder implements Serializable {
   
   public def loadBuildSteps() {
     this.buildSteps = this.script.load BUILD_STEPS_LOCATION
-    this.script.echo "${this.buildSteps}"
     return this.buildSteps
   }
   
   public boolean setup() {
     this.script.syncCommonbuild('dynamic-load')
+    
+    this.script.echo 'Syncing dependencies.'
+    this.buildSteps.syncDependencies()
   }
   
   public boolean runUnitTests() {
