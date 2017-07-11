@@ -8,11 +8,17 @@ class CommonBuilder implements Serializable {
   private String sourceVersion
   private String archiveLocation
   private def buildSteps
+  private BuildInformation buildInformation
   
-  public CommonBuilder(script, lvVersions, sourceVersion) {
+  //public CommonBuilder(script, lvVersions, sourceVersion) {
+  //  this.script = script
+  //  this.lvVersions = lvVersions
+  //  this.sourceVersion = sourceVersion
+  //}
+  
+  public CommonBuilder(script, buildInformation) {
     this.script = script
-    this.lvVersions = lvVersions
-    this.sourceVersion = sourceVersion
+    this.buildInformation = buildInformation
   }
   
   public void loadBuildSteps() {
@@ -29,13 +35,13 @@ class CommonBuilder implements Serializable {
   
   public void runUnitTests() {
     //Make sure correct dependencies are loaded to run unit tests
-    preBuild(sourceVersion)
+    preBuild(buildInformation.sourceVersion)
   }
   
   public void build() {
     script.bat "mkdir $EXPORT_DIR"
     
-    lvVersions.toList().each{lvVersion->
+    buildInformation.lvVersions.toList().each{lvVersion->
       script.echo "Building for LV Version $lvVersion..."
       preBuild(lvVersion)
       buildSteps.build(lvVersion)
