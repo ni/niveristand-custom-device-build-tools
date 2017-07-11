@@ -4,17 +4,9 @@ class CommonBuilder implements Serializable {
   private static final String BUILD_STEPS_LOCATION = 'vars/buildSteps.groovy'
   
   private def script
-  private List<String> lvVersions
-  private String sourceVersion
+  private BuildInformation buildInformation
   private String archiveLocation
   private def buildSteps
-  private BuildInformation buildInformation
-  
-  //public CommonBuilder(script, lvVersions, sourceVersion) {
-  //  this.script = script
-  //  this.lvVersions = lvVersions
-  //  this.sourceVersion = sourceVersion
-  //}
   
   public CommonBuilder(script, buildInformation) {
     this.script = script
