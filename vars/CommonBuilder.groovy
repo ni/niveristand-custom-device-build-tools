@@ -15,59 +15,59 @@ class CommonBuilder implements Serializable {
     this.sourceVersion = sourceVersion
   }
   
-  public def loadBuildSteps() {
-    this.buildSteps = this.script.load BUILD_STEPS_LOCATION
-    return this.buildSteps
+  public void loadBuildSteps() {
+    buildSteps = script.load BUILD_STEPS_LOCATION
   }
   
-  public def setup() {
+  public void setup() {
     // Ensure the VIs for executing scripts are in the workspace
-    this.script.syncCommonbuild('dynamic-load')
+    script.syncCommonbuild('dynamic-load')
     
-    this.script.echo 'Syncing dependencies.'
-    this.buildSteps.syncDependencies()
+    script.echo 'Syncing dependencies.'
+    buildSteps.syncDependencies()
   }
   
-  public def runUnitTests() {
+  public void runUnitTests() {
     //Make sure correct dependencies are loaded to run unit tests
-    this.preBuild(this.sourceVersion)
+    preBuild(sourceVersion)
   }
   
-  public def build() {
-    this.script.bat "mkdir $EXPORT_DIR"
+  public void build() {
+    script.bat "mkdir $EXPORT_DIR"
     
     lvVersions.toList().each{lvVersion->
-      this.script.echo "Building for LV Version $lvVersion..."
-      this.preBuild(lvVersion)
-      this.buildSteps.build(lvVersion)
+      script.echo "Building for LV Version $lvVersion..."
+      preBuild(lvVersion)
+      buildSteps.build(lvVersion)
       
       //Move build output to versioned directory
-      this.script.bat "move \"${this.buildSteps.BUILT_DIR}\" \"$EXPORT_DIR\\$lvVersion\""
-      this.script.echo "Build for LV Version $lvVersion complete."
+      script.bat "move \"${buildSteps.BUILT_DIR}\" \"$EXPORT_DIR\\$lvVersion\""
+      script.echo "Build for LV Version $lvVersion complete."
     }
   }
   
-  public def archive() {
-    //this.archiveLocation = this.script.archiveBuild(EXPORT_DIR, this.buildSteps.ARCHIVE_DIR)
-    this.archiveLocation = "${this.buildSteps.ARCHIVE_DIR}\\$EXPORT_DIR"
+  public void archive() {
+    archiveLocation = "${buildSteps.ARCHIVE_DIR}\\$EXPORT_DIR"
   
     //don't do this delete with the actual archive
     //this is for testing purposes only
-    if(this.script.fileExists(this.archiveLocation)){
-      this.script.bat "rmdir \"${this.archiveLocation}\" /s /q"
+    if(script.fileExists(archiveLocation)){
+      script.bat "rmdir \"$archiveLocation\" /s /q"
     }
   
-    this.script.bat "xcopy \"$EXPORT_DIR\" \"${this.archiveLocation}\" /e /i"
+    script.bat "xcopy \"$EXPORT_DIR\" \"$archiveLocation\" /e /i"
   }
   
-  public def deploy() {
+  public void package() {
+    script.echo "CommonBuilder package()"
   }
   
-  public def publish() {
+  public void publish() {
+    script.echo "CommonBuilder publish()"
   }
   
-  private def preBuild(lvVersion) {
-    this.buildSteps.prepareSource(lvVersion)
-    this.buildSteps.setupLv(lvVersion)
+  private void preBuild(lvVersion) {
+    buildSteps.prepareSource(lvVersion)
+    buildSteps.setupLv(lvVersion)
   }
 }
