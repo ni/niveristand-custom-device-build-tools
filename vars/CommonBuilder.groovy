@@ -17,6 +17,7 @@ class CommonBuilder implements Serializable {
     this.sourceVersion = sourceVersion
     this.script.echo "CommonBuilder initialized with nodeLabel ${this.nodeLabel}, lvVersions ${this.lvVersions}, sourceVersion ${this.sourceVersion}"
     this.script.echo 'test text'
+    this.script.echo "${this.script}"
   }
   
   public boolean loadBuildSteps() {
