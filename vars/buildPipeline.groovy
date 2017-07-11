@@ -36,11 +36,11 @@ def call(nodeLabel, lvVersions, sourceVersion){
       echo 'Setting up build environment...'
       
       // Ensure the VIs for executing scripts are in the workspace
-      syncCommonbuild('dynamic-load')
+      mybuilder.setup()
+      //syncCommonbuild('dynamic-load')
       
       echo 'Syncing dependencies.'
       buildSteps.syncDependencies()
-      mybuilder.setup()
       
       echo 'Setup Complete.'
     }
