@@ -14,6 +14,7 @@ def call(nodeLabel, lvVersions, sourceVersion){
     def archiveLocation
     def buildStepsLocation = 'vars/buildSteps.groovy'
     def exportDir = 'export'
+    def myclass = new MyClass(name: 'Donovan', age:33)
     
     stage('Initial Clean'){
       echo 'Cleaning the workspace before building.'
