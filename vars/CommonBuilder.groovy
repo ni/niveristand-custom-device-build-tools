@@ -40,7 +40,7 @@ class CommonBuilder implements Serializable {
   public boolean publish() {
   }
   
-  private def echo(String text) {
+  private def echo(text) {
     this.script.echo text
   }
 }
