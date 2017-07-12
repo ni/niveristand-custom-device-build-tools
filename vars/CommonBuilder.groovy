@@ -15,6 +15,8 @@ class CommonBuilder implements Serializable {
   
   public void loadBuildSteps() {
     buildSteps = script.load BUILD_STEPS_LOCATION
+    def steptype = buildSteps.getClass()
+    script.echo "$steptype"
   }
   
   public void setup() {
