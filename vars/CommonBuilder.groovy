@@ -30,6 +30,10 @@ class CommonBuilder implements Serializable {
     preBuild(buildInformation.sourceVersion)
   }
   
+  public void codegen() {
+    buildSteps.codegen(buildInformation.sourceVersion)
+  }
+  
   public void build() {
     script.bat "mkdir $EXPORT_DIR"
     
