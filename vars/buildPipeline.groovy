@@ -35,8 +35,14 @@ def call(BuildInformation buildInformation) {
       echo 'Setup Complete.'
     }
     
+    stage('Code Generation'){
+      echo 'Generating code prior to build...'
+      builder.codegen()
+      echo 'Code generation complete.'
+    }
+    
     stage('Unit Testing'){
-      echo 'Running unit tests.'
+      echo 'Running unit tests...'
       builder.runUnitTests()
       echo 'Unit tests complete.'
     }
@@ -60,7 +66,7 @@ def call(BuildInformation buildInformation) {
     }
     
     stage('Publish'){
-      echo 'Publishing NIPM package.'
+      echo 'Publishing NIPM package...'
       builder.publish()
       echo 'Publish complete.'
     }
