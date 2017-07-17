@@ -19,10 +19,10 @@ class BuildInformation implements Serializable {
   public void printInformation(script) {
     def printString = """
       Building using the following BuildInformation:
-        -Node label is \"$nodeLabel\"
-        -Source version is $sourceVersion
-        -LV versions to build are $lvVersions
-        -Dependencies are $dependencies"""
+        Node label is \"$nodeLabel\"
+        Source version is $sourceVersion
+        LV versions to build are $lvVersions
+        Dependencies are $dependencies"""
     
     script.echo printString
   }
