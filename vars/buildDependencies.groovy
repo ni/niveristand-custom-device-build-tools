@@ -1,3 +1,5 @@
+import hudson.AbortException
+
 def call(buildInformation) {
   buildInformation.dependencies.each{dependency->
     try {
