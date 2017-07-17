@@ -1,11 +1,13 @@
 def call(){
   echo 'Cloning commonbuild steps to workspace.'
+  
   def branch = env['library.nivscommonbuild.version']
-  echo branch
-  if(!branch) {
+  if(!branch  || branch == null) {
     branch = 'master'
   }
   
-  commonbuildDir = syncRepo('https://github.com/buckd/commonbuild', branch)
+  def organization = env.JOB_NAME.tokenize("/")[0]
+  
+  commonbuildDir = syncRepo("https://github.com/$organization/commonbuild", branch)
   return commonbuildDir
 }
