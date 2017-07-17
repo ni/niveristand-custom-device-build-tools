@@ -19,7 +19,7 @@ class CommonBuilder implements Serializable {
   
   public void setup() {
     // Ensure the VIs for executing scripts are in the workspace
-    script.syncCommonbuild('dynamic-load')
+    script.syncCommonbuild()
     
     script.echo 'Syncing dependencies.'
     buildSteps.syncDependencies()
