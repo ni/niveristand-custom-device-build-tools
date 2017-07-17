@@ -9,7 +9,7 @@ def call(BuildInformation buildInformation) {
   echo 'Starting the build pipeline...'
   
   buildInformation.dependencies.each{dependency->
-    build "../$dependency/{env.BRANCH_NAME}"
+    build "../$dependency/${env.BRANCH_NAME}"
   }
   
   node(buildInformation.nodeLabel){
