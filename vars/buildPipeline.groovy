@@ -7,7 +7,6 @@
 
 def call(BuildInformation buildInformation) {
   echo 'Starting the build pipeline...'
-  echo "Build information:"
   buildInformation.printInformation(this)
   
   // build dependencies before starting this pipeline
