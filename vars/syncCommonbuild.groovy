@@ -1,6 +1,7 @@
 def call(){
   echo 'Cloning commonbuild steps to workspace.'
-  def branch = "${env.library.nivscommonbuild.version}"
+  def libraryVersion = 'library.nivscommonbuild.version'
+  def branch = "${env.$libraryVersion}"
   echo branch
   if(!branch) {
     branch = 'master'
