@@ -61,15 +61,17 @@ class CommonBuilder implements Serializable {
   }
   
   public void buildPackage() {
-    script.echo "CommonBuilder package()"
+    script.noop()
   }
   
   public void publish() {
-    script.echo "CommonBuilder publish()"
+    script.noop()
   }
   
   private void preBuild(lvVersion) {
+    script.echo "Preparing source for execution with LV $lvVersion..."
     buildSteps.prepareSource(lvVersion)
+    script.echo "Applying build configuration to LV $lvVersion..."
     buildSteps.setupLv(lvVersion)
   }
 }
