@@ -11,4 +11,8 @@ class BuildInformation implements Serializable {
     this.lvVersions = lvVersions
     this.dependencies = dependencies
   }
+  
+  public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions) {
+    this(nodeLabel, sourceVersion, lvVersions, [])
+  }
 }
