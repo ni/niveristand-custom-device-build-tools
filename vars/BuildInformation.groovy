@@ -15,4 +15,17 @@ class BuildInformation implements Serializable {
   public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions) {
     this(nodeLabel, sourceVersion, lvVersions, [])
   }
+  
+  public void printInformation(script) {
+    script.echo "Node label is \"$nodeLabel\"
+    script.echo "Source version is $sourceVersion"
+    script.echo "LV versions to build are"
+    lvVersions.each{version->
+      script.echo "-$version"
+    }
+    script.echo "Dependencies are"
+    dependencies.each{dependency->
+      script.echo "-$dependency"
+    }
+  }
 }
