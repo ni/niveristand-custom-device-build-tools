@@ -24,6 +24,5 @@ class BuildInformation implements Serializable {
       Dependencies are $dependencies"""
     
     script.echo printString
-    }
   }
 }
