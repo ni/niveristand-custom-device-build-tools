@@ -17,7 +17,7 @@ class BuildInformation implements Serializable {
   }
   
   public void printInformation(script) {
-    script.echo "Node label is \"$nodeLabel\"
+    script.echo "Node label is \"$nodeLabel\""
     script.echo "Source version is $sourceVersion"
     script.echo "LV versions to build are"
     lvVersions.each{version->
