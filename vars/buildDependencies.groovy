@@ -3,7 +3,7 @@ def call(buildInformation) {
     try {
       build "../$dependency/test"
     } catch(AbortException e) {
-      if(e.getMessage().startsWith('No item named') {
+      if(e.getMessage().startsWith('No item named')) {
         echo e.getMessage()
         echo 'Trying build again.'
         build "../$dependency/${env.BRANCH_NAME}"
