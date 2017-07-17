@@ -10,9 +10,8 @@ def call(BuildInformation buildInformation) {
   
   //buildInformation.dependencies.each{dependency->
   //  build "../$dependency/${env.BRANCH_NAME}"
+  //}
   buildDependencies(buildInformation)
-  
-  }
   
   node(buildInformation.nodeLabel){
     echo "Environment before build:"
