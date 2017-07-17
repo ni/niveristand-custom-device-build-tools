@@ -4,7 +4,7 @@ def call(repo, branch){
   
   bat "mkdir $syncDir"
   
-  if(!branch){
+  if(!branch  || branch == null){
     branch = 'master'
   }
   
