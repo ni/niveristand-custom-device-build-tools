@@ -41,10 +41,7 @@ class CommonBuilder implements Serializable {
       script.echo "Building for LV Version $lvVersion..."
       preBuild(lvVersion)
       buildSteps.build(lvVersion)
-      
-      //Move build output to versioned directory
-      script.bat "move \"${buildSteps.BUILT_DIR}\" \"$EXPORT_DIR\\$lvVersion\""
-      script.echo "Build for LV Version $lvVersion complete."
+      postBuild(lvVersion)
     }
   }
   
@@ -73,5 +70,11 @@ class CommonBuilder implements Serializable {
     buildSteps.prepareSource(lvVersion)
     script.echo "Applying build configuration to LV $lvVersion..."
     buildSteps.setupLv(lvVersion)
+  }
+  
+  private void postBuild(lvVersion) {
+    //Move build output to versioned directory
+    script.bat "move \"${buildSteps.BUILT_DIR}\" \"$EXPORT_DIR\\$lvVersion\""
+    script.echo "Build for LV Version $lvVersion complete."
   }
 }
