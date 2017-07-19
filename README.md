@@ -18,6 +18,7 @@ This script has been designed such that the calling component must define the be
      - BUILT_DIR: The directory where the the LabVIEW build spec places the output
      - ARCHIVE_DIR: The directory where the output should be archived
      - syncDependencies(): A function responsible for syncing/cloning remote repositories to the build machine
-     - setupLv(lvVersion): A function responsible for copying any dependencies or setting any environment variables required to build or test
+     - setupLv(lvVersion): A function responsible for copying any dependencies or setting any environment variables required to build or test for the given version of LabVIEW
      - prepareSource(lvVersion): A function responsible for configuring any settings required for correctly loading the LV source code in the specified lvVersion
-     - build(lvVersion): A function responsible for sequecing the steps to build the LV source to the BUILT_DIR
+     - build(lvVersion): A function responsible for sequencing the steps to build the LV source to the BUILT_DIR
+     - codegen(lvVersion): A function responsible for generating any code required to run the build
