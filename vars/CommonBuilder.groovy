@@ -80,7 +80,7 @@ class CommonBuilder implements Serializable {
   }
   
   private void setArchiveVar(archiveLocation) {
-    def tokens = env.JOB_NAME.tokenize("/")
+    def tokens = script.env.JOB_NAME.tokenize("/")
     def component = tokens[tokens.size()-2]
     script.env.put("${component}_DEP_DIR", archiveLocation)
     script.bat "set"
