@@ -55,6 +55,7 @@ class CommonBuilder implements Serializable {
     }
   
     script.bat "xcopy \"$EXPORT_DIR\" \"$archiveLocation\" /e /i"
+    setArchiveVar(archiveLocation)
   }
   
   public void buildPackage() {
@@ -76,5 +77,11 @@ class CommonBuilder implements Serializable {
     //Move build output to versioned directory
     script.bat "move \"${buildSteps.BUILT_DIR}\" \"$EXPORT_DIR\\$lvVersion\""
     script.echo "Build for LV Version $lvVersion complete."
+  }
+  
+  private void setArchiveVar(archiveLocation) {
+    def tokens = env.JOB_NAME.tokenize("/")
+    def component = tokens[tokens.size()-2]
+    env.put("${component}_DEP_DIR", archiveLocation)
   }
 }
