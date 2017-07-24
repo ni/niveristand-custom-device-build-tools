@@ -11,6 +11,9 @@ def call(BuildInformation buildInformation) {
   
   // build dependencies before starting this pipeline
   buildDependencies(buildInformation)
+  buildIformation.depDirs.each{dir->
+    echo "Dep dir $dir is in information."
+  }
   
   node(buildInformation.nodeLabel){
     echo "Environment before build:"
