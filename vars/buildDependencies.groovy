@@ -26,7 +26,7 @@ def call(buildInformation) {
     }
     
     echo "Build vars is $buildVars"
-    buildVars.keySet().each{key->
+    buildVars.buildVariables.keySet().each{key->
       echo "$key"
     }
   }
