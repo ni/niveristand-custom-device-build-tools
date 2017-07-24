@@ -29,7 +29,5 @@ def call(buildInformation) {
     buildVars.keySet().each{key->
       echo "$key"
     }
-      
-    }
   }
 }
