@@ -11,8 +11,9 @@ def call(BuildInformation buildInformation) {
   
   // build dependencies before starting this pipeline
   buildDependencies(buildInformation)
-  buildInformation.depDirs.each{dir->
-    echo "Dep dir $dir is in information."
+  buildInformation.depDirs.keySet().each{key->
+    def mapValue = depDirs[key]
+    echo "Dep dir $key has value $mapValue."
   }
   
   node(buildInformation.nodeLabel){
