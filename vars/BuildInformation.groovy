@@ -5,7 +5,7 @@ class BuildInformation implements Serializable {
   public final List<String> lvVersions
   public final List<String> dependencies
   
-  public Map<String, String> depDirs
+  public Map<String, String> depDirs = [:]
   
   public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, List<String> dependencies) {
     this.nodeLabel = nodeLabel
