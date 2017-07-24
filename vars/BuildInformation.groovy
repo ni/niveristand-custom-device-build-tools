@@ -29,7 +29,7 @@ class BuildInformation implements Serializable {
   }
   
   public void addDependencyArchive(buildVariables, dependencyDir) {
-    if(buildVariables.containsKey(dependencyDir) {
+    if(buildVariables.containsKey(dependencyDir)) {
       depDirs[dependencyDir] = buildVariables[dependencyDir]
     }
   }
