@@ -83,8 +83,5 @@ class CommonBuilder implements Serializable {
     def component = script.getComponentParts()['repo']
     def depDir = "${component}_DEP_DIR"
     script.env[depDir] = archiveLocation
-    def depValue = script.env[depDir]
-    script.echo "Dep value is $depValue"
-    script.bat "set"
   }
 }
