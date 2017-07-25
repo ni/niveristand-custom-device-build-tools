@@ -27,6 +27,9 @@ def call(buildInformation) {
     
     def buildVariables = dependencyBuild.buildVariables
     def dependencyDir = "${dependency}_DEP_DIR"
+    if(buildVariables.containsKey(dependencyDir)) {
+      env[dependencyDir] = buildVariables[dependencyDir]
+    }
     buildInformation.addDependencyArchive(buildVariables, dependencyDir)
   }
 }
