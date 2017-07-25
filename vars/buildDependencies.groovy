@@ -25,11 +25,11 @@ def call(buildInformation) {
       }
     }
     
+    // set env vars for downstream projects to know where archives are
     def buildVariables = dependencyBuild.buildVariables
     def dependencyDir = "${dependency}_DEP_DIR"
     if(buildVariables.containsKey(dependencyDir)) {
       env[dependencyDir] = buildVariables[dependencyDir]
     }
-    buildInformation.addDependencyArchive(buildVariables, dependencyDir)
   }
 }
