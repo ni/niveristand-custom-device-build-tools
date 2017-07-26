@@ -13,6 +13,8 @@ class CommonBuilder implements Serializable {
   }
   
   public void loadBuildSteps(buildStepsLocation) {
+    def component = script.getComponentParts()['repo']
+    script.echo "Loading build steps from $component/$buildStepsLocation"
     buildSteps = script.load buildStepsLocation
   }
   
