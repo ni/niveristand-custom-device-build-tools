@@ -32,6 +32,7 @@ def call(BuildInformation buildInformation) {
       //because builder constructor needs build steps
       //from source location
       builder = new CommonBuilder(this, buildInformation)
+      builder.loadBuildSteps()
     }
     
     stage('Pre-Build Setup'){
