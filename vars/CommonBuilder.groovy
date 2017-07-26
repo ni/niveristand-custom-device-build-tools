@@ -11,7 +11,10 @@ class CommonBuilder implements Serializable {
   public CommonBuilder(script, buildInformation) {
     this.script = script
     this.buildInformation = buildInformation
-    loadBuildSteps() 
+  }
+  
+  public void loadBuildSteps() {
+    buildSteps = script.load BUILD_STEPS_LOCATION
   }
   
   public void setup() {
@@ -61,10 +64,6 @@ class CommonBuilder implements Serializable {
   
   public void publish() {
     script.noop()
-  }
-  
-  private void loadBuildSteps() {
-    buildSteps = script.load BUILD_STEPS_LOCATION
   }
   
   private void preBuild(lvVersion) {
