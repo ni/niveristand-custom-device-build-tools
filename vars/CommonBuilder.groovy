@@ -11,10 +11,7 @@ class CommonBuilder implements Serializable {
   public CommonBuilder(script, buildInformation) {
     this.script = script
     this.buildInformation = buildInformation
-  }
-  
-  public void loadBuildSteps() {
-    buildSteps = script.load BUILD_STEPS_LOCATION
+    buildSteps = script.load BUILD_STEPS_LOCATION 
   }
   
   public void setup() {
