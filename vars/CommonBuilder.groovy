@@ -1,7 +1,6 @@
 class CommonBuilder implements Serializable {
   
   private static final String EXPORT_DIR = 'export'
-  private static final String BUILD_STEPS_LOCATION = 'vars/buildSteps.groovy'
   
   private def script
   private BuildInformation buildInformation
@@ -13,8 +12,8 @@ class CommonBuilder implements Serializable {
     this.buildInformation = buildInformation
   }
   
-  public void loadBuildSteps() {
-    buildSteps = script.load BUILD_STEPS_LOCATION
+  public void loadBuildSteps(buildStepsLocation) {
+    buildSteps = script.load buildStepsLocation
   }
   
   public void setup() {
