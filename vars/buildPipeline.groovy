@@ -15,7 +15,7 @@ def call(BuildInformation buildInformation) {
   node(buildInformation.nodeLabel){
     echo "Environment before build:"
     bat 'set'
-    def builder = new CommonBuilder(this, buildInformation)
+    def builder
     
     stage('Initial Clean'){
       echo 'Cleaning the workspace before building.'
@@ -30,6 +30,7 @@ def call(BuildInformation buildInformation) {
       
       //Load buildSteps here so they can be used by any subsequent stages
       echo 'Loading component build steps.'
+      builder = new CommonBuilder(this, buildInformation)
       builder.loadBuildSteps()
     }
     
