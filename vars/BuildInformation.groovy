@@ -34,7 +34,8 @@ class BuildInformation implements Serializable {
       Node label: $nodeLabel
       Source version: $sourceVersion
       LV versions to build: $lvVersions
-      Dependencies: $dependencies"""
+      Dependencies: $dependencies
+      Build steps location: $buildStepsLocation"""
     
     script.echo printString
   }
