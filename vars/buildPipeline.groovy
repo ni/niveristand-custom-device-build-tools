@@ -28,10 +28,10 @@ def call(BuildInformation buildInformation) {
         checkout scm
       }
       
-      //Load buildSteps here so they can be used by any subsequent stages
-      echo 'Loading component build steps.'
+      //create builder after source has been cloned
+      //because builder constructor needs build steps
+      //from source location
       builder = new CommonBuilder(this, buildInformation)
-      builder.loadBuildSteps()
     }
     
     stage('Pre-Build Setup'){
