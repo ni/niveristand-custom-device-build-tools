@@ -27,14 +27,14 @@ def call(BuildInformation buildInformation) {
       timeout(time: 5, unit: 'MINUTES'){
         checkout scm
       }
-      
-      //create builder after source has been cloned
-      //because builder constructor needs build steps
-      //from source location
-      builder = buildInformation.createBuilder(this)
     }
     
     stage('Pre-Build Setup'){
+      //create builder after source has been cloned
+      //in Checkout stage because create method needs
+      //build steps from source location
+      builder = buildInformation.createBuilder(this)
+      
       echo 'Setting up build environment...'
       builder.setup()      
       echo 'Setup Complete.'
