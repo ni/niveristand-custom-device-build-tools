@@ -27,6 +27,8 @@ class BuildInformation implements Serializable {
   }
   
   public def createBuilder(script) {
-    return new CommonBuilder(script, this)
+    def builder = new CommonBuilder(script, this)
+    builder.loadBuildSteps()
+    return builder
   }
 }
