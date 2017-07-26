@@ -39,7 +39,7 @@ class BuildInformation implements Serializable {
     script.echo printString
   }
   
-  public def CreateBuilder(script) {
+  public def createBuilder(script) {
     return new CommonBuilder(script, this)
   }
 }
