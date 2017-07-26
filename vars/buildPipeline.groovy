@@ -31,9 +31,7 @@ def call(BuildInformation buildInformation) {
       //create builder after source has been cloned
       //because builder constructor needs build steps
       //from source location
-      //builder = new CommonBuilder(this, buildInformation)
       builder = buildInformation.createBuilder(this)
-      builder.loadBuildSteps()
     }
     
     stage('Pre-Build Setup'){
