@@ -67,7 +67,7 @@ class BuildInformation implements Serializable {
     } else {
       script.echo "Build type $buildType not implemented. Using Pipeline build."
       builder = new CommonBuilder(script, this)
-      builder.loadBuildSteps(buildStepslocation)
+      builder.loadBuildSteps(buildStepsLocation)
     }
     return builder
   }
