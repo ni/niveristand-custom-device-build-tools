@@ -1,9 +1,5 @@
 class BuildInformation implements Serializable {
   
-  public enum BuildType {
-    Pipeline, NiBuild
-  }
-  
   private static final String DEFAULT_BUILD_STEPS_LOCATION = 'vars/buildSteps.groovy'
   
   public final String nodeLabel
