@@ -1,0 +1,3 @@
+enum BuildType {
+    Pipeline, NiBuild
+  }
