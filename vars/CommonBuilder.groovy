@@ -1,4 +1,4 @@
-class CommonBuilder implements Builder, Serializable {
+class CommonBuilder implements PipelineBuilder, Serializable {
   
   private static final String EXPORT_DIR = 'export'
   
