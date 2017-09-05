@@ -55,8 +55,8 @@ class BuildInformation implements Serializable {
     script.echo printString
   }
   
-  public def createBuilder(script) {
-    def builder
+  public PipelineBuilder createBuilder(script) {
+    PipelineBuilder builder
     if (buildType == BuildType.Pipeline) {
       builder = new CommonBuilder(script, this)
       builder.loadBuildSteps(buildStepsLocation)
