@@ -1,4 +1,4 @@
-interface Builder {
+interface PipelineBuilder {
   void setup()
   void codegen()
   void runUnitTests()
