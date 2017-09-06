@@ -1,4 +1,4 @@
-package org.nicommonbuild
+package org.vscommonbuild
 
 class TestClass {
   String name
