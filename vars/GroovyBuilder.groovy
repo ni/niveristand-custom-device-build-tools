@@ -7,7 +7,7 @@ class GroovyBuilder extends CommonBuilder {
 
   public GroovyBuilder(script, buildInformation) {
     super(script, buildInformation)
-	loadBuildSteps(buildInformation.buildStepsLocation)
+	loadBuildSteps()
   }
 
   public void codegen() {
