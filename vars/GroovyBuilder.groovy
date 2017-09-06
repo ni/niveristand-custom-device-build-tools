@@ -60,7 +60,6 @@ class GroovyBuilder extends CommonBuilder {
     script.echo "Preparing source for execution with LV $lvVersion..."
     buildSteps.prepareSource(lvVersion)
     script.echo "Applying build configuration to LV $lvVersion..."
-    buildSteps.setupLV(lvVersion)
   }
 
   protected void postBuild(lvVersion) {
