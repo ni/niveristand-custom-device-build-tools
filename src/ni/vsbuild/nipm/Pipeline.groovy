@@ -6,21 +6,18 @@ class Pipeline implements Serializable {
 
   def script
   def stages = []
-  BuildInformation buildInformation
 
-  static builder(script, BuildInformation buildInformation) {
-    return new Builder(script, buildInformation)
+  static builder(script) {
+    return new Builder(script)
   }
 
   static class Builder implements Serializable {
 
     def script
     def stages = []
-    BuildInformation buildInformation
 
-    Builder(def script, BuildInformation buildInformation) {
+    Builder(def script) {
       this.script = script
-      this.buildInformation = buildInformation
     }
 
     def withInitialCleanStage() {
@@ -51,7 +48,6 @@ class Pipeline implements Serializable {
   private Pipeline(Builder builder) {
     this.script = builder.script
     this.stages = builder.stages
-    this.buildInformation = builder.buildInformation
   }
 
   void execute() {
