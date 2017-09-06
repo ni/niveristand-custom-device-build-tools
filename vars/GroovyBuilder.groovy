@@ -64,7 +64,7 @@ class GroovyBuilder extends CommonBuilder {
     buildSteps.setupLV(lvVersion)
   }
 
-  proteced void postBuild(lvVersion) {
+  protected void postBuild(lvVersion) {
     //Move build output to versioned directory
     script.bat "move \"${buildSteps.BUILT_DIR}\" \"$EXPORT_DIR\\$lvVersion\""
     script.echo "Build for LV Version $lvVersion complete."
