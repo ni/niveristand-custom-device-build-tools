@@ -35,3 +35,5 @@ abstract class CommonBuilder implements PipelineBuilder, Serializable {
   protected abstract void preBuild(lvVersion) {}
 
   protected abstract void postBuild(lvVersion) {}
+
+}
