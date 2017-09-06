@@ -25,7 +25,7 @@ class GroovyBuilder extends CommonBuilder {
     buildInformation.lvVersions.each{lvVersion->
       script.echo "Building for LV Version $lvVersion..."
       preBuild(lvVersion)
-      buildStps.build(lvVersion)
+      buildSteps.build(lvVersion)
       postBuild(lvVersion)
     }
   }
