@@ -52,12 +52,14 @@ class Pipeline implements Serializable {
 
   void execute() {
 
-    for (Stage stage : stages) {
-      try {
-        stage.execute()
-      } catch (err) {
-        script.currentBuild.result = "FAILURE"
-        script.error "Build failed: ${err.getMessage()}"
+    node('dcaf') {
+      for (Stage stage : stages) {
+        try {
+          stage.execute()
+        } catch (err) {
+          script.currentBuild.result = "FAILURE"
+          script.error "Build failed: ${err.getMessage()}"
+        }
       }
     }
   }
