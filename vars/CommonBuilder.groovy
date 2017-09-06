@@ -20,20 +20,20 @@ abstract class CommonBuilder implements PipelineBuilder, Serializable {
     preBuild(buildInformation.sourceVersion)
   }
 
-  public abstract void codegen() {}
+  public abstract void codegen()
 
-  public abstract void build() {}
+  public abstract void build()
 
-  public abstract void archive() {}
+  public abstract void archive()
 
-  public abstract void buildPackage() {}
+  public abstract void buildPackage()
 
-  public abstract void publish() {}
+  public abstract void publish()
 
-  protected abstract void builderSetup() {}
+  protected abstract void builderSetup()
 
-  protected abstract void preBuild(lvVersion) {}
+  protected abstract void preBuild(lvVersion)
 
-  protected abstract void postBuild(lvVersion) {}
+  protected abstract void postBuild(lvVersion)
 
 }
