@@ -32,7 +32,7 @@ class Pipeline implements Serializable {
       stages << new Cleanup(script)
     }
 
-    def buildGroovyPipeline() {
+    def buildFullPipeline() {
       withInitialCleanStage()
       withCheckoutStage()
       withCleanupStage()
@@ -40,7 +40,11 @@ class Pipeline implements Serializable {
       return new Pipeline(this)
     }
 
-    def buildNiBuildPipeline() {
+    def buildTestOnlyPipeline() {
+      withInitialCleanStage()
+      withCheckoutStage()
+      withCleanupStage()
+
       return new Pipeline(this)
     }
   }
