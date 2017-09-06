@@ -1,13 +1,28 @@
-class GroovyBuilder extends CommonBuilder {
+class GroovyBuilder implements Serializable {
 
   private static final String EXPORT_DIR = 'export'
 
+  private final def script
+  private final BuildInformation buildInformation
   private String archiveLocation
   private def buildSteps
 
   public GroovyBuilder(script, buildInformation, buildStepsLocation) {
     super(script, buildInformation)
 	loadBuildSteps(buildStepsLocation)
+  }
+
+  public void setup() {
+    // Ensure the VIs for executing scripts are in the workspace
+    script.syncCommonbuild()
+	
+	script.echo 'Syncing dependencies.'
+    buildSteps.syncDependencies()
+  }
+
+  public void runUnitTests() {
+    //Make sure correct dependencies are loaded to run unit tests
+    preBuild(buildInformation.sourceVersion)
   }
 
   public void codegen() {
@@ -46,25 +61,20 @@ class GroovyBuilder extends CommonBuilder {
     script.noop()
   }
 
-  protected void builderSetup() {
-    script.echo 'Syncing dependencies.'
-    buildSteps.syncDependencies()
-  }
-
   private void loadBuildSteps(buildStepsLocation) {
     def component = script.getComponentParts()['repo']
     script.echo "Loading build steps from $component/$buildStepsLocation"
     buildSteps = script.load buildStepsLocation
   }
 
-  protected void preBuild(lvVersion) {
+  private void preBuild(lvVersion) {
     script.echo "Preparing source for execution with LV $lvVersion..."
     buildSteps.prepareSource(lvVersion)
     script.echo "Applying build configuration to LV $lvVersion..."
     buildSteps.setupLV(lvVersion)
   }
 
-  protected void postBuild(lvVersion) {
+  private void postBuild(lvVersion) {
     //Move build output to versioned directory
     script.bat "move \"${buildSteps.BUILT_DIR}\" \"$EXPORT_DIR\\$lvVersion\""
     script.echo "Build for LV Version $lvVersion complete."

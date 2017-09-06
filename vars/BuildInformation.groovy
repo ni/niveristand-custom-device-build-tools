@@ -55,8 +55,8 @@ class BuildInformation implements Serializable {
     script.echo printString
   }
   
-  public PipelineBuilder createBuilder(script) {
-    PipelineBuilder builder
+  public def createBuilder(script) {
+    def builder
     if (buildType == BuildType.Groovy) {
       builder = new GroovyBuilder(script, this, buildStepsLocation)
     } else {
