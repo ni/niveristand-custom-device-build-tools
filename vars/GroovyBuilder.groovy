@@ -5,9 +5,14 @@ class GroovyBuilder extends CommonBuilder {
   private String archiveLocation
   private def buildSteps
 
-  public GroovyBuilder(script, buildInformation, buildStepsLocation) {
+  public GroovyBuilder(script, buildInformation) {
     super(script, buildInformation)
-	loadBuildSteps(buildStepsLocation)
+  }
+
+  public void loadBuildSteps(buildStepsLocation) {
+    def component = script.getComponentParts()['repo']
+    script.echo "Loading build steps from $component/$buildStepsLocation"
+    buildSteps = script.load buildStepsLocation
   }
 
   public void codegen() {
@@ -49,12 +54,6 @@ class GroovyBuilder extends CommonBuilder {
   protected void builderSetup() {
     script.echo 'Syncing dependencies.'
     buildSteps.syncDependencies()
-  }
-
-  private void loadBuildSteps(buildStepsLocation) {
-    def component = script.getComponentParts()['repo']
-    script.echo "Loading build steps from $component/$buildStepsLocation"
-    buildSteps = script.load buildStepsLocation
   }
 
   protected void preBuild(lvVersion) {

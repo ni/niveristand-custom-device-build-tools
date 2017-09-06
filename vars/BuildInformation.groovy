@@ -58,10 +58,12 @@ class BuildInformation implements Serializable {
   public def createBuilder(script) {
     def builder
     if (buildType == BuildType.Groovy) {
-      builder = new GroovyBuilder(script, this, buildStepsLocation)
+      builder = new GroovyBuilder(script, this)
+	  builder.loadBuildSteps(buildStepsLocation)
     } else {
       script.echo "Build type $buildType not implemented. Using Groovy build."
-      builder = new GroovyBuilder(script, this, buildStepsLocation)
+      builder = new GroovyBuilder(script, this)
+	  builder.loadBuildSteps(buildStepsLocation)
     }
     return builder
   }
