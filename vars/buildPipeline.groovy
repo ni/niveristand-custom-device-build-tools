@@ -15,7 +15,7 @@ def call(BuildInformation buildInformation) {
   node(buildInformation.nodeLabel){
     echo "Environment before build:"
     bat 'set'
-    PipelineBuilder builder
+    def builder
     
     stage('Initial Clean'){
       echo 'Cleaning the workspace before building.'
