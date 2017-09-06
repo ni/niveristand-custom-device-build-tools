@@ -7,7 +7,10 @@ class GroovyBuilder extends CommonBuilder {
 
   public GroovyBuilder(script, buildInformation) {
     super(script, buildInformation)
-	loadBuildSteps()
+	def component = script.getComponentParts()['repo']
+	def buildStepsLocation = buildInformation.buildStepsLocation
+    script.echo "Loading build steps from $component/$buildStepsLocation"
+    buildSteps = script.load buildStepsLocation
   }
 
   public void codegen() {
@@ -62,13 +65,6 @@ class GroovyBuilder extends CommonBuilder {
     //Move build output to versioned directory
     script.bat "move \"${buildSteps.BUILT_DIR}\" \"$EXPORT_DIR\\$lvVersion\""
     script.echo "Build for LV Version $lvVersion complete."
-  }
-
-  private void loadBuildSteps() {
-    def component = script.getComponentParts()['repo']
-	def buildStepsLocation = buildInformation.buildStepsLocation
-    script.echo "Loading build steps from $component/$buildStepsLocation"
-    buildSteps = script.load buildStepsLocation
   }
 
   private void setArchiveVar(archiveLocation) {
