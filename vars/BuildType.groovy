@@ -1,3 +1,3 @@
 enum BuildType {
-    Pipeline, NiBuild
+    Groovy, NiBuild
   }
