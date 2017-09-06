@@ -52,7 +52,7 @@ class Pipeline implements Serializable {
 
   void execute() {
 
-    node('dcaf') {
+    script.node('dcaf') {
       for (Stage stage : stages) {
         try {
           stage.execute()
