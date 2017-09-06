@@ -7,8 +7,10 @@ class GroovyBuilder extends CommonBuilder {
 
   public GroovyBuilder(script, buildInformation) {
     super(script, buildInformation)
-	def component = script.getComponentParts()['repo']
-	def buildStepsLocation = buildInformation.buildStepsLocation
+  }
+
+  public void loadBuildSteps(buildStepsLocation) {
+  	def component = script.getComponentParts()['repo']
     script.echo "Loading build steps from $component/$buildStepsLocation"
     buildSteps = script.load buildStepsLocation
   }
