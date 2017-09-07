@@ -12,6 +12,5 @@ class BuildExecutor implements Serializable {
   
   void execute() {
     buildInformation.printInformation(script)
-    ni.vsbuild.nipm.Pipeline.builder(script).buildFullPipeline().execute()
   }
 }
