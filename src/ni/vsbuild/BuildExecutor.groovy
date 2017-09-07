@@ -5,7 +5,7 @@ class BuildExecutor implements Serializable {
   private final def script
   private final BuildInformation buildInformation
 
-  BuildExecutor(script) {
+  BuildExecutor(script, buildInformation) {
     this.script = script
     this.buildInformation = buildInformation
   }
