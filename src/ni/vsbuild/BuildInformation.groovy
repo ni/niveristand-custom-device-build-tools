@@ -8,45 +8,48 @@ class BuildInformation implements Serializable {
   public final String sourceVersion
   public final List<String> lvVersions
   public final List<String> dependencies
-  public final BuildType buildType
+  public final PackageType packageType
   public final String buildStepsLocation
+  public final boolean officiallySupported
   
-  public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, List<String> dependencies, String buildStepsLocation, BuildType buildType) {
+  public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, List<String> dependencies, String buildStepsLocation, PackageType packageType, boolean officiallySupported) {
     this.nodeLabel = nodeLabel
     this.sourceVersion = sourceVersion
     this.lvVersions = lvVersions
     this.dependencies = dependencies
     this.buildStepsLocation = buildStepsLocation
-    this.buildType = buildType
+    this.packageType = packageType
+    this.officiallySupported = officiallySupported
   }
   
-  public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, List<String> dependencies, BuildType buildType) {
-    this(nodeLabel, sourceVersion, lvVersions, dependencies, DEFAULT_BUILD_STEPS_LOCATION, buildType)
+  public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, List<String> dependencies, PackageType packageType, officiallySupported) {
+    this(nodeLabel, sourceVersion, lvVersions, dependencies, DEFAULT_BUILD_STEPS_LOCATION, packageType, officiallySupported)
   }
   
-  public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, String buildStepsLocation, BuildType buildType) {
-    this(nodeLabel, sourceVersion, lvVersions, [], buildStepsLocation, buildType)
+  public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, String buildStepsLocation, PackageType packageType, officiallySupported) {
+    this(nodeLabel, sourceVersion, lvVersions, [], buildStepsLocation, packageType, officiallySupported)
   }
   
-  public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, List<String> dependencies) {
-    this(nodeLabel, sourceVersion, lvVersions, dependencies, DEFAULT_BUILD_STEPS_LOCATION, BuildType.Groovy)
+  public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, List<String> dependencies, officiallySupported) {
+    this(nodeLabel, sourceVersion, lvVersions, dependencies, DEFAULT_BUILD_STEPS_LOCATION, PackageType.NIPM, officiallySupported)
   }
   
-  public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, String buildStepsLocation) {
-    this(nodeLabel, sourceVersion, lvVersions, [], buildStepsLocation, BuildType.Groovy)
+  public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, String buildStepsLocation, officiallySupported) {
+    this(nodeLabel, sourceVersion, lvVersions, [], buildStepsLocation, PackageType.NIPM, officiallySupported)
   }
   
-  public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, BuildType buildType) {
-    this(nodeLabel, sourceVersion, lvVersions, [], DEFAULT_BUILD_STEPS_LOCATION, buildType)
+  public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, PackageType packageType, officiallySupported) {
+    this(nodeLabel, sourceVersion, lvVersions, [], DEFAULT_BUILD_STEPS_LOCATION, packageType, officiallySupported)
   }
   
-  public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions) {
-    this(nodeLabel, sourceVersion, lvVersions, [], DEFAULT_BUILD_STEPS_LOCATION, BuildType.Groovy)
+  public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, boolean officiallySupported) {
+    this(nodeLabel, sourceVersion, lvVersions, [], DEFAULT_BUILD_STEPS_LOCATION, PackageType.NIPM, officiallySupported)
   }
   
   public void printInformation(script) {
     def printString = """Building using the following BuildInformation:
-      Build type: $buildType
+      Official support: $officiallySupported
+      Package type: $packageType
       Node label: $nodeLabel
       Source version: $sourceVersion
       LV versions to build: $lvVersions
