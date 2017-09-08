@@ -40,37 +40,41 @@ class Pipeline implements Serializable {
     }
     
     def withBuildStage() {
+      stages << new Build(script, buildInformation)
     }
     
     def withArchiveStage() {
+      stages << new Archive(script, buildInformation)
     }
     
     def withPackageStage() {
+      stages << new PackageBuild(script, buildInformation)
     }
     
     def withPublishStage() {
+      stages << new Publsh(script, buildInformation)
     }
 
     def withCleanupStage() {
       stages << new Cleanup(script)
     }
 
-    def addTestStages() {
+    def withTestStages() {
       withInitialCleanStage()
       withCheckoutStage()
       withSetupStage()
       withUnitTestStage()
     }
     
-    def addBuildStages() {
+    def withBuildStages() {
       withBuildStage()
       withArchiveStage()
       withPackageStage()
     }
     
     def buildPipeline() {
-      addTestStages()
-      addBuildStages()
+      withTestStages()
+      withBuildStages()
       
       if(script.env['BRANCH_NAME'] == 'master') {
         withPublishStage()
