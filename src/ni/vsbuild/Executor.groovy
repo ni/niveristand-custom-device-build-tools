@@ -8,7 +8,7 @@ class Executor implements Serializable {
     def builder = nipm.Pipeline.builder(script)
     def pipeline
     
-    if(!buildInfo.officiallySupported) {
+    if(!(buildInfo.officiallySupported)) {
       pipeline = builder.buildFullPipeline()
     } else {
       pipeline = builder.buildTestOnlyPipeline()
