@@ -39,6 +39,10 @@ class Pipeline implements Serializable {
       stages << new UnitTest(script, buildInformation)
     }
     
+    def withCodegenStage() {
+      stages << new Codegen(script, buildInformation)
+    }
+    
     def withBuildStage() {
       stages << new Build(script, buildInformation)
     }
@@ -67,8 +71,13 @@ class Pipeline implements Serializable {
     }
     
     def withBuildStages() {
+      withCodegenStage()
       withBuildStage()
-      withArchiveStage()
+      
+      if(!buildInformation.officiallySupported) {
+        withArchiveStage()
+      }
+      
       withPackageStage()
     }
     
