@@ -36,6 +36,7 @@ class Pipeline implements Serializable {
     }
     
     def withUnitTestStage() {
+      stages << new UnitTest(script, buildInformation)
     }
     
     def withBuildStage() {
