@@ -71,6 +71,10 @@ class Pipeline implements Serializable {
       addTestStages()
       addBuildStages()
       
+      if(script.env['BRANCH_NAME'] == 'master') {
+        withPublishStage()
+      }
+      
       withCleanupStage()
       
       return new Pipeline(this)
