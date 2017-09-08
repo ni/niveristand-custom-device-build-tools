@@ -1,5 +1,6 @@
 package ni.vsbuild.nipm
 
+import ni.vsbuild.BuildInformation
 import ni.vsbuild.shared.stages.*
 
 class Pipeline implements Serializable {
@@ -7,17 +8,19 @@ class Pipeline implements Serializable {
   def script
   def stages = []
 
-  static builder(script) {
-    return new Builder(script)
+  static builder(script, BuildInformation buildInformation) {
+    return new Builder(script, buildInformation)
   }
 
   static class Builder implements Serializable {
 
     def script
     def stages = []
+    BuildInformation buildInformation
 
-    Builder(def script) {
+    Builder(def script, BuildInformation buildInformation) {
       this.script = script
+      this.buildInformation = buildInformation
     }
 
     def withInitialCleanStage() {
@@ -27,26 +30,53 @@ class Pipeline implements Serializable {
     def withCheckoutStage() {
       stages << new Checkout(script)
     }
+    
+    def withSetupStage() {
+      stages << new Setup(script, buildInformation)
+    }
+    
+    def withUnitTestStage() {
+    }
+    
+    def withBuildStage() {
+    }
+    
+    def withArchiveStage() {
+    }
+    
+    def withPackageStage() {
+    }
+    
+    def withPublishStage() {
+    }
 
     def withCleanupStage() {
       stages << new Cleanup(script)
     }
 
-    def buildFullPipeline() {
-      script.echo "Building full pipeline."
+    def addTestStages() {
       withInitialCleanStage()
       withCheckoutStage()
-      withCleanupStage()
-
-      return new Pipeline(this)
+      withSetupStage()
+      withUnitTestStage()
     }
-
-    def buildTestOnlyPipeline() {
-      script.echo "Building test only pipeline."
-      withInitialCleanStage()
-      withCheckoutStage()
+    
+    def addBuildStages() {
+      withBuildStage()
+      withArchiveStage()
+      withPackageStage()
+    }
+    
+    def buildPipeline() {
+      addTestStages()
+      addBuildStages()
+      
+      if(${env.BRANCH_NAME} == 'master') {
+        withPublishStage()
+      }
+      
       withCleanupStage()
-
+      
       return new Pipeline(this)
     }
   }
