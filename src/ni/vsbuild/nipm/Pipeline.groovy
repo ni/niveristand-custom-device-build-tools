@@ -33,6 +33,7 @@ class Pipeline implements Serializable {
     }
 
     def buildFullPipeline() {
+      script.echo "Building full pipeline."
       withInitialCleanStage()
       withCheckoutStage()
       withCleanupStage()
@@ -41,6 +42,7 @@ class Pipeline implements Serializable {
     }
 
     def buildTestOnlyPipeline() {
+      script.echo "Building test only pipeline."
       withInitialCleanStage()
       withCheckoutStage()
       withCleanupStage()
