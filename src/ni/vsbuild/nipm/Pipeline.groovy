@@ -52,7 +52,7 @@ class Pipeline implements Serializable {
     }
     
     def withPublishStage() {
-      stages << new Publsh(script, buildInformation)
+      stages << new Publish(script, buildInformation)
     }
 
     def withCleanupStage() {
