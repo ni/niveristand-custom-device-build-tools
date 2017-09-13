@@ -10,7 +10,7 @@ class Archive extends AbstractStage {
   void execute(executor) {
     script.stage(stageName) {
       script.echo 'Archiving build...'
-      //executor.archive()
+      executor.archive()
       script.echo 'Archive Complete.'
     }
   }
