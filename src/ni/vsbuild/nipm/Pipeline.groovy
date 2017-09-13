@@ -1,6 +1,5 @@
 package ni.vsbuild.nipm
 
-import ni.vsubuild.BuildExecutor
 import ni.vsbuild.BuildInformation
 import ni.vsbuild.shared.stages.*
 
@@ -19,7 +18,7 @@ class Pipeline implements Serializable {
       def script
       def stages = []
       BuildInformation buildInformation
-      BuildExecutor executor
+      def executor
 
       Builder(def script, BuildInformation buildInformation) {
          this.script = script
