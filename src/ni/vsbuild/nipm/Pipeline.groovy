@@ -112,7 +112,7 @@ class Pipeline implements Serializable {
          
          // This load must happen after the checkout stage, but before any
          // stage that requires the build steps to be loaded
-         def executor = buildInformation.createExecutor(script)
+         executor = buildInformation.createExecutor(script)
          
          executeStages(buildStages, executor)
       }
