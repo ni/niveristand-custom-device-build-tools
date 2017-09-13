@@ -23,7 +23,6 @@ class Pipeline implements Serializable {
       Builder(def script, BuildInformation buildInformation) {
          this.script = script
          this.buildInformation = buildInformation
-         executor = buildInformation.createExecutor()
       }
 
       def withInitialCleanStage() {
@@ -69,6 +68,9 @@ class Pipeline implements Serializable {
       def buildPipeline() {
          withInitialCleanStage()
          withCheckoutStage()
+         
+         executor = buildInformation.createExecutor()
+         
          withSetupStage()
          
          if(buildInformation.officiallySupported) {
