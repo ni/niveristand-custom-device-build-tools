@@ -12,7 +12,7 @@ abstract class AbstractBuildExecutor implements BuildExecutor, Serializable {
    }
 
    public void loadBuildSteps(buildStepsLocation) {
-      def component = script.getComponentParts()['repo]
+      def component = script.getComponentParts()['repo']
       script.echo "Loading build steps from $component/$buildStepsLocation"
       buildSteps = script.load buildStepsLocation
    }
