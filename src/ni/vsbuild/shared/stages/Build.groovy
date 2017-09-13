@@ -10,7 +10,7 @@ class Build extends AbstractStage {
   void execute(executor) {
     script.stage(stageName) {
       script.echo 'Starting build...'
-      //executor.build()
+      executor.build()
       script.echo 'Build Complete.'
     }
   }

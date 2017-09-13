@@ -10,7 +10,7 @@ class Codegen extends AbstractStage {
   void execute(executor) {
     script.stage(stageName) {
       script.echo 'Generating code prior to build...'
-      //executor.codegen()
+      executor.codegen()
       script.echo 'Code generation Complete.'
     }
   }

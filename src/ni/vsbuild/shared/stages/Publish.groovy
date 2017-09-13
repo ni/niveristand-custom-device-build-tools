@@ -10,7 +10,7 @@ class Publish extends AbstractStage {
   void execute(executor) {
     script.stage(stageName) {
       script.echo 'Publishing package...'
-      //executor.publish()
+      executor.publish()
       script.echo 'Publish Complete.'
     }
   }

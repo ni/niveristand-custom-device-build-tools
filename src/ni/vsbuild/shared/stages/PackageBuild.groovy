@@ -10,7 +10,7 @@ class PackageBuild extends AbstractStage {
   void execute(executor) {
     script.stage(stageName) {
       script.echo 'Building package...'
-      //executor.buildPackage()
+      executor.buildPackage()
       script.echo 'Package Complete.'
     }
   }

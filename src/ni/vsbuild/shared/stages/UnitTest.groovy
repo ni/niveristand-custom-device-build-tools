@@ -10,7 +10,7 @@ class UnitTest extends AbstractStage {
   void execute(executor) {
     script.stage(stageName) {
       script.echo 'Running unit tests...'
-      //executor.runUnitTests()
+      executor.runUnitTests()
       script.echo 'Unit tests Complete.'
     }
   }
