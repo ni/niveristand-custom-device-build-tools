@@ -59,7 +59,7 @@ class BuildInformation implements Serializable {
       script.echo printString
    }
 
-   public BuildExecutor createExecutor() {
+   public BuildExecutor createExecutor(script) {
       BuildExecutor executor
       
       if (officiallySupported) {

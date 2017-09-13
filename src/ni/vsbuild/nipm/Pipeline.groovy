@@ -69,7 +69,7 @@ class Pipeline implements Serializable {
          withInitialCleanStage()
          withCheckoutStage()
          
-         executor = buildInformation.createExecutor()
+         executor = buildInformation.createExecutor(script)
          
          withSetupStage()
          
