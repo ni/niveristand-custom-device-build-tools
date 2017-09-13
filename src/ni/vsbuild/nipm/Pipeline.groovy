@@ -1,5 +1,6 @@
 package ni.vsbuild.nipm
 
+import ni.vsubuild.BuildExecutor
 import ni.vsbuild.BuildInformation
 import ni.vsbuild.shared.stages.*
 
@@ -18,10 +19,12 @@ class Pipeline implements Serializable {
       def script
       def stages = []
       BuildInformation buildInformation
+      BuildExecutor executor
 
       Builder(def script, BuildInformation buildInformation) {
          this.script = script
          this.buildInformation = buildInformation
+         executor = buildInformation.createExecutor()
       }
 
       def withInitialCleanStage() {
@@ -33,31 +36,31 @@ class Pipeline implements Serializable {
       }
     
       def withSetupStage() {
-         stages << new Setup(script, buildInformation)
+         stages << new Setup(script, executor)
       }
       
       def withUnitTestStage() {
-         stages << new UnitTest(script, buildInformation)
+         stages << new UnitTest(script, executor)
       }
       
       def withCodegenStage() {
-         stages << new Codegen(script, buildInformation)
+         stages << new Codegen(script, executor)
       }
       
       def withBuildStage() {
-         stages << new Build(script, buildInformation)
+         stages << new Build(script, executor)
       }
       
       def withArchiveStage() {
-         stages << new Archive(script, buildInformation)
+         stages << new Archive(script, executor)
       }
       
       def withPackageStage() {
-         stages << new PackageBuild(script, buildInformation)
+         stages << new PackageBuild(script, executor)
       }
       
       def withPublishStage() {
-         stages << new Publish(script, buildInformation)
+         stages << new Publish(script, executor)
       }
       
       def withCleanupStage() {
