@@ -10,6 +10,6 @@ abstract class AbstractStage implements Stage {
 	this.stageName = stageName
   }
 
-  abstract void execute()
+  abstract void execute(executor)
 
 }

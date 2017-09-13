@@ -1,19 +1,16 @@
 package ni.vsbuild.shared.stages
 
 class Codegen extends AbstractStage {
-
-  private Object buildExecutor
   
-  Codegen(Object script, Object buildExecutor) {
+  Codegen(Object script) {
     super(script, 'Code Generation')
-    this.buildExecutor = buildExecutor
   }
 
   @Override
-  void execute() {
+  void execute(executor) {
     script.stage(stageName) {
       script.echo 'Generating code prior to build...'
-      //buildExecutor.codegen()
+      //executor.codegen()
       script.echo 'Code generation Complete.'
     }
   }

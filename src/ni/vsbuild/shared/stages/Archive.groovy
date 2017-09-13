@@ -1,19 +1,16 @@
 package ni.vsbuild.shared.stages
 
 class Archive extends AbstractStage {
-
-  private Object buildExecutor
   
-  Archive(Object script, Object buildExecutor) {
+  Archive(Object script) {
     super(script, 'Archive')
-    this.buildExecutor = buildExecutor
   }
 
   @Override
-  void execute() {
+  void execute(executor) {
     script.stage(stageName) {
       script.echo 'Archiving build...'
-      //buildExecutor.archive()
+      //executor.archive()
       script.echo 'Archive Complete.'
     }
   }

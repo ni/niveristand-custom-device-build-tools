@@ -1,19 +1,16 @@
 package ni.vsbuild.shared.stages
 
 class UnitTest extends AbstractStage {
-
-  private Object buildExecutor
   
-  UnitTest(Object script, Object buildExecutor) {
+  UnitTest(Object script) {
     super(script, 'Unit Testing')
-    this.buildExecutor = buildExecutor
   }
 
   @Override
-  void execute() {
+  void execute(executor) {
     script.stage(stageName) {
       script.echo 'Running unit tests...'
-      //buildExecutor.runUnitTests()
+      //executor.runUnitTests()
       script.echo 'Unit tests Complete.'
     }
   }

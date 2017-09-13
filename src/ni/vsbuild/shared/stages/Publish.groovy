@@ -1,19 +1,16 @@
 package ni.vsbuild.shared.stages
 
 class Publish extends AbstractStage {
-
-  private Object buildExecutor
   
-  Publish(Object script, Object buildExecutor) {
+  Publish(Object script) {
     super(script, 'Publish')
-    this.buildExecutor = buildExecutor
   }
 
   @Override
-  void execute() {
+  void execute(executor) {
     script.stage(stageName) {
       script.echo 'Publishing package...'
-      //buildExecutor.publish()
+      //executor.publish()
       script.echo 'Publish Complete.'
     }
   }

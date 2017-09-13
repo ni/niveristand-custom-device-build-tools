@@ -1,19 +1,16 @@
 package ni.vsbuild.shared.stages
 
 class Setup extends AbstractStage {
-
-  private Object buildExecutor
   
-  Setup(Object script, Object buildExecutor) {
+  Setup(Object script) {
     super(script, 'Pre-Build Setup')
-    this.buildExecutor = buildExecutor
   }
 
   @Override
-  void execute() {
+  void execute(executor) {
     script.stage(stageName) {
       script.echo 'Setting up build environment...'
-      //buildExecutor.setup()
+      //executor.setup()
       script.echo 'Setup Complete.'
     }
   }

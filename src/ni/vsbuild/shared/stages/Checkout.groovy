@@ -7,7 +7,7 @@ class Checkout extends AbstractStage {
   }
 
   @Override
-  void execute() {
+  void execute(executor) {
     script.stage(stageName) {
       script.echo 'Attempting to get source from repo.'
       script.timeout(time: 5, unit: 'MINUTES'){

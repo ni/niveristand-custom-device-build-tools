@@ -6,7 +6,8 @@ import ni.vsbuild.shared.stages.*
 class Pipeline implements Serializable {
 
    def script
-   def stages = []
+   def prebuildStages = []
+   def buildStages = []
    BuildInformation buildInformation
 
    static builder(script, BuildInformation buildInformation) {
@@ -16,9 +17,9 @@ class Pipeline implements Serializable {
    static class Builder implements Serializable {
 
       def script
-      def stages = []
+      def prebuildStages = []
+      def buildStages = []
       BuildInformation buildInformation
-      def executor
 
       Builder(def script, BuildInformation buildInformation) {
          this.script = script
@@ -26,50 +27,48 @@ class Pipeline implements Serializable {
       }
 
       def withInitialCleanStage() {
-         stages << new InitialClean(script)
+         prebuildStages << new InitialClean(script)
       }
 
       def withCheckoutStage() {
-         stages << new Checkout(script)
+         prebuildStages << new Checkout(script)
       }
     
       def withSetupStage() {
-         stages << new Setup(script, executor)
+         buildStages << new Setup(script)
       }
       
       def withUnitTestStage() {
-         stages << new UnitTest(script, executor)
+         buildStages << new UnitTest(script)
       }
       
       def withCodegenStage() {
-         stages << new Codegen(script, executor)
+         buildStages << new Codegen(script)
       }
       
       def withBuildStage() {
-         stages << new Build(script, executor)
+         buildStages << new Build(script)
       }
       
       def withArchiveStage() {
-         stages << new Archive(script, executor)
+         buildStages << new Archive(script)
       }
       
       def withPackageStage() {
-         stages << new PackageBuild(script, executor)
+         buildStages << new PackageBuild(script)
       }
       
       def withPublishStage() {
-         stages << new Publish(script, executor)
+         buildStages << new Publish(script)
       }
       
       def withCleanupStage() {
-         stages << new Cleanup(script)
+         buildStages << new Cleanup(script)
       }
       
       def buildPipeline() {
          withInitialCleanStage()
          withCheckoutStage()
-         
-         executor = buildInformation.createExecutor(script)
          
          withSetupStage()
          
@@ -98,20 +97,33 @@ class Pipeline implements Serializable {
 
    private Pipeline(Builder builder) {
       this.script = builder.script
-      this.stages = builder.stages
+      this.prebuildStages = builder.prebuildStages
+      this.buildStages = builder.buildStages
       this.buildInformation = builder.buildInformation
    }
 
    void execute() {
 
       script.node(buildInformation.nodeLabel) {
-         for (Stage stage : stages) {
-            try {
-               stage.execute()
-            } catch (err) {
-               script.currentBuild.result = "FAILURE"
-               script.error "Build failed: ${err.getMessage()}"
-            }
+         def executor = buildInformation.createExecutor(script)
+         
+         executeStages(prebuildStages, executor)
+         
+         // This load must happen after the checkout stage, but before any
+         // stage that requires the build steps to be loaded
+         def executor = buildInformation.createExecutor(script)
+         
+         executeStages(buildStages, executor)
+      }
+   }
+   
+   private void executeStages(stages, executor) {
+      for (Stage stage : stages) {
+         try {
+            stage.execute(executor)
+         } catch (err) {
+            script.currentBuild.result = "FAILURE"
+            script.error "Build failed: ${err.getMessage()}"
          }
       }
    }

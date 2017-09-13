@@ -1,19 +1,16 @@
 package ni.vsbuild.shared.stages
 
 class Build extends AbstractStage {
-
-  private Object buildExecutor
   
-  Build(Object script, Object buildExecutor) {
+  Build(Object script) {
     super(script, 'Build')
-    this.buildExecutor = buildExecutor
   }
 
   @Override
-  void execute() {
+  void execute(executor) {
     script.stage(stageName) {
       script.echo 'Starting build...'
-      //buildExecutor.build()
+      //executor.build()
       script.echo 'Build Complete.'
     }
   }
