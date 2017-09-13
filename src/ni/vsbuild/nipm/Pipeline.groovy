@@ -106,6 +106,8 @@ class Pipeline implements Serializable {
 
       script.node(buildInformation.nodeLabel) {
          
+         def executor
+         
          executeStages(prebuildStages, executor)
          
          // This load must happen after the checkout stage, but before any
