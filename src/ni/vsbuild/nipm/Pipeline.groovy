@@ -104,6 +104,9 @@ class Pipeline implements Serializable {
 
    void execute() {
 
+      // build dependencies before starting this pipeline
+      buildDependencies(buildInformation)
+      
       script.node(buildInformation.nodeLabel) {
          
          def executor
