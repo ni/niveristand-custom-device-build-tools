@@ -18,7 +18,7 @@ abstract class AbstractBuildExecutor implements BuildExecutor, Serializable {
    }
 
    public void setup() {
-      script.syncCommonbuild()
+      script.cloneCommonbuild()
    }
 
    public void runUnitTests() {

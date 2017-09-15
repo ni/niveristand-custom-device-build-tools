@@ -3,6 +3,6 @@ def call(){
   
   def organization = getComponentParts()['organization']
   def branch = env['library.vs-common-build.version']
-  commonbuildDir = syncRepo("https://github.com/$organization/commonbuild", branch)
+  commonbuildDir = cloneRepo("https://github.com/$organization/commonbuild", branch)
   return commonbuildDir
 }
