@@ -1,3 +1,0 @@
-enum BuildType {
-    Groovy, NiBuild
-  }
