@@ -1,7 +1,7 @@
 package ni.vsbuild
 
 class BuildInformation implements Serializable {
-  
+
    private static final String DEFAULT_BUILD_STEPS_LOCATION = 'vars/buildSteps.groovy'
 
    public final String nodeLabel

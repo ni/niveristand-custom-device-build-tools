@@ -2,14 +2,14 @@ package ni.vsbuild.shared.stages
 
 abstract class AbstractStage implements Stage {
 
-  def stageName
-  def script
+   def stageName
+   def script
 
-  AbstractStage(script, String stageName) {
-    this.script = script
-	this.stageName = stageName
-  }
+   AbstractStage(script, String stageName) {
+      this.script = script
+      this.stageName = stageName
+   }
 
-  abstract void execute(executor)
+   abstract void execute(executor)
 
 }
