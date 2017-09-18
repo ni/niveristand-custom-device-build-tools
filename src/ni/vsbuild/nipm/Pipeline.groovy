@@ -1,7 +1,7 @@
 package ni.vsbuild.nipm
 
 import ni.vsbuild.BuildInformation
-import ni.vsbuild.shared.stages.*
+import ni.vsbuild.stages.*
 
 class Pipeline implements Serializable {
 

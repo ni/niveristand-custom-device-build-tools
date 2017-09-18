@@ -1,4 +1,4 @@
-package ni.vsbuild.shared.stages
+package ni.vsbuild.stages
 
 abstract class AbstractStage implements Stage {
 

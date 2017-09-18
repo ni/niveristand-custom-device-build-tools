@@ -1,4 +1,4 @@
-package ni.vsbuild.shared.stages
+package ni.vsbuild.stages
 
 class Checkout extends AbstractStage {
 
