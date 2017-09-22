@@ -121,6 +121,25 @@ class Pipeline implements Serializable {
       }
    }
    
+   void execute(lvVersion) {
+
+      // build dependencies before starting this pipeline
+      script.buildDependencies(buildInformation)
+      
+      script.node(buildInformation.nodeLabel) {
+         
+         def executor
+         
+         executeStages(prebuildStages, executor)
+         
+         // This load must happen after the checkout stage, but before any
+         // stage that requires the build steps to be loaded
+         executor = buildInformation.createExecutor(script, lvVersion)
+         
+         executeStages(buildStages, executor)
+      }
+   }
+   
    void executeParallel() {
       def builders = [:]
       
