@@ -7,11 +7,9 @@ class Publish extends AbstractStage {
    }
 
    @Override
-   void execute(executor) {
-      script.stage(stageName) {
-         script.echo 'Publishing package...'
-         executor.publish()
-         script.echo 'Publish Complete.'
-      }
+   void executeStage(executor) {
+      script.echo 'Publishing package...'
+      executor.publish()
+      script.echo 'Publish Complete.'
    }
 }
