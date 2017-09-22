@@ -27,7 +27,7 @@ class BuildExecutor extends AbstractBuildExecutor {
 
    public void archive() {
       archiveLocation = "${buildSteps.ARCHIVE_DIR}\\$EXPORT_DIR\\"
-         + "${env.BRANCH_NAME}\\Build ${script.currentBuild.number}"
+         + "${script.env.BRANCH_NAME}\\Build ${script.currentBuild.number}"
       
       script.bat "xcopy \"$EXPORT_DIR\" \"$archiveLocation\" /e /i"
       setArchiveVar(archiveLocation)
