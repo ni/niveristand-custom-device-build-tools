@@ -22,6 +22,8 @@ class PipelineExecutor implements Serializable {
          }
       }
       
-      script.parallel builders
+      script.stage ('CI Build') {
+         script.parallel builders
+      }
    }
 }
