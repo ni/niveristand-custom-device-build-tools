@@ -121,6 +121,28 @@ class Pipeline implements Serializable {
       }
    }
    
+   void executeParallel() {
+      def builders = [:]
+      
+      for (String version : buildInformation.lvVersions) {
+         builders[version] = {
+            script.buildDependencies(buildInformation)
+            
+            script.node(buildInformation.nodeLabel) {
+               def executor
+               
+               executeStages(prebuildStages, executor)
+               
+               executor = buildInformation.createExecutor(script)
+               
+               executeStages(buildStages, executor)
+            }
+         }
+      }
+      
+      parallel builders
+   }
+   
    private void executeStages(stages, executor) {
       for (Stage stage : stages) {
          try {
