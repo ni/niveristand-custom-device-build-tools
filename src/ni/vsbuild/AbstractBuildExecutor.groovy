@@ -4,9 +4,8 @@ abstract class AbstractBuildExecutor implements BuildExecutor, Serializable {
 
    protected final def script
    protected final BuildInformation buildInformation
+   protected final String lvVersion
    protected def buildSteps
-   
-   final String lvVersion
 
    public AbstractBuildExecutor(script, BuildInformation buildInformation, String lvVersion) {
       this.script = script

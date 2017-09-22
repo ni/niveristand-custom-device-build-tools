@@ -7,9 +7,11 @@ class UnitTest extends AbstractStage {
    }
 
    @Override
-   void executeStage(executor) {
-      script.echo 'Running unit tests...'
-      executor.runUnitTests()
-      script.echo 'Unit tests Complete.'
+   void execute(executor) {
+      script.stage(stageName) {
+         script.echo 'Running unit tests...'
+         executor.runUnitTests()
+         script.echo 'Unit tests Complete.'
+      }
    }
 }

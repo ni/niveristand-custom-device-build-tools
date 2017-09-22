@@ -7,9 +7,11 @@ class Archive extends AbstractStage {
    }
 
    @Override
-   void executeStage(executor) {
-      script.echo 'Archiving build...'
-      executor.archive()
-      script.echo 'Archive Complete.'
+   void execute(executor) {
+      script.stage(stageName) {
+         script.echo 'Archiving build...'
+         executor.archive()
+         script.echo 'Archive Complete.'
+      }
    }
 }

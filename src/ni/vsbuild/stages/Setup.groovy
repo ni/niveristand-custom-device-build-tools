@@ -7,9 +7,11 @@ class Setup extends AbstractStage {
    }
 
    @Override
-   void executeStage(executor) {
-      script.echo 'Setting up build environment...'
-      executor.setup()
-      script.echo 'Setup Complete.'
+   void execute(executor) {
+      script.stage(stageName) {
+         script.echo 'Setting up build environment...'
+         executor.setup()
+         script.echo 'Setup Complete.'
+      }
    }
 }
