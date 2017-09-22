@@ -28,12 +28,6 @@ class BuildExecutor extends AbstractBuildExecutor {
    public void archive() {
       archiveLocation = "${buildSteps.ARCHIVE_DIR}\\$EXPORT_DIR"
       
-      //don't do this delete with the actual archive
-      //this is for testing purposes only
-      if(script.fileExists(archiveLocation)) {
-         script.bat "rmdir \"$archiveLocation\" /s /q"
-      }
-      
       script.bat "xcopy \"$EXPORT_DIR\" \"$archiveLocation\" /e /i"
       setArchiveVar(archiveLocation)
    }
