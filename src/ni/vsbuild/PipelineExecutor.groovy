@@ -16,23 +16,12 @@ class PipelineExecutor implements Serializable {
       }
       
       for (String version in buildInformation.lvVersions) {
-         def lvVersion = version // need to bind the variable before the closure - can't do 'for (version in lvVersions)
+         def lvVersion = version // need to bind the variable before the closure - can't do 'for (lvVersion in lvVersions)
          builders[lvVersion] = {
             pipeline.execute(lvVersion)
          }
       }
       
       script.parallel builders
-   }
-   
-   static void executeParallel(script, BuildInformation buildInformation) {
-      buildInformation.printInformation(script)
-      
-      if(buildInformation.packageType == PackageType.NIPM) {
-         nipm.Pipeline.builder(script, buildInformation).buildPipeline().executeParallel()
-      } else {
-         script.currentBuild.result = "FAILURE"
-         script.error "Build failed: PackageType ${buildInformation.packageType} is not supported."
-      }
    }
 }
