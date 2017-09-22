@@ -133,7 +133,7 @@ class Pipeline implements Serializable {
                
                executeStages(prebuildStages, executor)
                
-               executor = buildInformation.createExecutor(script)
+               executor = buildInformation.createExecutor(script, version)
                
                executeStages(buildStages, executor)
             }
