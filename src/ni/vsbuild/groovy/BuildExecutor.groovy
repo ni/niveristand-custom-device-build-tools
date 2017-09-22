@@ -13,18 +13,16 @@ class BuildExecutor extends AbstractBuildExecutor {
    }
 
    public void codegen() {
-      buildSteps.codegen(buildInformation.sourceVersion)
+      buildSteps.codegen(lvVersion)
    }
    
    public void build() {
       script.bat "mkdir $EXPORT_DIR"
       
-      buildInformation.lvVersions.each{lvVersion->
-         script.echo "Building for LV Version $lvVersion..."
-         preBuild(lvVersion)
-         buildSteps.build(lvVersion)
-         postBuild(lvVersion)
-      }
+      script.echo "Building for LV Version $lvVersion..."
+      preBuild()
+      buildSteps.build(lvVersion)
+      postBuild()
    }
 
    public void archive() {
@@ -48,7 +46,7 @@ class BuildExecutor extends AbstractBuildExecutor {
       script.noop()
    }
 
-   private void postBuild(lvVersion) {
+   private void postBuild() {
       //Move build output to versioned directory
       script.bat "move \"${buildSteps.BUILT_DIR}\" \"$EXPORT_DIR\\$lvVersion\""
       script.echo "Build for LV Version $lvVersion complete."

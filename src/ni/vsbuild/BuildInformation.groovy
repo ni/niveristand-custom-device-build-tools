@@ -59,13 +59,13 @@ class BuildInformation implements Serializable {
       script.echo printString
    }
 
-   public BuildExecutor createExecutor(script) {
+   public BuildExecutor createExecutor(script, lvVersion) {
       BuildExecutor executor
       
       if (officiallySupported) {
-         executor = new nibuild.BuildExecutor(script, this)
+         executor = new nibuild.BuildExecutor(script, this, lvVersion)
       } else {
-         executor = new groovy.BuildExecutor(script, this)
+         executor = new groovy.BuildExecutor(script, this, lvVersion)
       }
       
       executor.loadBuildSteps(buildStepsLocation)
