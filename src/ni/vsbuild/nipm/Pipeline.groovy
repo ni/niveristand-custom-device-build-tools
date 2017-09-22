@@ -125,7 +125,8 @@ class Pipeline implements Serializable {
       def builders = [:]
       
       for (String version : buildInformation.lvVersions) {
-         builders[version] = {
+         def lvVersion = version // need to bind the variable before the closure - can't do 'for (version in lvVersions)
+         builders[lvVersion] = {
             script.buildDependencies(buildInformation)
             
             script.node(buildInformation.nodeLabel) {
@@ -133,7 +134,7 @@ class Pipeline implements Serializable {
                
                executeStages(prebuildStages, executor)
                
-               executor = buildInformation.createExecutor(script, version)
+               executor = buildInformation.createExecutor(script, lvVersion)
                
                executeStages(buildStages, executor)
             }
