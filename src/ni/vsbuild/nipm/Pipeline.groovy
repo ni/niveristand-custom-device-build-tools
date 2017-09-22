@@ -140,7 +140,7 @@ class Pipeline implements Serializable {
          }
       }
       
-      parallel builders
+      script.parallel builders
    }
    
    private void executeStages(stages, executor) {
