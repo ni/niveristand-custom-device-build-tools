@@ -5,7 +5,7 @@ class PipelineFactory implements Serializable {
    static Pipeline buildPipeline(script, BuildInformation buildInformation) {
       
       if(buildInformation.packageType == PackageType.NIPM) {
-         return nipm.Pipeline.builder(script, buildInformation).buildPipeline()
+         return nipm.PipelineFactory(script, buildInformation)
       }
       
       script.currentBuild.result = "FAILURE"
