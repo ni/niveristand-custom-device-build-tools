@@ -1,6 +1,7 @@
 package ni.vsbuild.nipm
 
 import ni.vsbuild.Pipeline
+import ni.vsbuild.BuildInformation
 
 class PipelineFactory implements Serializable {
    
