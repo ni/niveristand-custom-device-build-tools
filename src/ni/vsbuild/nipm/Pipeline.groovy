@@ -25,46 +25,6 @@ class Pipeline implements Serializable {
          this.script = script
          this.buildInformation = buildInformation
       }
-
-      def withInitialCleanStage() {
-         prebuildStages << new InitialClean(script)
-      }
-
-      def withCheckoutStage() {
-         prebuildStages << new Checkout(script)
-      }
-    
-      def withSetupStage() {
-         buildStages << new Setup(script)
-      }
-      
-      def withUnitTestStage() {
-         buildStages << new UnitTest(script)
-      }
-      
-      def withCodegenStage() {
-         buildStages << new Codegen(script)
-      }
-      
-      def withBuildStage() {
-         buildStages << new Build(script)
-      }
-      
-      def withArchiveStage() {
-         buildStages << new Archive(script)
-      }
-      
-      def withPackageStage() {
-         buildStages << new PackageBuild(script)
-      }
-      
-      def withPublishStage() {
-         buildStages << new Publish(script)
-      }
-      
-      def withCleanupStage() {
-         buildStages << new Cleanup(script)
-      }
       
       def buildPipeline() {
          //withInitialCleanStage()
@@ -91,18 +51,13 @@ class Pipeline implements Serializable {
          
          //withCleanupStage()
          
-         def pipelineBuilder
-         if(!buildInformation.officiallySupported) {
-            pipelineBuilder = new groovy.PipelineBuilder(this)
-         }
+         def pipelineBuilder = BuilderFactory.createBuilder(buildInformation)
          
-         pipelineBuilder.buildPipeline()
-         
-         return new Pipeline(this)
+         return new Pipeline(pipelineBuilder)
       }
    }
 
-   private Pipeline(Builder builder) {
+   private Pipeline(builder) {
       this.script = builder.script
       this.prebuildStages = builder.prebuildStages
       this.buildStages = builder.buildStages

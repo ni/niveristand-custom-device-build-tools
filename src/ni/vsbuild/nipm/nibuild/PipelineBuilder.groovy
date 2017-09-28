@@ -1,10 +1,9 @@
-package ni.vsbuild.nipm.groovy
+package ni.vsbuild.nipm.nibuild
 
 import ni.vsbuild.AbstractPipelineBuilder
-import ni.vsbuild.BuildInformation
 
 class PipelineBuilder extends AbstractPipelineBuilder {
-   
+
    PipelineBuilder(script, BuildInformation buildInformation) {
       super(script, buildInformation)
    }
