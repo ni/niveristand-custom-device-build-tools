@@ -6,6 +6,6 @@ import ni.vsbuild.BuildInformation
 class PipelineFactory implements Serializable {
    
    static Pipeline buildPipeline(script, BuildInformation buildInformation) {
-      return Pipeline.builder(script, buildInformation).buildPipeline()
+      return nipm.Pipeline.builder(script, buildInformation).buildPipeline()
    }
 }
