@@ -17,8 +17,6 @@ class Pipeline implements Serializable {
    static class Builder implements Serializable {
 
       def script
-      def prebuildStages = []
-      def buildStages = []
       BuildInformation buildInformation
 
       Builder(def script, BuildInformation buildInformation) {
@@ -27,32 +25,8 @@ class Pipeline implements Serializable {
       }
       
       def buildPipeline() {
-         //withInitialCleanStage()
-         //withCheckoutStage()
-         
-         //withSetupStage()
-         
-         //if(buildInformation.officiallySupported) {
-            //withUnitTestStage()
-         //}
-         
-         //withCodegenStage()
-         //withBuildStage()
-         
-         //if(!buildInformation.officiallySupported) {
-            //withArchiveStage()
-         //}
-         
-         //withPackageStage()
-         
-         //if(script.env['BRANCH_NAME'] == 'master') {
-            //withPublishStage()
-         //}
-         
-         //withCleanupStage()
-         
          def pipelineBuilder = BuilderFactory.createBuilder(script, buildInformation)
-         pipelineBuilder.buildPipeline()
+         pipelineBuilder.build()
          
          return new Pipeline(pipelineBuilder)
       }

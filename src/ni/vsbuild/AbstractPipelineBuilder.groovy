@@ -15,7 +15,7 @@ abstract class AbstractPipelineBuilder implements PipelineBuilder, Serializable 
       this.buildInformation = buildInformation
    }
    
-   public abstract void buildPipeline()
+   public abstract void build()
    
    def withInitialCleanStage() {
       prebuildStages << new InitialClean(script)
