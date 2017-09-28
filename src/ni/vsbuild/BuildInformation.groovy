@@ -3,6 +3,17 @@ package ni.vsbuild
 class BuildInformation implements Serializable {
 
    private static final String DEFAULT_BUILD_STEPS_LOCATION = 'vars/buildSteps.groovy'
+   
+   private final String BUILD_INFO_STRING = """
+      Building using the following BuildInformation:
+         Official support: $officiallySupported
+         Package type: $packageType
+         Node label: $nodeLabel
+         Source version: $sourceVersion
+         LV versions to build: $lvVersions
+         Dependencies: $dependencies
+         Build steps location: $buildStepsLocation
+   """
 
    public final String nodeLabel
    public final String sourceVersion
@@ -47,16 +58,7 @@ class BuildInformation implements Serializable {
    }
 
    public void printInformation(script) {
-      def printString = """Building using the following BuildInformation:
-         Official support: $officiallySupported
-         Package type: $packageType
-         Node label: $nodeLabel
-         Source version: $sourceVersion
-         LV versions to build: $lvVersions
-         Dependencies: $dependencies
-         Build steps location: $buildStepsLocation"""
-      
-      script.echo printString
+      script.echo BUILD_INFO_STRING
    }
 
    public BuildExecutor createExecutor(script, lvVersion) {

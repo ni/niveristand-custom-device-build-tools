@@ -67,29 +67,36 @@ class Pipeline implements Serializable {
       }
       
       def buildPipeline() {
-         withInitialCleanStage()
-         withCheckoutStage()
+         //withInitialCleanStage()
+         //withCheckoutStage()
          
-         withSetupStage()
+         //withSetupStage()
          
-         if(buildInformation.officiallySupported) {
-            withUnitTestStage()
-         }
+         //if(buildInformation.officiallySupported) {
+            //withUnitTestStage()
+         //}
          
-         withCodegenStage()
-         withBuildStage()
+         //withCodegenStage()
+         //withBuildStage()
          
+         //if(!buildInformation.officiallySupported) {
+            //withArchiveStage()
+         //}
+         
+         //withPackageStage()
+         
+         //if(script.env['BRANCH_NAME'] == 'master') {
+            //withPublishStage()
+         //}
+         
+         //withCleanupStage()
+         
+         def pipelineBuilder
          if(!buildInformation.officiallySupported) {
-            withArchiveStage()
+            pipelineBuilder = new groovy.PipelineBuilder(this)
          }
          
-         withPackageStage()
-         
-         if(script.env['BRANCH_NAME'] == 'master') {
-            withPublishStage()
-         }
-         
-         withCleanupStage()
+         pipelineBuilder.buildPipeline()
          
          return new Pipeline(this)
       }
