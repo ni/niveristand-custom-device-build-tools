@@ -51,7 +51,7 @@ class Pipeline implements Serializable {
          
          //withCleanupStage()
          
-         def pipelineBuilder = BuilderFactory.createBuilder(script, buildInformation)
+         def pipelineBuilder = BuilderFactory.createBuilder(script, buildInformation).buildPipeline()
          
          return new Pipeline(pipelineBuilder)
       }
