@@ -4,11 +4,8 @@ class PipelineFactory implements Serializable {
    
    static Pipeline buildPipeline(script, BuildInformation buildInformation) {
       
-      def pipeline
-      
       if(buildInformation.packageType == PackageType.NIPM) {
-         pipeline = nipm.PipelineFactory(script, buildInformation).buildPipeline()
-         return pipeline
+         return nipm.Pipeline.builder(script, buildInformation).buildPipeline()
       }
       
       script.currentBuild.result = "FAILURE"
