@@ -1,6 +1,7 @@
 package ni.vsbuild.nipm.nibuild
 
 import ni.vsbuild.AbstractPipelineBuilder
+import ni.vsbuild.BuildInformation
 
 class PipelineBuilder extends AbstractPipelineBuilder {
 
