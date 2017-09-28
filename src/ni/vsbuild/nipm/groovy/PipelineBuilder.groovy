@@ -9,7 +9,7 @@ class PipelineBuilder extends AbstractPipelineBuilder {
       super(script, buildInformation)
    }
    
-   void build {
+   public void build {
       withInitialCleanStage()
       withCheckoutStage()
       
