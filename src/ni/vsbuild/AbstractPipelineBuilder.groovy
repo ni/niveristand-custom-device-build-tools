@@ -1,5 +1,7 @@
 package ni.vsbuild
 
+import ni.vsbuild.stages.*
+
 abstract class AbstractPipelineBuilder implements PipelineBuilder, Serializable {
 
    protected def script
