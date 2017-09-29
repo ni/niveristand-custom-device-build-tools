@@ -38,7 +38,7 @@ class Pipeline extends AbstractPipeline {
       buildInformation.printInformation(script)
       
       // this is not used for nibuild execution, but is required for creating the executor
-      def lvVersion
+      def lvVersion = buildInformation.lvVersions.sort()[0]
       
       script.node(buildInformation.nodeLabel) {
          
