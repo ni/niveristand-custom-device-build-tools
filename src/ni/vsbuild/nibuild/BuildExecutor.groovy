@@ -4,8 +4,8 @@ import ni.vsbuild.AbstractBuildExecutor
 
 class BuildExecutor extends AbstractBuildExecutor {
 
-   public BuildExecutor(script, buildInformation) {
-      super(script, buildInformation)
+   public BuildExecutor(script, buildInformation, lvVersion) {
+      super(script, buildInformation, lvVersion)
    }
 
    public void codegen() {
