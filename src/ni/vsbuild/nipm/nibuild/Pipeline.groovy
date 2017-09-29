@@ -1,4 +1,4 @@
-package ni.vsbuild.nipm.groovy
+package ni.vsbuild.nipm.nibuild
 
 import ni.vsbuild.AbstractPipeline
 import ni.vsbuild.AbstractPipelineBuilder
@@ -17,20 +17,9 @@ class Pipeline extends AbstractPipeline {
       }
       
       public void build() {
-         withInitialCleanStage()
-         withCheckoutStage()
-      
-         withSetupStage()
-      
-         withCodegenStage()
          withBuildStage()
-      
-         withArchiveStage()
+         withUnitTestStage()
          withPackageStage()
-      
-         withPublishStage()
-      
-         withCleanupStage()
          
          return new Pipeline(this)
       }

@@ -6,6 +6,10 @@ import ni.vsbuild.Pipeline
 class PipelineFactory implements Serializable {
    
    static Pipeline buildPipeline(script, BuildInformation buildInformation) {
-      return groovy.Pipeline.builder(script, buildInformation).build()
+      if(buildInformation.officiallySupported) {
+         return nibuild.Pipeline.builder(script, buildInformation).build()
+      } else {
+         return groovy.Pipeline.builder(script, buildInformation).build()
+      }
    }
 }
