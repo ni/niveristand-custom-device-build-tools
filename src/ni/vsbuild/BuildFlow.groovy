@@ -1,6 +1,6 @@
 package ni.vsbuild
 
-enum BuildType {
+enum BuildFlow {
    GROOVY,
    NIBUILD
 }

@@ -6,55 +6,52 @@ class BuildInformation implements Serializable {
    
    private final String BUILD_INFO_STRING = """
       Building using the following BuildInformation:
-         Official support: $officiallySupported
+         Build flow: $buildFlow
          Package type: $packageType
          Node label: $nodeLabel
-         Source version: $sourceVersion
          LV versions to build: $lvVersions
          Dependencies: $dependencies
          Build steps location: $buildStepsLocation
    """
 
    public final String nodeLabel
-   public final String sourceVersion
    public final List<String> lvVersions
    public final List<String> dependencies
    public final PackageType packageType
+   public final BuildFlow buildFlow
    public final String buildStepsLocation
-   public final boolean officiallySupported
 
-   public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, List<String> dependencies, String buildStepsLocation, PackageType packageType, boolean officiallySupported) {
+   public BuildInformation(String nodeLabel, List<String> lvVersions, List<String> dependencies, String buildStepsLocation, PackageType packageType, BuildFlow buildFlow) {
       this.nodeLabel = nodeLabel
-      this.sourceVersion = sourceVersion
       this.lvVersions = lvVersions
       this.dependencies = dependencies
       this.buildStepsLocation = buildStepsLocation
       this.packageType = packageType
-      this.officiallySupported = officiallySupported
+      this.buildFlow = buildFlow
    }
 
-   public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, List<String> dependencies, PackageType packageType, boolean officiallySupported) {
-      this(nodeLabel, sourceVersion, lvVersions, dependencies, DEFAULT_BUILD_STEPS_LOCATION, packageType, officiallySupported)
+   public BuildInformation(String nodeLabel, List<String> lvVersions, List<String> dependencies, PackageType packageType, BuildFlow buildFlow) {
+      this(nodeLabel, lvVersions, dependencies, DEFAULT_BUILD_STEPS_LOCATION, packageType, buildFlow)
    }
 
-   public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, String buildStepsLocation, PackageType packageType, boolean officiallySupported) {
-      this(nodeLabel, sourceVersion, lvVersions, [], buildStepsLocation, packageType, officiallySupported)
+   public BuildInformation(String nodeLabel, List<String> lvVersions, String buildStepsLocation, PackageType packageType, BuildFlow buildFlow) {
+      this(nodeLabel, lvVersions, [], buildStepsLocation, packageType, buildFlow)
    }
 
-   public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, List<String> dependencies, boolean officiallySupported) {
-      this(nodeLabel, sourceVersion, lvVersions, dependencies, DEFAULT_BUILD_STEPS_LOCATION, PackageType.NIPM, officiallySupported)
+   public BuildInformation(String nodeLabel, List<String> lvVersions, List<String> dependencies, BuildFlow buildFlow) {
+      this(nodeLabel, lvVersions, dependencies, DEFAULT_BUILD_STEPS_LOCATION, PackageType.NIPM, buildFlow)
    }
 
-   public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, String buildStepsLocation, boolean officiallySupported) {
-      this(nodeLabel, sourceVersion, lvVersions, [], buildStepsLocation, PackageType.NIPM, officiallySupported)
+   public BuildInformation(String nodeLabel, List<String> lvVersions, String buildStepsLocation, BuildFlow buildFlow) {
+      this(nodeLabel, lvVersions, [], buildStepsLocation, PackageType.NIPM, buildFlow)
    }
 
-   public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, PackageType packageType, boolean officiallySupported) {
-      this(nodeLabel, sourceVersion, lvVersions, [], DEFAULT_BUILD_STEPS_LOCATION, packageType, officiallySupported)
+   public BuildInformation(String nodeLabel, List<String> lvVersions, PackageType packageType, BuildFlow buildFlow) {
+      this(nodeLabel, lvVersions, [], DEFAULT_BUILD_STEPS_LOCATION, packageType, buildFlow)
    }
 
-   public BuildInformation(String nodeLabel, String sourceVersion, List<String> lvVersions, boolean officiallySupported) {
-      this(nodeLabel, sourceVersion, lvVersions, [], DEFAULT_BUILD_STEPS_LOCATION, PackageType.NIPM, officiallySupported)
+   public BuildInformation(String nodeLabel, List<String> lvVersions, BuildFlow buildFlow) {
+      this(nodeLabel, lvVersions, [], DEFAULT_BUILD_STEPS_LOCATION, PackageType.NIPM, buildFlow)
    }
 
    public void printInformation(script) {
@@ -64,7 +61,7 @@ class BuildInformation implements Serializable {
    public BuildExecutor createExecutor(script, lvVersion) {
       BuildExecutor executor
       
-      if (officiallySupported) {
+      if (buildFlow == BuildFlow.NIBUILD) {
          executor = new nibuild.BuildExecutor(script, this, lvVersion)
       } else {
          executor = new groovy.BuildExecutor(script, this, lvVersion)
