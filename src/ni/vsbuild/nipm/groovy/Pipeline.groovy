@@ -43,8 +43,6 @@ class Pipeline extends AbstractPipeline {
    void execute() {
       def builders = [:]
       
-      buildInformation.printInformation(script)
-      
       for(String version: buildInformation.lvVersions) {
          def lvVersion = version // need to bind the variable before the closure - can't do 'for (version in lvVersions)'
          builders[lvVersion] = {
