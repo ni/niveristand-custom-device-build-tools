@@ -25,7 +25,7 @@ abstract class AbstractBuildExecutor implements BuildExecutor, Serializable {
 
    public void runUnitTests() {
       //Make sure correct dependencies are loaded to run unit tests
-      //preBuild()
+      preBuild()
       script.noop()
    }
 

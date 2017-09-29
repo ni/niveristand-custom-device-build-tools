@@ -17,6 +17,9 @@ class Pipeline extends AbstractPipeline {
       }
       
       public void build() {
+         withInitialCleanStage()
+         withCheckoutStage()
+         
          withBuildStage()
          withUnitTestStage()
          withPackageStage()
@@ -29,9 +32,7 @@ class Pipeline extends AbstractPipeline {
       super(builder)
    }
    
-   void execute() {
-      def builders = [:]
-      
+   void execute() {      
       buildInformation.printInformation(script)
       
       for(String version: buildInformation.lvVersions) {
