@@ -1,8 +1,8 @@
 package ni.vsbuild.nipm.groovy
 
+import ni.vsbuild.AbstractPipeline
 import ni.vsbuild.AbstractPipelineBuilder
 import ni.vsbuild.BuildInformation
-import ni.vsbuild.nipm.AbstractPipeline
 
 class Pipeline extends AbstractPipeline {
 

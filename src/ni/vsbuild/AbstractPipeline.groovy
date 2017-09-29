@@ -2,6 +2,7 @@ package ni.vsbuild
 
 import ni.vsbuild.stages.Stage
 
+abstract class AbstractPipeline implements Pipeline {
 
    def script
    def prebuildStages = []
