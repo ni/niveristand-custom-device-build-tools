@@ -1,5 +1,5 @@
 package ni.vsbuild
 
-interface PipelineBuilder {
-   void build()
+interface PipelineBuilder extends Serializable {
+   void buildPipeline()
 }

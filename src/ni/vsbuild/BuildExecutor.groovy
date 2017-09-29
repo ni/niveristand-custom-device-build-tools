@@ -1,6 +1,6 @@
 package ni.vsbuild
 
-interface BuildExecutor {
+interface BuildExecutor extends Serializable {
    void setup()
    void runUnitTests()
    void codegen()

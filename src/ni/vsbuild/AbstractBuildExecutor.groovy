@@ -1,6 +1,6 @@
 package ni.vsbuild
 
-abstract class AbstractBuildExecutor implements BuildExecutor, Serializable {
+abstract class AbstractBuildExecutor implements BuildExecutor {
 
    protected final def script
    protected final BuildInformation buildInformation

@@ -2,7 +2,7 @@ package ni.vsbuild
 
 import ni.vsbuild.stages.*
 
-abstract class AbstractPipelineBuilder implements PipelineBuilder, Serializable {
+abstract class AbstractPipelineBuilder implements PipelineBuilder {
 
    protected def script
    protected BuildInformation buildInformation
@@ -15,7 +15,7 @@ abstract class AbstractPipelineBuilder implements PipelineBuilder, Serializable 
       this.buildInformation = buildInformation
    }
    
-   public abstract void build()
+   public abstract void buildPipeline()
    
    def withInitialCleanStage() {
       prebuildStages << new InitialClean(script)

@@ -8,9 +8,9 @@ class PipelineFactory implements Serializable {
    
    static Pipeline buildPipeline(script, BuildInformation buildInformation) {
       if(buildInformation.buildFlow == BuildFlow.NIBUILD) {
-         return nibuild.Pipeline.builder(script, buildInformation).build()
+         return nibuild.Pipeline.builder(script, buildInformation).buildPipeline()
       } else {
-         return groovy.Pipeline.builder(script, buildInformation).build()
+         return groovy.Pipeline.builder(script, buildInformation).buildPipeline()
       }
    }
 }
