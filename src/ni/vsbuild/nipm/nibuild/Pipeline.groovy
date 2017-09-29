@@ -37,6 +37,9 @@ class Pipeline extends AbstractPipeline {
    void execute() {      
       buildInformation.printInformation(script)
       
+      // this is not used for nibuild execution, but is required for creating the executor
+      def lvVersion
+      
       script.node(buildInformation.nodeLabel) {
          
          def executor
