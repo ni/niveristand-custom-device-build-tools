@@ -20,6 +20,8 @@ class Pipeline extends AbstractPipeline {
          withInitialCleanStage()
          withCheckoutStage()
          
+         withSetupStage()
+         
          withBuildStage()
          withUnitTestStage()
          withPackageStage()
