@@ -24,6 +24,8 @@ class Pipeline extends AbstractPipeline {
          withUnitTestStage()
          withPackageStage()
          
+         withCleanupStage()
+         
          return new Pipeline(this)
       }
    }
@@ -35,27 +37,17 @@ class Pipeline extends AbstractPipeline {
    void execute() {      
       buildInformation.printInformation(script)
       
-      for(String version: buildInformation.lvVersions) {
-         def lvVersion = version // need to bind the variable before the closure - can't do 'for (version in lvVersions)'
-         builders[lvVersion] = {
-            // build dependencies before starting this pipeline
-            script.buildDependencies(buildInformation)
-            
-            script.node(buildInformation.nodeLabel) {
-               
-               def executor
-               
-               executeStages(prebuildStages, executor)
-               
-               // This load must happen after the checkout stage, but before any
-               // stage that requires the build steps to be loaded
-               executor = buildInformation.createExecutor(script, lvVersion)
-               
-               executeStages(buildStages, executor)
-            }
-         }
+      script.node(buildInformation.nodeLabel) {
+         
+         def executor
+         
+         executeStages(prebuildStages, executor)
+         
+         // This load must happen after the checkout stage, but before any
+         // stage that requires the build steps to be loaded
+         executor = buildInformation.createExecutor(script, lvVersion)
+         
+         executeStages(buildStages, executor)
       }
-      
-      script.parallel builders
    }
 }
