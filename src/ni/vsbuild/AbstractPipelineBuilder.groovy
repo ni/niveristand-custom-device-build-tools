@@ -9,6 +9,7 @@ abstract class AbstractPipelineBuilder implements PipelineBuilder {
    
    def prebuildStages = []
    def buildStages = []
+   def postbuildStages = []
    
    AbstractPipelineBuilder(script, BuildInformation buildInformation) {
       this.script = script
@@ -54,6 +55,6 @@ abstract class AbstractPipelineBuilder implements PipelineBuilder {
    }
    
    def withCleanupStage() {
-      buildStages << new Cleanup(script)
+      postbuildStages << new Cleanup(script)
    }
 }

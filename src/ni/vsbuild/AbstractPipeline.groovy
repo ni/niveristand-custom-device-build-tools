@@ -7,6 +7,7 @@ abstract class AbstractPipeline implements Pipeline {
    def script
    def prebuildStages = []
    def buildStages = []
+   def postbuildStages = []
    BuildInformation buildInformation
    
    protected AbstractPipeline(PipelineBuilder builder) {
@@ -14,6 +15,7 @@ abstract class AbstractPipeline implements Pipeline {
       this.buildInformation = builder.buildInformation
       this.prebuildStages = builder.prebuildStages
       this.buildStages = builder.buildStages
+      this.postbuildStages = builder.postbuildStages
    }
    
    abstract void execute()
