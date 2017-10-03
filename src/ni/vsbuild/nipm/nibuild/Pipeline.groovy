@@ -51,7 +51,6 @@ class Pipeline extends AbstractPipeline {
          executor = buildInformation.createExecutor(script, lvVersion)
          
          executeStages(buildStages, executor)
-         executeStages(postbuildStages, executor)
       }
    }
 }

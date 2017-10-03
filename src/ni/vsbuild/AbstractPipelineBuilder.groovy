@@ -9,7 +9,6 @@ abstract class AbstractPipelineBuilder implements PipelineBuilder {
    
    def prebuildStages = []
    def buildStages = []
-   def postbuildStages = []
    
    AbstractPipelineBuilder(script, BuildInformation buildInformation) {
       this.script = script
@@ -18,43 +17,43 @@ abstract class AbstractPipelineBuilder implements PipelineBuilder {
    
    public abstract void buildPipeline()
    
-   def withInitialCleanStage(section = prebuildStages) {
-      section << new InitialClean(script)
+   def withInitialCleanStage() {
+      prebuildStages << new InitialClean(script)
    }
 
-   def withCheckoutStage(section = prebuildStages) {
-      section << new Checkout(script)
+   def withCheckoutStage() {
+      prebuildStages << new Checkout(script)
    }
    
-   def withSetupStage(section = buildStages) {
-      section << new Setup(script)
+   def withSetupStage() {
+      buildStages << new Setup(script)
    }
    
-   def withUnitTestStage(section = postbuildStages) {
-      section << new UnitTest(script)
+   def withUnitTestStage() {
+      buildStages << new UnitTest(script)
    }
    
-   def withCodegenStage(section = buildStages) {
-      section << new Codegen(script)
+   def withCodegenStage() {
+      buildStages << new Codegen(script)
    }
    
-   def withBuildStage(section = buildStages) {
-      section << new Build(script)
+   def withBuildStage() {
+      buildStages << new Build(script)
    }
    
-   def withArchiveStage(section = buildStages) {
-      section << new Archive(script)
+   def withArchiveStage() {
+      buildStages << new Archive(script)
    }
    
-   def withPackageStage(section = buildStages) {
-      section << new PackageBuild(script)
+   def withPackageStage() {
+      buildStages << new PackageBuild(script)
    }
    
-   def withPublishStage(section = postbuildStages) {
-      section << new Publish(script)
+   def withPublishStage() {
+      buildStages << new Publish(script)
    }
    
-   def withCleanupStage(section = postbuildStages) {
-      section << new Cleanup(script)
+   def withCleanupStage() {
+      buildStages << new Cleanup(script)
    }
 }
