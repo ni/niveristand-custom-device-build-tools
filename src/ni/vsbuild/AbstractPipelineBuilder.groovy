@@ -18,43 +18,43 @@ abstract class AbstractPipelineBuilder implements PipelineBuilder {
    
    public abstract void buildPipeline()
    
-   def withInitialCleanStage() {
-      prebuildStages << new InitialClean(script)
+   def withInitialCleanStage(section = prebuildStages) {
+      section << new InitialClean(script)
    }
 
-   def withCheckoutStage() {
-      prebuildStages << new Checkout(script)
+   def withCheckoutStage(section = prebuildStages) {
+      section << new Checkout(script)
    }
    
-   def withSetupStage() {
-      buildStages << new Setup(script)
+   def withSetupStage(section = buildStages) {
+      section << new Setup(script)
    }
    
-   def withUnitTestStage() {
-      buildStages << new UnitTest(script)
+   def withUnitTestStage(section = postbuildStages) {
+      section << new UnitTest(script)
    }
    
-   def withCodegenStage() {
-      buildStages << new Codegen(script)
+   def withCodegenStage(section = buildStages) {
+      section << new Codegen(script)
    }
    
-   def withBuildStage() {
-      buildStages << new Build(script)
+   def withBuildStage(section = buildStages) {
+      section << new Build(script)
    }
    
-   def withArchiveStage() {
-      buildStages << new Archive(script)
+   def withArchiveStage(section = buildStages) {
+      section << new Archive(script)
    }
    
-   def withPackageStage() {
-      buildStages << new PackageBuild(script)
+   def withPackageStage(section = buildStages) {
+      section << new PackageBuild(script)
    }
    
-   def withPublishStage() {
-      buildStages << new Publish(script)
+   def withPublishStage(section = postbuildStages) {
+      section << new Publish(script)
    }
    
-   def withCleanupStage() {
-      postbuildStages << new Cleanup(script)
+   def withCleanupStage(section = postbuildStages) {
+      section << new Cleanup(script)
    }
 }
