@@ -49,7 +49,7 @@ class Pipeline extends AbstractPipeline {
             // build dependencies before starting this pipeline
             script.buildDependencies(buildInformation)
             
-            script.node(buildInformation.nodeLabel) {
+            script.node(getNodeLabel(lvVersion)) {
                
                def executor
                

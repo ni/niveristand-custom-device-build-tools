@@ -28,4 +28,14 @@ abstract class AbstractPipeline implements Pipeline {
          }
       }
    }
+   
+   protected String getNodeLabel(lvVersion) {
+      def nodeLabel = lvVersion
+      if(buildInformation.nodeLabel) {
+         nodeLabel = "${buildInformation.nodeLabel} && $lvVersion"
+      }
+      
+      script.echo "Node will be acquired for label \'$nodeLabel\'"
+      return nodeLabel
+   }
 }
