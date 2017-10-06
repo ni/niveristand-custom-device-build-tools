@@ -7,7 +7,7 @@ class InitialClean extends AbstractStage {
    }
 
    @Override
-   void execute(executor) {
+   void executeStage(executor) {
       script.echo 'Cleaning the workspace before building.'
       script.deleteDir()
    }

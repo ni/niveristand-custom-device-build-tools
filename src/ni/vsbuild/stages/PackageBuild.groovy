@@ -7,7 +7,7 @@ class PackageBuild extends AbstractStage {
    }
 
    @Override
-   void execute(executor) {
+   void executeStage(executor) {
       script.echo 'Building package...'
       executor.buildPackage()
       script.echo 'Package Complete.'
