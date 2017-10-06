@@ -8,10 +8,8 @@ class Codegen extends AbstractStage {
 
    @Override
    void execute(executor) {
-      script.stage(stageName) {
-         script.echo 'Generating code prior to build...'
-         executor.codegen()
-         script.echo 'Code generation Complete.'
-      }
+      script.echo 'Generating code prior to build...'
+      executor.codegen()
+      script.echo 'Code generation Complete.'
    }
 }

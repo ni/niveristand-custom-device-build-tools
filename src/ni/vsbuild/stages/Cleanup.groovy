@@ -8,9 +8,7 @@ class Cleanup extends AbstractStage {
 
    @Override
    void execute(executor) {
-      script.stage(stageName) {
-         script.echo 'Cleaning up workspace after successful build.'
-         script.deleteDir()
-      }
+      script.echo 'Cleaning up workspace after successful build.'
+      script.deleteDir()
    }
 }

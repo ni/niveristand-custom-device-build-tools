@@ -7,11 +7,9 @@ class Build extends AbstractStage {
    }
 
    @Override
-   void execute(executor) {
-      script.stage(stageName) {
-         script.echo 'Starting build...'
-         executor.build()
-         script.echo 'Build Complete.'
-      }
+   void executeStage(executor) {
+      script.echo 'Starting build...'
+      executor.build()
+      script.echo 'Build Complete.'
    }
 }
