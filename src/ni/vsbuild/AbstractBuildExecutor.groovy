@@ -15,7 +15,7 @@ abstract class AbstractBuildExecutor implements BuildExecutor {
    }
 
    public void loadBuildSteps(buildStepsLocation) {
-      checkoutStage()
+      checkout()
       
       def component = script.getComponentParts()['repo']
       script.echo "Loading build steps from $component/$buildStepsLocation"
