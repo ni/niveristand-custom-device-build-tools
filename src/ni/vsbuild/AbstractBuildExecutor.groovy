@@ -50,7 +50,7 @@ abstract class AbstractBuildExecutor implements BuildExecutor {
       buildSteps.setupLv(lvVersion)
    }
    
-   private void checkout() {
+   protected void checkout() {
       script.stage(getCheckoutStageName()) {
          script.deleteDir()
          script.echo 'Attempting to get source from repo.'
