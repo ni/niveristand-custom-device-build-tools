@@ -67,7 +67,7 @@ class BuildInformation implements Serializable {
          executor = new groovy.BuildExecutor(script, this, lvVersion)
       }
       
-      script.stage('Checkout') {
+      script.stage("Checkout_${lvVersion}") {
          script.deleteDir()
          script.echo 'Attempting to get source from repo.'
          script.timeout(time: 5, unit: 'MINUTES'){
