@@ -42,13 +42,13 @@ class Pipeline extends AbstractPipeline {
       
       script.node(getNodeLabel(lvVersion)) {
          
-         def executor
+         def executor = buildInformation.createExecutor(script, lvVersion)
          
          executeStages(prebuildStages, executor)
          
          // This load must happen after the checkout stage, but before any
          // stage that requires the build steps to be loaded
-         executor = buildInformation.createExecutor(script, lvVersion)
+         executor.loadBuildSteps(buildInformation.buildStepsLocation)
          
          executeStages(buildStages, executor)
       }

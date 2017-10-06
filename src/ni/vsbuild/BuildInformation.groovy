@@ -67,7 +67,6 @@ class BuildInformation implements Serializable {
          executor = new groovy.BuildExecutor(script, this, lvVersion)
       }
       
-      executor.loadBuildSteps(buildStepsLocation)
       return executor
    }
 }
