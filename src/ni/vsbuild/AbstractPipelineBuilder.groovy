@@ -16,14 +16,6 @@ abstract class AbstractPipelineBuilder implements PipelineBuilder {
    
    public abstract void buildPipeline()
    
-   def withInitialCleanStage() {
-      buildStages << new InitialClean(script)
-   }
-
-   def withCheckoutStage() {
-      buildStages << new Checkout(script)
-   }
-   
    def withSetupStage() {
       buildStages << new Setup(script)
    }
