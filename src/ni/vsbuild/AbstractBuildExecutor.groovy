@@ -2,10 +2,9 @@ package ni.vsbuild
 
 abstract class AbstractBuildExecutor implements BuildExecutor {
 
-   final String lvVersion
-   
    protected final def script
    protected final BuildInformation buildInformation
+   protected final String lvVersion
    protected def buildSteps
 
    public AbstractBuildExecutor(script, BuildInformation buildInformation, String lvVersion) {
