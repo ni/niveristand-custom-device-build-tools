@@ -15,6 +15,8 @@ abstract class AbstractBuildExecutor implements BuildExecutor {
    }
 
    public void loadBuildSteps(buildStepsLocation) {
+      checkoutStage()
+      
       def component = script.getComponentParts()['repo']
       script.echo "Loading build steps from $component/$buildStepsLocation"
       buildSteps = script.load buildStepsLocation
@@ -39,6 +41,8 @@ abstract class AbstractBuildExecutor implements BuildExecutor {
    public abstract void buildPackage()
 
    public abstract void publish()
+   
+   protected abstract void getCheckoutStageName()
 
    protected void preBuild() {
       script.echo "Preparing source for execution with LV $lvVersion..."
@@ -48,10 +52,12 @@ abstract class AbstractBuildExecutor implements BuildExecutor {
    }
    
    protected void checkout() {
-      script.deleteDir()
-      script.echo 'Attempting to get source from repo.'
-      script.timeout(time: 5, unit: 'MINUTES'){
-         script.checkout(script.scm)
+      script.stage(getCheckoutStageName()) {
+         script.deleteDir()
+         script.echo 'Attempting to get source from repo.'
+         script.timeout(time: 5, unit: 'MINUTES'){
+            script.checkout(script.scm)
+         }
       }
    }
 }

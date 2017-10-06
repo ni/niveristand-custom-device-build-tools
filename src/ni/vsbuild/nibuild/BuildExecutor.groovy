@@ -6,10 +6,6 @@ class BuildExecutor extends AbstractBuildExecutor {
 
    public BuildExecutor(script, buildInformation, lvVersion) {
       super(script, buildInformation, lvVersion)
-      
-      script.stage('Checkout') {
-         checkout()
-      }
    }
 
    public void codegen() {
@@ -32,5 +28,9 @@ class BuildExecutor extends AbstractBuildExecutor {
 
    public void publish() {
       script.noop()
+   }
+   
+   protected void getCheckoutStageName() {
+      return 'Checkout'
    }
 }
