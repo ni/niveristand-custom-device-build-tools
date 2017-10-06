@@ -17,11 +17,11 @@ abstract class AbstractPipelineBuilder implements PipelineBuilder {
    public abstract void buildPipeline()
    
    def withInitialCleanStage() {
-      prebuildStages << new InitialClean(script)
+      buildStages << new InitialClean(script)
    }
 
    def withCheckoutStage() {
-      prebuildStages << new Checkout(script)
+      buildStages << new Checkout(script)
    }
    
    def withSetupStage() {

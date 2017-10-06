@@ -17,9 +17,6 @@ class Pipeline extends AbstractPipeline {
       }
       
       public void buildPipeline() {
-         withInitialCleanStage()
-         withCheckoutStage()
-      
          withSetupStage()
       
          withCodegenStage()
