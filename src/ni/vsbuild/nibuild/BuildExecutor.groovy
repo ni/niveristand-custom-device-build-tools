@@ -7,7 +7,7 @@ class BuildExecutor extends AbstractBuildExecutor {
    public BuildExecutor(script, buildInformation, lvVersion) {
       super(script, buildInformation, lvVersion)
       
-      stage('Checkout) {
+      stage('Checkout') {
          checkout()
       }
    }
