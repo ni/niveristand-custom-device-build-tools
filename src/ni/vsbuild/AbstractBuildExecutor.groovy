@@ -46,4 +46,12 @@ abstract class AbstractBuildExecutor implements BuildExecutor {
       script.echo "Applying build configuration to LV $lvVersion..."
       buildSteps.setupLv(lvVersion)
    }
+   
+   protected void checkout() {
+      script.deleteDir()
+      script.echo 'Attempting to get source from repo.'
+      script.timeout(time: 5, unit: 'MINUTES'){
+         script.checkout(script.scm)
+      }
+   }
 }

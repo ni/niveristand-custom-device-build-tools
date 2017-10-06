@@ -10,6 +10,10 @@ class BuildExecutor extends AbstractBuildExecutor {
 
    public BuildExecutor(script, buildInformation, lvVersion) {
       super(script, buildInformation, lvVersion)
+      
+      stage("Checkout_${lvVersion}) {
+         checkout()
+      }
    }
 
    public void codegen() {

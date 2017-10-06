@@ -7,7 +7,6 @@ abstract class AbstractPipelineBuilder implements PipelineBuilder {
    protected def script
    protected BuildInformation buildInformation
    
-   def prebuildStages = []
    def buildStages = []
    
    AbstractPipelineBuilder(script, BuildInformation buildInformation) {
