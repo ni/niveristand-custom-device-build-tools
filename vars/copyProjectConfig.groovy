@@ -1,6 +1,5 @@
-// In the future, this function should use the lvVersion and modify
-// the config file so the correct version of the VeriStand assemblies
-// is loaded. Right now, we're only building for 2016, so it's ok.
+// Copies the config file specifying all of the VeriStand assemblies
+// and versions, then replaces the versions based on the lvVersion
 def call(projectPath, lvVersion){
    echo "Copying configuration file for $projectPath"
    configFileName = "$projectPath" + ".config"
