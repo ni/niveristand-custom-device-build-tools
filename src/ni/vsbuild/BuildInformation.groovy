@@ -31,27 +31,27 @@ class BuildInformation implements Serializable {
    }
 
    public BuildInformation(String nodeLabel, List<String> lvVersions, List<String> dependencies, PackageType packageType, BuildFlow buildFlow) {
-      BuildInformation(nodeLabel, lvVersions, dependencies, DEFAULT_BUILD_STEPS_LOCATION, packageType, buildFlow)
+      this(nodeLabel, lvVersions, dependencies, DEFAULT_BUILD_STEPS_LOCATION, packageType, buildFlow)
    }
 
    public BuildInformation(String nodeLabel, List<String> lvVersions, String buildStepsLocation, PackageType packageType, BuildFlow buildFlow) {
-      BuildInformation(nodeLabel, lvVersions, [], buildStepsLocation, packageType, buildFlow)
+      this(nodeLabel, lvVersions, [], buildStepsLocation, packageType, buildFlow)
    }
 
    public BuildInformation(String nodeLabel, List<String> lvVersions, List<String> dependencies, BuildFlow buildFlow) {
-      BuildInformation(nodeLabel, lvVersions, dependencies, DEFAULT_BUILD_STEPS_LOCATION, PackageType.NIPM, buildFlow)
+      this(nodeLabel, lvVersions, dependencies, DEFAULT_BUILD_STEPS_LOCATION, PackageType.NIPM, buildFlow)
    }
 
    public BuildInformation(String nodeLabel, List<String> lvVersions, String buildStepsLocation, BuildFlow buildFlow) {
-      BuildInformation(nodeLabel, lvVersions, [], buildStepsLocation, PackageType.NIPM, buildFlow)
+      this(nodeLabel, lvVersions, [], buildStepsLocation, PackageType.NIPM, buildFlow)
    }
 
    public BuildInformation(String nodeLabel, List<String> lvVersions, PackageType packageType, BuildFlow buildFlow) {
-      BuildInformation(nodeLabel, lvVersions, [], DEFAULT_BUILD_STEPS_LOCATION, packageType, buildFlow)
+      this(nodeLabel, lvVersions, [], DEFAULT_BUILD_STEPS_LOCATION, packageType, buildFlow)
    }
 
    public BuildInformation(String nodeLabel, List<String> lvVersions, BuildFlow buildFlow) {
-      BuildInformation(nodeLabel, lvVersions, [], DEFAULT_BUILD_STEPS_LOCATION, PackageType.NIPM, buildFlow)
+      this(nodeLabel, lvVersions, [], DEFAULT_BUILD_STEPS_LOCATION, PackageType.NIPM, buildFlow)
    }
 
    public void printInformation(script) {
