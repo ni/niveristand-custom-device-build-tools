@@ -3,7 +3,7 @@ package ni.vsbuild.v2
 class BuildConfiguration implements Serializable {
 
    private final String CONFIGURATION_STRING = """
-Constants: ${constants}.toString()
+Constants: $constants
 Mkdirs: $mkdirectories
 Exports: $exports
 Projects: $projects
@@ -44,13 +44,13 @@ Dependencies: $dependencies
       def keys = props.keySet()
       script.echo keys.toString()
       
-      if (keys.contains('constants')) {
-         constants = props.get('constants')
-         if(constants) {
-            script.echo 'Constants was set'
-            script.echo "$constants"
-         }
-      }
+//      if (keys.contains('constants')) {
+//         constants = props.get('constants')
+//         if(constants) {
+//            script.echo 'Constants was set'
+//            script.echo "$constants"
+//         }
+//      }
       
 //      if (keys.contains('mkdirectories')) {
 //         mkdirectories = props.mkdirectories
@@ -76,7 +76,14 @@ Dependencies: $dependencies
 //         dependencies = props.dependencies
 //      }
       
-      return new BuildConfiguration(constants, mkdirectories, exports, projects, codegen, build, dependencies)
+      return new BuildConfiguration(
+         props.get('constants'),
+         props.get('mkdirectories'),
+         props.get('exports'),
+         props.get('projects'),
+         props.get('codegen'),
+         props.get('build'),
+         props.get('dependencies'))
    }
    
    public void printInformation(script) {
