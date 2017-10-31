@@ -4,7 +4,7 @@ class BuildConfiguration implements Serializable {
 
    private final String CONFIGURATION_STRING = """
 Build configuration is:
-   Constants: $constants
+   Constants: $constants of type ${constants.getClass()}
    Mkdirs: $mkdirectories
    Exports: $exports
    Projects: $projects
