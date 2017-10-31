@@ -3,13 +3,14 @@ package ni.vsbuild.v2
 class BuildConfiguration implements Serializable {
 
    private final String CONFIGURATION_STRING = """
-Constants: $constants
-Mkdirs: $mkdirectories
-Exports: $exports
-Projects: $projects
-Codegen: $codegen
-Build: $build
-Dependencies: $dependencies
+Build configuration is:
+   Constants: $constants
+   Mkdirs: $mkdirectories
+   Exports: $exports
+   Projects: $projects
+   Codegen: $codegen
+   Build: $build
+   Dependencies: $dependencies
 """
 
    public final def constants
@@ -30,51 +31,8 @@ Dependencies: $dependencies
       this.dependencies = dependencies
    }
    
-   static BuildConfiguration load(def script, String jsonFile) {
-      def constants
-      def mkdirectories
-      def exports
-      def projects
-      def codegen
-      def build
-      def dependencies
-      
+   static BuildConfiguration load(def script, String jsonFile) {      
       def props = script.readJSON file: jsonFile
-      script.echo props.toString()
-      def keys = props.keySet()
-      script.echo keys.toString()
-      
-//      if (keys.contains('constants')) {
-//         constants = props.get('constants')
-//         if(constants) {
-//            script.echo 'Constants was set'
-//            script.echo "$constants"
-//         }
-//      }
-      
-//      if (keys.contains('mkdirectories')) {
-//         mkdirectories = props.mkdirectories
-//      }
-      
-//      if (keys.contains('exports')) {
-//         exports = props.exports
-//     }
-      
-//      if (keys.contains('projects')) {
-//         projects = props.projects
-//      }
-      
-//      if (keys.contains('codegen')) {
-//         codegen = props.codegen
-//      }
-      
-//      if (keys.contains('build')) {
-//         build = props.build
-//      }
-      
-//      if (keys.contains('dependencies')) {
-//         dependencies = props.dependencies
-//      }
       
       return new BuildConfiguration(
          props.get('constants'),
