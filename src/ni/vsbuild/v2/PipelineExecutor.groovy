@@ -8,7 +8,7 @@ class PipelineExecutor implements Serializable {
          script.deleteDir()
          script.echo 'Attempting to get source from repo.'
          script.timeout(time: 5, unit: 'MINUTES'){
-            script.checkout(scm)
+            script.checkout(script.scm)
             }
          }
          script.stage('read config') {
