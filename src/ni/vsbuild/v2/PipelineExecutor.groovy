@@ -3,17 +3,17 @@ package ni.vsbuild.v2
 class PipelineExecutor implements Serializable {
 
    static void execute(script) {
-      node('dcafbuild01'){
-         stage('checkout') {
-         deleteDir()
-         echo 'Attempting to get source from repo.'
-         timeout(time: 5, unit: 'MINUTES'){
-            checkout(scm)
+      script.node('dcafbuild01'){
+         script.stage('checkout') {
+         script.deleteDir()
+         script.echo 'Attempting to get source from repo.'
+         script.timeout(time: 5, unit: 'MINUTES'){
+            script.checkout(scm)
             }
          }
-         stage('read config') {
-            def configuration = BuildConfiguration.load(this, 'output.txt')
-            configuration.printInformation(this)
+         script.stage('read config') {
+            def configuration = BuildConfiguration.load(script, 'output.txt')
+            configuration.printInformation(script)
          }
       }
       
