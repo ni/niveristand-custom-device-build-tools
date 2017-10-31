@@ -40,36 +40,35 @@ Dependencies: $dependencies
       def dependencies
       
       def props = script.readJSON file: jsonFile
-      def keys = props.keySet()
-      script.echo keys
+      script.echo props.toString()
       
-      if (keys.cotains('constants')) {
-         constants = props.constants
-      }
+//      if (keys.cotains('constants')) {
+//         constants = props.constants
+//      }
       
-      if (keys.cotains('mkdirectories')) {
-         mkdirectories = props.mkdirectories
-      }
+//      if (keys.cotains('mkdirectories')) {
+//         mkdirectories = props.mkdirectories
+//      }
       
-      if (keys.cotains('exports')) {
-         exports = props.exports
-      }
+//      if (keys.cotains('exports')) {
+//         exports = props.exports
+//     }
       
-      if (keys.cotains('projects')) {
-         projects = props.projects
-      }
+//      if (keys.cotains('projects')) {
+//         projects = props.projects
+//      }
       
-      if (keys.cotains('codegen')) {
-         codegen = props.codegen
-      }
+//      if (keys.cotains('codegen')) {
+//         codegen = props.codegen
+//      }
       
-      if (keys.cotains('build')) {
-         build = props.build
-      }
+//      if (keys.cotains('build')) {
+//         build = props.build
+//      }
       
-      if (keys.cotains('dependencies')) {
-         dependencies = props.dependencies
-      }
+//      if (keys.cotains('dependencies')) {
+//         dependencies = props.dependencies
+//      }
       
       return new BuildConfiguration(constants, mkdirectories, exports, projects, codegen, build, dependencies)
    }
