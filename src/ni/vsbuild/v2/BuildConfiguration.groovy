@@ -46,6 +46,9 @@ Dependencies: $dependencies
       
       if (keys.contains('constants')) {
          constants = props.get('constants')
+         if(constants) {
+            script.echo 'Constants was set'
+         }
       }
       
 //      if (keys.contains('mkdirectories')) {
