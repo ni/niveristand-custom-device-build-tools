@@ -3,7 +3,7 @@ package ni.vsbuild.v2
 class BuildConfiguration implements Serializable {
 
    private final String CONFIGURATION_STRING = """
-Constants: $constants
+Constants: ${constants}.toString()
 Mkdirs: $mkdirectories
 Exports: $exports
 Projects: $projects
@@ -42,11 +42,11 @@ Dependencies: $dependencies
       def props = script.readJSON file: jsonFile
       script.echo props.toString()
       script.echo props.keySet().toString()
-      script.echo props.keySet().contains('constants')
       
-//      if (keys.cotains('constants')) {
-//         constants = props.constants
-//      }
+      if (keys.cotains('constants')) {
+         script.echo 'Constants exists'
+         constants = props.constants
+      }
       
 //      if (keys.cotains('mkdirectories')) {
 //         mkdirectories = props.mkdirectories
