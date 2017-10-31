@@ -4,7 +4,7 @@ class BuildConfiguration implements Serializable {
 
    private final String CONFIGURATION_STRING = """
 Build configuration is:
-   Constants: $constants of type ${constants.getClass()}
+   Paths: $paths of type ${paths.getClass()}
    Mkdirs: $mkdirectories
    Exports: $exports
    Projects: $projects
@@ -13,7 +13,7 @@ Build configuration is:
    Dependencies: $dependencies
 """
 
-   public final def constants
+   public final def paths
    public final def mkdirectories
    public final def exports
    public final def projects
@@ -21,8 +21,8 @@ Build configuration is:
    public final def build
    public final def dependencies
    
-   private BuildConfiguration(constants, mkdirectories, exports, projects, codegen, build, dependencies) {
-      this.constants = constants
+   private BuildConfiguration(paths, mkdirectories, exports, projects, codegen, build, dependencies) {
+      this.paths = paths
       this.mkdirectories = mkdirectories
       this.exports = exports
       this.projects = projects
@@ -35,7 +35,7 @@ Build configuration is:
       def props = script.readJSON file: jsonFile
       
       return new BuildConfiguration(
-         props.get('constants'),
+         props.get('paths'),
          props.get('mkdirectories'),
          props.get('exports'),
          props.get('projects'),
