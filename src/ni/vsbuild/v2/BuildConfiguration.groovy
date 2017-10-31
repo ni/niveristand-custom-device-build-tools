@@ -20,7 +20,7 @@ Dependencies: $dependencies
    public final def build
    public final def dependencies
    
-   private BuildConfiguration(contants, mkdirectories, exports, projects, codegen, build, dependencies) {
+   private BuildConfiguration(constants, mkdirectories, exports, projects, codegen, build, dependencies) {
       this.constants = constants
       this.mkdirectories = mkdirectories
       this.exports = exports
