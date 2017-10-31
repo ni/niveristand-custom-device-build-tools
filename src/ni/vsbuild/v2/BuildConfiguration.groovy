@@ -48,6 +48,7 @@ Dependencies: $dependencies
          constants = props.get('constants')
          if(constants) {
             script.echo 'Constants was set'
+            script.echo ${constants}.toString()
          }
       }
       
