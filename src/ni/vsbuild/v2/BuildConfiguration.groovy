@@ -44,32 +44,32 @@ Dependencies: $dependencies
       def keys = props.keySet()
       script.echo keys.toString()
       
-      if (keys.cotains('constants')) {
+      if (keys.contains('constants')) {
          script.echo 'Constants exists'
          constants = props.constants
       }
       
-//      if (keys.cotains('mkdirectories')) {
+//      if (keys.contains('mkdirectories')) {
 //         mkdirectories = props.mkdirectories
 //      }
       
-//      if (keys.cotains('exports')) {
+//      if (keys.contains('exports')) {
 //         exports = props.exports
 //     }
       
-//      if (keys.cotains('projects')) {
+//      if (keys.contains('projects')) {
 //         projects = props.projects
 //      }
       
-//      if (keys.cotains('codegen')) {
+//      if (keys.contains('codegen')) {
 //         codegen = props.codegen
 //      }
       
-//      if (keys.cotains('build')) {
+//      if (keys.contains('build')) {
 //         build = props.build
 //      }
       
-//      if (keys.cotains('dependencies')) {
+//      if (keys.contains('dependencies')) {
 //         dependencies = props.dependencies
 //      }
       
