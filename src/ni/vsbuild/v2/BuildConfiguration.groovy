@@ -41,7 +41,8 @@ Dependencies: $dependencies
       
       def props = script.readJSON file: jsonFile
       script.echo props.toString()
-      script.echo props.keySet().toString()
+      def keys = props.keySet()
+      script.echo keys.toString()
       
       if (keys.cotains('constants')) {
          script.echo 'Constants exists'
