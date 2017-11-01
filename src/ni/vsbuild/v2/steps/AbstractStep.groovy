@@ -8,6 +8,7 @@ abstract class AbstractStep implements Step {
    def name
    
    AbstractStep(script, jsonStep) {
+      this.script = script
       this.name = jsonStep.getString('name')
    }
    
