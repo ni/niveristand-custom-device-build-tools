@@ -12,7 +12,6 @@ class BuildStepFactory implements Serializable {
       }
       
       if(type == 'lvBuildSpec') {
-         script.echo "Type matched lvBuildSpec"
          return new build.LvBuildSpecStep(script, jsonStep)
       }
       

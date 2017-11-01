@@ -14,7 +14,6 @@ class LvBuildSpecStep extends LvBuildStep {
    }
    
    void execute(BuildConfiguration configuration) {
-      script.echo "This is the execute for LvBuildSpecStep class."
       script.lvBuildSpec(resolveProject(configuration), target, spec, '2017')
    }
 
