@@ -53,7 +53,7 @@ Build configuration is:
    }
    
    private void validate() {
-      if (!(paths.containsKey('BUILT_DIR') && paths.containsKey('ARCHIVE_DIR')) {
+      if (!(paths.containsKey('BUILT_DIR') && paths.containsKey('ARCHIVE_DIR'))) {
          error("paths must define \'BUILT_DIR\' and \'ARCHIVE_DIR\'.")
       }
    }
