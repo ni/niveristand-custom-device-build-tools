@@ -8,5 +8,7 @@ class Build extends AbstractStage {
    
    void executeStage() {
       script.echo "build is ${configuration.build}"
+      def steps = configuration.build.getJSONArray('steps')
+      script.echo "$steps"
    }
 }
