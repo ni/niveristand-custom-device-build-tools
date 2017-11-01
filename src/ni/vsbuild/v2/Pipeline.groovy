@@ -1,5 +1,6 @@
 package ni.vsbuild.v2
 
+import ni.vsbuild.v2.stages.Stage
 import ni.vsbuild.v2.stages.*
 
 class Pipeline implements Serializable {
