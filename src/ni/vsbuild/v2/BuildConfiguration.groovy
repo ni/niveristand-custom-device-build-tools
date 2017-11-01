@@ -44,7 +44,7 @@ Build configuration is:
          config.get('projects'),
          config.get('codegen'),
          config.get('build'),
-         config.get('dependencies')
+         config.get('dependencies'),
          config.get('package'))
    }
    
