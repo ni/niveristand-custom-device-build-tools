@@ -12,6 +12,7 @@ class BuildStepFactory implements Serializable {
       }
       
       if(type == 'lvBuildSpec') {
+         script.echo "Type matched lvBuildSpec"
          return new build.LvBuildSpecStep(script, jsonStep)
       }
       
@@ -22,6 +23,8 @@ class BuildStepFactory implements Serializable {
       if(type == 'lvRunVi') {
          //return new LvRunVi(script, jsonStep)
       }
+      
+      script.echo "No correct type found."
       
       //*** TODO: error and return message that type is not supported ***
    }
