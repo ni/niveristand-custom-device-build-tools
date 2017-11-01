@@ -18,6 +18,15 @@ class Pipeline implements Serializable {
       
       def buildPipeline(BuildConfiguration configuration) {
          stages << new Dummy(script, configuration)
+         
+         if(configuration.codegen) {
+            stages << new Codegen(script, configuration)
+         }
+         
+         if(configuration.build) {
+            stages << new Build(script, configuration)
+         }
+         
          return stages
       }
    }
