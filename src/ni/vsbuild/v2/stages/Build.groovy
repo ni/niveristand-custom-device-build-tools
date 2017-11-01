@@ -10,5 +10,10 @@ class Build extends AbstractStage {
       script.echo "build is ${configuration.build}"
       def steps = configuration.build.getJSONArray('steps')
       script.echo "$steps"
+      for (def step in steps) {
+         def name = step.getString('name')
+         def type = step.getString('type')
+         script.echo "Step $name is of type $type"
+      }
    }
 }
