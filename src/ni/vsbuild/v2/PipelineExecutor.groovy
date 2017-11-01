@@ -13,7 +13,7 @@ class PipelineExecutor implements Serializable {
          }
          script.stage('setup') {
             script.cloneCommonbuild()
-            script.bat "commonbuild\\scripts\\setup.bat"
+            script.bat "commonbuild\\scripts\\buildSetup.bat"
          }
          script.stage('read config') {
             def configuration = BuildConfiguration.load(script, 'output.txt')
