@@ -1,5 +1,7 @@
 package ni.vsbuild.v2.stages
 
+import ni.vsbuild.v2.steps.Step
+
 class Build extends AbstractStage {
 
    Build(script, configuration) {
@@ -7,13 +9,16 @@ class Build extends AbstractStage {
    }
    
    void executeStage() {
+      List<Step> steps
       script.echo "build is ${configuration.build}"
-      def steps = configuration.build.getJSONArray('steps')
-      script.echo "$steps"
-      for (def step in steps) {
-         def name = step.getString('name')
-         def type = step.getString('type')
-         script.echo "Step $name is of type $type"
+      def jsonSteps = configuration.build.getJSONArray('steps')
+      for (def jsonStep in jsonSteps) {
+         Step step = BuildStepFactory.create(script, jsonStep)
+         steps.add(step)
+      }
+      
+      for(Step step in steps) {
+         step.execute(configuration)
       }
    }
 }
