@@ -7,7 +7,7 @@ abstract class LvBuildSpec extends LvBuildStep {
    def target
    def spec
    
-   LvBuildStep(script, jsonStep) {
+   LvBuildSpec(script, jsonStep) {
       super(script, jsonStep)
       this.target = jsonStep.getString('target')
       this.spec = jsonStep.getString('build_spec')
