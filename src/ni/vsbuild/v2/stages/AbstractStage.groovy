@@ -1,6 +1,6 @@
 package ni.vsbuild.v2.stages
 
-import ni.vsbuild.v2.PipelineConfiguration
+import ni.vsbuild.v2.BuildConfiguration
 
 abstract class AbstractStage implements Stage {
 
@@ -8,7 +8,7 @@ abstract class AbstractStage implements Stage {
    def script
    def configuration
 
-   AbstractStage(script, String stageName, PipelineConfiguration configuration) {
+   AbstractStage(script, String stageName, BuildConfiguration configuration) {
       this.script = script
       this.stageName = stageName
       this.configuration = configuration
