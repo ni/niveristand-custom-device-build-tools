@@ -16,7 +16,7 @@ class Pipeline implements Serializable {
          this.script = script
       }
       
-      def buildPipeline() {
+      def buildPipeline(BuildConfiguration configuration) {
          //stages << new Dummy(script)
          return stages
       }
