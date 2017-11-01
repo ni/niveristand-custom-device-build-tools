@@ -9,7 +9,7 @@ Build configuration is:
    Exports: $exports
    Projects: $projects
    Codegen: $codegen
-   Build: $build
+   Build: $build of type ${build.getClass()}
    Dependencies: $dependencies
    Package type: $package_type
 """
