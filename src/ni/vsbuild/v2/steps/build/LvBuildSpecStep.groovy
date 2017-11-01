@@ -11,10 +11,11 @@ class LvBuildSpecStep extends LvBuildStep {
       super(script, jsonStep)
       this.target = jsonStep.getString('target')
       this.spec = jsonStep.getString('build_spec')
+      script.echo "LvBuildSpecStep constructor."
    }
    
    void execute(BuildConfiguration configuration) {
-      script.echo "This is the execute for LvBuildSpec class."
+      script.echo "This is the execute for LvBuildSpecStep class."
    }
 
 }
