@@ -16,16 +16,16 @@ class PipelineInformation implements Serializable {
       script.echo BUILD_INFO_STRING
    }
 
-   public BuildExecutor createExecutor(script, lvVersion) {
-      BuildExecutor executor
+//   public BuildExecutor createExecutor(script, lvVersion) {
+//      BuildExecutor executor
       
-      if (buildFlow == BuildFlow.NIBUILD) {
-         executor = new nibuild.BuildExecutor(script, this, lvVersion)
-      } else {
-         executor = new groovy.BuildExecutor(script, this, lvVersion)
-      }
+//      if (buildFlow == BuildFlow.NIBUILD) {
+//         executor = new nibuild.BuildExecutor(script, this, lvVersion)
+//      } else {
+//         executor = new groovy.BuildExecutor(script, this, lvVersion)
+//      }
       
-      executor.loadBuildSteps(buildStepsLocation)      
-      return executor
-   }
+//      executor.loadBuildSteps(buildStepsLocation)      
+//      return executor
+//   }
 }
