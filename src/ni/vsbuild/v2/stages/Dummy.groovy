@@ -6,7 +6,6 @@ class Dummy extends AbstractStage {
       super(script, 'Dummy')
    }
    
-   @override
    void executeStage() {
       script.echo "This is a dummy stage for testing."
    }
