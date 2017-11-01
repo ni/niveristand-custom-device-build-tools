@@ -12,7 +12,7 @@ class BuildStepFactory implements Serializable {
       }
       
       if(type == 'lvBuildSpec') {
-         return new build.LvBuildSpec(script, jsonStep)
+         return new build.LvBuildSpecStep(script, jsonStep)
       }
       
       if(type == 'lvBuildSpecAllTargets') {

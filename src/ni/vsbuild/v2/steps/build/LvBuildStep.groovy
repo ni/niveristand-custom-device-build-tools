@@ -1,8 +1,8 @@
 package ni.vsbuild.v2.steps.build
 
-import ni.vsbuild.v2.steps.AbstractBuild
+import ni.vsbuild.v2.steps.AbstractStep
 
-abstract class LvBuildStep extends AbstractBuild {
+abstract class LvBuildStep extends AbstractStep {
 
    def project
    
