@@ -53,7 +53,7 @@ Build configuration is:
    }
    
    public getPath(String key) {
-      return constants.getString(key)
+      return paths.getString(key)
    }
    
    private void validate() {
