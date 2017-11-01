@@ -1,8 +1,8 @@
 package ni.vsbuild.v2.stages
 
-class Checkout extends AbstractStage {
+class Dummy extends AbstractStage {
 
-   Checkout(script) {
+   Dummy(script) {
       super(script, 'Dummy')
    }
    
