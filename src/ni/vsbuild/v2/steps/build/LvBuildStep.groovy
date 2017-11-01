@@ -13,7 +13,7 @@ abstract class LvBuildStep extends AbstractStep {
    }
    
    protected String resolveProject(BuildConfiguration configuration) {
-      def cleanedProject = project.replace("\{", "").replace("\}")
+      def cleanedProject = project.replace("{", "").replace("}")
       script.echo "Cleaned project is $cleanedProject"
       def projectRef = configuration.projects.getString(cleanedProject)
       script.echo "projectRef is $projectRef"
