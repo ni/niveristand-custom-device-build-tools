@@ -2,7 +2,7 @@ package ni.vsbuild.v2
 
 class PipelineExecutor implements Serializable {
 
-   static void execute(script, PipelineInformation pipelineInformation) {
+   static void execute(script) {
       //need to build dependencies here************
       def pipeline = new Pipeline(script)
       pipeline.execute()
