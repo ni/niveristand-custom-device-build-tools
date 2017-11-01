@@ -4,6 +4,6 @@ import ni.vsbuild.v2.BuildConfiguration
 
 interface Step extends Serializable {
 
-   execute(BuildConfiguration configuration)
+   void execute(BuildConfiguration configuration)
 
 }
