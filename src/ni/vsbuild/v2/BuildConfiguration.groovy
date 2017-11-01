@@ -52,6 +52,10 @@ Build configuration is:
       script.echo CONFIGURATION_STRING
    }
    
+   public getPath(String key) {
+      return constants.getString(key)
+   }
+   
    private void validate() {
       if (!(paths.containsKey('BUILT_DIR') && paths.containsKey('ARCHIVE_DIR'))) {
          error("paths must define \'BUILT_DIR\' and \'ARCHIVE_DIR\'.")
