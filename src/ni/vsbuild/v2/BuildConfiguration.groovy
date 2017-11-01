@@ -11,6 +11,7 @@ Build configuration is:
    Codegen: $codegen
    Build: $build
    Dependencies: $dependencies
+   Package type: $package_type
 """
 
    public final def paths
@@ -20,8 +21,9 @@ Build configuration is:
    public final def codegen
    public final def build
    public final def dependencies
+   public final def package_type
    
-   private BuildConfiguration(paths, mkdirectories, exports, projects, codegen, build, dependencies) {
+   private BuildConfiguration(paths, mkdirectories, exports, projects, codegen, build, dependencies, package_type) {
       this.paths = paths
       this.mkdirectories = mkdirectories
       this.exports = exports
@@ -29,19 +31,21 @@ Build configuration is:
       this.codegen = codegen
       this.build = build
       this.dependencies = dependencies
+      this.package_type = package_type
    }
    
    static BuildConfiguration load(def script, String jsonFile) {      
-      def props = script.readJSON file: jsonFile
+      def config = script.readJSON file: jsonFile
       
       return new BuildConfiguration(
-         props.get('paths'),
-         props.get('mkdirectories'),
-         props.get('exports'),
-         props.get('projects'),
-         props.get('codegen'),
-         props.get('build'),
-         props.get('dependencies'))
+         config.get('paths'),
+         config.get('mkdirectories'),
+         config.get('exports'),
+         config.get('projects'),
+         config.get('codegen'),
+         config.get('build'),
+         config.get('dependencies')
+         config.get('package'))
    }
    
    public void printInformation(script) {

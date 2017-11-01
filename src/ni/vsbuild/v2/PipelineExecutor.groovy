@@ -2,24 +2,10 @@ package ni.vsbuild.v2
 
 class PipelineExecutor implements Serializable {
 
-   static void execute(script) {
-      script.node('dcafbuild01') {
-         script.stage('checkout') {
-            script.deleteDir()
-            script.echo 'Attempting to get source from repo.'
-            script.timeout(time: 5, unit: 'MINUTES'){
-               script.checkout(script.scm)
-            }
-         }
-         script.stage('setup') {
-            script.cloneCommonbuild()
-            script.bat "commonbuild\\scripts\\buildSetup.bat"
-         }
-         script.stage('read config') {
-            def configuration = BuildConfiguration.load(script, 'build.json')
-            configuration.printInformation(script)
-         }
-      }
+   static void execute(script, PipelineInformation pipelineInformation) {
+      //need to build dependencies here************
+      def pipeline = new Pipeline(script)
+      pipeline.execute()
       
       //def configuration = BuildConfiguration.load(script, jsonFile)
       //configuration.printInformation(script)
