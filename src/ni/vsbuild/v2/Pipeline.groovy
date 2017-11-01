@@ -17,7 +17,7 @@ class Pipeline implements Serializable {
       }
       
       def buildPipeline() {
-         stages << new Dummy(script)
+         //stages << new Dummy(script)
          return stages
       }
    }
