@@ -13,7 +13,9 @@ abstract class LvBuildStep extends AbstractStep {
    }
    
    protected String resolveProject(BuildConfiguration configuration) {
-      def projectRef = configuration.projects.getString(project)
+      def cleanedProject = project.replace("\{", "").replace("\}")
+      script.echo "Cleaned project is $cleanedProject"
+      def projectRef = configuration.projects.getString(cleanedProject)
       script.echo "projectRef is $projectRef"
       
       if(!projectRef) {
