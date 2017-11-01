@@ -26,7 +26,7 @@ class Pipeline implements Serializable {
       this.script = script
    }
    
-   execute() {
+   void execute() {
       script.node('dcafbuild01') {
          setup()
          
@@ -40,7 +40,7 @@ class Pipeline implements Serializable {
       }
    }
    
-   protected executeStages() {
+   protected void executeStages() {
       for (Stage stage : stages) {
          try {
             stage.execute()
@@ -51,7 +51,7 @@ class Pipeline implements Serializable {
       }
    }
    
-   private setup() {
+   private void setup() {
       script.stage('Checkout') {
          script.deleteDir()
          script.echo 'Attempting to get source from repo.'
