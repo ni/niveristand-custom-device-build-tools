@@ -16,13 +16,13 @@ abstract class LvBuildStep extends AbstractStep {
       def cleanedProject = project.replace("{", "").replace("}", "")
       script.echo "Cleaned project is $cleanedProject"
       def projectRef = configuration.projects.getString(cleanedProject)
-      script.echo "projectRef is $projectRef"
+      script.echo "projectRef is $projectRef of type ${projectRef.getClass()}"
       
       if(!projectRef) {
          return project
       }
       
-      def path = projectRef.getString('path')
+      def path = projectRef.get('path')
       return path
    }
 
