@@ -8,6 +8,6 @@ class Dummy extends AbstractStage {
    
    void executeStage() {
       script.echo "This is a dummy stage for testing."
-      configuration.printInformation()
+      configuration.printInformation(script)
    }
 }
