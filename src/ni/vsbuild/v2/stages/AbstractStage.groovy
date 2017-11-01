@@ -10,7 +10,11 @@ abstract class AbstractStage implements Stage {
       this.stageName = stageName
    }
 
-   void execute()
+   void execute() {
+      script.stage("$stageName") {
+         executeStage()
+      }
+   }
    
    void execute(executor) {
       script.stage("${stageName}_${executor.lvVersion}") {
@@ -18,6 +22,6 @@ abstract class AbstractStage implements Stage {
       }
    }
    
-   abstract void executeStage(executor)
+   abstract void executeStage()
 
 }
