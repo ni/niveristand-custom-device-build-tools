@@ -7,7 +7,7 @@ Build configuration is:
    Paths: $paths of type ${paths.getClass()}
    Mkdirs: $mkdirectories
    Exports: $exports
-   Projects: $projects
+   Projects: $projects of type ${projects.getClass()}
    Codegen: $codegen
    Build: $build of type ${build.getClass()}
    Dependencies: $dependencies
