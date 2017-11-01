@@ -10,7 +10,7 @@ class Build extends AbstractStage {
    }
    
    void executeStage() {
-      List<Step> steps
+      List<Step> steps = []
       script.echo "build is ${configuration.build}"
       def jsonSteps = configuration.build.getJSONArray('steps')
       for (def jsonStep in jsonSteps) {
