@@ -8,7 +8,7 @@ class BuildStepFactory implements Serializable {
       def type = jsonStep.getString('type')
       
       if(type == 'lvBuildAll') {
-         //return new LvBuildAll(script, jsonStep)
+         //return new build.LvBuildAll(script, jsonStep)
       }
       
       if(type == 'lvBuildSpec') {
@@ -16,11 +16,11 @@ class BuildStepFactory implements Serializable {
       }
       
       if(type == 'lvBuildSpecAllTargets') {
-         return new LvBuildSpecAllTargetsStep(script, jsonStep)
+         return new build.LvBuildSpecAllTargetsStep(script, jsonStep)
       }
       
       if(type == 'lvRunVi') {
-         //return new LvRunVi(script, jsonStep)
+         //return new build.LvRunVi(script, jsonStep)
       }
       
       script.echo "No correct type found."
