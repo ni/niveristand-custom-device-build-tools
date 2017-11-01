@@ -2,7 +2,7 @@ package ni.vsbuild.v2.steps.build
 
 import ni.vsbuild.v2.BuildConfiguration
 
-abstract class LvBuildSpec extends LvBuildStep {
+class LvBuildSpec extends LvBuildStep {
 
    def target
    def spec
