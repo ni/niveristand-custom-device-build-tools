@@ -21,5 +21,4 @@ abstract class LvBuildStep extends AbstractStep {
       def projectRef = configuration.projects.getJSONObject(dereferencedProject)
       return projectRef.getString('path')
    }
-
 }

@@ -14,5 +14,4 @@ class LvBuildSpecAllTargetsStep extends LvBuildStep {
    void execute(BuildConfiguration configuration) {
       script.lvBuildSpecAllTargets(resolveProject(configuration), spec, '2017')
    }
-
 }

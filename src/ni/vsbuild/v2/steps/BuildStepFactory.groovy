@@ -20,7 +20,7 @@ class BuildStepFactory implements Serializable {
       }
       
       if(type == 'lvRunVi') {
-         //return new build.LvRunVi(script, jsonStep)
+         return new build.LvRunVi(script, jsonStep)
       }
       
       script.echo "No correct type found."

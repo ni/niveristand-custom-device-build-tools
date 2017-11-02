@@ -2,13 +2,16 @@ package ni.vsbuild.v2.steps.build
 
 import ni.vsbuild.v2.BuildConfiguration
 
-class LvBuildAllStep extends LvBuildStep {
+class LvRunViStep extends AbstractStep {
+
+   def vi
    
-   LvBuildAllStep(script, jsonStep) {
+   LvRunViStep(script, jsonStep) {
       super(script, jsonStep)
+      this.vi = jsonStep.getString('vi')
    }
    
    void execute(BuildConfiguration configuration) {
-      script.lvBuildAll(resolveProject(configuration), '2017')
+      script.lvRunVi(vi, '2017')
    }
 }
