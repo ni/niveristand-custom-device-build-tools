@@ -13,7 +13,7 @@ abstract class LvBuildStep extends AbstractStep {
    }
    
    protected String resolveProject(BuildConfiguration configuration) {
-      if(!(project =~ /\{(\w+)\}/) {
+      if(!(project =~ /\{(\w+)\}/)) {
          return project
       }
       
