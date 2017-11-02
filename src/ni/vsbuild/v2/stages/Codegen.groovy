@@ -19,8 +19,9 @@ class Codegen extends AbstractStepStage {
          return
       }
       
-      for(def project in configuration.projects.keys()) {
+      for(def key in configuration.projects.keys()) {
          script.echo "project type is ${project.getClass()}"
+         def project = projects.getJSONObject(key)
          def path = project.getString('path')
          script.echo "Project path is $path"
       }
