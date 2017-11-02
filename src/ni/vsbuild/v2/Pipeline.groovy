@@ -10,26 +10,39 @@ class Pipeline implements Serializable {
    static class Builder implements Serializable {
       
       def script
+      BuildConfiguration configuration
       def stages = []
       
-      Builder(def script) {
+      Builder(def script, BuildConfiguration configuration) {
          this.script = script
+         this.configuration = configuration
       }
       
-      def buildPipeline(BuildConfiguration configuration) {
-         stages << new Dummy(script, configuration)
-         
+      def withCodegenStage() {
+         stages << new Codegen(script, configuration)
+      }
+      
+      def withBuildStage() {
+         stages << new Build(script, configuration)
+      }
+      
+      def withArchiveStage() {
+         stages << new Archive(script, configuration)
+      }
+      
+      def buildPipeline(BuildConfiguration configuration) {         
          if(configuration.codegen || configuration.projects) {
-            stages << new Codegen(script, configuration)
+            withCodegenStage()
          }
          
          if(configuration.build) {
-            stages << new Build(script, configuration)
+            withBuildStage()
          }
          
          if(configuration.archive) {
-            stages << new Archive(script, configuration)
+            withArchiveStage
          }
+         
          return stages
       }
    }
@@ -45,8 +58,8 @@ class Pipeline implements Serializable {
          def configuration = BuildConfiguration.load(script, 'build.json')
          configuration.printInformation(script)
          
-         def builder = new Builder(script)
-         this.stages = builder.buildPipeline(configuration)
+         def builder = new Builder(script, configuration)
+         this.stages = builder.buildPipeline()
          
          executeStages()
       }
