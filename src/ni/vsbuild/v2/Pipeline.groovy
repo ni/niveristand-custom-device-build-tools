@@ -40,7 +40,7 @@ class Pipeline implements Serializable {
          }
          
          if(configuration.archive) {
-            withArchiveStage
+            withArchiveStage()
          }
          
          return stages
