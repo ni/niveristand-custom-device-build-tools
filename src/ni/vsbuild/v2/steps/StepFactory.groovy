@@ -8,15 +8,15 @@ class StepFactory implements Serializable {
       def type = jsonStep.getString('type')
       
       if(type == 'lvBuildAll') {
-         return new build.LvBuildAllStep(script, jsonStep)
+         return new LvBuildAllStep(script, jsonStep)
       }
       
       if(type == 'lvBuildSpec') {
-         return new build.LvBuildSpecStep(script, jsonStep)
+         return new LvBuildSpecStep(script, jsonStep)
       }
       
       if(type == 'lvBuildSpecAllTargets') {
-         return new build.LvBuildSpecAllTargetsStep(script, jsonStep)
+         return new LvBuildSpecAllTargetsStep(script, jsonStep)
       }
       
       if(type == 'lvRunVi') {
