@@ -17,7 +17,7 @@ abstract class LvBuildStep extends AbstractStep {
          return project
       }
       
-      def dereferencedProject = (project =~ /(\w)+/)[0][0])
+      def dereferencedProject = (project =~ /(\w)+/)[0][0]
       def projectRef = configuration.projects.getJSONObject(dereferencedProject)
       return projectRef.getString('path')
    }
