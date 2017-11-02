@@ -10,11 +10,14 @@ class Codegen extends AbstractStepStage {
    }
    
    void executeStage() {
-      generateProjectConfigFiles()
+      generateProjectConfigFiles('2017')
       executeSteps('codegen')
    }
    
-   private void generateProjectConfigFiles() {
+   // Generates a config file with the correct VeriStand assembly
+   // versions so the API can correctly load. A config file is
+   // generated for any project defined in the BuildConfiguration projects
+   private void generateProjectConfigFiles(lvVersion) {
       if(!configuration.projects) {
          return
       }
@@ -26,8 +29,11 @@ class Codegen extends AbstractStepStage {
          paths.add(path)
       }
       
+      // Must loop again because jenkins/groovy don't like reading the file
+      // in the same loop as accessing the json objects:
+      // java.util.Collections$UnmodifiableCollection$1
       for(def path in paths) {
-         script.copyProjectConfig(path, '2017')
+         script.copyProjectConfig(path, lvVersion)
       }
    }
 }
