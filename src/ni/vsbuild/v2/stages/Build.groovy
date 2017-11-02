@@ -18,20 +18,20 @@ class Build extends AbstractStage {
          //steps.add(step)
       //}
       
-      List<Step> steps = buildAllSteps('build')
+      List<Step> steps = getAllSteps('build')
       for(Step step in steps) {
          step.execute(configuration)
       }
    }
    
-   private List<Step> buildAllSteps(String path) {
+   private List<Step> getAllSteps(String property) {
       List<Step> steps = []
-      def myproperty = configuration.getProperty(path)
-      script.echo "property is $myproperty"
-      def jsonSteps = myproperty.getJSONArray('steps')
+      def jsonSteps = configuration.getProperty(property).getJSONArray('steps')
       for (def jsonStep in jsonSteps) {
          Step step = StepFactory.create(script, jsonStep)
          steps.add(step)
       }
+      
+      return steps
    }
 }
