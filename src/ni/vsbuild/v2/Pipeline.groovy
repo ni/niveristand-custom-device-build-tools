@@ -30,7 +30,7 @@ class Pipeline implements Serializable {
          stages << new Archive(script, configuration)
       }
       
-      def buildPipeline(BuildConfiguration configuration) {         
+      def buildPipeline() {         
          if(configuration.codegen || configuration.projects) {
             withCodegenStage()
          }
