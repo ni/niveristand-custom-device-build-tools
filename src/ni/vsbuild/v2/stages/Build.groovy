@@ -10,16 +10,26 @@ class Build extends AbstractStage {
    }
    
    void executeStage() {
-      List<Step> steps = []
       script.echo "build is ${configuration.build}"
-      def jsonSteps = configuration.build.getJSONArray('steps')
+      //List<Step> steps = []
+      //def jsonSteps = configuration.build.getJSONArray('steps')
+      //for (def jsonStep in jsonSteps) {
+         //Step step = StepFactory.create(script, jsonStep)
+         //steps.add(step)
+      //}
+      
+      List<Step> steps = buildAllSteps('build')
+      for(Step step in steps) {
+         step.execute(configuration)
+      }
+   }
+   
+   private List<Step> buildAllSteps(String path) {
+      List<Step> steps = []
+      def jsonSteps = configration.path.getJSONArray('steps')
       for (def jsonStep in jsonSteps) {
          Step step = StepFactory.create(script, jsonStep)
          steps.add(step)
-      }
-      
-      for(Step step in steps) {
-         step.execute(configuration)
       }
    }
 }
