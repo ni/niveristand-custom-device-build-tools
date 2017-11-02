@@ -10,7 +10,7 @@ abstract class AbstractStepStage extends AbstractStage {
    }
    
    protected void executeSteps(String stepList) {
-      List<Step> steps = StepFactory.create(script, configuration, stepList)
+      List<Step> steps = StepFactory.create(script, configuration, stepList, lvVersion)
       for(Step step in steps) {
          step.execute(configuration)
       }
