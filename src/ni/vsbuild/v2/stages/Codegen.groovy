@@ -10,18 +10,18 @@ class Codegen extends AbstractStepStage {
    }
    
    void executeStage() {
-      generateProjectConfigFiles('2017')
-      executeSteps('codegen')
+      if(configuration.projects) {
+         generateProjectConfigFiles('2017')
+      }
+      if(configuration.codegen) {
+         executeSteps('codegen')
+      }
    }
    
    // Generates a config file with the correct VeriStand assembly
    // versions so the API can correctly load. A config file is
    // generated for any project defined in the BuildConfiguration projects
-   private void generateProjectConfigFiles(lvVersion) {
-      if(!configuration.projects) {
-         return
-      }
-      
+   private void generateProjectConfigFiles(lvVersion) {      
       def paths = []
       for(def key in configuration.projects.keys()) {
          def project = configuration.projects.getJSONObject(key)
