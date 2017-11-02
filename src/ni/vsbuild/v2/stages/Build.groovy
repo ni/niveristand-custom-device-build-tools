@@ -1,7 +1,7 @@
 package ni.vsbuild.v2.stages
 
 import ni.vsbuild.v2.steps.Step
-import ni.vsbuild.v2.steps.BuildStepFactory
+import ni.vsbuild.v2.steps.StepFactory
 
 class Build extends AbstractStage {
 
@@ -14,7 +14,7 @@ class Build extends AbstractStage {
       script.echo "build is ${configuration.build}"
       def jsonSteps = configuration.build.getJSONArray('steps')
       for (def jsonStep in jsonSteps) {
-         Step step = BuildStepFactory.create(script, jsonStep)
+         Step step = StepFactory.create(script, jsonStep)
          steps.add(step)
       }
       

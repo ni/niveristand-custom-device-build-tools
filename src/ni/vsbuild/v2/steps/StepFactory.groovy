@@ -2,7 +2,7 @@ package ni.vsbuild.v2.steps
 
 import ni.vsbuild.v2.BuildConfiguration
 
-class BuildStepFactory implements Serializable {
+class StepFactory implements Serializable {
    
    static Step create(script, jsonStep) {
       def type = jsonStep.getString('type')
@@ -20,7 +20,7 @@ class BuildStepFactory implements Serializable {
       }
       
       if(type == 'lvRunVi') {
-         return new build.LvRunViStep(script, jsonStep)
+         return new LvRunViStep(script, jsonStep)
       }
       
       script.echo "No correct type found."
