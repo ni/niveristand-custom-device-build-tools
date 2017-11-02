@@ -4,29 +4,23 @@ class BuildConfiguration implements Serializable {
 
    private final String CONFIGURATION_STRING = """
 Build configuration is:
-   Paths: $paths of type ${paths.getClass()}
-   Mkdirs: $mkdirectories
-   Exports: $exports
-   Projects: $projects of type ${projects.getClass()}
+   Archive: $archive
+   Projects: $projects
    Codegen: $codegen
-   Build: $build of type ${build.getClass()}
+   Build: $build
    Dependencies: $dependencies
    Package type: $package_type
 """
 
-   public final def paths
-   public final def mkdirectories
-   public final def exports
+   public final def archive
    public final def projects
    public final def codegen
    public final def build
    public final def dependencies
    public final def package_type
    
-   private BuildConfiguration(paths, mkdirectories, exports, projects, codegen, build, dependencies, package_type) {
-      this.paths = paths
-      this.mkdirectories = mkdirectories
-      this.exports = exports
+   private BuildConfiguration(archive, projects, codegen, build, dependencies, package_type) {
+      this.archive = archive
       this.projects = projects
       this.codegen = codegen
       this.build = build
@@ -38,9 +32,7 @@ Build configuration is:
       def config = script.readJSON file: jsonFile
       
       return new BuildConfiguration(
-         config.get('paths'),
-         config.get('mkdirectories'),
-         config.get('exports'),
+         config.get('archive'),
          config.get('projects'),
          config.get('codegen'),
          config.get('build'),
@@ -52,13 +44,9 @@ Build configuration is:
       script.echo CONFIGURATION_STRING
    }
    
-   public getPath(String key) {
-      return paths.getString(key)
-   }
-   
    private void validate() {
-      if (!(paths.containsKey('BUILT_DIR') && paths.containsKey('ARCHIVE_DIR'))) {
-         error("paths must define \'BUILT_DIR\' and \'ARCHIVE_DIR\'.")
+      if (archive && !(archive.containsKey('build_output_dir') && archive.containsKey('archive_location'))) {
+         error("archive must define \'build_output_dir\' and \'archive_location\'.")
       }
    }
    
