@@ -10,6 +10,7 @@ class Codegen extends AbstractStepStage {
    }
    
    void executeStage() {
+      generateProjectConfigFiles()
       executeSteps('codegen')
    }
    
@@ -19,6 +20,7 @@ class Codegen extends AbstractStepStage {
       }
       
       for(def project in projects.keySet()) {
+         script.echo "project type is ${project.getClass()}"
          def path = project.getString('path')
          script.echo "Project path is $path"
       }
