@@ -8,7 +8,7 @@ class LvBuildAllStep extends LvBuildStep {
       super(script, jsonStep)
    }
    
-   void execute(BuildConfiguration configuration) {
+   void executeStep(BuildConfiguration configuration) {
       script.lvBuildAll(resolveProject(configuration), '2017')
    }
 }

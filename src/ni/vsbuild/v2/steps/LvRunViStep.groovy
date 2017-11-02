@@ -11,7 +11,7 @@ class LvRunViStep extends AbstractStep {
       this.vi = jsonStep.getString('vi')
    }
    
-   void execute(BuildConfiguration configuration) {
+   void executeStep(BuildConfiguration configuration) {
       script.lvRunVi(vi, '2017')
    }
 }

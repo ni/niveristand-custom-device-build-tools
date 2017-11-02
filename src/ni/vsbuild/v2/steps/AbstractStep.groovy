@@ -12,5 +12,11 @@ abstract class AbstractStep implements Step {
       this.name = jsonStep.getString('name')
    }
    
-   abstract void execute(BuildConfiguration configuration)
+   void execute(BuildConfiguration configuration) {
+      script.echo "Step $name beginning..."
+      executeStep(configuration)
+      script.echo "Step $name complete."
+   }
+   
+   abstract void executeStep(BuildConfiguration configuration)
 }
