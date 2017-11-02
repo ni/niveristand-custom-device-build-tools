@@ -57,7 +57,7 @@ class Pipeline implements Serializable {
    
    void execute() {
       script.node('dcafbuild01') {
-         def lvVersion = '2017'
+         def lvVersion = pipelineInformation.lvVersions[0]
          setup()
          
          def configuration = BuildConfiguration.load(script, 'build.json')
