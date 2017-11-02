@@ -11,7 +11,7 @@ class Codegen extends AbstractStepStage {
    
    void executeStage() {
       def paths = generateProjectConfigFiles()
-      cript.copyProjectConfig(paths[0], '2017')
+      script.copyProjectConfig(paths[0], '2017')
       executeSteps('codegen')
    }
    
