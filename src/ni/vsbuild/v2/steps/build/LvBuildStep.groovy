@@ -13,9 +13,9 @@ abstract class LvBuildStep extends AbstractStep {
    }
    
    protected String resolveProject(BuildConfiguration configuration) {
-      if(project =~ /\{[\w]+\}/) {
+      if(project =~ /\{(\w+)\}/) {
          script.echo "project should be dereferenced"
-         def dereferenced = (project =~ /[\w]+/)
+         def dereferenced = (project =~ /(\w)+/)[0][0]
          script.echo "dereferenced project is $dereferenced"
       }
       def cleanedProject = project.replace("{", "").replace("}", "")
