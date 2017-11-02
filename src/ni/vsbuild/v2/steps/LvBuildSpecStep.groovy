@@ -7,8 +7,8 @@ class LvBuildSpecStep extends LvBuildStep {
    def target
    def spec
    
-   LvBuildSpecStep(script, jsonStep) {
-      super(script, jsonStep)
+   LvBuildSpecStep(script, jsonStep, lvVersion) {
+      super(script, jsonStep, lvVersion)
       this.target = jsonStep.getString('target')
       this.spec = jsonStep.getString('build_spec')
    }

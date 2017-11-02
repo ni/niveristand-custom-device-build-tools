@@ -6,8 +6,8 @@ class LvRunViStep extends LvStep {
 
    def vi
    
-   LvRunViStep(script, jsonStep) {
-      super(script, jsonStep)
+   LvRunViStep(script, jsonStep, lvVersion) {
+      super(script, jsonStep, lvVersion)
       this.vi = jsonStep.getString('vi')
    }
    

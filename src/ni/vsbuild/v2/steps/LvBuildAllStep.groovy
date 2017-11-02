@@ -4,8 +4,8 @@ import ni.vsbuild.v2.BuildConfiguration
 
 class LvBuildAllStep extends LvBuildStep {
    
-   LvBuildAllStep(script, jsonStep) {
-      super(script, jsonStep)
+   LvBuildAllStep(script, jsonStep, lvVersion) {
+      super(script, jsonStep, lvVersion)
    }
    
    void executeStep(BuildConfiguration configuration) {
