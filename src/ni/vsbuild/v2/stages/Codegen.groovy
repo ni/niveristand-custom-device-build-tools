@@ -10,8 +10,7 @@ class Codegen extends AbstractStepStage {
    }
    
    void executeStage() {
-      def paths = generateProjectConfigFiles()
-      script.copyProjectConfig(paths[0], '2017')
+      generateProjectConfigFiles()
       executeSteps('codegen')
    }
    
@@ -26,6 +25,9 @@ class Codegen extends AbstractStepStage {
          def path = project.getString('path')
          paths.add(path)
       }
-      return paths
+      
+      for(def path in paths) {
+         script.copyProjectConfig(path, '2017')
+      }
    }
 }
