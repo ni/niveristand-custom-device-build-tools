@@ -26,7 +26,7 @@ class Build extends AbstractStage {
    
    private List<Step> buildAllSteps(String path) {
       List<Step> steps = []
-      def jsonSteps = configration.path.getJSONArray('steps')
+      def jsonSteps = configuration.path.getJSONArray('steps')
       for (def jsonStep in jsonSteps) {
          Step step = StepFactory.create(script, jsonStep)
          steps.add(step)
