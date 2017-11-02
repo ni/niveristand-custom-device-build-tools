@@ -8,7 +8,7 @@ class BuildStepFactory implements Serializable {
       def type = jsonStep.getString('type')
       
       if(type == 'lvBuildAll') {
-         //return new build.LvBuildAll(script, jsonStep)
+         return new build.LvBuildAllStep(script, jsonStep)
       }
       
       if(type == 'lvBuildSpec') {
