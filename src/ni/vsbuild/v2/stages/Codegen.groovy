@@ -10,7 +10,8 @@ class Codegen extends AbstractStepStage {
    }
    
    void executeStage() {
-      generateProjectConfigFiles()
+      def paths = generateProjectConfigFiles()
+      cript.copyProjectConfig(paths[0], '2017')
       executeSteps('codegen')
    }
    
@@ -19,12 +20,12 @@ class Codegen extends AbstractStepStage {
          return
       }
       
+      def paths = []
       for(def key in configuration.projects.keys()) {
          def project = configuration.projects.getJSONObject(key)
-         script.echo "$project is of type ${project.getClass()}"
          def path = project.getString('path')
-         script.echo "Project path is $path"
-         script.copyProjectConfig(path, '2017')
+         paths.add(path)
       }
+      return paths
    }
 }
