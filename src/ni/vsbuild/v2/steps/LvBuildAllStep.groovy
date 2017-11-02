@@ -9,6 +9,6 @@ class LvBuildAllStep extends LvBuildStep {
    }
    
    void executeStep(BuildConfiguration configuration) {
-      script.lvBuildAll(resolveProject(configuration), '2017')
+      script.lvBuildAll(resolveProject(configuration), lvVersion)
    }
 }

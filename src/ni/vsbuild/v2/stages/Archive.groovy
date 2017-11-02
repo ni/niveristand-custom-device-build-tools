@@ -21,7 +21,7 @@ class Archive extends AbstractStage {
    // Builds a string of the form <archiveLocation>\\export\\<branch>\\<build_number>
    private void buildArchiveDir() {
       archiveLocation = configuration.archive.getString('archive_location') +
-                "\\export\\" +
+                "\\export\\$lvVersion\\" +
                 "${script.env.BRANCH_NAME}\\Build ${script.currentBuild.number}"
    }
    

@@ -2,7 +2,7 @@ package ni.vsbuild.v2.steps
 
 import ni.vsbuild.v2.BuildConfiguration
 
-class LvRunViStep extends AbstractStep {
+class LvRunViStep extends LvStep {
 
    def vi
    
@@ -12,6 +12,6 @@ class LvRunViStep extends AbstractStep {
    }
    
    void executeStep(BuildConfiguration configuration) {
-      script.lvRunVi(vi, '2017')
+      script.lvRunVi(vi, lvVersion)
    }
 }

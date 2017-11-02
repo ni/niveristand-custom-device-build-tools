@@ -11,7 +11,7 @@ class Codegen extends AbstractStepStage {
    
    void executeStage() {
       if(configuration.projects) {
-         generateProjectConfigFiles('2017')
+         generateProjectConfigFiles(lvVersion)
       }
       if(configuration.codegen) {
          executeSteps('codegen')

@@ -14,6 +14,6 @@ class LvBuildSpecStep extends LvBuildStep {
    }
    
    void executeStep(BuildConfiguration configuration) {
-      script.lvBuildSpec(resolveProject(configuration), target, spec, '2017')
+      script.lvBuildSpec(resolveProject(configuration), target, spec, lvVersion)
    }
 }

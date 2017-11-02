@@ -5,41 +5,44 @@ import ni.vsbuild.v2.stages.*
 class Pipeline implements Serializable {
 
    def script
+   PipelineInformation pipelineInformation
    def stages = []
    
    static class Builder implements Serializable {
       
       def script
-      BuildConfiguration configuration
+      BuildConfiguration buildConfiguration
+      String lvVersion
       def stages = []
       
-      Builder(def script, BuildConfiguration configuration) {
+      Builder(def script, BuildConfiguration buildConfiguration, String lvVersion) {
          this.script = script
-         this.configuration = configuration
+         this.buildConfiguration = buildConfiguration
+         this.lvVersion = lvVersion
       }
       
       def withCodegenStage() {
-         stages << new Codegen(script, configuration)
+         stages << new Codegen(script, buildConfiguration, lvVersion)
       }
       
       def withBuildStage() {
-         stages << new Build(script, configuration)
+         stages << new Build(script, buildConfiguration, lvVersion)
       }
       
       def withArchiveStage() {
-         stages << new Archive(script, configuration)
+         stages << new Archive(script, buildConfiguration, lvVersion)
       }
       
       def buildPipeline() {         
-         if(configuration.codegen || configuration.projects) {
+         if(buildConfiguration.codegen || buildConfiguration.projects) {
             withCodegenStage()
          }
          
-         if(configuration.build) {
+         if(buildConfiguration.build) {
             withBuildStage()
          }
          
-         if(configuration.archive) {
+         if(buildConfiguration.archive) {
             withArchiveStage()
          }
          
@@ -47,18 +50,20 @@ class Pipeline implements Serializable {
       }
    }
    
-   Pipeline(script) {
+   Pipeline(script, PipelineInformation pipelineInformation) {
       this.script = script
+      this.pipelineInformation = pipelineInformation
    }
    
    void execute() {
       script.node('dcafbuild01') {
+         def lvVersion = '2017'
          setup()
          
          def configuration = BuildConfiguration.load(script, 'build.json')
          configuration.printInformation(script)
          
-         def builder = new Builder(script, configuration)
+         def builder = new Builder(script, configuration, lvVersion)
          this.stages = builder.buildPipeline()
          
          executeStages()

@@ -2,9 +2,9 @@ package ni.vsbuild.v2
 
 class PipelineExecutor implements Serializable {
 
-   static void execute(script) {
-      //need to build dependencies here************
-      def pipeline = new Pipeline(script)
+   static void execute(script, List<String> lvVersions) {
+      def pipelineInformation = new PipelineInformation('veristand', lvVersions)
+      def pipeline = new Pipeline(script, pipelineInformation)
       pipeline.execute()
       
       //def configuration = BuildConfiguration.load(script, jsonFile)
