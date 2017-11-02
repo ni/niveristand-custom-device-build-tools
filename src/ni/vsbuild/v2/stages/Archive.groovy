@@ -15,13 +15,13 @@ class Archive extends AbstractStage {
       def buildOutputDir = configuration.archive.getString('build_output_dir')
       script.bat "xcopy \"$buildOutputDir\" \"$archiveLocation\" /e /i"
       
-      setArchiveVar(archiveLocation)
+      setArchiveVar()
    }
    
    // Builds a string of the form <archiveLocation>\\export\\<branch>\\<build_number>
    private void buildArchiveDir() {
       archiveLocation = configuration.archive.getString('archive_location') +
-                "\\export" +
+                "\\export\\" +
                 "${script.env.BRANCH_NAME}\\Build ${script.currentBuild.number}"
    }
    
