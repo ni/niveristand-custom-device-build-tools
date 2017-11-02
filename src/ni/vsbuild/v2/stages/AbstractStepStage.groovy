@@ -5,8 +5,8 @@ import ni.vsbuild.v2.steps.StepFactory
 
 abstract class AbstractStepStage extends AbstractStage {
    
-   AbstractStepStage(script, stageName, configuration) {
-      super(script, stageName, configuration)
+   AbstractStepStage(script, stageName, configuration, lvVersion) {
+      super(script, stageName, configuration, lvVersion)
    }
    
    protected void executeSteps(String stepList) {

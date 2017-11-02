@@ -5,8 +5,8 @@ import ni.vsbuild.v2.steps.StepFactory
 
 class Codegen extends AbstractStepStage {
 
-   Codegen(script, configuration) {
-      super(script, 'Codegen', configuration)
+   Codegen(script, configuration, lvVersion) {
+      super(script, 'Codegen', configuration, lvVersion)
    }
    
    void executeStage() {

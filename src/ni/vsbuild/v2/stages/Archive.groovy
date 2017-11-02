@@ -4,8 +4,8 @@ class Archive extends AbstractStage {
 
    private String archiveLocation
    
-   Archive(script, configuration) {
-      super(script, 'Archive', configuration)
+   Archive(script, configuration, lvVersion) {
+      super(script, 'Archive', configuration, lvVersion)
    }
    
    void executeStage() {
