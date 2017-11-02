@@ -1,6 +1,7 @@
 package ni.vsbuild.v2.steps.build
 
 import ni.vsbuild.v2.BuildConfiguration
+import ni.vsbuild.v2.steps.AbstractStep
 
 class LvRunViStep extends AbstractStep {
 
