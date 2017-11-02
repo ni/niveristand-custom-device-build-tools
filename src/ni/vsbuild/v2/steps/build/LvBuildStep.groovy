@@ -13,20 +13,13 @@ abstract class LvBuildStep extends AbstractStep {
    }
    
    protected String resolveProject(BuildConfiguration configuration) {
-      if(project =~ /\{(\w+)\}/) {
-         script.echo "project should be dereferenced"
-         def dereferenced = (project =~ /(\w)+/)[0][0]
-         script.echo "dereferenced project is $dereferenced"
-      }
-      def cleanedProject = project.replace("{", "").replace("}", "")
-      def projectRef = configuration.projects.getJSONObject(cleanedProject)
-      
-      if(!projectRef) {
+      if(!(project =~ /\{(\w+)\}/) {
          return project
       }
       
-      def path = projectRef.getString('path')
-      return path
+      def dereferencedProject = (project =~ /(\w)+/)[0][0])
+      def projectRef = configuration.projects.getJSONObject(dereferencedProject)
+      return projectRef.getString('path')
    }
 
 }
