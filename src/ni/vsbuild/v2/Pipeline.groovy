@@ -28,7 +28,7 @@ class Pipeline implements Serializable {
          }
          
          if(configuration.archive) {
-            stages >> new Archive(script, configuration)
+            stages << new Archive(script, configuration)
          }
          return stages
       }
