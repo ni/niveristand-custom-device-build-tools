@@ -24,6 +24,7 @@ class Codegen extends AbstractStepStage {
          script.echo "$project is of type ${project.getClass()}"
          def path = project.getString('path')
          script.echo "Project path is $path"
+         script.copyProjectConfig(path, '2017')
       }
    }
 }
