@@ -18,7 +18,7 @@ class Build extends AbstractStage {
          //steps.add(step)
       //}
       
-      List<Step> steps = getAllSteps('build')
+      List<Step> steps = StepFactory.create(script, configuration, 'build')
       for(Step step in steps) {
          step.execute(configuration)
       }

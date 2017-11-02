@@ -4,6 +4,17 @@ import ni.vsbuild.v2.BuildConfiguration
 
 class StepFactory implements Serializable {
    
+   static List<Step> create(script, BuildConfiguration configuration, stepList) {
+      List<Step> steps = []
+      def jsonSteps = configuration.getProperty(stepList).getJSONArray('steps')
+      for (def jsonStep in jsonSteps) {
+         Step step = StepFactory.create(script, jsonStep)
+         steps.add(step)
+      }
+      
+      return steps
+   }
+   
    static Step create(script, jsonStep) {
       def type = jsonStep.getString('type')
       
