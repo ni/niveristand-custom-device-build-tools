@@ -28,10 +28,10 @@ abstract class LvBuildStep extends LvStep {
       if(project == 'all') {
          for(def projectEntry : configuration.getProjectList()) {
             def path = projectEntry.getString('path')
-            projects.put(projectEntry, path)
+            projects[projectEntry] = path
          }
       } else {
-         projects.put(resolveProjectMap(configuration))
+         projects = (resolveProjectMap(configuration))
       }
    }
    
