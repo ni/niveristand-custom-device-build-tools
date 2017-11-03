@@ -9,7 +9,7 @@ class Archive extends AbstractStage {
    }
    
    void executeStage() {
-      buildArchiveDir()
+      setArchiveLocation()
       
       script.echo "Archiving build to $archiveLocation"
       def buildOutputDir = configuration.archive.getString('build_output_dir')
@@ -19,7 +19,7 @@ class Archive extends AbstractStage {
    }
    
    // Builds a string of the form <archiveLocation>\\export\\<branch>\\<build_number>
-   private void buildArchiveDir() {
+   private void setArchiveLocation() {
       archiveLocation = configuration.archive.getString('archive_location') +
                 "\\export\\${script.env.BRANCH_NAME}\\" +
                 "Build ${script.currentBuild.number}\\$lvVersion"

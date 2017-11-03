@@ -17,7 +17,7 @@ abstract class AbstractStage implements Stage {
    }
 
    void execute() {
-      script.stage("$stageName") {
+      script.stage("${stageName}_${lvVersion}") {
          executeStage()
       }
    }

@@ -56,18 +56,29 @@ class Pipeline implements Serializable {
    }
    
    void execute() {
-      def lvVersion = pipelineInformation.lvVersions[0]
-      script.node("${pipelineInformation.nodeLabel} && $lvVersion") {
-         setup()
+      def builders = [:]
+      
+      for(String version : pipelineInformation.lvVersions) {
+         def lvVersion = version // need to bind the variable before the closure - can't do 'for (version in lvVersions)'
+         builders[lvVersion] = {
+            // build dependencies before starting this pipeline
+            script.buildDependencies(pipelineInformation)
+            
+            script.node("${pipelineInformation.nodeLabel} && $lvVersion") {
+               setup()
          
-         def configuration = BuildConfiguration.load(script, 'build.json')
-         configuration.printInformation(script)
+               def configuration = BuildConfiguration.load(script, 'build.json')
+               configuration.printInformation(script)
          
-         def builder = new Builder(script, configuration, lvVersion)
-         this.stages = builder.buildPipeline()
+               def builder = new Builder(script, configuration, lvVersion)
+               this.stages = builder.buildPipeline()
          
-         executeStages()
+               executeStages()
+            }
+         }
       }
+      
+      script.parallel builders
    }
    
    protected void executeStages() {
