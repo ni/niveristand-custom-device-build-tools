@@ -30,6 +30,13 @@ abstract class LvBuildStep extends LvStep {
       def projects = resolveProjects(configuration)
       for(def entry : projects) {
          executeBuildStep(entry.getString('path'))
+         
+         def outputDir = entry.optString('output_dir')
+         if(!(outputDir || outputLibraries)) {
+            return
+         }
+         
+         moveLibraries(outputDir)
       }
    }
    
@@ -43,6 +50,12 @@ abstract class LvBuildStep extends LvStep {
       def dereferencedProject = (project =~ /(\w)+/)[0][0]
       def projectRef = configuration.projects.getJSONObject(dereferencedProject)
       return [projectRef]
+   }
+   
+   protected void moveLibraries(String outputDir) {      
+      for(def library : outputLibraries) {
+         script.echo "Library $library should be moved to $outputDir"
+      }
    }
    
    protected def resolveProjectsMap(BuildConfiguration configuration) {
