@@ -2,7 +2,7 @@ package ni.vsbuild.v2
 
 class PipelineInformation implements Serializable {
    
-   private final String BUILD_INFO_STRING = "Pipeline will be run for LV versions $lvVersions and will execute on node(s) with label $nodeLabel."
+   private final String BUILD_INFO_STRING = "Pipeline will be run for LV versions $lvVersions and will execute on node(s) with label \'$nodeLabel\'."
 
    public final String nodeLabel
    public final List<String> lvVersions

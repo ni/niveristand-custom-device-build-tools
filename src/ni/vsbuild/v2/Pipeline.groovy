@@ -56,8 +56,8 @@ class Pipeline implements Serializable {
    }
    
    void execute() {
-      script.node("${pipelineInformation.nodeLabel}") {
-         def lvVersion = pipelineInformation.lvVersions[0]
+      def lvVersion = pipelineInformation.lvVersions[0]
+      script.node("${pipelineInformation.nodeLabel} && $lvVersion") {
          setup()
          
          def configuration = BuildConfiguration.load(script, 'build.json')
