@@ -43,7 +43,7 @@ abstract class LvBuildStep extends LvStep {
    
    protected def resolveProjectMap(BuildConfiguration configuration) {
       if(!(project =~ /\{(\w+)\}/)) {
-         return [project: project]
+         return ["$project": project]
       }
       
       def dereferencedProject = (project =~ /(\w)+/)[0][0]
