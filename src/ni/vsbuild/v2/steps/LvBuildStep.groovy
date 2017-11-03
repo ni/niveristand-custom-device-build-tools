@@ -15,7 +15,7 @@ abstract class LvBuildStep extends LvStep {
    
    void executeStep(BuildConfiguration configuration) {
       def projects = resolveProjectsMap(configuration)
-      for(def key : projects.keys()) {
+      for(def key : projects.keySet()) {
          def myVal = projects.get(key)
          script.echo "myVal is $myVal"
          executeBuildStep(myVal)
