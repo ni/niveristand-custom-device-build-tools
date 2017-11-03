@@ -22,7 +22,7 @@ abstract class LvBuildStep extends LvStep {
       }
    }
    
-   proteced def resolveProjectsMap(BuildConfiguration configuration) {
+   protected def resolveProjectsMap(BuildConfiguration configuration) {
       def projects = [:]
       
       if(project == 'all') {
