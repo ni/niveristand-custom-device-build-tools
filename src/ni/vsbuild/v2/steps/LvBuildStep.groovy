@@ -53,8 +53,12 @@ abstract class LvBuildStep extends LvStep {
    }
    
    protected void moveLibraries(String outputDir) {      
+      script.bat "mkdir $outputDir"
+      
+      def exportDir = "${BuildConfiguration.EXPORT_DIR}\\$outputDir"
+      def moveSource = configuration.archive.getString('built_dir')
       for(def library : outputLibraries) {
-         script.echo "Library $library should be moved to $outputDir"
+         script.bat "move \"$moveSource\\$library\" \"$exportDir\\$library\""
       }
    }
    

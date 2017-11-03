@@ -69,6 +69,7 @@ class Pipeline implements Serializable {
          
                def configuration = BuildConfiguration.load(script, 'build.json')
                configuration.printInformation(script)
+               script.bat "mkdir ${BuildConfiguration.EXPORT_DIR}"
          
                def builder = new Builder(script, configuration, lvVersion)
                this.stages = builder.buildPipeline()
