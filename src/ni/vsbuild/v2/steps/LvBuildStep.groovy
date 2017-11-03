@@ -5,24 +5,51 @@ import ni.vsbuild.v2.BuildConfiguration
 abstract class LvBuildStep extends LvStep {
 
    def project
+   def outputDir
    
    LvBuildStep(script, jsonStep, lvVersion) {
       super(script, jsonStep, lvVersion)
       this.project = jsonStep.getString('project')
+      this.outputDir = jsonStep.optBoolean('output_dir')
    }
    
    void executeStep(BuildConfiguration configuration) {
-      def paths = resolveProjects(configuration)
-      for(String projectPath in paths) {
-         executeBuildStep(projectPath)
+      def projects = resolveProjectsMap(configuration)
+      for(def key : projects.keys()) {
+         def myVal = projects.get(key)
+         script.echo "myVal is $myVal"
+         executeBuildStep(myVal)
       }
+   }
+   
+   proteced def resolveProjectsMap(BuildConfiguration configuration) {
+      def projects = [:]
+      
+      if(project == 'all') {
+         for(def projectEntry : configuration.getProjectList()) {
+            def path = projectEntry.getString('path')
+            projects.put(projectEntry, path)
+         }
+      } else {
+         paths.add(resolveProjectMap(configuration)
+      }
+   }
+   
+   protected def resolveProjectMap(BuildConfiguration configuration) {
+      if(!(project =~ /\{(\w+)\}/)) {
+         return [project: project]
+      }
+      
+      def dereferencedProject = (project =~ /(\w)+/)[0][0]
+      def projectRef = configuration.projects.getJSONObject(dereferencedProject)
+      return [dereferencedProject: projectRef.getString('path')]
    }
    
    protected List<String> resolveProjects(BuildConfiguration configuration) {
       def paths = []
       
       if(project == 'all') {
-         paths += configuration.getAllProjectPaths()
+         //paths += configuration.getAllProjectPaths()
       } else {
          paths.add(resolveProject(configuration))
       }

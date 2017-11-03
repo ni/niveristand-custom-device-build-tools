@@ -44,15 +44,13 @@ Build configuration is:
       script.echo CONFIGURATION_STRING
    }
    
-   public List<String> getAllProjectPaths() {
-      def paths = []
+   public def getProjectList() {
+      def projectList = []
       for(def key in projects.keys()) {
-         def entry = projects.getJSONObject(key)
-         def path = entry.getString('path')
-         paths.add(path)
+         projectList.add(projects.getJSONObject(key))
       }
       
-      return paths
+      return projectList
    }
    
    private void validate() {
