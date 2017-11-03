@@ -37,7 +37,7 @@ abstract class LvBuildStep extends LvStep {
       def projects = []
       
       if(project == 'all') {
-         return configuration.getProjectList())
+         return configuration.getProjectList()
       }
       
       def dereferencedProject = (project =~ /(\w)+/)[0][0]
