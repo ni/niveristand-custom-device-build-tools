@@ -56,7 +56,7 @@ class Pipeline implements Serializable {
    }
    
    void execute() {
-      script.node('dcafbuild01') {
+      script.node("${pipelineInformation.nodeLabel}") {
          def lvVersion = pipelineInformation.lvVersions[0]
          setup()
          
