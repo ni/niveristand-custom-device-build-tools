@@ -31,7 +31,7 @@ abstract class LvBuildStep extends LvStep {
             projects.put(projectEntry, path)
          }
       } else {
-         paths.add(resolveProjectMap(configuration))
+         projects.add(resolveProjectMap(configuration))
       }
    }
    
