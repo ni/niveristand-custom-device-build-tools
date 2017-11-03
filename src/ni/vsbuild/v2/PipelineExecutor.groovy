@@ -4,10 +4,10 @@ class PipelineExecutor implements Serializable {
 
    static void execute(script, List<String> lvVersions, List<String> dependencies = []) {
       def pipelineInformation = new PipelineInformation('veristand', lvVersions, dependencies)
-      pipelineInformation.printInformation()
+      pipelineInformation.printInformation(script)
       
       def pipeline = new Pipeline(script, pipelineInformation)
-      pipeline.execute(script)
+      pipeline.execute()
       
       //def configuration = BuildConfiguration.load(script, jsonFile)
       //configuration.printInformation(script)
