@@ -12,7 +12,7 @@ Build configuration is:
    Package type: $package_type
 """
 
-   public static final string EXPORT_DIR = 'export'
+   static final String EXPORT_DIR = 'export'
    
    public final def archive
    public final def projects
