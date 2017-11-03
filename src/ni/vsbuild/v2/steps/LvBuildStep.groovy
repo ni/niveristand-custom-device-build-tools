@@ -13,17 +13,36 @@ abstract class LvBuildStep extends LvStep {
       this.outputLibraries = jsonStep.optJSONArray('output_libraries')
    }
    
-   void executeStep(BuildConfiguration configuration) {
-      def projects = resolveProjectsMap(configuration)
-      for(def key : projects.keySet()) {
-         script.echo "key is $key"
-         def path = projects.get(key)
-         executeBuildStep(path)
+//   void executeStep(BuildConfiguration configuration) {
+//      def projects = resolveProjectsMap(configuration)
+//      for(def key : projects.keySet()) {
+//         script.echo "key is $key"
+//         def path = projects.get(key)
+//         executeBuildStep(path)
          
-         if(!outputLibraries) {
-            return
-         }
+//         if(!outputLibraries) {
+//            return
+//        }
+//      }
+//   }
+
+   void executeStep(BuildConfiguration configuration) {
+      def projects = resolveProjects()
+      for(def entry : projects) {
+         executeBuildStep(entry.getString('path'))
       }
+   }
+   
+   protected def resolveProjects() {
+      def projects = []
+      
+      if(project == 'all') {
+         return configuration.getProjectList())
+      }
+      
+      def dereferencedProject = (project =~ /(\w)+/)[0][0]
+      def projectRef = configuration.projects.getJSONObject(dereferencedProject)
+      return [projectRef]
    }
    
    protected def resolveProjectsMap(BuildConfiguration configuration) {
@@ -32,7 +51,7 @@ abstract class LvBuildStep extends LvStep {
       if(project == 'all') {
          for(def projectEntry : configuration.getProjectList()) {
             def path = projectEntry.getString('path')
-            projects[projectEntry] = path
+            projects["$projectEntry"] = path
          }
       } else {
          projects = resolveProjectMap(configuration)
@@ -52,17 +71,17 @@ abstract class LvBuildStep extends LvStep {
       return ["$dereferencedProject": path]
    }
    
-   protected List<String> resolveProjects(BuildConfiguration configuration) {
-      def paths = []
+//   protected List<String> resolveProjects(BuildConfiguration configuration) {
+//      def paths = []
       
-      if(project == 'all') {
-         //paths += configuration.getAllProjectPaths()
-      } else {
-         paths.add(resolveProject(configuration))
-      }
+//      if(project == 'all') {
+//         //paths += configuration.getAllProjectPaths()
+//      } else {
+//         paths.add(resolveProject(configuration))
+//      }
       
-      return paths
-   }
+//      return paths
+//   }
    
    protected String resolveProject(BuildConfiguration configuration) {
       if(!(project =~ /\{(\w+)\}/)) {
