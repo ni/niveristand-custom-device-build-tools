@@ -40,14 +40,11 @@ abstract class LvBuildStep extends LvStep {
    }
    
    protected void moveLibraries(String outputDir, BuildConfiguration configuration) {      
-      def buildDir = configuration.archive.getString('build_output_dir')
-      
-      script.dir(buildDir) {
-         script.bat "mkdir \"$destDir\""
-      }
-
-      for(def library : outputLibraries) {
-         script.bat "move \"$buildDir\\$library\" \"$destDir\\$library\""
+      script.dir(configuration.archive.getString('build_output_dir')) {
+         script.bat "mkdir \"$outputDir\""
+         for(def library : outputLibraries) {
+            script.bat "move \"$library\" \"$outputDir\\$library\""
+         }
       }
    }
    
