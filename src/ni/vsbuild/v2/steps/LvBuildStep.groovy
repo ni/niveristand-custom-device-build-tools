@@ -5,20 +5,24 @@ import ni.vsbuild.v2.BuildConfiguration
 abstract class LvBuildStep extends LvStep {
 
    def project
-   def outputDir
+   def outputLibraries
    
    LvBuildStep(script, jsonStep, lvVersion) {
       super(script, jsonStep, lvVersion)
       this.project = jsonStep.getString('project')
-      this.outputDir = jsonStep.optBoolean('output_dir')
+      this.outputLibraries = jsonStep.optJSONArray('output_libraries')
    }
    
    void executeStep(BuildConfiguration configuration) {
       def projects = resolveProjectsMap(configuration)
       for(def key : projects.keySet()) {
-         def myVal = projects.get(key)
-         script.echo "myVal is $myVal"
-         executeBuildStep(myVal)
+         script.echo "key is $key"
+         def path = projects.get(key)
+         executeBuildStep(path)
+         
+         if(!outputLibraries) {
+            return
+         }
       }
    }
    
@@ -44,12 +48,8 @@ abstract class LvBuildStep extends LvStep {
       
       def dereferencedProject = (project =~ /(\w)+/)[0][0]
       def projectRef = configuration.projects.getJSONObject(dereferencedProject)
-      script.echo "projectRef is $projectRef"
       def path = projectRef.getString('path')
-      script.echo "path is $path"
-      def returnValue = [dereferencedProject: path]
-      script.echo "return value is $returnValue"
-      return returnValue
+      return ["$dereferencedProject": path]
    }
    
    protected List<String> resolveProjects(BuildConfiguration configuration) {
