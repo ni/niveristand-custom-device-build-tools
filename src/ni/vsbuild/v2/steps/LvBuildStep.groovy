@@ -42,7 +42,12 @@ abstract class LvBuildStep extends LvStep {
       
       def dereferencedProject = (project =~ /(\w)+/)[0][0]
       def projectRef = configuration.projects.getJSONObject(dereferencedProject)
-      return [dereferencedProject: projectRef.getString('path')]
+      script.echo "projectRef is $projectRef"
+      def path = projectRef.getString('path')
+      script.echo "path is $path"
+      def returnValue = [dereferencedProject: path]
+      script.echo "return value is $returnValue"
+      return returnValue
    }
    
    protected List<String> resolveProjects(BuildConfiguration configuration) {
