@@ -36,7 +36,7 @@ abstract class LvBuildStep extends LvStep {
             return
          }
          
-         moveLibraries(outputDir)
+         moveLibraries(outputDir, configuration)
       }
    }
    
@@ -52,7 +52,7 @@ abstract class LvBuildStep extends LvStep {
       return [projectRef]
    }
    
-   protected void moveLibraries(String outputDir) {      
+   protected void moveLibraries(String outputDir, BuildConfiguration configuration) {      
       script.bat "mkdir $outputDir"
       
       def exportDir = "${BuildConfiguration.EXPORT_DIR}\\$outputDir"
