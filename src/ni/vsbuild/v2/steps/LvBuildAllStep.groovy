@@ -9,6 +9,9 @@ class LvBuildAllStep extends LvBuildStep {
    }
    
    void executeStep(BuildConfiguration configuration) {
-      script.lvBuildAll(resolveProject(configuration), lvVersion)
+      def paths = resolveProjects(configuration)
+      for(String projectPath in paths) {
+         script.lvBuildAll(projectPath, lvVersion)
+      }
    }
 }

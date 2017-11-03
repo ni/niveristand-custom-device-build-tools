@@ -11,6 +11,18 @@ abstract class LvBuildStep extends LvStep {
       this.project = jsonStep.getString('project')
    }
    
+   protected List<String> resolveProjects(BuildConfiguration configuration) {
+      def paths = []
+      
+      if(project == 'all') {
+         paths += configuration.getAllProjectPaths()
+      } else {
+         paths.add(resolveProject(configuration))
+      }
+      
+      return paths
+   }
+   
    protected String resolveProject(BuildConfiguration configuration) {
       if(!(project =~ /\{(\w+)\}/)) {
          return project

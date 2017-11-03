@@ -44,6 +44,17 @@ Build configuration is:
       script.echo CONFIGURATION_STRING
    }
    
+   public List<String> getAllProjectPaths() {
+      def paths = []
+      for(def key in projects.keys()) {
+         def entry = projects.getJSONObject(key)
+         def path = entry.getString('path')
+         paths.add(path)
+      }
+      
+      return paths
+   }
+   
    private void validate() {
       if (archive && !(archive.containsKey('build_output_dir') && archive.containsKey('archive_location'))) {
          error("archive must define \'build_output_dir\' and \'archive_location\'.")
