@@ -31,8 +31,10 @@ abstract class LvBuildStep extends LvStep {
             projects[projectEntry] = path
          }
       } else {
-         projects = (resolveProjectMap(configuration))
+         projects = resolveProjectMap(configuration)
       }
+      
+      return projects
    }
    
    protected def resolveProjectMap(BuildConfiguration configuration) {
