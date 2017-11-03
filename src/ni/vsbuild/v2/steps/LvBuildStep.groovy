@@ -27,13 +27,13 @@ abstract class LvBuildStep extends LvStep {
 //   }
 
    void executeStep(BuildConfiguration configuration) {
-      def projects = resolveProjects()
+      def projects = resolveProjects(configuration)
       for(def entry : projects) {
          executeBuildStep(entry.getString('path'))
       }
    }
    
-   protected def resolveProjects() {
+   protected def resolveProjects(BuildConfiguration configuration) {
       def projects = []
       
       if(project == 'all') {
