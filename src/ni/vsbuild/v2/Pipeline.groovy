@@ -65,7 +65,7 @@ class Pipeline implements Serializable {
             script.buildDependencies(pipelineInformation)
             
             script.node("${pipelineInformation.nodeLabel} && $lvVersion") {
-               setup()
+               setup(lvVersion)
          
                def configuration = BuildConfiguration.load(script, 'build.json')
                configuration.printInformation(script)
@@ -92,15 +92,15 @@ class Pipeline implements Serializable {
       }
    }
    
-   private void setup() {
-      script.stage('Checkout') {
+   private void setup(lvVersion) {
+      script.stage("Checkout_$lvVersion") {
          script.deleteDir()
          script.echo 'Attempting to get source from repo.'
          script.timeout(time: 5, unit: 'MINUTES'){
             script.checkout(script.scm)
          }
       }
-      script.stage('Setup') {
+      script.stage("Setup_$lvVersion") {
          script.cloneCommonbuild()
          script.bat "commonbuild\\scripts\\buildSetup.bat"
       }
