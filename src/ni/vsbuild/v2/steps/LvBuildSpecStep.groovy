@@ -13,7 +13,7 @@ class LvBuildSpecStep extends LvBuildStep {
       this.spec = jsonStep.getString('build_spec')
    }
    
-   void executeStep(BuildConfiguration configuration) {
-      script.lvBuildSpec(resolveProject(configuration), target, spec, lvVersion)
+   void executeBuildStep(String projectPath) {
+      script.lvBuildSpec(projectPath, target, spec, lvVersion)
    }
 }

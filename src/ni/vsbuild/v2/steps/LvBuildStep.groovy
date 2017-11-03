@@ -11,6 +11,13 @@ abstract class LvBuildStep extends LvStep {
       this.project = jsonStep.getString('project')
    }
    
+   void executeStep(BuildConfiguration configuration) {
+      def paths = resolveProject(configuration)
+      for(String projectPath in paths) {
+         executeBuildStep(projectPath)
+      }
+   }
+   
    protected List<String> resolveProjects(BuildConfiguration configuration) {
       def paths = []
       
@@ -32,4 +39,6 @@ abstract class LvBuildStep extends LvStep {
       def projectRef = configuration.projects.getJSONObject(dereferencedProject)
       return projectRef.getString('path')
    }
+   
+   protected abstract void executeBuildStep(String projectPath)
 }

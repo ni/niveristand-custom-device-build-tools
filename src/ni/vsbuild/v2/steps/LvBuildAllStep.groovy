@@ -8,10 +8,7 @@ class LvBuildAllStep extends LvBuildStep {
       super(script, jsonStep, lvVersion)
    }
    
-   void executeStep(BuildConfiguration configuration) {
-      def paths = resolveProjects(configuration)
-      for(String projectPath in paths) {
-         script.lvBuildAll(projectPath, lvVersion)
-      }
+   void executeBuildStep(String projectPath) {
+      script.lvBuildAll(projectPath, lvVersion)
    }
 }
