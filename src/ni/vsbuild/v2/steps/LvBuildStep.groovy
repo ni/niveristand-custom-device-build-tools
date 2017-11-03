@@ -12,7 +12,7 @@ abstract class LvBuildStep extends LvStep {
    }
    
    void executeStep(BuildConfiguration configuration) {
-      def paths = resolveProject(configuration)
+      def paths = resolveProjects(configuration)
       for(String projectPath in paths) {
          executeBuildStep(projectPath)
       }
