@@ -33,9 +33,11 @@ abstract class LvBuildStep extends LvStep {
    }
    
    protected void moveLibraries(String outputDir, BuildConfiguration configuration) {      
-      if(!fileExists("${BuildConfiguration.STAGING_DIR}")) {
+      if(!script.fileExists("${BuildConfiguration.STAGING_DIR}")) {
          script.echo "${BuildConfiguration.STAGING_DIR} will be created."
+         script.bat "mkdir ${BuildConfiguration.STAGING_DIR}"
       }
+      
       script.dir(configuration.archive.getString('build_output_dir')) {
          script.bat "mkdir \"$outputDir\""
          for(def library : outputLibraries) {
