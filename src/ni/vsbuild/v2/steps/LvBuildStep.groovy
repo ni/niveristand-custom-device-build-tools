@@ -52,7 +52,7 @@ abstract class LvBuildStep extends LvStep {
          def libraries = dependency.getJSONArray('libraries')
          for(def library : libraries) {
             script.echo "Library is $library"
-            script.bat "copy /y \"$archiveDir\\$lvVersion\\$dependencyTarget\\$library\" \"$copyLocation\\$library\""
+            script.bat "copy /y \"$archiveDir\\$dependencyTarget\\$library\" \"$copyLocation\\$library\""
          }
       }
    }
