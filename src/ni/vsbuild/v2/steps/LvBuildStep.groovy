@@ -44,7 +44,7 @@ abstract class LvBuildStep extends LvStep {
       def dependencies = configuration.getDependenciesList()
       for(def dependency : dependencies) {
          script.echo "Dependency is $dependency"
-         def archiveDir = env."$dependency"
+         def archiveDir = env."${dependency}_DEP_DIR"
          script.echo "Dependency archiveDir is $archiveDir"
          def copyLocation = dependency.getString('copy_location')
          script.echo "Dependency copy location is $copyLocation"
