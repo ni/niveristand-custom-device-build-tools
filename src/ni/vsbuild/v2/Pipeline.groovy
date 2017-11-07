@@ -4,6 +4,8 @@ import ni.vsbuild.v2.stages.*
 
 class Pipeline implements Serializable {
 
+   private static final String JSON_FILE = 'build.json'
+   
    def script
    PipelineInformation pipelineInformation
    def stages = []
@@ -67,7 +69,7 @@ class Pipeline implements Serializable {
             script.node("${pipelineInformation.nodeLabel} && $lvVersion") {
                setup(lvVersion)
          
-               def configuration = BuildConfiguration.load(script, 'build.json')
+               def configuration = BuildConfiguration.load(script, JSON_FILE)
                configuration.printInformation(script)
                script.bat "mkdir ${BuildConfiguration.EXPORT_DIR}"
          
