@@ -12,7 +12,6 @@ Build configuration is:
    Package type: $package_type
 """
 
-   static final String EXPORT_DIR = 'export'
    static final String STAGING_DIR = 'staging'
    
    public final def archive

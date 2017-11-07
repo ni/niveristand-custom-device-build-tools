@@ -44,13 +44,6 @@ abstract class LvBuildStep extends LvStep {
       for(def library : outputLibraries) {
          script.bat "move \"$buildOutputDir\\$library\" \"$stageDir\\$outputDir\\$library\""
       }
-      
-      //script.dir(configuration.archive.getString('build_output_dir')) {
-         //script.bat "mkdir \"$outputDir\""
-         //for(def library : outputLibraries) {
-            //script.bat "move \"$library\" \"$outputDir\\$library\""
-         //}
-      //}
    }
    
    protected abstract void executeBuildStep(projectEntry)
