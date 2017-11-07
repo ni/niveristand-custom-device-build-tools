@@ -11,7 +11,12 @@ class LvBuildSpecAllTargetsStep extends LvBuildStep {
       this.spec = jsonStep.getString('build_spec')
    }
    
-   void executeBuildStep(String projectPath) {
+   //void executeBuildStep(String projectPath) {
+      //script.lvBuildSpecAllTargets(projectPath, spec, lvVersion)
+   //}
+   
+   void executeBuildStep(projectEntry) {
+      def projectPath = projectEntry.getString('path')
       script.lvBuildSpecAllTargets(projectPath, spec, lvVersion)
    }
 }

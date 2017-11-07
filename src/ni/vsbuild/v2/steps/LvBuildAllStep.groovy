@@ -8,7 +8,12 @@ class LvBuildAllStep extends LvBuildStep {
       super(script, jsonStep, lvVersion)
    }
    
-   void executeBuildStep(String projectPath) {
+   //void executeBuildStep(String projectPath) {
+      //script.lvBuildAll(projectPath, lvVersion)
+   //}
+   
+   void executeBuildStep(projectEntry) {
+      def projectPath = projectEntry.getString('path')
       script.lvBuildAll(projectPath, lvVersion)
    }
 }
