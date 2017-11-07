@@ -1,5 +1,7 @@
 package ni.vsbuild.v2.stages
 
+import ni.vsbuild.v2.BuildConfiguration
+
 class Archive extends AbstractStage {
 
    private String archiveLocation
@@ -13,6 +15,11 @@ class Archive extends AbstractStage {
       
       script.echo "Archiving build to $archiveLocation"
       def buildOutputDir = configuration.archive.getString('build_output_dir')
+      
+      if(script.fileExists(BuildConfiguration.STAGING_DIR)) {
+         buildOutputDir = BuildConfiguration.STAGING_DIR
+      }
+      
       script.bat "xcopy \"$buildOutputDir\" \"$archiveLocation\" /e /i"
       
       setArchiveVar()
