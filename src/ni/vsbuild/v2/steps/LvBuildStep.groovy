@@ -41,7 +41,7 @@ abstract class LvBuildStep extends LvStep {
       }
       
       for(def library : outputLibraries) {
-         script.bat "xcopy /"$buildOutputDir\\$library\" \"$stageDir\\$outputDir\\$library\""
+         script.bat "xcopy \"$buildOutputDir\\$library\" \"$stageDir\\$outputDir\\$library\""
       }
       
       //script.dir(configuration.archive.getString('build_output_dir')) {
