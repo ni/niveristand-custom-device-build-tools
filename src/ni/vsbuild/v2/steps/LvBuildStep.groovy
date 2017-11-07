@@ -23,7 +23,7 @@ abstract class LvBuildStep extends LvStep {
          return
       }
       
-      moveLibraries(outputDir, configuration)
+      stageLibraries(outputDir, configuration)
    }
    
    protected def resolveProject(BuildConfiguration configuration) {      
@@ -32,18 +32,24 @@ abstract class LvBuildStep extends LvStep {
       return projectRef
    }
    
-   protected void moveLibraries(String outputDir, BuildConfiguration configuration) {      
-      if(!script.fileExists("${BuildConfiguration.STAGING_DIR}")) {
-         script.echo "${BuildConfiguration.STAGING_DIR} will be created."
-         script.bat "mkdir ${BuildConfiguration.STAGING_DIR}"
+   protected void stageLibraries(String outputDir, BuildConfiguration configuration) {      
+      def buildOutputDir = configuration.archive.getString('build_output_dir')
+      def stageDir = BuildConfiguration.STAGING_DIR
+      
+      if(!script.fileExists("$stageDir")) {
+         script.bat "mkdir $stageDir"
       }
       
-      script.dir(configuration.archive.getString('build_output_dir')) {
-         script.bat "mkdir \"$outputDir\""
-         for(def library : outputLibraries) {
-            script.bat "move \"$library\" \"$outputDir\\$library\""
-         }
+      for(def library : outputLibraries) {
+         script.bat "xcopy /"$buildOutputDir\\$library\" \"$stageDir\\$outputDir\\$library\""
       }
+      
+      //script.dir(configuration.archive.getString('build_output_dir')) {
+         //script.bat "mkdir \"$outputDir\""
+         //for(def library : outputLibraries) {
+            //script.bat "move \"$library\" \"$outputDir\\$library\""
+         //}
+      //}
    }
    
    protected abstract void executeBuildStep(projectEntry)
