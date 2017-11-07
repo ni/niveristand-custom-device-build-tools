@@ -21,14 +21,4 @@ class LvBuildSpecStep extends LvBuildStep {
       def projectPath = projectEntry.getString('path')
       script.lvBuildSpec(projectPath, target, spec, lvVersion)
    }
-   
-   protected def resolveTargets(BuildConfiguration configuration) {
-      def targets = []
-      
-      if(project == all) {
-         
-      }
-      
-      return [target]
-   }
 }

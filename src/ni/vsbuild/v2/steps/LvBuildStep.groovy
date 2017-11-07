@@ -14,28 +14,21 @@ abstract class LvBuildStep extends LvStep {
    }
 
    void executeStep(BuildConfiguration configuration) {
-      def projects = resolveProjects(configuration)
-      for(def entry : projects) {
-         //executeBuildStep(entry.getString('path'))
-         executeBuildStep(entry)
+      def resolvedProject = resolveProject(configuration)
+      executeBuildStep(resolvedProject)
          
-         def outputDir = entry.optString('output_dir')
-         if(!(outputDir || outputLibraries)) {
-            return
-         }
-         
-         moveLibraries(outputDir, configuration)
-      }
-   }
-   
-   protected def resolveProjects(BuildConfiguration configuration) {
-      if(project == 'all') {
-         return configuration.getProjectList()
+      def outputDir = entry.optString('output_dir')
+      if(!(outputDir || outputLibraries)) {
+         return
       }
       
+      moveLibraries(outputDir, configuration)
+   }
+   
+   protected def resolveProject(BuildConfiguration configuration) {      
       def dereferencedProject = (project =~ /(\w)+/)[0][0]
       def projectRef = configuration.projects.getJSONObject(dereferencedProject)
-      return [projectRef]
+      return projectRef
    }
    
    protected void moveLibraries(String outputDir, BuildConfiguration configuration) {      
@@ -47,6 +40,5 @@ abstract class LvBuildStep extends LvStep {
       }
    }
    
-   //protected abstract void executeBuildStep(String projectPath)
    protected abstract void executeBuildStep(projectEntry)
 }
