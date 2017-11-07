@@ -16,7 +16,8 @@ abstract class LvBuildStep extends LvStep {
    void executeStep(BuildConfiguration configuration) {
       def projects = resolveProjects(configuration)
       for(def entry : projects) {
-         executeBuildStep(entry.getString('path'))
+         //executeBuildStep(entry.getString('path'))
+         executeBuildStep(entry)
          
          def outputDir = entry.optString('output_dir')
          if(!(outputDir || outputLibraries)) {
@@ -28,8 +29,6 @@ abstract class LvBuildStep extends LvStep {
    }
    
    protected def resolveProjects(BuildConfiguration configuration) {
-      def projects = []
-      
       if(project == 'all') {
          return configuration.getProjectList()
       }
@@ -48,5 +47,6 @@ abstract class LvBuildStep extends LvStep {
       }
    }
    
-   protected abstract void executeBuildStep(String projectPath)
+   //protected abstract void executeBuildStep(String projectPath)
+   protected abstract void executeBuildStep(projectEntry)
 }
