@@ -37,9 +37,10 @@ abstract class LvBuildStep extends LvStep {
       def stageDir = BuildConfiguration.STAGING_DIR
       
       if(!script.fileExists("$stageDir")) {
-         script.bat "mkdir -p \"$stageDir\\$outputDir\""
+         script.bat "mkdir \"$stageDir\""
       }
       
+      script.bat "mkdir \"$stageDir\\$outputDir\""
       for(def library : outputLibraries) {
          script.bat "move \"$buildOutputDir\\$library\" \"$stageDir\\$outputDir\\$library\""
       }
