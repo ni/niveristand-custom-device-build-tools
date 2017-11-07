@@ -17,7 +17,7 @@ abstract class LvBuildStep extends LvStep {
       def resolvedProject = resolveProject(configuration)
       executeBuildStep(resolvedProject)
          
-      def outputDir = entry.optString('output_dir')
+      def outputDir = resolvedProject.optString('output_dir')
       if(!(outputDir || outputLibraries)) {
          return
       }
