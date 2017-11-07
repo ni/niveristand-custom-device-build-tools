@@ -41,6 +41,7 @@ abstract class LvBuildStep extends LvStep {
          return
       }
       
+      script.bat "set"
       def dependencies = configuration.getDependenciesList()
       for(def dependency : dependencies) {
          script.echo "Dependency is $dependency"
