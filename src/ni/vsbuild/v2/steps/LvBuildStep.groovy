@@ -7,15 +7,19 @@ abstract class LvBuildStep extends LvStep {
    def project
    def outputLibraries
    def outputDir
+   def dependencyTarget
    
    LvBuildStep(script, jsonStep, lvVersion) {
       super(script, jsonStep, lvVersion)
       this.project = jsonStep.getString('project')
       this.outputLibraries = jsonStep.optJSONArray('output_libraries')
       this.outputDir = jsonStep.optString('output_dir')
+      this.dependencyTarget = jsonStep.optString('dependency_target')
    }
 
    void executeStep(BuildConfiguration configuration) {
+      copyDependencies(configuration)
+      
       def resolvedProject = resolveProject(configuration)
       executeBuildStep(resolvedProject)
       
@@ -30,6 +34,26 @@ abstract class LvBuildStep extends LvStep {
       def dereferencedProject = (project =~ /(\w)+/)[0][0]
       def projectRef = configuration.projects.getJSONObject(dereferencedProject)
       return projectRef
+   }
+   
+   protected void copyDependencies(BuildConfiguration configuration) {
+      if(!configuration.dependencies) {
+         return
+      }
+      
+      def dependencies = configuration.getDependenciesList()
+      for(def dependency : dependencies) {
+         script.echo "Dependency is $dependency"
+         def archiveDir = env."$dependency"
+         script.echo "Dependency archiveDir is $archiveDir"
+         def copyLocation = dependency.getString('copy_location')
+         script.echo "Dependency copy location is $copyLocation"
+         def libraries = dependency.getJSONArray('libraries')
+         for(def library : libraries) {
+            script.echo "Library is $library"
+            script.bat "copy /y \"$archiveDir\\$lvVersion\\$dependencyTarget\\$library\" \"$copyLocation\\$library\""
+         }
+      }
    }
    
    protected void stageLibraries(String outputDir, BuildConfiguration configuration) {      

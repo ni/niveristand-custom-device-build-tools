@@ -55,6 +55,15 @@ Build configuration is:
       return projectList
    }
    
+   public def getDependenciesList() {
+      def dependenciesList = []
+      for(def key in dependencies.keys()) {
+         dependenciesList.add(dependencies.getJSONObject(key))
+      }
+      
+      return dependenciesList
+   }
+   
    private void validate() {
       if (archive && !(archive.containsKey('build_output_dir') && archive.containsKey('archive_location'))) {
          error("archive must define \'build_output_dir\' and \'archive_location\'.")
