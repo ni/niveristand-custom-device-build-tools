@@ -6,18 +6,19 @@ abstract class LvBuildStep extends LvStep {
 
    def project
    def outputLibraries
+   def outputDir
    
    LvBuildStep(script, jsonStep, lvVersion) {
       super(script, jsonStep, lvVersion)
       this.project = jsonStep.getString('project')
       this.outputLibraries = jsonStep.optJSONArray('output_libraries')
+      this.outputDir = jsonStep.optString('output_dir')
    }
 
    void executeStep(BuildConfiguration configuration) {
       def resolvedProject = resolveProject(configuration)
       executeBuildStep(resolvedProject)
-         
-      def outputDir = resolvedProject.optString('output_dir')
+      
       if(!(outputDir || outputLibraries)) {
          return
       }
