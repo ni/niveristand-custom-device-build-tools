@@ -42,14 +42,18 @@ abstract class LvBuildStep extends LvStep {
       }
       
       script.bat "set"
-      def dependencies = configuration.getDependenciesList()
-      for(def dependency : dependencies) {
+      def dependencies = configuration.dependencies
+      for(def key in dependencies.keys()) {
+         script.echo "key is $key"
+         def dependency = dependencies.getJSONObject(key)
          script.echo "Dependency is $dependency"
-         def archiveDir = script.env."${dependency}_DEP_DIR"
-         script.echo "Dependency archiveDir is $archiveDir"
+         def envVar = "${key}_DEP_DIR"
+         script.echo "envVar is $envVar"
+         def archiveDir = script.env.envVar
+         script.echo "archiveDir is $archiveDir"
          def copyLocation = dependency.getString('copy_location')
          script.echo "Dependency copy location is $copyLocation"
-         def libraries = dependency.getJSONArray('libraries')
+          def libraries = dependency.getJSONArray('libraries')
          for(def library : libraries) {
             script.echo "Library is $library"
             script.bat "copy /y \"$archiveDir\\$dependencyTarget\\$library\" \"$copyLocation\\$library\""
