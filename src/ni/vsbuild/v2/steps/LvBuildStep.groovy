@@ -41,6 +41,8 @@ abstract class LvBuildStep extends LvStep {
          return
       }
       
+      def libraryDeps = []
+      
       script.bat "set"
       def dependencies = configuration.dependencies
       for(def key in dependencies.keys()) {
@@ -49,14 +51,21 @@ abstract class LvBuildStep extends LvStep {
          script.echo "Dependency is $dependency"
          def envVar = "${key}_DEP_DIR"
          script.echo "envVar is $envVar"
-         def archiveDir = script.env.envVar
+         def archiveDir = script.env."$envVar"
          script.echo "archiveDir is $archiveDir"
          def copyLocation = dependency.getString('copy_location')
          script.echo "Dependency copy location is $copyLocation"
-          def libraries = dependency.getJSONArray('libraries')
+         def libraries = dependency.getJSONArray('libraries')
          for(def library : libraries) {
             script.echo "Library is $library"
-            script.bat "copy /y \"$archiveDir\\$dependencyTarget\\$library\" \"$copyLocation\\$library\""
+            libraryDeps.add(library)
+         }
+         
+         // Must loop again because jenkins/groovy don't like copying the file
+         // in the same loop as accessing the json objects:
+         // java.util.Collections$UnmodifiableCollection$1
+         for(def dep : libraryDeps) {
+            script.bat "copy /y \"$archiveDir\\$dependencyTarget\\$dep\" \"$copyLocation\\$dep\""
          }
       }
    }
