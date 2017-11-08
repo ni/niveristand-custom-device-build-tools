@@ -65,9 +65,9 @@ abstract class LvBuildStep extends LvStep {
       // Must loop again because jenkins/groovy don't like copying the file
       // in the same loop as accessing the json objects:
       // java.util.Collections$UnmodifiableCollection$1
-      for(def dep : libraryDeps.keySet()) {
-         script.echo "key is $dep and value is ${libraryDeps.get(dep)}"
-         script.bat "copy /y \"$key\" \"$dep\""
+      for(def key : libraryDeps.keySet()) {
+         script.echo "key is $key and value is ${libraryDeps.get(key)}"
+         script.bat "copy /y \"$key\" \"${libraryDeps.get(key)}\""
       }
    }
    
