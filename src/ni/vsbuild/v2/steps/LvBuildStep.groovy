@@ -41,7 +41,7 @@ abstract class LvBuildStep extends LvStep {
          return
       }
       
-      def libraryDeps = []
+      def libraryDeps = [:]
       
       script.bat "set"
       def dependencies = configuration.dependencies
@@ -58,15 +58,16 @@ abstract class LvBuildStep extends LvStep {
          def libraries = dependency.getJSONArray('libraries')
          for(def library : libraries) {
             script.echo "Library is $library"
-            libraryDeps.add(library)
+            libraryDeps["$archiveDir\\$dependencyTarget\\$library"] = "$copyLocation\\$library"
          }
+      }
          
-         // Must loop again because jenkins/groovy don't like copying the file
-         // in the same loop as accessing the json objects:
-         // java.util.Collections$UnmodifiableCollection$1
-         for(def dep : libraryDeps) {
-            script.bat "copy /y \"$archiveDir\\$dependencyTarget\\$dep\" \"$copyLocation\\$dep\""
-         }
+      // Must loop again because jenkins/groovy don't like copying the file
+      // in the same loop as accessing the json objects:
+      // java.util.Collections$UnmodifiableCollection$1
+      for(def dep : libraryDeps.keySet()) {
+         script.echo "key is $dep and value is ${libraryDeps.get(dep)}"
+         script.bat "copy /y \"$key\" \"$dep\""
       }
    }
    
