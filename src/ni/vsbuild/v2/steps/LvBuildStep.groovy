@@ -21,7 +21,8 @@ abstract class LvBuildStep extends LvStep {
       copyDependencies(configuration)
       
       def resolvedProject = resolveProject(configuration)
-      executeBuildStep(resolvedProject)
+      def path = resolvedProject.getString('path')
+      executeBuildStep(path)
       
       if(!(outputDir && outputLibraries)) {
          return

@@ -104,7 +104,7 @@ class Pipeline implements Serializable {
       }
       script.stage("Setup_$lvVersion") {
          script.cloneCommonbuild()
-         script.bat "commonbuild\\scripts\\buildSetup.bat"
+         script.buildSetup()
       }
    }
 }

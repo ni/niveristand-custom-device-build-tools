@@ -8,10 +8,5 @@ class PipelineExecutor implements Serializable {
       
       def pipeline = new Pipeline(script, pipelineInformation)
       pipeline.execute()
-      
-      //def configuration = BuildConfiguration.load(script, jsonFile)
-      //configuration.printInformation(script)
-
-      //PipelineFactory.buildPipeline(script, buildInformation).execute()
    }
 }
