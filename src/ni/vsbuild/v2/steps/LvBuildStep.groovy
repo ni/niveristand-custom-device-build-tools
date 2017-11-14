@@ -56,7 +56,7 @@ abstract class LvBuildStep extends LvStep {
          def libraries = dependency.getJSONArray('libraries')
          
          for(def library : libraries) {
-            libraryDeps["$archiveDir\\$dependencyTarget\\$library"] = "$copyLocation\\$library"
+            libraryDeps["$archiveDir\\$lvVersion\\$dependencyTarget\\$library"] = "$copyLocation\\$library"
          }
       }
 

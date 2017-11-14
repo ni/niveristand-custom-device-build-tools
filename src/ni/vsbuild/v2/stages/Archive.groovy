@@ -20,7 +20,7 @@ class Archive extends AbstractStage {
          buildOutputDir = BuildConfiguration.STAGING_DIR
       }
       
-      script.bat "xcopy \"$buildOutputDir\" \"$archiveLocation\" /e /i"
+      script.bat "xcopy \"$buildOutputDir\" \"$archiveLocation\\$lvVersion\" /e /i"
       
       setArchiveVar()
    }
@@ -29,7 +29,7 @@ class Archive extends AbstractStage {
    private void setArchiveLocation() {
       archiveLocation = configuration.archive.getString('archive_location') +
                 "\\export\\${script.env.BRANCH_NAME}\\" +
-                "Build ${script.currentBuild.number}\\$lvVersion"
+                "Build ${script.currentBuild.number}"
    }
    
    // Set an env var that points to the archive so dependents can find it
