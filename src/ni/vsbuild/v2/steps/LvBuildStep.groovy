@@ -79,5 +79,5 @@ abstract class LvBuildStep extends LvStep {
       }
    }
    
-   protected abstract void executeBuildStep(projectEntry)
+   protected abstract void executeBuildStep(String projectPath)
 }
