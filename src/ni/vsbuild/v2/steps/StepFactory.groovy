@@ -34,6 +34,10 @@ class StepFactory implements Serializable {
          return new LvRunViStep(script, jsonStep, lvVersion)
       }
       
+      if(type == 'lvSetConditionalSymbol') {
+         return new LvSetConditionalSymbolStep(script, jsonStep, lvVersion)
+      }
+      
       script.failBuild("Type \'$type\' is invalid for step \'${jsonStep.getString('name')}\'.")
    }
 }
