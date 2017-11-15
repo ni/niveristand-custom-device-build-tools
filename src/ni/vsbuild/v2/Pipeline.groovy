@@ -88,8 +88,7 @@ class Pipeline implements Serializable {
          try {
             stage.execute()
          } catch (err) {
-            script.currentBuild.result = "FAILURE"
-            script.error "Build failed: ${err.getMessage()}"
+            script.failBuild(err.getMessage())
          }
       }
    }

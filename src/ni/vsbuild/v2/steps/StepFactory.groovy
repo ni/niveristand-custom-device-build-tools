@@ -34,8 +34,6 @@ class StepFactory implements Serializable {
          return new LvRunViStep(script, jsonStep, lvVersion)
       }
       
-      script.echo "No correct type found."
-      
-      //*** TODO: error and return message that type is not supported ***
+      script.failBuild("Type \'$type\' is invalid for step \'${jsonStep.getString('name')}\'.")
    }
 }

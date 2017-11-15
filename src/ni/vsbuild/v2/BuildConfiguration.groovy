@@ -66,12 +66,7 @@ Build configuration is:
    
    private void validate() {
       if (archive && !(archive.containsKey('build_output_dir') && archive.containsKey('archive_location'))) {
-         error("archive must define \'build_output_dir\' and \'archive_location\'.")
+         script.failBuild("archive must define \'build_output_dir\' and \'archive_location\'.")
       }
-   }
-   
-   private error(message) {
-      script.currentBuild.result = "FAILURE"
-      script.error "Build failed: $message"
    }
 }
