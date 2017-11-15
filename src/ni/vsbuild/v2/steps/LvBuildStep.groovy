@@ -2,16 +2,14 @@ package ni.vsbuild.v2.steps
 
 import ni.vsbuild.v2.BuildConfiguration
 
-abstract class LvBuildStep extends LvStep {
+abstract class LvBuildStep extends LvProjectStep {
 
-   def project
    def outputLibraries
    def outputDir
    def dependencyTarget
    
    LvBuildStep(script, jsonStep, lvVersion) {
       super(script, jsonStep, lvVersion)
-      this.project = jsonStep.getString('project')
       this.outputLibraries = jsonStep.optJSONArray('output_libraries')
       this.outputDir = jsonStep.optString('output_dir')
       this.dependencyTarget = jsonStep.optString('dependency_target')
@@ -29,12 +27,6 @@ abstract class LvBuildStep extends LvStep {
       }
       
       stageLibraries(outputDir, configuration)
-   }
-   
-   protected def resolveProject(BuildConfiguration configuration) {      
-      def dereferencedProject = (project =~ /(\w)+/)[0][0]
-      def projectRef = configuration.projects.getJSONObject(dereferencedProject)
-      return projectRef
    }
    
    protected void copyDependencies(BuildConfiguration configuration) {
