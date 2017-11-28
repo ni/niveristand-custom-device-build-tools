@@ -40,6 +40,8 @@ Build configuration is:
       script.echo "Text is ${text.getClass()}"
       script.echo "${text.archive}"
       script.echo "${text.archive.getClass()}"
+      def converted = text.archive.getValue()
+      script echo "Converted is $converted and class is ${converted.getClass()}"
       
       return new BuildConfiguration(
          text.archive,
