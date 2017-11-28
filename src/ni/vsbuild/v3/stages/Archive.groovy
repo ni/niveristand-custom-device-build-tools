@@ -14,7 +14,7 @@ class Archive extends AbstractStage {
       setArchiveLocation()
       
       script.echo "Archiving build to $archiveLocation"
-      def buildOutputDir = configuration.archive.getString('build_output_dir')
+      def buildOutputDir = configuration.archive.get('build_output_dir')
       
       if(script.fileExists(BuildConfiguration.STAGING_DIR)) {
          buildOutputDir = BuildConfiguration.STAGING_DIR
