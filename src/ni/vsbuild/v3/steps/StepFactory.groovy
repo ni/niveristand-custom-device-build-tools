@@ -6,7 +6,8 @@ class StepFactory implements Serializable {
    
    static List<Step> create(script, BuildConfiguration configuration, stepList, lvVersion) {
       List<Step> steps = []
-      def mapSteps = configuration.getProperty(stepList).get('steps')
+      //def mapSteps = configuration.getProperty(stepList).get('steps')
+      def mapSteps = configuration."$stepList".get('steps')
       for (def mapStep in mapSteps) {
          Step step = StepFactory.create(script, mapStep, lvVersion)
          steps.add(step)
