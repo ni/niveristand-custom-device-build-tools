@@ -40,8 +40,9 @@ Build configuration is:
       script.echo "Text is ${text.getClass()}"
       script.echo "${text.archive}"
       script.echo "${text.archive.getClass()}"
-      def converted = text.archive.getValue()
-      script echo "Converted is $converted and class is ${converted.getClass()}"
+      Map map = new HashMap()
+      map.putAll(text)
+      script.echo "Archive is ${map.archive} and is of type ${map.archive.getClass()}"
       
       return new BuildConfiguration(
          text.archive,
