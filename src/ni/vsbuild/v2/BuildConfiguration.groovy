@@ -1,6 +1,6 @@
 package ni.vsbuild.v2
 
-import groovy.json.JsonSlurper
+import groovy.json.JsonSlurperClassic
 
 class BuildConfiguration implements Serializable {
 
@@ -35,22 +35,19 @@ Build configuration is:
    static BuildConfiguration load(def script, String jsonFile) {      
       def config = script.readJSON file: jsonFile
       script.echo "Config class is ${config.getClass()}"
-      def slurper = new JsonSlurper()
+      def slurper = new JsonSlurperClassic()
       def text = slurper.parseText(config.toString())
       script.echo "Text is ${text.getClass()}"
       script.echo "${text.archive}"
       script.echo "${text.archive.getClass()}"
-      Map map = new HashMap()
-      map.putAll(text)
-      script.echo "Archive is ${map.archive} and is of type ${map.archive.getClass()}"
       
       return new BuildConfiguration(
-         map.archive as HashMap,
-         map.projects as HashMap,
-         map.codegen as HashMap,
-         map.build as HashMap,
-         map.dependencies as HashMap,
-         map.package as HashMap)
+         map.archive,
+         map.projects,
+         map.codegen,
+         map.build,
+         map.dependencies,
+         map.package)
       
       //return new BuildConfiguration(
       //   config.get('archive'),
