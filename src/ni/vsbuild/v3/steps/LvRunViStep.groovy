@@ -8,7 +8,7 @@ class LvRunViStep extends LvStep {
    
    LvRunViStep(script, jsonStep, lvVersion) {
       super(script, jsonStep, lvVersion)
-      this.vi = jsonStep.getString('vi')
+      this.vi = jsonStep.get('vi')
    }
    
    void executeStep(BuildConfiguration configuration) {

@@ -9,13 +9,13 @@ class LvSetConditionalSymbolStep extends LvProjectStep {
    
    LvSetConditionalSymbolStep(script, jsonStep, lvVersion) {
       super(script, jsonStep, lvVersion)
-      this.symbol = jsonStep.getString('symbol')
-      this.value = jsonStep.getString('value')
+      this.symbol = jsonStep.get('symbol')
+      this.value = jsonStep.get('value')
    }
    
    void executeStep(BuildConfiguration configuration) {
       def resolvedProject = resolveProject(configuration)
-      def path = resolvedProject.getString('path')
+      def path = resolvedProject.get('path')
       
       script.lvSetConditionalSymbol(path, symbol, value, lvVersion)
    }
