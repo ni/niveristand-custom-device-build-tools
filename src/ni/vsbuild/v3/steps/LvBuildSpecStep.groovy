@@ -7,8 +7,8 @@ class LvBuildSpecStep extends LvBuildStep {
    
    LvBuildSpecStep(script, jsonStep, lvVersion) {
       super(script, jsonStep, lvVersion)
-      this.target = jsonStep.getString('target')
-      this.spec = jsonStep.getString('build_spec')
+      this.target = jsonStep.get('target')
+      this.spec = jsonStep.get('build_spec')
    }
    
    void executeBuildStep(String projectPath) {
