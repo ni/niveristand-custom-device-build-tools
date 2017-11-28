@@ -38,7 +38,7 @@ Build configuration is:
       def slurper = new JsonSlurper()
       def text = slurper.parseText(config.toString())
       script.echo "Text is ${text.getClass()}"
-      script.echo text
+      script.echo "${text.archive}"
       
       return new BuildConfiguration(
          config.get('archive'),
