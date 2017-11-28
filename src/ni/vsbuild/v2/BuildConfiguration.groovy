@@ -1,7 +1,5 @@
 package ni.vsbuild.v2
 
-import groovy.json.JsonSlurperClassic
-
 class BuildConfiguration implements Serializable {
 
    private final String CONFIGURATION_STRING = """
@@ -34,28 +32,14 @@ Build configuration is:
    
    static BuildConfiguration load(def script, String jsonFile) {      
       def config = script.readJSON file: jsonFile
-      script.echo "Config class is ${config.getClass()}"
-      def slurper = new JsonSlurperClassic()
-      def text = slurper.parseText(config.toString())
-      script.echo "Text is ${text.getClass()}"
-      script.echo "${text.archive}"
-      script.echo "${text.archive.getClass()}"
       
       return new BuildConfiguration(
-         text.archive,
-         text.projects,
-         text.codegen,
-         text.build,
-         text.dependencies,
-         text.package)
-      
-      //return new BuildConfiguration(
-      //   config.get('archive'),
-      //   config.get('projects'),
-      //   config.get('codegen'),
-      //   config.get('build'),
-      //   config.get('dependencies'),
-      //   config.get('package'))
+         config.get('archive'),
+         config.get('projects'),
+         config.get('codegen'),
+         config.get('build'),
+         config.get('dependencies'),
+         config.get('package'))
    }
    
    public void printInformation(script) {
