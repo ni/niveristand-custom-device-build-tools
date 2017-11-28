@@ -1,5 +1,7 @@
 package ni.vsbuild.v2
 
+import groovy.json.JsonSlurper
+
 class BuildConfiguration implements Serializable {
 
    private final String CONFIGURATION_STRING = """
