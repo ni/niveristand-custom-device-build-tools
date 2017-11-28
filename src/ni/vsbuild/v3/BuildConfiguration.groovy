@@ -65,7 +65,7 @@ Build configuration is:
    public def getProjectList() {
       def projectList = []
       for(def key : projects.keySet()) {
-         projectList.add(projects.getJSONObject(key))
+         projectList.add(projects.get(key))
       }
       
       return projectList
