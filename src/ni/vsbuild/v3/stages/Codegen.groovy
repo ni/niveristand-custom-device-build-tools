@@ -23,7 +23,7 @@ class Codegen extends AbstractStepStage {
       def paths = []
       
       for(def project in projects) {
-         def path = project.getString('path')
+         def path = project.get('path')
          paths.add(path)
       }
 
