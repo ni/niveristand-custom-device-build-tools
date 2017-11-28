@@ -34,28 +34,19 @@ Build configuration is:
    
    static BuildConfiguration load(def script, String jsonFile) {      
       def config = script.readJSON file: jsonFile
-      script.echo "Config class is ${config.getClass()}"
-      def slurper = new JsonSlurperClassic()
-      def text = slurper.parseText(config.toString())
-      script.echo "Text is ${text.getClass()}"
-      script.echo "${text.archive}"
-      script.echo "${text.archive.getClass()}"
+      
+      // Convert the JSON to HashMaps instead of using the JsonObject
+      // because the Pipeline security plugin disables lots of JsonObject
+      // functionality that is required for this build system
+      def convertedJson = new JsonSlurperClassic().parseText(config.toString())
       
       return new BuildConfiguration(
-         text.archive,
-         text.projects,
-         text.codegen,
-         text.build,
-         text.dependencies,
-         text.package)
-      
-      //return new BuildConfiguration(
-      //   config.get('archive'),
-      //   config.get('projects'),
-      //   config.get('codegen'),
-      //   config.get('build'),
-      //   config.get('dependencies'),
-      //   config.get('package'))
+         convertedJson.archive,
+         convertedJson.projects,
+         convertedJson.codegen,
+         convertedJson.build,
+         convertedJson.dependencies,
+         convertedJson.package)
    }
    
    public void printInformation(script) {
@@ -74,7 +65,7 @@ Build configuration is:
    public def getDependenciesList() {
       def dependenciesList = []
       for(def key in dependencies.keys()) {
-         dependenciesList.add(dependencies.getJSONObject(key))
+         dependenciesList.add(dependencies.get(key))
       }
       
       return dependenciesList

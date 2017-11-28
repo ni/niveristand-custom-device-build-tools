@@ -6,9 +6,9 @@ abstract class LvProjectStep extends LvStep {
 
    def project
    
-   LvProjectStep(script, jsonStep, lvVersion) {
-      super(script, jsonStep, lvVersion)
-      this.project = jsonStep.get('project')
+   LvProjectStep(script, mapStep, lvVersion) {
+      super(script, mapStep, lvVersion)
+      this.project = mapStep.get('project')
    }
    
    protected def resolveProject(BuildConfiguration configuration) {      

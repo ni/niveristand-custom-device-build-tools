@@ -5,10 +5,10 @@ class LvBuildSpecStep extends LvBuildStep {
    def target
    def spec
    
-   LvBuildSpecStep(script, jsonStep, lvVersion) {
-      super(script, jsonStep, lvVersion)
-      this.target = jsonStep.get('target')
-      this.spec = jsonStep.get('build_spec')
+   LvBuildSpecStep(script, mapStep, lvVersion) {
+      super(script, mapStep, lvVersion)
+      this.target = mapStep.get('target')
+      this.spec = mapStep.get('build_spec')
    }
    
    void executeBuildStep(String projectPath) {

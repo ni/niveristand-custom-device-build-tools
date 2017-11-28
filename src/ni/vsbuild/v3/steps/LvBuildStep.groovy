@@ -8,11 +8,11 @@ abstract class LvBuildStep extends LvProjectStep {
    def outputDir
    def dependencyTarget
    
-   LvBuildStep(script, jsonStep, lvVersion) {
-      super(script, jsonStep, lvVersion)
-      this.outputLibraries = jsonStep.get('output_libraries')
-      this.outputDir = jsonStep.get('output_dir')
-      this.dependencyTarget = jsonStep.get('dependency_target')
+   LvBuildStep(script, mapStep, lvVersion) {
+      super(script, mapStep, lvVersion)
+      this.outputLibraries = mapStep.get('output_libraries')
+      this.outputDir = mapStep.get('output_dir')
+      this.dependencyTarget = mapStep.get('dependency_target')
    }
 
    void executeStep(BuildConfiguration configuration) {

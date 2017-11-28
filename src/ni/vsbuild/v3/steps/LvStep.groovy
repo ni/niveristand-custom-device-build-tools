@@ -4,8 +4,8 @@ abstract class LvStep extends AbstractStep {
 
    def lvVersion
    
-   LvStep(script, jsonStep, lvVersion) {
-      super(script, jsonStep)
+   LvStep(script, mapStep, lvVersion) {
+      super(script, mapStep)
       this.lvVersion = lvVersion
    }
 }

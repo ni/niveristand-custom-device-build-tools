@@ -7,10 +7,10 @@ class LvSetConditionalSymbolStep extends LvProjectStep {
    def symbol
    def value
    
-   LvSetConditionalSymbolStep(script, jsonStep, lvVersion) {
-      super(script, jsonStep, lvVersion)
-      this.symbol = jsonStep.get('symbol')
-      this.value = jsonStep.get('value')
+   LvSetConditionalSymbolStep(script, mapStep, lvVersion) {
+      super(script, mapStep, lvVersion)
+      this.symbol = mapStep.get('symbol')
+      this.value = mapStep.get('value')
    }
    
    void executeStep(BuildConfiguration configuration) {

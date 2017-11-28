@@ -6,9 +6,9 @@ class LvRunViStep extends LvStep {
 
    def vi
    
-   LvRunViStep(script, jsonStep, lvVersion) {
-      super(script, jsonStep, lvVersion)
-      this.vi = jsonStep.get('vi')
+   LvRunViStep(script, mapStep, lvVersion) {
+      super(script, mapStep, lvVersion)
+      this.vi = mapStep.get('vi')
    }
    
    void executeStep(BuildConfiguration configuration) {

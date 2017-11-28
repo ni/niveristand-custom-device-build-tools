@@ -4,9 +4,9 @@ class LvBuildSpecAllTargetsStep extends LvBuildStep {
 
    def spec
    
-   LvBuildSpecAllTargetsStep(script, jsonStep, lvVersion) {
-      super(script, jsonStep, lvVersion)
-      this.spec = jsonStep.get('build_spec')
+   LvBuildSpecAllTargetsStep(script, mapStep, lvVersion) {
+      super(script, mapStep, lvVersion)
+      this.spec = mapStep.get('build_spec')
    }
    
    void executeBuildStep(String projectPath) {

@@ -2,8 +2,8 @@ package ni.vsbuild.v3.steps
 
 class LvBuildAllStep extends LvBuildStep {
    
-   LvBuildAllStep(script, jsonStep, lvVersion) {
-      super(script, jsonStep, lvVersion)
+   LvBuildAllStep(script, mapStep, lvVersion) {
+      super(script, mapStep, lvVersion)
    }
    
    void executeBuildStep(String projectPath) {

@@ -7,9 +7,9 @@ abstract class AbstractStep implements Step {
    def script
    def name
    
-   AbstractStep(script, jsonStep) {
+   AbstractStep(script, mapStep) {
       this.script = script
-      this.name = jsonStep.get('name')
+      this.name = mapStep.get('name')
    }
    
    void execute(BuildConfiguration configuration) {
