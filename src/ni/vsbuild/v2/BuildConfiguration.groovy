@@ -33,6 +33,9 @@ Build configuration is:
    static BuildConfiguration load(def script, String jsonFile) {      
       def config = script.readJSON file: jsonFile
       script.echo "Config class is ${config.getClass()}"
+      def slurper = new JsonSlurper()
+      def text = slurper.parseText(config.toString())
+      script.echo text
       
       return new BuildConfiguration(
          config.get('archive'),
