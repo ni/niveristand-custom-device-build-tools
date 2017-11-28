@@ -36,6 +36,6 @@ class Archive extends AbstractStage {
    private void setArchiveVar() {
       def component = script.getComponentParts()['repo']
       def depDir = "${component}_DEP_DIR"
-      script.env[depDir] = archiveLocation
+      script.env."$depDir" = archiveLocation
    }
 }
