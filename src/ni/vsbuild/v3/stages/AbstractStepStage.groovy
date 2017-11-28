@@ -1,7 +1,7 @@
-package ni.vsbuild.v2.stages
+package ni.vsbuild.v3.stages
 
-import ni.vsbuild.v2.steps.Step
-import ni.vsbuild.v2.steps.StepFactory
+import ni.vsbuild.v3.steps.Step
+import ni.vsbuild.v3.steps.StepFactory
 
 abstract class AbstractStepStage extends AbstractStage {
    

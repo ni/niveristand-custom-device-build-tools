@@ -1,6 +1,6 @@
-package ni.vsbuild.v2.stages
+package ni.vsbuild.v3.stages
 
-import ni.vsbuild.v2.BuildConfiguration
+import ni.vsbuild.v3.BuildConfiguration
 
 class Archive extends AbstractStage {
 

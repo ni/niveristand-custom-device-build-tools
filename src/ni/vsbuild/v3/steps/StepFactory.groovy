@@ -1,6 +1,6 @@
-package ni.vsbuild.v2.steps
+package ni.vsbuild.v3.steps
 
-import ni.vsbuild.v2.BuildConfiguration
+import ni.vsbuild.v3.BuildConfiguration
 
 class StepFactory implements Serializable {
    

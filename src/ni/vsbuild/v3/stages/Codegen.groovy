@@ -1,4 +1,4 @@
-package ni.vsbuild.v2.stages
+package ni.vsbuild.v3.stages
 
 class Codegen extends AbstractStepStage {
 

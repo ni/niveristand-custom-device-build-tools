@@ -1,6 +1,4 @@
-package ni.vsbuild.v2.steps
-
-import ni.vsbuild.v2.BuildConfiguration
+package ni.vsbuild.v3.steps
 
 class LvBuildSpecAllTargetsStep extends LvBuildStep {
 

@@ -1,6 +1,6 @@
-package ni.vsbuild.v2.steps
+package ni.vsbuild.v3.steps
 
-import ni.vsbuild.v2.BuildConfiguration
+import ni.vsbuild.v3.BuildConfiguration
 
 abstract class LvProjectStep extends LvStep {
 
@@ -13,7 +13,7 @@ abstract class LvProjectStep extends LvStep {
    
    protected def resolveProject(BuildConfiguration configuration) {      
       def dereferencedProject = (project =~ /(\w)+/)[0][0]
-      def projectRef = configuration.projects.getJSONObject(dereferencedProject)
+      def projectRef = configuration.projects.get(dereferencedProject)
       return projectRef
    }
 }
