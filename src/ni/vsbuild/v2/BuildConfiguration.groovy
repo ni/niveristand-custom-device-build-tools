@@ -42,12 +42,12 @@ Build configuration is:
       script.echo "${text.archive.getClass()}"
       
       return new BuildConfiguration(
-         map.archive,
-         map.projects,
-         map.codegen,
-         map.build,
-         map.dependencies,
-         map.package)
+         text.archive,
+         text.projects,
+         text.codegen,
+         text.build,
+         text.dependencies,
+         text.package)
       
       //return new BuildConfiguration(
       //   config.get('archive'),
