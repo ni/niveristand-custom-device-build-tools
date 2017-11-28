@@ -39,6 +39,7 @@ Build configuration is:
       def text = slurper.parseText(config.toString())
       script.echo "Text is ${text.getClass()}"
       script.echo "${text.archive}"
+      script.echo "${text.archive.getClass()}"
       
       return new BuildConfiguration(
          text.archive,
