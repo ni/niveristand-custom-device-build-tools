@@ -10,9 +10,9 @@ abstract class LvBuildStep extends LvProjectStep {
    
    LvBuildStep(script, jsonStep, lvVersion) {
       super(script, jsonStep, lvVersion)
-      this.outputLibraries = jsonStep.optJSONArray('output_libraries')
-      this.outputDir = jsonStep.optString('output_dir')
-      this.dependencyTarget = jsonStep.optString('dependency_target')
+      this.outputLibraries = jsonStep.get('output_libraries')
+      this.outputDir = jsonStep.get('output_dir')
+      this.dependencyTarget = jsonStep.get('dependency_target')
    }
 
    void executeStep(BuildConfiguration configuration) {
@@ -43,9 +43,9 @@ abstract class LvBuildStep extends LvProjectStep {
       for(def key in dependencies.keys()) {
          def archiveDir = script.env."${key}_DEP_DIR"
          
-         def dependency = dependencies.getJSONObject(key)
-         def copyLocation = dependency.getString('copy_location')
-         def libraries = dependency.getJSONArray('libraries')
+         def dependency = dependencies.get(key)
+         def copyLocation = dependency.get('copy_location')
+         def libraries = dependency.get('libraries')
          
          for(def library : libraries) {
             libraryDeps["$archiveDir\\$lvVersion\\$dependencyTarget\\$library"] = "$copyLocation\\$library"
