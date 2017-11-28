@@ -8,7 +8,7 @@ abstract class LvProjectStep extends LvStep {
    
    LvProjectStep(script, jsonStep, lvVersion) {
       super(script, jsonStep, lvVersion)
-      this.project = jsonStep.getString('project')
+      this.project = jsonStep.get('project')
    }
    
    protected def resolveProject(BuildConfiguration configuration) {      

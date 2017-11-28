@@ -9,7 +9,7 @@ abstract class AbstractStep implements Step {
    
    AbstractStep(script, jsonStep) {
       this.script = script
-      this.name = jsonStep.getString('name')
+      this.name = jsonStep.get('name')
    }
    
    void execute(BuildConfiguration configuration) {
