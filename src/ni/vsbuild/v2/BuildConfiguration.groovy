@@ -41,12 +41,20 @@ Build configuration is:
       script.echo "${text.archive}"
       
       return new BuildConfiguration(
-         config.get('archive'),
-         config.get('projects'),
-         config.get('codegen'),
-         config.get('build'),
-         config.get('dependencies'),
-         config.get('package'))
+         text.archive,
+         text.projects,
+         text.codegen,
+         text.build,
+         text.dependencies,
+         text.package)
+      
+      //return new BuildConfiguration(
+      //   config.get('archive'),
+      //   config.get('projects'),
+      //   config.get('codegen'),
+      //   config.get('build'),
+      //   config.get('dependencies'),
+      //   config.get('package'))
    }
    
    public void printInformation(script) {
