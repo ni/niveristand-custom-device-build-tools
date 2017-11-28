@@ -45,12 +45,12 @@ Build configuration is:
       script.echo "Archive is ${map.archive} and is of type ${map.archive.getClass()}"
       
       return new BuildConfiguration(
-         text.archive,
-         text.projects,
-         text.codegen,
-         text.build,
-         text.dependencies,
-         text.package)
+         map.archive,
+         map.projects,
+         map.codegen,
+         map.build,
+         map.dependencies,
+         map.package)
       
       //return new BuildConfiguration(
       //   config.get('archive'),
