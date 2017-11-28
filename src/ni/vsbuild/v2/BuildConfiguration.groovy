@@ -35,6 +35,7 @@ Build configuration is:
       script.echo "Config class is ${config.getClass()}"
       def slurper = new JsonSlurper()
       def text = slurper.parseText(config.toString())
+      script.echo "Text is ${text.getClass())}"
       script.echo text
       
       return new BuildConfiguration(
