@@ -58,7 +58,7 @@ abstract class LvBuildStep extends LvProjectStep {
    }
    
    protected void stageLibraries(String outputDir, BuildConfiguration configuration) {      
-      def buildOutputDir = configuration.archive.getString('build_output_dir')
+      def buildOutputDir = configuration.archive.get('build_output_dir')
       def stageDir = BuildConfiguration.STAGING_DIR
       
       if(!script.fileExists("$stageDir")) {
