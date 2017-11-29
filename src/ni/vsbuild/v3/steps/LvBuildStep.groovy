@@ -40,7 +40,7 @@ abstract class LvBuildStep extends LvProjectStep {
       def libraryDeps = [:]
       
       def dependencies = configuration.dependencies
-      for(def key in dependencies.keys()) {
+      for(def key in dependencies.keySet()) {
          def archiveDir = script.env."${key}_DEP_DIR"
          
          def dependency = dependencies.get(key)
