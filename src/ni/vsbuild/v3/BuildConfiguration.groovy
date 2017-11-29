@@ -1,18 +1,12 @@
 package ni.vsbuild.v3
 
+// Use JsonSlurperClassic instead of JsonSlurper because the classic
+// version uses HashMaps which are serializable. The newer version
+// returns LazyMaps, which are not serializable, so can not be used
+// in the Jenkins pipeline
 import groovy.json.JsonSlurperClassic
 
 class BuildConfiguration implements Serializable {
-
-   private final String CONFIGURATION_STRING = """
-Build configuration is:
-   Archive: $archive
-   Projects: $projects
-   Codegen: $codegen
-   Build: $build
-   Dependencies: $dependencies
-   Package type: $package_type
-"""
 
    static final String STAGING_DIR = 'staging'
    
@@ -21,15 +15,15 @@ Build configuration is:
    public final def codegen
    public final def build
    public final def dependencies
-   public final def package_type
+   public final def packageType
    
-   private BuildConfiguration(archive, projects, codegen, build, dependencies, package_type) {
+   private BuildConfiguration(archive, projects, codegen, build, dependencies, packageType) {
       this.archive = archive
       this.projects = projects
       this.codegen = codegen
       this.build = build
       this.dependencies = dependencies
-      this.package_type = package_type
+      this.packageType = packageType
    }
    
    static BuildConfiguration load(def script, String jsonFile) {      
@@ -38,7 +32,8 @@ Build configuration is:
       // Convert the JSON to HashMaps instead of using the JsonObject
       // because the Pipeline security plugin disables lots of JsonObject
       // functionality that is required for this build system
-      def convertedJson = new JsonSlurperClassic().parseText(config.toString())
+      //def convertedJson = new JsonSlurperClassic().parseText(config.toString())
+      def convertedJson = new HashMap(config)
       
       return new BuildConfiguration(
          convertedJson.archive,
@@ -57,8 +52,9 @@ Build configuration is:
             Codegen: $codegen
             Build: $build
             Dependencies: $dependencies
-            Package type: $package_type
+            Package type: $packageType
          """.stripIndent()
+      
       script.echo configurationString
    }
    
@@ -78,11 +74,5 @@ Build configuration is:
       }
       
       return dependenciesList
-   }
-   
-   private void validate() {
-      if (archive && !(archive.containsKey('build_output_dir') && archive.containsKey('archive_location'))) {
-         script.failBuild("archive must define \'build_output_dir\' and \'archive_location\'.")
-      }
    }
 }
