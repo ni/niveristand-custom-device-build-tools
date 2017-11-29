@@ -20,17 +20,9 @@ class Codegen extends AbstractStepStage {
    // generated for any project defined in the BuildConfiguration projects
    private void generateProjectConfigFiles(lvVersion) {      
       def projects = configuration.getProjectList()
-      def paths = []
       
       for(def project in projects) {
          def path = project.get('path')
-         paths.add(path)
-      }
-
-      // Must loop again because jenkins/groovy don't like reading the file
-      // in the same loop as accessing the json objects:
-      // java.util.Collections$UnmodifiableCollection$1
-      for(def path in paths) {
          script.copyProjectConfig(path, lvVersion)
       }
    }

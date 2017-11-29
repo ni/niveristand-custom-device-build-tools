@@ -34,13 +34,8 @@ abstract class LvBuildStep extends LvProjectStep {
          return
       }
       
-      // Must create another map and use this for iterating through libraries
-      // because jenkins/groovy don't like copying the file in the same loop
-      // as accessing the JSON objects: java.util.Collections$UnmodifiableCollection$1
-      def libraryDeps = [:]
-      
       def dependencies = configuration.dependencies
-      for(def key in dependencies.keySet()) {
+      for(def key : dependencies.keySet()) {
          def archiveDir = script.env."${key}_DEP_DIR"
          
          def dependency = dependencies.get(key)
@@ -48,12 +43,8 @@ abstract class LvBuildStep extends LvProjectStep {
          def libraries = dependency.get('libraries')
          
          for(def library : libraries) {
-            libraryDeps["$archiveDir\\$lvVersion\\$dependencyTarget\\$library"] = "$copyLocation\\$library"
+            script.bat "copy /y \"$archiveDir\\$lvVersion\\$dependencyTarget\\$library\" \"$copyLocation\\$library\""
          }
-      }
-
-      for(def key : libraryDeps.keySet()) {
-         script.bat "copy /y \"$key\" \"${libraryDeps.get(key)}\""
       }
    }
    
