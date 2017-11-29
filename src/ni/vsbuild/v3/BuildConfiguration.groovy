@@ -50,7 +50,16 @@ Build configuration is:
    }
    
    public void printInformation(script) {
-      script.echo CONFIGURATION_STRING
+      def configurationString = """
+         Build configuration is:
+            Archive: $archive
+            Projects: $projects
+            Codegen: $codegen
+            Build: $build
+            Dependencies: $dependencies
+            Package type: $package_type
+         """.stripIndent()
+      script.echo configurationString
    }
    
    public def getProjectList() {
