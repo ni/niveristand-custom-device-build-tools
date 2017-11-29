@@ -9,14 +9,14 @@ import groovy.json.JsonSlurperClassic
 class BuildConfiguration implements Serializable {
 
    static final String STAGING_DIR = 'staging'
-   
+
    public final def archive
    public final def projects
    public final def codegen
    public final def build
    public final def dependencies
    public final def packageType
-   
+
    private BuildConfiguration(archive, projects, codegen, build, dependencies, packageType) {
       this.archive = archive
       this.projects = projects
@@ -25,15 +25,15 @@ class BuildConfiguration implements Serializable {
       this.dependencies = dependencies
       this.packageType = packageType
    }
-   
+
    static BuildConfiguration load(def script, String jsonFile) {      
       def config = script.readJSON file: jsonFile
-      
+
       // Convert the JSON to HashMaps instead of using the JsonObject
       // because the Pipeline security plugin disables lots of JsonObject
       // functionality that is required for this build system
       def convertedJson = new JsonSlurperClassic().parseText(config.toString())
-      
+
       return new BuildConfiguration(
          convertedJson.archive,
          convertedJson.projects,
@@ -42,7 +42,7 @@ class BuildConfiguration implements Serializable {
          convertedJson.dependencies,
          convertedJson.package)
    }
-   
+
    public void printInformation(script) {
       def configurationString = """
          Build configuration is:
@@ -53,25 +53,25 @@ class BuildConfiguration implements Serializable {
             Dependencies: $dependencies
             Package type: $packageType
          """.stripIndent()
-      
+
       script.echo configurationString
    }
-   
+
    public def getProjectList() {
       def projectList = []
       for(def key : projects.keySet()) {
          projectList.add(projects.get(key))
       }
-      
+
       return projectList
    }
-   
+
    public def getDependenciesList() {
       def dependenciesList = []
-      for(def key in dependencies.keys()) {
+      for(def key : dependencies.keys()) {
          dependenciesList.add(dependencies.get(key))
       }
-      
+
       return dependenciesList
    }
 }

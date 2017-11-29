@@ -5,84 +5,84 @@ import ni.vsbuild.v3.stages.*
 class Pipeline implements Serializable {
 
    private static final String JSON_FILE = 'build.json'
-   
+
    def script
    PipelineInformation pipelineInformation
    def stages = []
-   
+
    static class Builder implements Serializable {
-      
+
       def script
       BuildConfiguration buildConfiguration
       String lvVersion
       def stages = []
-      
+
       Builder(def script, BuildConfiguration buildConfiguration, String lvVersion) {
          this.script = script
          this.buildConfiguration = buildConfiguration
          this.lvVersion = lvVersion
       }
-      
+
       def withCodegenStage() {
          stages << new Codegen(script, buildConfiguration, lvVersion)
       }
-      
+
       def withBuildStage() {
          stages << new Build(script, buildConfiguration, lvVersion)
       }
-      
+
       def withArchiveStage() {
          stages << new Archive(script, buildConfiguration, lvVersion)
       }
-      
+
       def buildPipeline() {         
          if(buildConfiguration.codegen || buildConfiguration.projects) {
             withCodegenStage()
          }
-         
+
          if(buildConfiguration.build) {
             withBuildStage()
          }
-         
+
          if(buildConfiguration.archive) {
             withArchiveStage()
          }
-         
+
          return stages
       }
    }
-   
+
    Pipeline(script, PipelineInformation pipelineInformation) {
       this.script = script
       this.pipelineInformation = pipelineInformation
    }
-   
+
    void execute() {
       def builders = [:]
-      
+
       for(String version : pipelineInformation.lvVersions) {
          def lvVersion = version // need to bind the variable before the closure - can't do 'for (version in lvVersions)'
          builders[lvVersion] = {
             // build dependencies before starting this pipeline
             script.buildDependencies(pipelineInformation)
-            
+
             script.node("${pipelineInformation.nodeLabel} && $lvVersion") {
                setup(lvVersion)
-         
+
                def configuration = BuildConfiguration.load(script, JSON_FILE)
                configuration.printInformation(script)
-         
+
                def builder = new Builder(script, configuration, lvVersion)
                this.stages = builder.buildPipeline()
-         
+
                executeStages()
             }
          }
       }
-      
+
       script.parallel builders
    }
-   
+
    protected void executeStages() {
       for (Stage stage : stages) {
          try {
@@ -92,7 +92,7 @@ class Pipeline implements Serializable {
          }
       }
    }
-   
+
    private void setup(lvVersion) {
       script.stage("Checkout_$lvVersion") {
          script.deleteDir()

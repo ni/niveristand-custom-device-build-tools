@@ -21,7 +21,7 @@ abstract class AbstractStage implements Stage {
          executeStage()
       }
    }
-   
+
    abstract void executeStage()
 
 }
