@@ -2,7 +2,7 @@ package ni.vsbuild.v3.steps
 
 class StepFactory implements Serializable {
 
-   static List<Step> create(script, stepList, lvVersion) {
+   static List<Step> createSteps(script, stepList, lvVersion) {
       List<Step> steps = []
       def mapSteps = stepList.get('steps')
       for (def mapStep : mapSteps) {
