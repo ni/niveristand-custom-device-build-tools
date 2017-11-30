@@ -1,12 +1,10 @@
 package ni.vsbuild.v3.steps
 
-import ni.vsbuild.v3.BuildConfiguration
-
 class StepFactory implements Serializable {
 
-   static List<Step> create(script, BuildConfiguration configuration, stepList, lvVersion) {
+   static List<Step> create(script, stepList, lvVersion) {
       List<Step> steps = []
-      def mapSteps = configuration."$stepList".get('steps')
+      def mapSteps = stepList.get('steps')
       for (def mapStep : mapSteps) {
          Step step = StepFactory.create(script, mapStep, lvVersion)
          steps.add(step)

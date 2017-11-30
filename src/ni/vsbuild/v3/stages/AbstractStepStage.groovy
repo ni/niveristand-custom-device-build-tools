@@ -9,8 +9,8 @@ abstract class AbstractStepStage extends AbstractStage {
       super(script, stageName, configuration, lvVersion)
    }
 
-   protected void executeSteps(String stepList) {
-      List<Step> steps = StepFactory.create(script, configuration, stepList, lvVersion)
+   protected void executeSteps(def stepList) {
+      List<Step> steps = StepFactory.create(script, stepList, lvVersion)
       for(Step step : steps) {
          step.execute(configuration)
       }

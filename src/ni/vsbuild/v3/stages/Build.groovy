@@ -7,6 +7,6 @@ class Build extends AbstractStepStage {
    }
 
    void executeStage() {
-      executeSteps('build')
+      executeSteps(configuration.build)
    }
 }

@@ -58,20 +58,19 @@ class BuildConfiguration implements Serializable {
    }
 
    public def getProjectList() {
-      def projectList = []
-      for(def key : projects.keySet()) {
-         projectList.add(projects.get(key))
-      }
-
-      return projectList
+      return getFieldList(projects)
    }
 
    public def getDependenciesList() {
-      def dependenciesList = []
-      for(def key : dependencies.keys()) {
-         dependenciesList.add(dependencies.get(key))
+      return getFieldList(dependencies)
+   }
+
+   private def getFieldList(def field) {
+      def list = []
+      for(def key : field.keySet()) {
+         list.add(field.get(key))
       }
 
-      return dependenciesList
+      return list
    }
 }
