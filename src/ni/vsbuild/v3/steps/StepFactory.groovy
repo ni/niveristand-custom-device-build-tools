@@ -6,14 +6,14 @@ class StepFactory implements Serializable {
       List<Step> steps = []
       def mapSteps = stepList.get('steps')
       for (def mapStep : mapSteps) {
-         Step step = StepFactory.create(script, mapStep, lvVersion)
+         Step step = StepFactory.createStep(script, mapStep, lvVersion)
          steps.add(step)
       }
 
       return steps
    }
 
-   static Step create(script, mapStep, lvVersion) {
+   static Step createStep(script, mapStep, lvVersion) {
       def type = mapStep.get('type')
 
       if(type == 'lvBuildAll') {
