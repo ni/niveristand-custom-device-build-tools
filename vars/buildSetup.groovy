@@ -1,3 +1,3 @@
 def call() {
-   bat "commonbuild\\scripts\\buildSetup.bat"
+   bat "commonbuild\\resources\\buildSetup.bat"
 }

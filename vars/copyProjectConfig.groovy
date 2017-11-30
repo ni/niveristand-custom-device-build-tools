@@ -10,7 +10,7 @@ def call(projectPath, lvVersion){
    def previousVersion = currentVersion - 1
    def oldAssemblyVersion = "0.0.0.0-${previousVersion}.9.9.9"
    
-   def fileContent = readFile "commonbuild/config/LabVIEW.exe.config"
+   def fileContent = readFile "commonbuild/resources/LabVIEW.exe.config"
    fileContent = fileContent.replaceAll("(oldVersion=\")[^\"]+","\$1$oldAssemblyVersion")
       .replaceAll("(newVersion=\")[^\"]+","\$1$newAssemblyVersion")
    
