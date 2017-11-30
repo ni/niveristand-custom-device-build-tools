@@ -1,4 +1,4 @@
-package ni.vsbuild.v3.steps
+package ni.vsbuild.steps
 
 abstract class LvStep extends AbstractStep {
 

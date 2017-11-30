@@ -1,6 +1,6 @@
-package ni.vsbuild.v3.steps
+package ni.vsbuild.steps
 
-import ni.vsbuild.v3.BuildConfiguration
+import ni.vsbuild.BuildConfiguration
 
 class LvSetConditionalSymbolStep extends LvProjectStep {
 

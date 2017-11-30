@@ -1,4 +1,4 @@
-package ni.vsbuild.v3
+package ni.vsbuild
 
 // Use JsonSlurperClassic instead of JsonSlurper because the classic
 // version uses HashMaps which are serializable. The newer version

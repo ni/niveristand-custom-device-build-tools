@@ -1,4 +1,4 @@
-package ni.vsbuild.v3
+package ni.vsbuild
 
 class PipelineInformation implements Serializable {
 

@@ -1,6 +1,6 @@
-package ni.vsbuild.v3.stages
+package ni.vsbuild.stages
 
-import ni.vsbuild.v3.BuildConfiguration
+import ni.vsbuild.BuildConfiguration
 
 abstract class AbstractStage implements Stage {
 

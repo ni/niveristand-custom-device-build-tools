@@ -1,4 +1,4 @@
-package ni.vsbuild.v3
+package ni.vsbuild
 
 enum PackageType {
    NIPM,
