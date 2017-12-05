@@ -1,17 +1,12 @@
 package ni.vsbuild.stages
 
-class Build extends AbstractStage {
+class Build extends AbstractStepStage {
 
-   Build(Object script) {
-      super(script, 'Build')
+   Build(script, configuration, lvVersion) {
+      super(script, 'Build', configuration, lvVersion)
    }
 
-   @Override
-   void execute(executor) {
-      script.stage(stageName) {
-         script.echo 'Starting build...'
-         executor.build()
-         script.echo 'Build Complete.'
-      }
+   void executeStage() {
+      executeSteps(configuration.build)
    }
 }

@@ -12,7 +12,9 @@
 	<Item Name="lvBuildSpec.vi" Type="VI" URL="../lvBuildSpec.vi"/>
 	<Item Name="lvBuildSpecAllTargets.vi" Type="VI" URL="../lvBuildSpecAllTargets.vi"/>
 	<Item Name="lvRunVi.vi" Type="VI" URL="../lvRunVi.vi"/>
+	<Item Name="lvSetConditionalSymbol.vi" Type="VI" URL="../lvSetConditionalSymbol.vi"/>
 	<Item Name="subBuildSingleTarget.vi" Type="VI" URL="../subBuildSingleTarget.vi"/>
 	<Item Name="subFindAllSpecs.vi" Type="VI" URL="../subFindAllSpecs.vi"/>
 	<Item Name="subFindTargetsWithBuildSpec.vi" Type="VI" URL="../subFindTargetsWithBuildSpec.vi"/>
+	<Item Name="subReplaceSymbolValue.vi" Type="VI" URL="../subReplaceSymbolValue.vi"/>
 </Library>
