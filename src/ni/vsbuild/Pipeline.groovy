@@ -58,14 +58,18 @@ class Pipeline implements Serializable {
    }
 
    void execute() {
+
+      // build dependencies before starting this pipeline
+      script.buildDependencies(pipelineInformation)
+
       def builders = [:]
 
       for(String version : pipelineInformation.lvVersions) {
-         def lvVersion = version // need to bind the variable before the closure - can't do 'for (version in lvVersions)'
-         builders[lvVersion] = {
-            // build dependencies before starting this pipeline
-            script.buildDependencies(pipelineInformation)
 
+         // need to bind the variable before the closure - can't do 'for (version in lvVersions)'
+         def lvVersion = version
+
+         builders[lvVersion] = {
             script.node("${pipelineInformation.nodeLabel} && $lvVersion") {
                setup(lvVersion)
 
