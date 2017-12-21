@@ -25,8 +25,8 @@ class Nipkg extends AbstractPackage {
       def packageInfo = """
          Building package $name from $payloadDir
          Package version: $pkgVersion
-         Description: description
-         Homepage: homepage
+         Description: $description
+         Homepage: $homepage
          Display name: $displayName
          Eula dependency: $eulaDependency
          Dependencies: $dependencies
