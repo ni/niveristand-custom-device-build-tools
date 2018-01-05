@@ -1,24 +1,55 @@
-# commonbuild
-Contains a pipeline and common scripts used during the pipeline in order to build NI VeriStand Custom Devices.
+# Jenkins Pipeline Library for ni-veristand-cds
+This repository contains the functionality used by our Jenkins server to build the NI VeriStand Custom Devices.
+
+Included are a pipeline, defined [here](https://github.com/ni-veristand-cds/commonbuild/blob/master/src/ni/vsbuild/Pipeline.groovy), and other common scripts used during the build.
 
 ## Usage
-The main entry point is buildPipeline.groovy. This script assumes that it will be invoked from another script after that script has defined the necessary parameters. Typically, this will be from a Jenkinsfile located in the repo to be built.
+Two files are required in order to use this pipeline, a `Jenkinsfile` and a `build.toml` file. Additionally, the pipeline assumes each executor node on the Jenkins server is tagged with certain labels.
 
-These parameters are:
-  - nodeLabel: Any required label for a node to be able to build a particular repo
-  - lvVersions: A list of LabVIEW/VeriStand versions that the pipeline should build against
-  - sourceVersion: The LabVIEW version the source for the add-on is saved in
+### Node Labels
+Each node capable of building a custom device must have the label *'veristand'* and a label for each version of LabVIEW/VeriStand installed.
+A node that is capable of building a custom device for VeriStand 2016 and 2017 would have the labels `veristand, 2016, 2017`.
 
-This script further assumes that Jenkins is configured (via the Pipeline Shared Libraries plugin) to implicitly include https://github.com/buckd/commonbuild.
+### Jenkinsfile
+The pipeline is used by a `Jenkinsfile` defined in other repositories in this organization.
 
-## Requirements
-This script has been designed such that the calling component must define the behavior of different build stages. This allows use of the common pipeline, but enables arbitrary complexity of a build for a given add-on. The requirements for a repo to use the buildPipeline script are:
-  - The repo **must** have a file located at *vars/buildSteps.groovy*
-  - buildSteps.groovy **must** define the following constants/functions
-     - BUILT_DIR: The directory where the the LabVIEW build spec places the output
-     - ARCHIVE_DIR: The directory where the output should be archived
-     - syncDependencies(): A function responsible for syncing/cloning remote repositories to the build machine
-     - setupLv(lvVersion): A function responsible for copying any dependencies or setting any environment variables required to build or test for the given version of LabVIEW
-     - prepareSource(lvVersion): A function responsible for configuring any settings required for correctly loading the LV source code in the specified lvVersion
-     - build(lvVersion): A function responsible for sequencing the steps to build the LV source to the BUILT_DIR
-     - codegen(lvVersion): A function responsible for generating any code required to run the build
+The Jenkins server must be configured to load this library implicitly, either by the Jenkins Pipeline Global Library or as a Shared Pipeline Library within a job folder. To build a custom device for LabVIEW/VeriStand 2016 and 2017 if the library name configured in Jenkins is `vs-common-build`:
+
+```groovy
+// Jenkinsfile
+@Library('vs-common-build') _
+List<String> lvVersions = ['2016', '2017']
+ni.vsbuild.PipelineExecutor.execute(this, lvVersions)
+```
+
+#### Dependencies
+Some custom devices require builds of multiple repositories. This system allows a Jenkinsfile for one repository to specify a dependency on other repositories. Dependencies will be built before the pipeline for the top-level repository. Dependencies are an optional parameter to the `PipelineExecutor.execute()` method:
+
+```groovy
+// Jenkinsfile snippet
+List<String> dependencies = ['dep1', 'dep2']
+ni.vsbuild.PipelineExecutor.execute(this, lvVersions)
+```
+
+### build.toml
+[TOML Specification](https://github.com/toml-lang/toml)
+
+The `build.toml` file defines the pipeline configuration and stages used during the build.
+
+For a custom device that has only one LabVIEW project and simply needs to build every build spec in that project, the `build.toml` file will be fairly simple:
+
+```
+[archive]
+build_output_dir = 'Built'
+archive_location = 'C:\MyCustomDevice'
+
+[projects.cd]
+path = 'Source\MyCustomDevice.lvproj'
+
+[[build.steps]]
+name = 'Build My Custom Device'
+type = 'lvBuildAll'
+project = '{cd}'
+```
+
+Stages are ordered by the pipeline. Steps within the codegen and build stages are executed in the top to bottom order specified in `build.toml`. For a complete description of the available TOML configuration options, see the [build.toml specification](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds).
