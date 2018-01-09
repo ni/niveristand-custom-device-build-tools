@@ -48,12 +48,12 @@ class Pipeline implements Serializable {
             withBuildStage()
          }
 
-         if(buildConfiguration.archive) {
-            withArchiveStage()
-         }
-         
          if(buildConfiguration.packageInfo) {
             withPackageStage()
+         }
+
+         if(buildConfiguration.archive) {
+            withArchiveStage()
          }
 
          return stages
