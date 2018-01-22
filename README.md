@@ -28,12 +28,10 @@ Some custom devices require builds of multiple repositories. This system allows 
 ```groovy
 // Jenkinsfile snippet
 List<String> dependencies = ['dep1', 'dep2']
-ni.vsbuild.PipelineExecutor.execute(this, lvVersions)
+ni.vsbuild.PipelineExecutor.execute(this, lvVersions, dependencies)
 ```
 
 ### build.toml
-[TOML Specification](https://github.com/toml-lang/toml)
-
 The `build.toml` file defines the pipeline configuration and stages used during the build.
 
 For a custom device that has only one LabVIEW project and simply needs to build every build spec in that project, the `build.toml` file will be fairly simple:
