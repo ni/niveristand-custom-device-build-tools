@@ -6,6 +6,8 @@ Included are a pipeline, defined [here](https://github.com/ni-veristand-cds/comm
 ## Usage
 Two files are required in order to use this pipeline, a `Jenkinsfile` and a `build.toml` file. Additionally, the pipeline assumes each executor node on the Jenkins server is tagged with certain labels.
 
+The [LabVIEW Development System](http:/ni.com/labview) and the [LabVIEW Command Line Interface](https://github.com/JamesMc86/LabVIEW-CLI/releases) (CLI) are required on the build machine to use the LabVIEW build steps. The CLI can be installed by double-clicking the .vip file with [VI Package Manager](https://vipm.jki.net/) (VIPM) installed or directly through the VIPM application.
+
 ### Node Labels
 Each node capable of building a custom device must have the label *'veristand'* and a label for each version of LabVIEW/VeriStand installed.
 A node that is capable of building a custom device for VeriStand 2016 and 2017 would have the labels `veristand, 2016, 2017`.
