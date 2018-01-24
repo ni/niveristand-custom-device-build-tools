@@ -15,8 +15,10 @@
 	</Item>
 	<Item Name="ctlBlacklistClass.ctl" Type="VI" URL="../ctlBlacklistClass.ctl"/>
 	<Item Name="lvCheckVI.vi" Type="VI" URL="../lvCheckVI.vi"/>
+	<Item Name="subIsInViLib.vi" Type="VI" URL="../subIsInViLib.vi"/>
 	<Item Name="subLoadBlacklist.vi" Type="VI" URL="../subLoadBlacklist.vi"/>
 	<Item Name="subProcessClass.vi" Type="VI" URL="../subProcessClass.vi"/>
 	<Item Name="subRecursiveSecurityCheck.vi" Type="VI" URL="../subRecursiveSecurityCheck.vi"/>
+	<Item Name="subWriteErrorMessage.vi" Type="VI" URL="../subWriteErrorMessage.vi"/>
 	<Item Name="tester.vi" Type="VI" URL="../tester.vi"/>
 </Library>
