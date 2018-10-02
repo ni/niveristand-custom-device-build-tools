@@ -1,12 +1,8 @@
-# Jenkins Pipeline Library for ni-veristand-cds
-This repository contains the functionality used by our Jenkins server to build the NI VeriStand Custom Devices.
-
-Included are a pipeline, defined [here](https://github.com/ni-veristand-cds/commonbuild/blob/master/src/ni/vsbuild/Pipeline.groovy), and other common scripts used during the build.
+# NI VeriStand Custom Device Build Tools
+The **niveristand-custom-device-build-tools** repository provides a common set of tools to automate building NI VeriStand custom devices using the [Jenkins automation server](https://jenkins.io/). The intended audience includes custom device developers and integrators.
 
 ## Usage
-Two files are required in order to use this pipeline, a `Jenkinsfile` and a `build.toml` file. Additionally, the pipeline assumes each executor node on the Jenkins server is tagged with certain labels.
-
-The [LabVIEW Development System](http:/ni.com/labview) and the [LabVIEW Command Line Interface](https://github.com/JamesMc86/LabVIEW-CLI/releases) (CLI) are required on the build machine to use the LabVIEW build steps. The CLI can be installed by double-clicking the .vip file with [VI Package Manager](https://vipm.jki.net/) (VIPM) installed or directly through the VIPM application.
+Two files are required in order to use this pipeline for a given repository, a `Jenkinsfile` and a `build.toml` file. Additionally, the pipeline assumes each executor node on the Jenkins server is tagged with certain labels.
 
 ### Node Labels
 Each node capable of building a custom device must have the label *'veristand'* and a label for each version of LabVIEW/VeriStand installed.
@@ -24,7 +20,7 @@ List<String> lvVersions = ['2016', '2017']
 ni.vsbuild.PipelineExecutor.execute(this, lvVersions)
 ```
 
-#### Dependencies
+#### Build-Time Dependencies
 Some custom devices require builds of multiple repositories. This system allows a Jenkinsfile for one repository to specify a dependency on other repositories. Dependencies will be built before the pipeline for the top-level repository. Dependencies are an optional parameter to the `PipelineExecutor.execute()` method:
 
 ```groovy
@@ -52,4 +48,16 @@ type = 'lvBuildAll'
 project = '{cd}'
 ```
 
-Stages are ordered by the pipeline. Steps within the codegen and build stages are executed in the top to bottom order specified in `build.toml`. For a complete description of the available TOML configuration options, see the [build.toml specification](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds).
+Stages are ordered by the pipeline. Steps within the codegen and build stages are executed in the top to bottom order specified in `build.toml`. For a complete description of the available TOML configuration options, see the [build.toml specification](https://github.com/ni/niveristand-custom-device-build-tools/wiki/TOML-for-NI-VeriStand-Custom-Devices).
+
+## LabVIEW Version
+The LabVIEW source for this repository is saved for LabVIEW 2014, but is forward compatible to newer versions.
+
+## Dependencies
+The following top-level dependencies are required to build and use the repository:
+
+[LabVIEW Professional Development System](http:/ni.com/labview)
+[LabVIEW Command Line Interface](https://github.com/JamesMc86/LabVIEW-CLI/releases) (LabVIEW CLI >= 1.4.0.7 in VIPM)
+
+## License
+The NI VeriStand Custom Device Testing Tools are licensed under an MIT-style license (see LICENSE). Other incorporated projects may be licensed under different licenses. All licenses allow for non-commercial and commercial use.
