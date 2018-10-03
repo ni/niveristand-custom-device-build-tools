@@ -1,3 +1,3 @@
 def call() {
-   bat "commonbuild\\resources\\buildSetup.bat"
+   bat "niveristand-custom-device-build-tools\\resources\\buildSetup.bat"
 }

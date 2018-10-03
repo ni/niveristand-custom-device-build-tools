@@ -1,4 +1,4 @@
 def call(lvPath){
    echo "Copying configuration file to $lvPath"
-   bat "copy /Y \"$WORKSPACE\\commonbuild\\resources\\LabVIEW.ini\" \"$lvPath\\LabVIEW.ini\""
+   bat "copy /Y \"$WORKSPACE\\niveristand-custom-device-build-tools\\resources\\LabVIEW.ini\" \"$lvPath\\LabVIEW.ini\""
 }

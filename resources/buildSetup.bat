@@ -8,7 +8,7 @@ virtualenv %venv_path%
 call %venv_path%\\Scripts\\activate.bat
 
 pip install toml
-python commonbuild\\resources\\toml2json.py build.toml
+python niveristand-custom-device-build-tools\\resources\\toml2json.py build.toml
 
 call %venv_path%\\Scripts\\deactivate.bat
 
