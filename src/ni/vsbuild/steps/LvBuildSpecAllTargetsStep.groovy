@@ -10,6 +10,6 @@ class LvBuildSpecAllTargetsStep extends LvBuildStep {
    }
 
    void executeBuildStep(String projectPath) {
-      script.lvBuildSpecAllTargets(projectPath, spec)
+      script.lvBuildSpecAllTargets(projectPath, spec, lvVersion)
    }
 }

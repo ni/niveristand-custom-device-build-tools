@@ -12,6 +12,6 @@ class LvRunViStep extends LvStep {
    }
 
    void executeStep(BuildConfiguration configuration) {
-      script.lvRunVi(vi)
+      script.lvRunVi(vi, lvVersion)
    }
 }
