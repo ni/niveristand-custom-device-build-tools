@@ -15,7 +15,7 @@ The Jenkins server must be configured to load this library implicitly, either by
 
 ```groovy
 // Jenkinsfile
-@Library('vs-common-build') _
+@Library('vs-build-tools') _
 List<String> lvVersions = ['2016', '2017']
 ni.vsbuild.PipelineExecutor.execute(this, lvVersions)
 ```
