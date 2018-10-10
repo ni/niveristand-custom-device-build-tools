@@ -1,4 +1,4 @@
-def call(project, symbol, value, lvVersion){
+def call(project, symbol, value){
    echo "Setting the conditional symbol $symbol to $value for $project"
-   bat "labview-cli --kill --lv-ver $lvVersion \"$WORKSPACE\\niveristand-custom-device-build-tools\\lv\\build\\lvSetConditionalSymbol.vi\" -- \"$project\" \"$symbol\" \"$value\" \"$WORKSPACE\""
+   labviewcli("-OperationName SetConditionalSymbol -ProjectPath \"$WORKSPACE\\$project\" -Symbol \"$symbol\" -Value \"$value\" -LogFilePath \"$WORKSPACE\\lvSetConditionalSymbol_${symbol}.log\"")
 }

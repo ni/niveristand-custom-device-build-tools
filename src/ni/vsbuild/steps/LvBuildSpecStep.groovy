@@ -12,6 +12,6 @@ class LvBuildSpecStep extends LvBuildStep {
    }
 
    void executeBuildStep(String projectPath) {
-      script.lvBuildSpec(projectPath, target, spec, lvVersion)
+      script.lvBuildSpec(projectPath, target, spec)
    }
 }

@@ -1,4 +1,4 @@
-def call(project, target, spec, lvVersion){
+def call(project, target, spec){
    echo "Building the build spec: $spec under target $target in project at $project"
-   bat "labview-cli --kill --lv-ver $lvVersion \"$WORKSPACE\\niveristand-custom-device-build-tools\\lv\\build\\lvBuildSpec.vi\" -- \"$project\" \"$target\" \"$spec\" \"$WORKSPACE\""
+   labviewcli("-OperationName ExecuteBuildSpec -ProjectPath \"$WORKSPACE\\$project\" -TargetName \"$target\" -BuildSpecName \"$spec\" -LogFilePath \"$WORKSPACE\\lvBuildSpec_${spec}.log\"")
 }

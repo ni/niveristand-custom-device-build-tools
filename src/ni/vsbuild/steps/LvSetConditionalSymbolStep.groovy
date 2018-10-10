@@ -23,7 +23,7 @@ class LvSetConditionalSymbolStep extends LvProjectStep {
       
       def value = evaluateCondition() ? trueValue : falseValue
 
-      script.lvSetConditionalSymbol(path, symbol, value, lvVersion)
+      script.lvSetConditionalSymbol(path, symbol, value)
    }
    
    private def evaluateCondition() {

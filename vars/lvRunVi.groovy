@@ -1,4 +1,5 @@
-def call(vi, lvVersion){
+def call(vi){
    echo "Running $vi."
-   bat "labview-cli --kill --lv-ver $lvVersion \"$WORKSPACE\\niveristand-custom-device-build-tools\\lv\\build\\lvRunVi.vi\" -- \"$vi\" \"$WORKSPACE\""
+   def logFileName = getLogName(vi)
+   labviewcli("-OperationName SecureRunVI -VIPath \"$WORKSPACE\\$vi\" -LogFilePath \"$WORKSPACE\\lvRunVi_${logFileName}.log\"")
 }
