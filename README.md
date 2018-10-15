@@ -56,9 +56,14 @@ The LabVIEW source for this repository is saved for LabVIEW 2014, but is forward
 ## Dependencies
 The following top-level dependencies are required on the build machine to use the repository:
 
-* [LabVIEW Professional Development System](http:/ni.com/labview)
-* [LabVIEW Command Line Interface](http://www.ni.com/download/labview-command-line-interface-18.0/7545/en/)
-* [Python](https://www.python.org/downloads/) (Version 3.6.3 or later)
+- [LabVIEW Professional Development System](http:/ni.com/labview)
+- [LabVIEW Command Line Interface](http://www.ni.com/download/labview-command-line-interface-18.0/7545/en/)
+- [Python](https://www.python.org/downloads/) (Version 3.6.3 or later)
+
+## Git History & Rebasing Policy
+Branch rebasing and other history modifications will be listed here, with several notable exceptions:
+- Branches prefixed with `dev/` may be rebased, overwritten, or deleted at any time.
+- Pull requests may be squashed on merge.
 
 ## License
 The NI VeriStand Custom Device Testing Tools are licensed under an MIT-style license (see LICENSE). Other incorporated projects may be licensed under different licenses. All licenses allow for non-commercial and commercial use.
