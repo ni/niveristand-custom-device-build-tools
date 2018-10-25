@@ -14,5 +14,5 @@
 @GOTO :END
 
 :DIFF_VI
-    labview-cli --kill --lv-ver %lv_version% buildsystem\steps\lvDiff.vi -- "%vi1%" "%vi2%" "%working_dir%"
+    LabVIEWCLI.exe -OperationName DiffVI -AdditionalOperationDirectory niveristand-custom-device-build-tools\lv\operations\ -OldVI "%vi1%" -NewVI "%vi2%" -OutputDir "%working_dir%"
 :END
