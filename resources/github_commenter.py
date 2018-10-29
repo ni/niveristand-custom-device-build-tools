@@ -36,7 +36,7 @@ def _parse_options(args):
         "-i", "--info",
         dest="info",
         metavar="INFO",
-        help="Information about the org, repo, and pull request you are trying to use, e.g. 'LabVIEW-DCAF/IntegrationTesting/PR-13'"
+        help="Information about the org, repo, and pull request you are trying to use, e.g. 'ni/niveristand-custom-device-build-tools/PR-13'"
     )
     parser.add_option(
         "-r", "--pic-repo",

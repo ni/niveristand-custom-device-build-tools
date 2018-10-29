@@ -2,7 +2,7 @@
 
 //note: this script assumes that it will be invoked from another script after that script has defined the necessary parameters
 
-//This script further assumes that Jenkins is configured (via the Pipeline Shared Libraries plugin) to implicitly include https://github.com/LabVIEW-DCAF/buildsystem
+//This script further assumes that Jenkins is configured (via the Pipeline Shared Libraries plugin) to implicitly include https://github.com/ni/niveristand-custom-device-build-tools
 
 def call(lvVersion) {
    if (env.CHANGE_ID) {
