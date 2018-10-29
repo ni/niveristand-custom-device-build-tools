@@ -1,13 +1,10 @@
-#!/usr/bin/env python3
-
 from __future__ import with_statement
 
 import sys
 import os
 import logging
 import json
-import post_pics_to_pr
-
+from post_pictures_to_pull_request import post_pictures_to_pull_request
 
 _moduleLogger = logging.getLogger(__name__)
 
@@ -47,7 +44,7 @@ def _parse_options(args):
         metavar="REPO",
         help="The owner and repo to post to on github, e.g. 'theSloopJohnB/thesloopjohnb' for https://github.com/theSloopJohnB/thesloopjohnb"
     )
-    
+
     debugGroup = optparse.OptionGroup(parser, "Debug")
     debugGroup.add_option(
         "-v", "--verbose",
@@ -87,7 +84,7 @@ def _parse_options(args):
         return options, loggingLevel
 
     if args:
-        parser.error("Positional arguments are not supported: %r" % (args, ))
+        parser.error("Positional arguments are not supported: %r" % (args,))
 
     if options.picDir is None or not os.path.exists(options.picDir):
         parser.error("Picture directory does not exist: %r" % options.picDir)
@@ -106,7 +103,7 @@ def main(args):
         print(doctest.testmod())
         return
     else:
-    	post_pics_to_pr.post_pics_to_pr(options.token, options.picDir, options.info, options.pr, options.picRepo)
+        post_pictures_to_pull_request(options.token, options.picDir, options.info, options.pr, options.picRepo)
 
     return 0
 

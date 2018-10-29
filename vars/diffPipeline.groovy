@@ -4,7 +4,7 @@
 
 //This script further assumes that Jenkins is configured (via the Pipeline Shared Libraries plugin) to implicitly include https://github.com/LabVIEW-DCAF/buildsystem
 
-def call(lvVersion, diffingPicRepo) {
+def call(lvVersion) {
    if (env.CHANGE_ID) {
       node(lvVersion) {
          echo 'Starting build...'
@@ -24,7 +24,7 @@ def call(lvVersion, diffingPicRepo) {
          // If this change is a pull request, diff vis.
          stage('Diff VIs') {
             timeout(time: 60, unit: 'MINUTES') {
-               lvDiff(lvVersion, diffingPicRepo)
+               lvDiff(lvVersion, env.DIFFING_PIC_REPO, env.GITHUB_DIFF_TOKEN)
                echo 'Diff Succeeded!'
             }
          }
