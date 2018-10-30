@@ -20,7 +20,7 @@ class Archive extends AbstractStage {
          buildOutputDir = BuildConfiguration.STAGING_DIR
       }
 
-      script.bat "xcopy \"$buildOutputDir\" \"$archiveLocation\\$lvVersion\" /e /i"
+      script.copyFiles(buildOutputDir, "$archiveLocation\\$lvVersion")
 
       setArchiveVar()
    }

@@ -3,23 +3,21 @@ package ni.vsbuild.packages
 abstract class AbstractPackage implements Buildable {
 
    def script
-   def name
    def type
    def payloadDir
 
-   AbstractPackage(script, packageInfo, payloadDir) {
+   AbstractPackage(script, packageInfo) {
       this.script = script
-      this.name = packageInfo.get('name')
       this.type = packageInfo.get('type')
-      this.payloadDir = payloadDir
+      this.payloadDir = packageInfo.get('payload_dir')
    }
 
-   void build() {
-      script.echo "Building package $name.$type..."
-      buildPackage()
-      script.echo "Package $name.$type built."
+   void build(lvVersion) {
+      script.echo "Building $type package..."
+      buildPackage(lvVersion)
+      script.echo "$type package built."
    }
 
-   abstract void buildPackage()
+   abstract void buildPackage(lvVersion)
 
 }

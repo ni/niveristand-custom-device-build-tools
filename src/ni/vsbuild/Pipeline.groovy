@@ -39,6 +39,13 @@ class Pipeline implements Serializable {
          stages << new Package(script, buildConfiguration, lvVersion)
       }
 
+      def shouldBuildPackage() {
+         return buildConfiguration.packageInfo &&
+            (script.env.BRANCH_NAME.startsWith("release") ||
+            script.env.BRANCH_NAME.startsWith("hotfix") ||
+            script.env.BRANCH_NAME == "master")
+      }
+
       def buildPipeline() {         
          if(buildConfiguration.codegen || buildConfiguration.projects) {
             withCodegenStage()
@@ -48,7 +55,7 @@ class Pipeline implements Serializable {
             withBuildStage()
          }
 
-         if(buildConfiguration.packageInfo) {
+         if(shouldBuildPackage()) {
             withPackageStage()
          }
 
