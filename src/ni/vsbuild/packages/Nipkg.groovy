@@ -23,7 +23,7 @@ class Nipkg extends AbstractPackage {
       script.copyFiles(PACKAGE_DIRECTORY, "\"$payloadDir\\installer\"", nipkgOutput)
    }
 
-   // This method is responsbile for setting up the directory and file
+   // This method is responsible for setting up the directory and file
    // structure required to build a File Package using nipkg.exe.
    // The structure is defined at the following link.
    // http://www.ni.com/documentation/en/ni-package-manager/18.5/manual/assemble-file-package/
