@@ -1,6 +1,5 @@
 def call(lvVersion) {
-   def programFiles = bat returnStdout: true, script: "echo off & set PROGRAMFILES(x86) & echo on"
-   programFiles = programFiles.split('=')[1].trim()
+   def programFiles = getWindowsVar("PROGRAMFILES(x86)")
    env."labviewPath_${lvVersion}" = "$programFiles\\National Instruments\\LabVIEW ${lvVersion}\\LabVIEW.exe"
    bat "niveristand-custom-device-build-tools\\resources\\buildSetup.bat"
 }

@@ -39,6 +39,17 @@ class Pipeline implements Serializable {
          stages << new Package(script, buildConfiguration, lvVersion)
       }
 
+      // The plan is to enable automatic merging from master to
+      // release or hotfix branch packages and not build packages
+      // for any other branches, including master. The version must
+      // be appended to the release or hotfix branch name after a
+      // dash (-) or slash (/).
+      def shouldBuildPackage() {
+         return buildConfiguration.packageInfo &&
+            (script.env.BRANCH_NAME.startsWith("release") ||
+            script.env.BRANCH_NAME.startsWith("hotfix"))
+      }
+
       def buildPipeline() {         
          if(buildConfiguration.codegen || buildConfiguration.projects) {
             withCodegenStage()
@@ -48,7 +59,7 @@ class Pipeline implements Serializable {
             withBuildStage()
          }
 
-         if(buildConfiguration.packageInfo) {
+         if(shouldBuildPackage()) {
             withPackageStage()
          }
 
