@@ -18,11 +18,15 @@ class Nipkg extends AbstractPackage {
 
    void buildPackage(lvVersion) {
       stageFiles(lvVersion)
-      
+
       def nipkgOutput = script.nipkgBuild(PACKAGE_DIRECTORY, PACKAGE_DIRECTORY)
       script.copyFiles(PACKAGE_DIRECTORY, "\"$payloadDir\\installer\"", nipkgOutput)
    }
 
+   // This method is responsbile for setting up the directory and file
+   // structure required to build a File Package using nipkg.exe.
+   // The structure is defined at the following link.
+   // http://www.ni.com/documentation/en/ni-package-manager/18.5/manual/assemble-file-package/
    private void stageFiles(lvVersion) {
       if(!script.fileExists(PACKAGE_DIRECTORY)) {
          script.bat "mkdir \"$PACKAGE_DIRECTORY\\$CONTROL_DIRECTORY\" \"$PACKAGE_DIRECTORY\\$DATA_DIRECTORY\""
@@ -33,6 +37,10 @@ class Nipkg extends AbstractPackage {
       updateInstructionsFile(lvVersion)
 
       stagePayload(lvVersion)
+   }
+
+   private void createDebianFile() {
+      script.writeFile file: "$PACKAGE_DIRECTORY\\debian-binary", text: "2.0\n"
    }
 
    private void updateControlFile(lvVersion) {
@@ -54,15 +62,13 @@ class Nipkg extends AbstractPackage {
       script.writeFile file: "$PACKAGE_DIRECTORY\\$destination\\$fileName", text: updatedText
    }
 
+   // The plan is to enable automatic merging from master to
+   // release or hotfix branch packages and not build packages
+   // for any other branches, including master. The version must
+   // be appended to the release or hotfix branch name after a
+   // dash (-) or slash (/).
    private def getBaseVersion() {
-      // This is a workaround for building packages on master until we implement
-      // automatic merging to release branches. Once automatic merges happen,
-      // we will only need to build release- or hotfix- branch packages.
-      if(script.env.BRANCH_NAME == "master") {
-         return "0.0.1"
-      }
-
-      def baseVersion = script.env.BRANCH_NAME.tokenize('-')[1]
+      def baseVersion = script.env.BRANCH_NAME.split("[-/]")[1]
       def versionPartCount = baseVersion.tokenize(".").size()
 
       def versionPartsToDisplay = 3
@@ -93,9 +99,5 @@ class Nipkg extends AbstractPackage {
    private void stagePayload(lvVersion) {
       def destination = updateVersionVariables(installDestination, lvVersion)
       script.copyFiles(payloadDir, "$PACKAGE_DIRECTORY\\$DATA_DIRECTORY\\$destination")
-   }
-
-   private void createDebianFile() {
-      script.writeFile file: "$PACKAGE_DIRECTORY\\debian-binary", text: "2.0\n"
    }
 }
