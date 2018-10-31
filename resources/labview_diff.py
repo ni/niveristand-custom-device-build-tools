@@ -50,7 +50,7 @@ def labview_path_from_year(year):
     if env_key in os.environ:
         return os.environ[env_key]
 
-    return r"C:\Program Files (x86)\National Instruments\LabVIEW {0}\LabVIEW.exe".format(year)
+    return r"{0}\National Instruments\LabVIEW {1}\LabVIEW.exe".format(os.environ["ProgramFiles(x86)"], year)
 
 
 if __name__ == "__main__":
