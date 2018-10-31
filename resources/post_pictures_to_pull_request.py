@@ -5,6 +5,8 @@ import os
 import datetime
 import logging
 
+# Taken from https://github.com/LabVIEW-DCAF/buildsystem/blob/master/steps/post_pics_to_pr.py
+
 _moduleLogger = logging.getLogger(__name__)
 
 

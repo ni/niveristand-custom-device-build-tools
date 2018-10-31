@@ -1,3 +1,5 @@
+// Taken from https://github.com/LabVIEW-DCAF/buildsystem/blob/master/vars/lvDiff.groovy
+
 def call(lvVersion, diffingPicRepo, githubDiffToken) {
    echo 'Running LabVIEW diff build between origin/master and this commit'
    def diffDir = "${WORKSPACE}\\diff_dir"

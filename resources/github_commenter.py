@@ -3,8 +3,9 @@ from __future__ import with_statement
 import sys
 import os
 import logging
-import json
 from post_pictures_to_pull_request import post_pictures_to_pull_request
+
+# Taken from https://github.com/LabVIEW-DCAF/buildsystem/blob/master/steps/github_commenter.py
 
 _moduleLogger = logging.getLogger(__name__)
 

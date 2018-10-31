@@ -3,6 +3,8 @@ import subprocess
 import sys
 
 
+# Python reimplementation of https://github.com/LabVIEW-DCAF/buildsystem/blob/master/steps/labview-diff.bat
+
 def labview_diff(vi1, vi2, working_dir, lv_version):
     """
     Generates a diff of LabVIEW VIs
