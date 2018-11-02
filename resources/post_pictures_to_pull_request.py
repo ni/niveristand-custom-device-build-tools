@@ -30,6 +30,7 @@ def _post_file(file_data, folder, file_name, header, picRepo):
     if r.ok:
         _moduleLogger.info('Response code: %s', r.status_code)
     else:
+        _moduleLogger.error('Bad response url: %s', url)
         _moduleLogger.error('Bad response code: %s', r.status_code)
         _moduleLogger.error('Bad response text: %s', r.text)
     return r.json()['content']['download_url']
@@ -53,18 +54,28 @@ Notice something funny? Help fix me on [my GitHub repo.](https://github.com/ni/n
         for failure in diffFailures:
             body += "- " + failure + "\n"
 
-    org, repo, _ = pullRequestInfo.split('/')
+    # pullRequestInfo contains data in the format "Jenkins/Folder/Path/org/reponame/PR-1",
+    # where there is an arbitrary list of folders prior to the repository name. We assume the one
+    # immediately preceding the repository name is the organization or username. Since there
+    # can be an arbitrary number of slashes before the information we care about, we index from
+    # the end of the list.
+    org, repo, _ = pullRequestInfo.split("/")[-3:]
     url = "https://api.github.com/repos/%s/%s/issues/%s/comments" % (org, repo, prNumber)
     data = json.dumps({"body": body})
     r = requests.post(url, data=data, headers=header)
     if r.ok:
         _moduleLogger.info('Response code: %s', r.status_code)
     else:
+        _moduleLogger.error('Bad response url: %s', url)
         _moduleLogger.error('Bad response code: %s', r.status_code)
         _moduleLogger.error('Bad response text: %s', r.text)
 
 
 def post_pictures_to_pull_request(token, localPicfileDirectory, pullRequestInfo, prNumber, picRepo):
+    print("post_pictures_to_pull_request: ###, {0}, {1}, {2}, {3}".format(localPicfileDirectory,
+                                                                          pullRequestInfo,
+                                                                          prNumber,
+                                                                          picRepo))
     header = _create_header(token)
     pics = [f for f in os.listdir(localPicfileDirectory) if f.endswith(".png")]
     folder = pullRequestInfo + '/' + datetime.datetime.now().strftime('%Y-%m-%d/%H:%M:%S')
