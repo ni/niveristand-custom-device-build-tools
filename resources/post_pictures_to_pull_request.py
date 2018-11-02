@@ -54,7 +54,12 @@ Notice something funny? Help fix me on [my GitHub repo.](https://github.com/ni/n
         for failure in diffFailures:
             body += "- " + failure + "\n"
 
-    org, repo, _ = pullRequestInfo.split('/')
+    # pullRequestInfo contains data in the format "Jenkins/Folder/Path/org/reponame/PR-1",
+    # where there is an arbitrary list of folders prior to the repository name. We assume the one
+    # immediately preceding the repository name is the organization or username. Since there
+    # can be an arbitrary number of slashes before the information we care about, we index from
+    # the end of the list.
+    org, repo, _ = pullRequestInfo.split("/")[-3:]
     url = "https://api.github.com/repos/%s/%s/issues/%s/comments" % (org, repo, prNumber)
     data = json.dumps({"body": body})
     r = requests.post(url, data=data, headers=header)
