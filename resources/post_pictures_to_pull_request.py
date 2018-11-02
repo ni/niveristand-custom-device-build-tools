@@ -30,6 +30,7 @@ def _post_file(file_data, folder, file_name, header, picRepo):
     if r.ok:
         _moduleLogger.info('Response code: %s', r.status_code)
     else:
+        _moduleLogger.error('Bad response url: %s', url)
         _moduleLogger.error('Bad response code: %s', r.status_code)
         _moduleLogger.error('Bad response text: %s', r.text)
     return r.json()['content']['download_url']
@@ -60,11 +61,16 @@ Notice something funny? Help fix me on [my GitHub repo.](https://github.com/ni/n
     if r.ok:
         _moduleLogger.info('Response code: %s', r.status_code)
     else:
+        _moduleLogger.error('Bad response url: %s', url)
         _moduleLogger.error('Bad response code: %s', r.status_code)
         _moduleLogger.error('Bad response text: %s', r.text)
 
 
 def post_pictures_to_pull_request(token, localPicfileDirectory, pullRequestInfo, prNumber, picRepo):
+    print("post_pictures_to_pull_request: ###, {0}, {1}, {2}, {3}".format(localPicfileDirectory,
+                                                                          pullRequestInfo,
+                                                                          prNumber,
+                                                                          picRepo))
     header = _create_header(token)
     pics = [f for f in os.listdir(localPicfileDirectory) if f.endswith(".png")]
     folder = pullRequestInfo + '/' + datetime.datetime.now().strftime('%Y-%m-%d/%H:%M:%S')
