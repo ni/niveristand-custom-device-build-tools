@@ -8,56 +8,64 @@ class Nipkg extends AbstractPackage {
    private static final String INSTRUCTIONS_FILE_NAME = "instructions"
    private static final String CONTROL_DIRECTORY = "control"
    private static final String DATA_DIRECTORY = "data"
+   private static final String INSTALLER_DIRECTORY = "installer"
 
    def installDestination
 
-   Nipkg(script, packageInfo) {
-      super(script, packageInfo)
-      this.installDestination = packageInfo.get('install_destination')
+   Nipkg(script, packageInfo, lvVersion) {
+      super(script, packageInfo, lvVersion)
+
+      // Yes, I'm calling toString() on what appears to be a string, but is not actually
+      // java.lang.String. Instead, the interpolated string is a groovy.lang.GString.
+      // http://docs.groovy-lang.org/latest/html/documentation/index.html#_double_quoted_string
+      // There appears to be a bug in Groovy's runtime argument overloading evaluation
+      // that fails to find the key when a GString is passed to getAt() instead of a String
+      // https://stackoverflow.com/questions/39145121/why-i-cannot-get-exactly-the-same-gstring-as-was-put-to-map-in-groovy
+      this.installDestination = packageInfo.get("${lvVersion}_install_destination".toString()) ?: packageInfo.get('install_destination')
    }
 
-   void buildPackage(lvVersion) {
-      stageFiles(lvVersion)
+   void buildPackage() {
+      stageFiles()
 
       def nipkgOutput = script.nipkgBuild(PACKAGE_DIRECTORY, PACKAGE_DIRECTORY)
-      script.copyFiles(PACKAGE_DIRECTORY, "\"$payloadDir\\installer\"", nipkgOutput)
+      script.copyFiles(PACKAGE_DIRECTORY, "\"$payloadDir\\$INSTALLER_DIRECTORY\"", nipkgOutput)
    }
 
    // This method is responsible for setting up the directory and file
    // structure required to build a File Package using nipkg.exe.
    // The structure is defined at the following link.
    // http://www.ni.com/documentation/en/ni-package-manager/18.5/manual/assemble-file-package/
-   private void stageFiles(lvVersion) {
+   private void stageFiles() {
       if(!script.fileExists(PACKAGE_DIRECTORY)) {
          script.bat "mkdir \"$PACKAGE_DIRECTORY\\$CONTROL_DIRECTORY\" \"$PACKAGE_DIRECTORY\\$DATA_DIRECTORY\""
       }
 
       createDebianFile()
-      updateControlFile(lvVersion)
-      updateInstructionsFile(lvVersion)
+      updateControlFile()
+      updateInstructionsFile()
 
-      stagePayload(lvVersion)
+      stagePayload()
    }
 
    private void createDebianFile() {
       script.writeFile file: "$PACKAGE_DIRECTORY\\debian-binary", text: "2.0\n"
    }
 
-   private void updateControlFile(lvVersion) {
-      updateBuildFile(CONTROL_FILE_NAME, CONTROL_DIRECTORY, lvVersion)
+   private void updateControlFile() {
+      updateBuildFile(CONTROL_FILE_NAME, CONTROL_DIRECTORY)
    }
 
-   private void updateInstructionsFile(lvVersion) {
-      updateBuildFile(INSTRUCTIONS_FILE_NAME, DATA_DIRECTORY, lvVersion)
+   private void updateInstructionsFile() {
+      updateBuildFile(INSTRUCTIONS_FILE_NAME, DATA_DIRECTORY)
    }
 
-   private void updateBuildFile(fileName, destination, lvVersion) {
+   private void updateBuildFile(fileName, destination) {
       if(!script.fileExists(fileName)) {
          return
       }
 
       def fileText = script.readFile(fileName)
-      def updatedText = updateVersionVariables(fileText, lvVersion)
+      def updatedText = updateVersionVariables(fileText)
 
       script.writeFile file: "$PACKAGE_DIRECTORY\\$destination\\$fileName", text: updatedText
    }
@@ -79,7 +87,7 @@ class Nipkg extends AbstractPackage {
       return baseVersion
    }
 
-   private String updateVersionVariables(text, lvVersion) {
+   private String updateVersionVariables(text) {
       def baseVersion = getBaseVersion()
       def fullVersion = "${baseVersion}.${script.currentBuild.number}+000"
 
@@ -96,8 +104,8 @@ class Nipkg extends AbstractPackage {
       return updatedText
    }
 
-   private void stagePayload(lvVersion) {
-      def destination = updateVersionVariables(installDestination, lvVersion)
+   private void stagePayload() {
+      def destination = updateVersionVariables(installDestination)
       script.copyFiles(payloadDir, "$PACKAGE_DIRECTORY\\$DATA_DIRECTORY\\$destination")
    }
 }
