@@ -5,19 +5,21 @@ abstract class AbstractPackage implements Buildable {
    def script
    def type
    def payloadDir
+   def lvVersion
 
-   AbstractPackage(script, packageInfo) {
+   AbstractPackage(script, packageInfo, lvVersion) {
       this.script = script
+      this.lvVersion = lvVersion
       this.type = packageInfo.get('type')
       this.payloadDir = packageInfo.get('payload_dir')
    }
 
-   void build(lvVersion) {
+   void build() {
       script.echo "Building $type package..."
-      buildPackage(lvVersion)
+      buildPackage()
       script.echo "$type package built."
    }
 
-   abstract void buildPackage(lvVersion)
+   abstract void buildPackage()
 
 }

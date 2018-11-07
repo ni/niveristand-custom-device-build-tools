@@ -10,7 +10,7 @@ class Package extends AbstractStage {
    }
 
    void executeStage() {
-      Buildable pkg = PackageFactory.createPackage(script, configuration.packageInfo)
-      pkg.build(lvVersion)
+      Buildable pkg = PackageFactory.createPackage(script, configuration.packageInfo, lvVersion)
+      pkg.build()
    }
 }
