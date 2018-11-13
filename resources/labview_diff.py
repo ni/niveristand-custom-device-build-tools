@@ -16,9 +16,10 @@ def labview_diff(vi1, vi2, working_dir, lv_version):
     :param working_dir: The directory in which to store output
     :param lv_version: The year version of LabVIEW to use for diffing
     """
-    if vi1[-3:] != ".vi" and vi1 != r"\\.\nul":
-        return
 
+    # We require that the second file-path (conventionally the new VI) ends in `.vi`.
+    # We allow the first argument to differ in extension, since git is somewhat inconsistent,
+    # in the path it provides when the file is newly added.
     if vi2[-3:] != ".vi":
         return
 
