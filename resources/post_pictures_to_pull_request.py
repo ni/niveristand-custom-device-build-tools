@@ -37,7 +37,7 @@ def _post_file(file_data, folder, file_name, header, picRepo):
 
 
 def _post_comment_to_pr(urlPicPairs, diffFailures, pullRequestInfo, prNumber, header):
-    formatString = "### %s: ![capture](%s)\n\n"
+    formatString = "### %s:\n ![capture](%s)\n\n"
     body = """Bleep bloop!
 
 LabVIEW Diff Robot here with some diffs served up hot for your pull request.

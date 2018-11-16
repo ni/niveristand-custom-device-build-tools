@@ -1,51 +1,50 @@
 import os
+import re
+import shutil
+import stat
 import subprocess
-import sys
+import tempfile
+from contextlib import contextmanager
+from os import path
 
 
-# Python reimplementation of https://github.com/LabVIEW-DCAF/buildsystem/blob/master/steps/labview-diff.bat
-
-def labview_diff(vi1, vi2, working_dir, lv_version):
+def diff_vi(old_vi, new_vi, output_dir, workspace, lv_version):
     """
     Generates a diff of LabVIEW VIs
 
-    VIs which fail to be diffed are logged to `working_dir\diff_failures.txt`.
+    VIs which fail to be diffed are logged to {output_dir}/diff_failures.txt.
 
-    :param vi1: The first VI to diff, typically $LOCAL
-    :param vi2: The second VI to diff, typically $REMOTE
-    :param working_dir: The directory in which to store output
+    :param old_vi: The older version of the VI; if bool(vi1) is false, the VI is assumed to be newly added
+    :param new_vi: The newer version of the VI
+    :param output_dir: The directory in which to store output
+    :param workspace: The directory above the niveristand-custom-device-build-tools
     :param lv_version: The year version of LabVIEW to use for diffing
     """
 
-    # We require that the second file-path (conventionally the new VI) ends in `.vi`.
-    # We allow the first argument to differ in extension, since git is somewhat inconsistent,
-    # in the path it provides when the file is newly added.
-    if vi2[-3:] != ".vi":
-        return
-
     version_path = labview_path_from_year(lv_version)
-    workspace = os.environ["WORKSPACE"]
 
     command_args = [
         "LabVIEWCLI.exe",
         "-LabVIEWPath", version_path,
         "-AdditionalOperationDirectory", workspace + r"\niveristand-custom-device-build-tools\lv\operations\\",
         "-OperationName", "DiffVI",
-        "-OldVI", vi1,
-        "-NewVI", vi2,
-        "-OutputDir", working_dir,
+        "-NewVI", new_vi,
+        "-OutputDir", output_dir,
     ]
+
+    if old_vi:
+        command_args.extend(["-OldVI", old_vi])
 
     subprocess.call(["taskkill", "/IM", "labview.exe", "/F"])
     try:
         subprocess.check_call(command_args)
     except subprocess.CalledProcessError:
         import traceback
-        print("Failed to diff {0} and {1}.".format(vi1, vi2))
+        print("Failed to diff \"{0}\" and \"{1}\".".format(old_vi, new_vi))
         traceback.print_exc()
 
-        with open(working_dir + "\\diff_failures.txt", "a+") as file:
-            file.write(vi1 + "\n")
+        with open(output_dir + "\\diff_failures.txt", "a+") as file:
+            file.write(new_vi + "\n")
 
 
 def labview_path_from_year(year):
@@ -56,5 +55,99 @@ def labview_path_from_year(year):
     return r"{0}\National Instruments\LabVIEW {1}\LabVIEW.exe".format(os.environ["ProgramFiles(x86)"], year)
 
 
+def export_repo(target_ref):
+    """
+    Export a copy of the repository at a given ref to a temporary directory.
+
+    :param target_ref: The ref you want to export, e.g. `origin\master`
+    :return: A temporaryfile.TemporaryDirectory containing the repository at the given ref
+    """
+
+    directory = tempfile.TemporaryDirectory()
+    shutil.copytree(".git", path.join(directory.name, ".git"))
+    cwd = os.getcwd()
+    os.chdir(directory.name)
+    subprocess.check_call(["git", "checkout", "-f", target_ref])
+    os.chdir(cwd)
+
+    @contextmanager
+    def cleanup_make_all_writeable(directory):
+        try:
+            yield directory
+        finally:
+            # tempfile.TemporaryDirectory has a bug where it fails when readonly files
+            # are present. Clearing the readonly flag manually fixes this.
+            # When https://bugs.python.org/issue26660 is fixed, this code can be removed,
+            # and the temporary directory can be returned directly
+            for root, dirs, files in os.walk(directory.name):
+                for file in files:
+                    os.chmod(root + "/" + file, stat.S_IWRITE)
+
+    return cleanup_make_all_writeable(directory)
+
+
+def get_changed_labview_files(target_ref):
+    """
+    Get LabVIEW files which have changed compared to the target ref.
+
+    :param target_ref: The git ref to check for changed files against
+    :return: Tuples of the form (status, filename) where status is either "A" or "M", depending on whether the file was added or modified.
+    """
+    diff_args = ["git", "diff", "--name-status", "--diff-filter=AM", target_ref, "HEAD"]
+    diff_output = subprocess.check_output(diff_args).decode("utf-8")
+
+    # https://regex101.com/r/EFVDVV/1
+    diff_regex = re.compile(r"^([AM])\s+(.*\.vi[tm]?)$", re.MULTILINE)
+
+    for match in re.finditer(diff_regex, diff_output):
+        yield match.group(1), match.group(2)
+
+
+def diff_repo(workspace, output_dir, target_branch, lv_version):
+    diffs = get_changed_labview_files(target_branch)
+
+    with export_repo(target_branch) as directory:
+        for status, filename in diffs:
+            if status == "A":
+                print("Diffing added file: " + filename)
+                diff_vi(None, path.abspath(filename), path.abspath(output_dir), workspace, lv_version)
+            elif status == "M":
+                print("Diffing modified file: " + filename)
+                # LabVIEW won't let us load two files with the same name into memory,
+                # so we copy the old file to have a new name. This isn't perfect - the VIs
+                # it references will still pull in the new versions of dependencies - but it
+                # is better than nothing.
+                old_file = path.join(directory.name, filename)
+                copied_file = path.join(path.dirname(old_file), "_COPY_" + path.basename(filename))
+                shutil.copy(old_file, copied_file)
+                diff_vi(copied_file, path.abspath(filename), path.abspath(output_dir), workspace, lv_version)
+            else:
+                print("Unknown file status: " + filename)
+
+
 if __name__ == "__main__":
-    labview_diff(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+    import argparse
+
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument(
+        "workspace",
+        help="Directory which contains the `niveristand-custom-device-build-tools` repository "
+             "(as opposed to the `niveristand-custom-device-build-tools` repository itself)"
+    )
+    parser.add_argument(
+        "output_dir",
+        help="Directory in which to generate output"
+    )
+    parser.add_argument(
+        "labview_version",
+        help="Year version of LabVIEW you wish to use for diffing"
+    )
+    parser.add_argument(
+        "--target",
+        help="Target branch or ref the diff is being generated against",
+        default="origin/master"
+    )
+
+    args = parser.parse_args()
+
+    diff_repo(args.workspace, args.output_dir, args.target, args.labview_version)
