@@ -65,10 +65,7 @@ def export_repo(target_ref):
 
     directory = tempfile.TemporaryDirectory()
     shutil.copytree(".git", path.join(directory.name, ".git"))
-    cwd = os.getcwd()
-    os.chdir(directory.name)
-    subprocess.check_call(["git", "checkout", "-f", target_ref])
-    os.chdir(cwd)
+    subprocess.check_call(["git", "checkout", "-f", target_ref], cwd=directory.name)
 
     @contextmanager
     def cleanup_make_all_writeable(directory):
