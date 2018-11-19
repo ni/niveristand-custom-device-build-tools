@@ -4,6 +4,7 @@ import shutil
 import stat
 import subprocess
 import tempfile
+import traceback
 from contextlib import contextmanager
 from os import path
 
@@ -39,7 +40,6 @@ def diff_vi(old_vi, new_vi, output_dir, workspace, lv_version):
     try:
         subprocess.check_call(command_args)
     except subprocess.CalledProcessError:
-        import traceback
         print("Failed to diff \"{0}\" and \"{1}\".".format(old_vi, new_vi))
         traceback.print_exc()
 
