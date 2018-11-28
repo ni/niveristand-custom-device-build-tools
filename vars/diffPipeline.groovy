@@ -29,7 +29,8 @@ def call(lvVersion) {
             }
          }
          stage('Cleanup') {
-            deleteDir()
+            //deleteDir()
+            echo 'skipping cleanup'
          }
       }
    }
