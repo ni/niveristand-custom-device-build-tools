@@ -13,7 +13,6 @@ class PipelineInformation implements Serializable {
    }
 
    public void printInformation(script) {
-     script.echo this.nodeLabel
      if (this.nodeLabel && !this.nodeLabel.allWhitespace){
        script.echo "Pipeline will be run for LV versions $lvVersions and will execute on node(s) with label \'$nodeLabel\'."
      } else {
