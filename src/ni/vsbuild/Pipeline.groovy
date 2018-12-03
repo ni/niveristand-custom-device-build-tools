@@ -88,13 +88,13 @@ class Pipeline implements Serializable {
          // need to bind the variable before the closure - can't do 'for (version in lvVersions)'
          def lvVersion = version
 
-         string fullLabel
+         String fullLabel
          if ("${pipelineInformation.nodeLabel}" && !"${pipelineInformation.nodeLabel}".allWhitespace){
            fullLabel = "${pipelineInformation.nodeLabel} && $lvVersion"
          } else {
            fullLabel = "$lvVersion"
          }
-         
+
          builders[lvVersion] = {
             script.node(fullLabel) {
                setup(lvVersion)
