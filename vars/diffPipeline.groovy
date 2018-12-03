@@ -9,16 +9,16 @@ def call(lvVersion) {
       node(lvVersion) {
          echo 'Starting build...'
          stage('Pre-Clean') {
-            //deleteDir()
+            deleteDir()
          }
          stage('SCM_Checkout') {
             echo 'Attempting to get source from repo...'
             timeout(time: 5, unit: 'MINUTES') {
-               //checkout scm
+               checkout scm
             }
 
             timeout(time: 5, unit: 'MINUTES') {
-               //cloneBuildTools()
+               cloneBuildTools()
             }
          }
          // If this change is a pull request, diff vis.
@@ -29,8 +29,7 @@ def call(lvVersion) {
             }
          }
          stage('Cleanup') {
-            //deleteDir()
-            echo 'skipping cleanup'
+            deleteDir()
          }
       }
    }
