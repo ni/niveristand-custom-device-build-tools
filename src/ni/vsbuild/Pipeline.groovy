@@ -90,7 +90,7 @@ class Pipeline implements Serializable {
 
          String nodeLabel = lvVersion
          if (pipelineInformation.nodeLabel?.trim()){
-           nodeLabel = "$nodeLabel && pipelineInformation.nodeLabel"
+           nodeLabel = "$nodeLabel && ${pipelineInformation.nodeLabel}"
         }
 
 
