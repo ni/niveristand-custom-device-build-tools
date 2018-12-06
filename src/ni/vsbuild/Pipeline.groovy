@@ -34,7 +34,7 @@ class Pipeline implements Serializable {
       def withArchiveStage() {
          stages << new Archive(script, buildConfiguration, lvVersion)
       }
-      
+
       def withPackageStage() {
          stages << new Package(script, buildConfiguration, lvVersion)
       }
@@ -50,7 +50,7 @@ class Pipeline implements Serializable {
             script.env.BRANCH_NAME.startsWith("hotfix"))
       }
 
-      def buildPipeline() {         
+      def buildPipeline() {
          if(buildConfiguration.codegen || buildConfiguration.projects) {
             withCodegenStage()
          }
@@ -88,8 +88,14 @@ class Pipeline implements Serializable {
          // need to bind the variable before the closure - can't do 'for (version in lvVersions)'
          def lvVersion = version
 
+         String nodeLabel = lvVersion
+         if (pipelineInformation.nodeLabel?.trim()){
+           nodeLabel = "$nodeLabel && ${pipelineInformation.nodeLabel}"
+        }
+
+
          builders[lvVersion] = {
-            script.node("${pipelineInformation.nodeLabel} && $lvVersion") {
+            script.node(nodeLabel) {
                setup(lvVersion)
 
                def configuration = BuildConfiguration.load(script, JSON_FILE)
