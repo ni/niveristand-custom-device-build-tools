@@ -89,10 +89,9 @@ class Pipeline implements Serializable {
          def lvVersion = version
 
          String nodeLabel = lvVersion
-         if (pipelineInformation.nodeLabel?.trim()){
-           nodeLabel = "$nodeLabel && ${pipelineInformation.nodeLabel}"
-        }
-
+         if (pipelineInformation.nodeLabel?.trim()) {
+            nodeLabel = "$nodeLabel && ${pipelineInformation.nodeLabel}"
+         }
 
          builders[lvVersion] = {
             script.node(nodeLabel) {
