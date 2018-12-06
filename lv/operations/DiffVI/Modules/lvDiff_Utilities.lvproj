@@ -27,11 +27,10 @@
 			<Item Name="VIDiff_Screenshots.lvlib" Type="Library" URL="../Screenshots/VIDiff_Screenshots.lvlib"/>
 		</Item>
 		<Item Name="Utilities" Type="Folder">
-			<Item Name="VIDiff_Utilities.lvlib" Type="Library" URL="../utilities/VIDiff_Utilities.lvlib"/>
+			<Item Name="VIDiff_Utilities.lvlib" Type="Library" URL="../Utilities/VIDiff_Utilities.lvlib"/>
 		</Item>
 		<Item Name="DiffVIs.vi" Type="VI" URL="../DiffVIs.vi"/>
-		<Item Name="lvDiff_Port.aliases" Type="Document" URL="../lvDiff_Port.aliases"/>
-		<Item Name="lvDiff_Port.lvlps" Type="Document" URL="../lvDiff_Port.lvlps"/>
+		<Item Name="ScreenshotSingleVIs.vi" Type="VI" URL="../ScreenshotSingleVIs.vi"/>
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="vi.lib" Type="Folder">
 				<Item Name="Check if File or Folder Exists.vi" Type="VI" URL="/&lt;vilib&gt;/Utility/libraryn.llb/Check if File or Folder Exists.vi"/>
