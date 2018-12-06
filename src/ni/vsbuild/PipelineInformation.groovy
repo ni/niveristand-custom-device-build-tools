@@ -13,10 +13,11 @@ class PipelineInformation implements Serializable {
    }
 
    public void printInformation(script) {
-     String infoString = "Pipeline will be run for LV versions $lvVersions"
-     if(nodeLabel?.trim()) {
-        infoString = "$infoString and will execute on node(s) with label \'$nodeLabel\'."
-     }
-     script.echo "$infoString"
-   }
+      String infoString = "Pipeline will be run for LV versions $lvVersions"
+      if(nodeLabel?.trim()) {
+         infoString = "$infoString and will execute on node(s) with label \'$nodeLabel\'."
+      }
+      
+      script.echo "$infoString"
+   }  
 }
