@@ -93,7 +93,6 @@ class Pipeline implements Serializable {
             nodeLabel = "$nodeLabel && ${pipelineInformation.nodeLabel}"
          }
 
-
          builders[lvVersion] = {
             script.node(nodeLabel) {
                setup(lvVersion)
