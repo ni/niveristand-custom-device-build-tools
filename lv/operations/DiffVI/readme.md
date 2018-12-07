@@ -10,18 +10,16 @@ An example of the output of this VI would be the following image:
 
 ## Using the CLI
 
-This tool is packaged as an extension to the [LabVIEW CLI](http://www.ni.com/download/labview-command-line-interface-18.0/7545/en/)
-
-The tool should be called using the `-AdditionalOperationDirectory` argument and point it to the  `-OperationName` *DiffVI*
+This tool is packaged as an extension to the [LabVIEW CLI](http://www.ni.com/download/labview-command-line-interface-18.0/7545/en/). It should be called using the `-AdditionalOperationDirectory` argument and point it to the  `-OperationName` *DiffVI*
 
 This command takes the following arguments:
 
-`-NewVI` - Full path to the new version of the VI
-`-OldVI` - Full path to the older version of the VI
-`-OutputDir` - Path to the folder where the screenshot will be created
+1. `-NewVI` - Full path to the new version of the VI
+2. `-OldVI` - Full path to the older version of the VI
+3. `-OutputDir` - Path to the folder where the screenshot will be created
 
 ## Example Scripts
 
-These tools can be called as part of a CI Workflow such as this Repository's. For an example on how to set up a script to take advantage of this too, check out [labview_diff.py](https://github.com/ni/niveristand-custom-device-build-tools/blob/master/resources/labview_diff.py).
+These tools can be called as part of a CI Workflow such as this Repository's. For an example on how to set up a script to take advantage of this, check out [labview_diff.py](https://github.com/ni/niveristand-custom-device-build-tools/blob/master/resources/labview_diff.py).
 
 If you have created Pull Requests on Github and would like to create a post with the diff as part of your workflow, check out [github_commenter.py](https://github.com/ni/niveristand-custom-device-build-tools/blob/master/resources/github_commenter.py).
