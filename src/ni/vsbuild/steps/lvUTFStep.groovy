@@ -4,10 +4,10 @@ import ni.vsbuild.BuildConfiguration
 
 class LvUTFStep extends LvStep {
 
-   def vi
+   def lvVersion
 
    LvUTFStep(script, mapStep, lvVersion) {
-      script.echo "UTF test echo"
+      super(script, mapStep, lvVersion)
    }
 
    void executeStep(BuildConfiguration configuration) {
