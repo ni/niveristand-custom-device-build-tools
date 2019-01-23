@@ -37,7 +37,7 @@ class StepFactory implements Serializable {
       }
 
       if(type == 'lvUTF') {
-         return new LvRunViStep(script, mapStep, lvVersion)
+         return new LvUTFStep(script, mapStep, lvVersion)
       }
 
       script.failBuild("Type \'$type\' is invalid for step \'${mapStep.get('name')}\'.")
