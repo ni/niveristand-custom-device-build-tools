@@ -66,6 +66,7 @@ class Pipeline implements Serializable {
          if(shouldBuildPackage()) {
             withPackageStage()
          }
+         
          if(buildConfiguration.test){
             withTestStage()
          }
