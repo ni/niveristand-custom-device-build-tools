@@ -2,11 +2,11 @@ package ni.vsbuild.steps
 
 import ni.vsbuild.BuildConfiguration
 
-class LvUTFStep extends LvStep {
+class LvUnitTestFrameworkStep extends LvStep {
 
    def vi
 
-   LvUTFStep(script, mapStep, lvVersion) {
+   LvUnitTestFrameworkStep(script, mapStep, lvVersion) {
       super(script, mapStep, lvVersion)
       this.vi = mapStep.get('vi')
    }
