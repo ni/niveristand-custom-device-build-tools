@@ -4,8 +4,6 @@ import ni.vsbuild.BuildConfiguration
 
 class LvUTFStep extends LvProjectStep {
 
-   def lvVersion
-
    LvUTFStep(script, mapStep, lvVersion) {
       this.script = script
    }
