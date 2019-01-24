@@ -7,7 +7,7 @@ class LvUTFStep extends LvProjectStep {
    def lvVersion
 
    LvUTFStep(script, mapStep, lvVersion) {
-      super(script, mapStep, lvVersion)
+      this.script = script
    }
 
    void executeStep(BuildConfiguration configuration) {
