@@ -11,6 +11,6 @@ class LvUTFStep extends LvProjectStep {
    }
 
    void executeStep(BuildConfiguration configuration) {
-      script.lvUTF(vi, lvVersion)
+      script.echo "SRPSM: LvUTFStep.executeStep"
    }
 }
