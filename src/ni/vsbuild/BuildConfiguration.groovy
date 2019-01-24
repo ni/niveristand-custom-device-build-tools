@@ -23,8 +23,8 @@ class BuildConfiguration implements Serializable {
       this.projects = projects
       this.codegen = codegen
       this.build = build
-      this.dependencies = dependencies
       this.test = test
+      this.dependencies = dependencies
       this.packageInfo = packageInfo
    }
 

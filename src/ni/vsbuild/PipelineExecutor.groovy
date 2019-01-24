@@ -8,8 +8,8 @@ class PipelineExecutor implements Serializable {
       def pipeline = new Pipeline(script, pipelineInformation)
       pipeline.execute()
    }
-   
+
    static void execute(script, List<String> lvVersions, List<String> dependencies = []) {
       execute(script, '', lvVersions, dependencies)
-   } 
+   }
 }
