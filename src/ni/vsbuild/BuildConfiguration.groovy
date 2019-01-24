@@ -53,7 +53,7 @@ class BuildConfiguration implements Serializable {
             Projects: $projects
             Codegen: $codegen
             Build: $build
-            Tests: $tests
+            Tests: $test
             Dependencies: $dependencies
             Package: $packageInfo
          """.stripIndent()
