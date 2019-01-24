@@ -8,7 +8,6 @@ class LvRunViStep extends LvStep {
 
    LvRunViStep(script, mapStep, lvVersion) {
       super(script, mapStep, lvVersion)
-      this.vi = mapStep.get('vi')
    }
 
    void executeStep(BuildConfiguration configuration) {
