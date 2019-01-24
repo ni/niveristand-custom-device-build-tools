@@ -8,10 +8,9 @@ class LvUnitTestFrameworkStep extends LvStep {
 
    LvUnitTestFrameworkStep(script, mapStep, lvVersion) {
       super(script, mapStep, lvVersion)
-      this.vi = mapStep.get('vi')
    }
 
    void executeStep(BuildConfiguration configuration) {
-      script.lvRunVi(vi, lvVersion)
+      script.lvUTF(vi, lvVersion)
    }
 }
