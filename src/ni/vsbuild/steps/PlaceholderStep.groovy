@@ -2,11 +2,11 @@ package ni.vsbuild.steps
 
 import ni.vsbuild.BuildConfiguration
 
-class LvRunViStep extends LvStep {
+class PlaceholderStep extends LvStep {
 
    def vi
 
-   LvRunViStep(script, mapStep, lvVersion) {
+   PlaceholderStep(script, mapStep, lvVersion) {
       super(script, mapStep, lvVersion)
       this.vi = mapStep.get('vi')
    }
