@@ -7,6 +7,6 @@ class Test extends AbstractStepStage {
    }
 
    void executeStage() {
-      this.script.echo "SRPSM: Test executeStage() method"
+      executeSteps(configuration.test)
    }
 }
