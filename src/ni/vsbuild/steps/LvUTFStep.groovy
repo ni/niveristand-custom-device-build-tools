@@ -1,9 +1,14 @@
 package ni.vsbuild.steps
 
-class LvUTFStep extends LvProjectStep {
+import ni.vsbuild.BuildConfiguration
+
+class LvUTFStep extends LvStep {
+
+   def vi
 
    LvUTFStep(script, mapStep, lvVersion) {
       super(script, mapStep, lvVersion)
+      this.vi = mapStep.get('vi')
    }
 
    void executeStep(BuildConfiguration configuration) {
