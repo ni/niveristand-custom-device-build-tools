@@ -80,7 +80,7 @@ If the dependency has multiple versions of a library (for instance a different c
 
 # Stages
 
-The available stages of the build and their order are defined in the main [pipeline](https://github.com/ni-veristand-cds/commonbuild/blob/master/src/ni/vsbuild/Pipeline.groovy). The Setup and Checkout stages are always included, but any other stages required for the build must be configured in `build.toml`. The order in which stages appear in the configuration does not change the order in which they occur during the build.
+The available stages of the build and their order are defined in the main [pipeline](/src/ni/vsbuild/Pipeline.groovy). The Setup and Checkout stages are always included, but any other stages required for the build must be configured in `build.toml`. The order in which stages appear in the configuration does not change the order in which they occur during the build.
 
 ## Steps
 Some stages may require multiple steps in order to complete. For example, multiple VIs may need to run during code generation or a full build may require building multiple build specs in different projects. This is accomplished by creating a **_steps_** array for a given stage. Steps are executed in the order they appear in `build.toml` and are used by the **Codegen** and **Build** stages.
