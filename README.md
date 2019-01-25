@@ -48,7 +48,7 @@ type = 'lvBuildAll'
 project = '{cd}'
 ```
 
-Stages are ordered by the pipeline. Steps within the codegen and build stages are executed in the top to bottom order specified in `build.toml`. For a complete description of the available TOML configuration options, see the [build.toml specification](https://github.com/ni/niveristand-custom-device-build-tools/wiki/TOML-for-NI-VeriStand-Custom-Devices).
+Stages are ordered by the pipeline. Steps within the codegen and build stages are executed in the top to bottom order specified in `build.toml`. For a complete description of the available TOML configuration options, see the [build.toml specification](docs/Toml%20Help.md).
 
 ## LabVIEW Version
 The LabVIEW source for this repository is saved for LabVIEW 2014, but is forward compatible to newer versions.
