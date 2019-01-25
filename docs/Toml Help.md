@@ -51,7 +51,7 @@ If at least one project is included, the codegen stage will be added to the pipe
 Projects can also be referenced by codegen and build steps as described below.
 
 ## Dependencies
-Dependencies is a list of other repositories containing libraries that are needed to build the current repository. It is assumed that each dependency has been built prior to the beginning of the pipeline for the current repository. This is accomplished by specifying the `dependencies` variable in the `Jenkinsfile` as described in the [readme](https://github.com/ni-veristand-cds/commonbuild/blob/master/README.md).
+Dependencies is a list of other repositories containing libraries that are needed to build the current repository. It is assumed that each dependency has been built prior to the beginning of the pipeline for the current repository. This is accomplished by specifying the `dependencies` variable in the `Jenkinsfile` as described in the [readme](/README.md).
 
 ### Definition
 To define a new dependency, include a new table in the dependencies table. The new table name should match the name of the required repository. For example, if there exists repository ni-veristand-cds/dependency-repository, the definition would look like:
