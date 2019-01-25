@@ -7,20 +7,20 @@ There are two types of configuration captured in the build file:
 2. Stage configuration
 
 **Table of Contents**
-* [Non-Stage Configuration](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#non-stage-configuration)
-   * [Projects](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#projects)
-   * [Dependencies](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#dependencies)
-* [Stages](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#stages)
-   * [Steps](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#steps)
-      * [lvRunVi](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#lvrunvi)
-      * [lvBuildSpec](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#lvbuildspec)
-      * [lvBuildSpecAllTargets](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#lvbuildspecalltargets)
-      * [lvBuildAll](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#lvbuildall)
-      * [lvSetConditionalDisableSymbol](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#lvsetconditionaldisablesymbol)
-   * [Codegen](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#codegen)
-   * [Build](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#build)
-   * [Package](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#package)
-   * [Archive](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#archive)
+* [Non-Stage Configuration](#non-stage-configuration)
+   * [Projects](#projects)
+   * [Dependencies](#dependencies)
+* [Stages](#stages)
+   * [Steps](#steps)
+      * [lvRunVi](#lvrunvi)
+      * [lvBuildSpec](#lvbuildspec)
+      * [lvBuildSpecAllTargets](#lvbuildspecalltargets)
+      * [lvBuildAll](#lvbuildall)
+      * [lvSetConditionalDisableSymbol](#lvsetconditionaldisablesymbol)
+   * [Codegen](#codegen)
+   * [Build](#build)
+   * [Package](#package)
+   * [Archive](#archive)
 
 # Non-Stage Configuration
 ## Projects
