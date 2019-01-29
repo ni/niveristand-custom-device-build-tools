@@ -1,5 +1,5 @@
 from subprocess import check_call, CalledProcessError
-from os import chdir
+from os import chdir, getcwd
 from re import match
 from pathlib import Path
 
@@ -23,23 +23,27 @@ def integrate_release(url, version, working_directory):
         'Version must be in format "x.y" or "x.y.z"'  # https://regex101.com/r/xqyo5X/2
     working_directory_path = Path(working_directory)
 
+    previous_working_directory = getcwd()
     try:
-        # Validate that a git repository exists at the requested location
-        chdir(working_directory_path)
-        check_call("git status")
-    except (FileNotFoundError, CalledProcessError):
-        # Directory does not exist, or is not a git repository
-        chdir(working_directory_path.parent)
-        clone_command = 'git clone {0} "{1}"'.format(url, working_directory_path.name)
-        check_call(clone_command)
-        chdir(working_directory_path)
+        try:
+            # Validate that a git repository exists at the requested location
+            chdir(working_directory_path)
+            check_call("git status")
+        except (FileNotFoundError, CalledProcessError):
+            # Directory does not exist, or is not a git repository
+            chdir(working_directory_path.parent)
+            clone_command = 'git clone {0} "{1}"'.format(url, working_directory_path.name)
+            check_call(clone_command)
+            chdir(working_directory_path)
 
-    destination_branch = "release/{0}".format(version)
+        destination_branch = "release/{0}".format(version)
 
-    check_call("git checkout master")
-    check_call("git pull")
-    check_call("git checkout -B " + destination_branch)
-    check_call("git push -u origin " + destination_branch)
+        check_call("git checkout master")
+        check_call("git pull")
+        check_call("git checkout -B " + destination_branch)
+        check_call("git push -u origin " + destination_branch)
+    finally:
+        chdir(previous_working_directory)
 
 
 if __name__ == "__main__":
