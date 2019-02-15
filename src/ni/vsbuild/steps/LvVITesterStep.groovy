@@ -6,7 +6,7 @@ class LvVITesterStep extends LvProjectStep {
 
    def Test_path
 
-   LvUnitTestFrameworkStep(script, mapStep, lvVersion) {
+   LvVITesterStep(script, mapStep, lvVersion) {
       super(script, mapStep, lvVersion)
       this.Test_path = mapStep.get('Test_path')
    }
