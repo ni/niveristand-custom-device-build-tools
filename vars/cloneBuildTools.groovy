@@ -3,7 +3,7 @@ def call(){
    
    def organization = getComponentParts()['organization']
    def branch = env."library.vs-build-tools.version"
-   echo '$branch'
+   echo ${branch}
    buildToolsDir = cloneRepo("https://github.com/$organization/niveristand-custom-device-build-tools", branch)
    return buildToolsDir
 }
