@@ -10,9 +10,20 @@ class Package extends AbstractStage {
    }
 
    void executeStage() {
-       for(def packageInfo : configuration.packageInfo) {
-            Buildable pkg = PackageFactory.createPackage(script, packageInfo, lvVersion)
-            pkg.build()
-       }
-    }
+      def packageInfoCollection = []
+
+      // Developers can specify a single package [Package] or multiple packages [[Package]].
+      // Test the package information parameter and iterate as needed.
+      if (configuration.packageInfo instanceof Collection) {
+         packageInfoCollection = configuration.packageInfo
+      }
+      else {
+         packageInfoCollection.add(configuration.packageInfo)
+      }
+
+      for (def packageInfo : packageInfoCollection) {
+         Buildable package = PackageFactory.createPackage(script, packageInfo, lvVersion)
+         package.build()
+      }
+   }
 }
