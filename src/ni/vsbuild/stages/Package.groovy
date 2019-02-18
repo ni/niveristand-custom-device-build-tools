@@ -22,8 +22,8 @@ class Package extends AbstractStage {
       }
 
       for (def packageInfo : packageInfoCollection) {
-         Buildable package = PackageFactory.createPackage(script, packageInfo, lvVersion)
-         package.build()
+         Buildable pkg = PackageFactory.createPackage(script, packageInfo, lvVersion)
+         pkg.build()
       }
    }
 }
