@@ -35,9 +35,9 @@ abstract class AbstractPackage implements Buildable {
    }
 
    protected def getFullVersion() {
-       def baseVersion = getBaseVersion()
-       def fullVersion = "${baseVersion}.${script.currentBuild.number}"
+      def baseVersion = getBaseVersion()
+      def fullVersion = "${baseVersion}.${script.currentBuild.number}"
 
-       return fullVersion
+      return fullVersion
    }
 }
