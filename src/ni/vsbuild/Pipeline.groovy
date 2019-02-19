@@ -31,12 +31,12 @@ class Pipeline implements Serializable {
          stages << new Build(script, buildConfiguration, lvVersion)
       }
 
-      def withArchiveStage() {
-         stages << new Archive(script, buildConfiguration, lvVersion)
-      }
-
       def withPackageStage() {
          stages << new Package(script, buildConfiguration, lvVersion)
+      }
+
+      def withArchiveStage() {
+         stages << new Archive(script, buildConfiguration, lvVersion)
       }
 
       // The plan is to enable automatic merging from master to
