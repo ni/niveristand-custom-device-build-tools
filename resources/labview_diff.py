@@ -90,7 +90,7 @@ def get_changed_labview_files(target_ref):
     :param target_ref: The git ref to check for changed files against
     :return: Tuples of the form (status, filename) where status is either "A" or "M", depending on whether the file was added or modified.
     """
-    diff_args = ["git", "diff", "--name-status", "--diff-filter=AM", target_ref, "HEAD"]
+    diff_args = ["git", "diff", "--name-status", "--diff-filter=AM", target_ref + "...", "HEAD"]
     diff_output = subprocess.check_output(diff_args).decode("utf-8")
 
     # https://regex101.com/r/EFVDVV/1
