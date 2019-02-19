@@ -12,9 +12,9 @@ class Package extends AbstractStage {
    void executeStage() {
       def packageInfoCollection = []
 
-      // Developers can specify a single package [Package] or multiple packages [[Package]].
+      // Developers can specify a single package [Package] or a collection of packages [[Package]].
       // Test the package information parameter and iterate as needed.
-      if (configuration.packageInfo instanceof Collection) {
+      if (configuration.packageInfo in Collection) {
          packageInfoCollection = configuration.packageInfo
       }
       else {
