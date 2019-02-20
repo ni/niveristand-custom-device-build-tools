@@ -6,6 +6,8 @@ class Pipeline implements Serializable {
 
    private static final String JSON_FILE = 'build.json'
 
+   private static final String MANIFEST_FILE = 'Built/installer/manifest.json'
+
    def script
    PipelineInformation pipelineInformation
    def stages = []
@@ -136,9 +138,8 @@ class Pipeline implements Serializable {
          script.buildSetup(lvVersion)
 
          // Write a manifest
-         def file = 'Built/installer/manifest.json'
-         script.echo "Writing manifest to $file"
-         script.writeJSON file: file, json: manifest, pretty: 3
+         script.echo "Writing manifest to $MANIFEST_FILE"
+         script.writeJSON file: MANIFEST_FILE, json: manifest, pretty: 3
       }
    }
 }
