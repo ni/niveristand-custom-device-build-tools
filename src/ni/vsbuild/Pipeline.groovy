@@ -122,16 +122,23 @@ class Pipeline implements Serializable {
    }
 
    private void setup(lvVersion) {
+      def manifest = script.readJSON text: '{}'
+
       script.stage("Checkout_$lvVersion") {
          script.deleteDir()
          script.echo 'Attempting to get source from repo.'
          script.timeout(time: 5, unit: 'MINUTES'){
-            script.checkout(script.scm)
+            manifest['scm'] = script.checkout(script.scm)
          }
       }
       script.stage("Setup_$lvVersion") {
          script.cloneBuildTools()
          script.buildSetup(lvVersion)
+
+         // Write a manifest
+         def file = 'Built/installer/manifest.json'
+         script.echo "Writing manifest to $file"
+         script.writeJSON file: file, json: manifest, pretty: 3
       }
    }
 }
