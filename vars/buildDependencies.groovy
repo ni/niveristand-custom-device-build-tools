@@ -12,7 +12,8 @@ def call(buildInformation) {
    
    buildInformation.dependencies.each{dependency->
       try {
-         dependencyBuild = build "../$dependency/${env.BRANCH_NAME}"
+         escapedBranchName = "${env.BRANCH_NAME}".replace("/", "%2F")
+         dependencyBuild = build "../$dependency/${escapedBranchName}"
       } catch(AbortException e) {
          // check if there is a job for the current branch name
          if(e.getMessage().startsWith('No item named')) {
