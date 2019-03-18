@@ -4,7 +4,7 @@ def call(projectPath, lvVersion){
    echo "Copying configuration file for $projectPath"
    configFileName = "$projectPath" + ".config"
    
-   def defaultVersion = ["$lvVersion": "{$lvVersion}.0.0.0"]
+   def defaultVersion = ["$lvVersion": "${lvVersion}.0.0.0"]
    def assemblyVersions = readProperties defaults: defaultVersion, file: "niveristand-custom-device-build-tools/resources/assemblyVersions.properties"
 
    def newAssemblyVersion = assemblyVersions."$lvVersion"
