@@ -10,6 +10,8 @@ def call(projectPath, lvVersion){
    def newAssemblyVersion = assemblyVersions."$lvVersion"
 
    def fileContent = readFile "niveristand-custom-device-build-tools/resources/LabVIEW.exe.config"
+
+   //https://regex101.com/r/tBNE56/2
    fileContent = fileContent.replaceAll("(newVersion=\")[^\"]+","\$1$newAssemblyVersion")
 
    writeFile file: configFileName, text: fileContent
