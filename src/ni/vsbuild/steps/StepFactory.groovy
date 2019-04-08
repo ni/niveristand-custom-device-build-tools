@@ -36,6 +36,14 @@ class StepFactory implements Serializable {
          return new LvSetConditionalSymbolStep(script, mapStep, lvVersion)
       }
 
+      if(type == 'lvUTF') {
+         return new LvUnitTestFrameworkStep(script, mapStep, lvVersion)
+      }
+	  
+	  if(type == 'lvVITester') {
+         return new LvVITesterStep(script, mapStep, lvVersion)
+      }
+
       script.failBuild("Type \'$type\' is invalid for step \'${mapStep.get('name')}\'.")
    }
 }
