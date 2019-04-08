@@ -22,4 +22,22 @@ abstract class AbstractPackage implements Buildable {
 
    abstract void buildPackage()
 
+   protected def getBaseVersion() {
+      def baseVersion = script.env.BRANCH_NAME.split("[-/]")[1]
+      def versionPartCount = baseVersion.tokenize(".").size()
+
+      def versionPartsToDisplay = 3
+      for(versionPartCount; versionPartCount < versionPartsToDisplay; versionPartCount++) {
+         baseVersion = "${baseVersion}.0"
+      }
+
+      return baseVersion
+   }
+
+   protected def getFullVersion() {
+      def baseVersion = getBaseVersion()
+      def fullVersion = "${baseVersion}.${script.currentBuild.number}"
+
+      return fullVersion
+   }
 }

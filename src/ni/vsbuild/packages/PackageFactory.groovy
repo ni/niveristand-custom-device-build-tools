@@ -8,6 +8,9 @@ class PackageFactory implements Serializable {
       if(type == 'nipkg') {
          return new Nipkg(script, packageInfo, lvVersion)
       }
+      else if(type == 'zip') {
+         return new Zip(script, packageInfo, lvVersion)
+      }
 
       script.failBuild("\'$type\' is an invalid package type.")
    }

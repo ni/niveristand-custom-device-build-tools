@@ -75,21 +75,9 @@ class Nipkg extends AbstractPackage {
    // for any other branches, including master. The version must
    // be appended to the release or hotfix branch name after a
    // dash (-) or slash (/).
-   private def getBaseVersion() {
-      def baseVersion = script.env.BRANCH_NAME.split("[-/]")[1]
-      def versionPartCount = baseVersion.tokenize(".").size()
-
-      def versionPartsToDisplay = 3
-      for(versionPartCount; versionPartCount < versionPartsToDisplay; versionPartCount++) {
-         baseVersion = "${baseVersion}.0"
-      }
-
-      return baseVersion
-   }
-
    private String updateVersionVariables(text) {
       def baseVersion = getBaseVersion()
-      def fullVersion = "${baseVersion}.${script.currentBuild.number}+000"
+      def fullVersion = getFullVersion()
 
       def replacements = ['nipkg_version': fullVersion, 'display_version': baseVersion]
       script.versionReplacementExpressions().each { expression ->
