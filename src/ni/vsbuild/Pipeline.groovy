@@ -6,6 +6,8 @@ class Pipeline implements Serializable {
 
    private static final String JSON_FILE = 'build.json'
 
+   private static final String MANIFEST_FILE = 'Built/installer/manifest.json'
+
    def script
    PipelineInformation pipelineInformation
    def stages = []
@@ -31,16 +33,16 @@ class Pipeline implements Serializable {
          stages << new Build(script, buildConfiguration, lvVersion)
       }
 
+      def withPackageStage() {
+         stages << new Package(script, buildConfiguration, lvVersion)
+      }      
+      
       def withTestStage() {
          stages << new Test(script, buildConfiguration, lvVersion)
       }
 
       def withArchiveStage() {
          stages << new Archive(script, buildConfiguration, lvVersion)
-      }
-
-      def withPackageStage() {
-         stages << new Package(script, buildConfiguration, lvVersion)
       }
 
       // The plan is to enable automatic merging from master to
@@ -130,16 +132,22 @@ class Pipeline implements Serializable {
    }
 
    private void setup(lvVersion) {
+      def manifest = script.readJSON text: '{}'
+
       script.stage("Checkout_$lvVersion") {
          script.deleteDir()
          script.echo 'Attempting to get source from repo.'
          script.timeout(time: 5, unit: 'MINUTES'){
-            script.checkout(script.scm)
+            manifest['scm'] = script.checkout(script.scm)
          }
       }
       script.stage("Setup_$lvVersion") {
          script.cloneBuildTools()
          script.buildSetup(lvVersion)
+
+         // Write a manifest
+         script.echo "Writing manifest to $MANIFEST_FILE"
+         script.writeJSON file: MANIFEST_FILE, json: manifest, pretty: 3
       }
    }
 }
