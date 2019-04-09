@@ -12,6 +12,7 @@ class LvVITesterStep extends LvProjectStep {
    }
 
    void executeStep(BuildConfiguration configuration) {
+      script.cloneVSTestTools()
       script.lvVITester(Test_path, lvVersion)
    }
 }
