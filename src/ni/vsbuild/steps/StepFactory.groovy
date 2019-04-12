@@ -39,8 +39,8 @@ class StepFactory implements Serializable {
       if(type == 'lvUTF') {
          return new LvUnitTestFrameworkStep(script, mapStep, lvVersion)
       }
-	  
-	  if(type == 'lvVITester') {
+
+      if(type == 'lvVITester') {
          return new LvVITesterStep(script, mapStep, lvVersion)
       }
 
