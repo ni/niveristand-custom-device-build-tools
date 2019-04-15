@@ -7,20 +7,21 @@ There are two types of configuration captured in the build file:
 2. Stage configuration
 
 **Table of Contents**
-* [Non-Stage Configuration](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#non-stage-configuration)
-   * [Projects](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#projects)
-   * [Dependencies](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#dependencies)
-* [Stages](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#stages)
-   * [Steps](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#steps)
-      * [lvRunVi](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#lvrunvi)
-      * [lvBuildSpec](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#lvbuildspec)
-      * [lvBuildSpecAllTargets](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#lvbuildspecalltargets)
-      * [lvBuildAll](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#lvbuildall)
-      * [lvSetConditionalDisableSymbol](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#lvsetconditionaldisablesymbol)
-   * [Codegen](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#codegen)
-   * [Build](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#build)
-   * [Package](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#package)
-   * [Archive](https://github.com/ni-veristand-cds/commonbuild/wiki/TOML-for-ni-veristand-cds#archive)
+* [Non-Stage Configuration](#non-stage-configuration)
+   * [Projects](#projects)
+   * [Dependencies](#dependencies)
+* [Stages](#stages)
+   * [Steps](#steps)
+      * [lvRunVi](#lvrunvi)
+      * [lvBuildSpec](#lvbuildspec)
+      * [lvBuildSpecAllTargets](#lvbuildspecalltargets)
+      * [lvBuildAll](#lvbuildall)
+      * [lvSetConditionalDisableSymbol](#lvsetconditionaldisablesymbol)
+   * [Codegen](#codegen)
+   * [Build](#build)
+   * [Package](#package)
+   * [Test](#test)
+   * [Archive](#archive)
 
 # Non-Stage Configuration
 ## Projects
@@ -51,7 +52,7 @@ If at least one project is included, the codegen stage will be added to the pipe
 Projects can also be referenced by codegen and build steps as described below.
 
 ## Dependencies
-Dependencies is a list of other repositories containing libraries that are needed to build the current repository. It is assumed that each dependency has been built prior to the beginning of the pipeline for the current repository. This is accomplished by specifying the `dependencies` variable in the `Jenkinsfile` as described in the [readme](https://github.com/ni-veristand-cds/commonbuild/blob/master/README.md).
+Dependencies is a list of other repositories containing libraries that are needed to build the current repository. It is assumed that each dependency has been built prior to the beginning of the pipeline for the current repository. This is accomplished by specifying the `dependencies` variable in the `Jenkinsfile` as described in the [readme](/README.md).
 
 ### Definition
 To define a new dependency, include a new table in the dependencies table. The new table name should match the name of the required repository. For example, if there exists repository ni-veristand-cds/dependency-repository, the definition would look like:
@@ -80,7 +81,7 @@ If the dependency has multiple versions of a library (for instance a different c
 
 # Stages
 
-The available stages of the build and their order are defined in the main [pipeline](https://github.com/ni-veristand-cds/commonbuild/blob/master/src/ni/vsbuild/Pipeline.groovy). The Setup and Checkout stages are always included, but any other stages required for the build must be configured in `build.toml`. The order in which stages appear in the configuration does not change the order in which they occur during the build.
+The available stages of the build and their order are defined in the main [pipeline](/src/ni/vsbuild/Pipeline.groovy). The Setup and Checkout stages are always included, but any other stages required for the build must be configured in `build.toml`. The order in which stages appear in the configuration does not change the order in which they occur during the build.
 
 ## Steps
 Some stages may require multiple steps in order to complete. For example, multiple VIs may need to run during code generation or a full build may require building multiple build specs in different projects. This is accomplished by creating a **_steps_** array for a given stage. Steps are executed in the order they appear in `build.toml` and are used by the **Codegen** and **Build** stages.
@@ -101,7 +102,7 @@ To define a new step, a new item must be added to the **_steps_** array for the 
 ##### lvRunVi
 The LvRunVi step executes a VI at the provided path relative to the Jenkins workspace.
 
-###### Suported Keys
+###### Supported Keys
 Key | Description | Required
 -|-|-
 `vi` | path to the VI to execute | **YES**
@@ -122,7 +123,7 @@ The lvRunVi step does not accept inputs or return values. It is intended to act 
 ##### lvBuildSpec
 The LvBuildSpec step builds a single build spec under a specific target in the provided project.
 
-###### Suported Keys
+###### Supported Keys
 Key | Description | Required
 -|-|-
 `project` | reference to the project table in the projects section of `build.toml`  | **YES**
@@ -175,7 +176,7 @@ Instead of using this method, the build spec should be responsible for putting l
 ##### lvBuildSpecAllTargets
 The LvBuildSpecAllTargets step builds all builds specs of the specified name in the provided project.
 
-###### Suported Keys
+###### Supported Keys
 Key | Description | Required
 -|-|-
 `project` | reference to the project table in the projects section of `build.toml`  | **YES**
@@ -209,7 +210,7 @@ dependency_target = 'linux64' # get dependencies from linux64 directory
 ##### lvBuildAll
 The LvBuildAll step builds all build specs under all targets in the specified project.
 
-###### Suported Keys
+###### Supported Keys
 Key | Description | Required
 -|-|-
 `project` | reference to the project table in the projects section of `build.toml`  | **YES**
@@ -227,7 +228,7 @@ project = '{first}' # uses the value 'src\first.lvproj' from the example in the 
 ##### lvSetConditionalDisableSymbol
 The LvSetConditionalDisableSymbol step sets a conditional disable symbol defined in the specified project to the desired value.This would typically be used during codegen to configure a project's source prior to building so only the useful code is included.
 
-###### Suported Keys
+###### Supported Keys
 Key | Description | Required
 -|-|-
 `project` | reference to the project table in the projects section of `build.toml`  | **YES**
@@ -277,25 +278,60 @@ To define steps to execute during build, include a steps array in the build tabl
 ### Notes
 Most often, this stage will contain one or more of the lvBuild* steps. If there are no steps in `[[build.steps]]`, this stage will not be added to the pipeline.
 
-## Package
-The package stage executes immediately after the build stage. It takes the build output and packages everything into a single file for simple distribution.
+## Test
+The test stage executes immediately after the build stage. It runs any tests specified in the build.toml.
 
 ### Definition
-To define an archive stage, add a package table to `build.toml`.
+To define steps to execute during build, include a steps array in the test table. Valid steps are defined above.
+
+`[[test.steps]]`
+
+### Notes
+Most often, this stage will contain one or more of the test steps. If there are no steps in `[[test.steps]]`, this stage will not be added to the pipeline.
+ 
+#### Supported Testers
+The package stage requires a `type` to be defined.
+
+Key | Description | Required
+-|-|-
+`type`| test framework to use | **YES**
+
+##### VI Tester
+The VI Tester type uses the [JKI VI Tester](https://github.com/JKISoftware/JKI-VI-Tester) and [niveristand-custom-device-testing-tools](https://github.com/ni/niveristand-custom-device-testing-tools) to run tests.
+
+###### Supported Keys
+Key | Description | Required
+-|-|-
+`test_path`| path to the test to execute | **YES**
+
+##### Notes
+In order to use the VI Tester type, the [niveristand-custom-device-testing-tools](https://github.com/ni/niveristand-custom-device-testing-tools) must be forked to the organization that contains the repository running through the pipeline. While developing with the testing tools, the [niveristand-custom-device-testing-tools](https://github.com/ni/niveristand-custom-device-testing-tools) repository must be cloned to a directory that is adjacent to the development directory.
+
+## Package
+The package stage executes immediately after the test stage. It takes the specified directory and packages everything into a single file for simple distribution.
+
+### Definition
+To define a single package stage, add a package table to `build.toml`.
 
 `[package]`
 
-#### Supported Packages
-The package stage requires a `type` to be defined, although there is currently only one supported type.
+To export multiple package stages, add an array of packages to `build.toml`.
+
+`[[package]]`
+
+`[[package]]`
+
+
+The package stage requires a `type` to be defined. 
 
 Key | Description | Required
 -|-|-
 `type`| file extension of the final package | **YES**
 
 ##### nipkg
-The nipkg package type builds a package the can be installed through NI Package Manager (NIPM). NIPM must be installed on the build machine in order to build this type.
+The nipkg package type builds a package that can be installed through NI Package Manager (NIPM). NIPM must be installed on the build machine in order to build this type.
 
-###### Suported Keys
+###### Supported Keys
 Key | Description | Required
 -|-|-
 `payload_dir` | location of files to be packaged | **YES**
@@ -311,8 +347,27 @@ install_destination = 'documents\National Instruments\NI VeriStand {veristand_ve
 2016_install_destination = 'documents\\National Instruments\\NI VeriStand {veristand_version}\\Custom Devices\\SLSC Plug-ins'
 ```
 
+---
+
+##### zip
+
+The zip package type builds a compressed package that can be installed using ZIP decompression utilities. Most operating systems natively support inflating a compressed ZIP file.
+
+###### Supported Keys
+Key | Description | Required
+-|-|-
+`payload_dir` | location of files to be compressed and packaged | **YES**
+
+###### Example
+```
+[[package]]
+type = 'zip'
+payload_dir = 'Source'
+```
+
 ### Notes
 If no package stage is defined in `build.toml` this stage will not be added to the pipeline. If a package stage is defined, an archive stage must also be defined.
+---
 
 ## Archive
 The archive stage executes immediately after the package stage. During this stage, the output of the build and package stages is copied to a more permanent location so it can be consumed later.
