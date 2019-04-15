@@ -296,13 +296,21 @@ Key | Description | Required
 -|-|-
 `type`| test framework to use | **YES**
 
-##### VI Tester
-The VI Tester type uses the [JKI VI Tester](https://github.com/JKISoftware/JKI-VI-Tester) and [niveristand-custom-device-testing-tools](https://github.com/ni/niveristand-custom-device-testing-tools) to run tests.
+##### lvVITester
+The VI Tester type requires the [JKI VI Tester](https://github.com/JKISoftware/JKI-VI-Tester) and the [niveristand-custom-device-testing-tools](https://github.com/ni/niveristand-custom-device-testing-tools) to run tests.
 
 ###### Supported Keys
 Key | Description | Required
 -|-|-
 `test_path`| path to the test to execute | **YES**
+
+###### Example
+```
+[[test.steps]]
+name = 'Functional_Test'
+type = 'lvVITester'
+test_path='\Source\Tests\Unit\UnitTestCase.lvclass'
+```
 
 ##### Notes
 In order to use the VI Tester type, the [niveristand-custom-device-testing-tools](https://github.com/ni/niveristand-custom-device-testing-tools) must be forked to the organization that contains the repository running through the pipeline. While developing with the testing tools, the [niveristand-custom-device-testing-tools](https://github.com/ni/niveristand-custom-device-testing-tools) repository must be cloned to a directory that is adjacent to the development directory.
