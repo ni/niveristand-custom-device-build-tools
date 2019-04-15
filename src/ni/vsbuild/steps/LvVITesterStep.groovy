@@ -4,15 +4,15 @@ import ni.vsbuild.BuildConfiguration
 
 class LvVITesterStep extends LvProjectStep {
 
-   def Test_path
+   def testPath
 
    LvVITesterStep(script, mapStep, lvVersion) {
       super(script, mapStep, lvVersion)
-      this.Test_path = mapStep.get('Test_path')
+      this.testPath = mapStep.get('test_path')
    }
 
    void executeStep(BuildConfiguration configuration) {
       script.cloneVSTestTools()
-      script.lvVITester(Test_path, lvVersion)
+      script.lvVITester(testPath, lvVersion)
    }
 }
