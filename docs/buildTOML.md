@@ -290,7 +290,7 @@ To define steps to execute during build, include a steps array in the test table
 Most often, this stage will contain one or more of the test steps. If there are no steps in `[[test.steps]]`, this stage will not be added to the pipeline.
  
 #### Supported Testers
-The package stage requires a `type` to be defined.
+The test stage requires a `type` to be defined.
 
 Key | Description | Required
 -|-|-
