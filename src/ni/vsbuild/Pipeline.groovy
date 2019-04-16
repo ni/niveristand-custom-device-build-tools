@@ -36,11 +36,11 @@ class Pipeline implements Serializable {
       def withTestStage() {
          stages << new Test(script, buildConfiguration, lvVersion)
       }
-      
+
       def withPackageStage() {
          stages << new Package(script, buildConfiguration, lvVersion)
-      }      
-      
+      }
+
       def withArchiveStage() {
          stages << new Archive(script, buildConfiguration, lvVersion)
       }
@@ -68,11 +68,11 @@ class Pipeline implements Serializable {
          if(buildConfiguration.test){
             withTestStage()
          }
-         
+
          if(shouldBuildPackage()) {
             withPackageStage()
          }
-         
+
          if(buildConfiguration.archive) {
             withArchiveStage()
          }
