@@ -14,19 +14,21 @@ class BuildConfiguration implements Serializable {
    public final def projects
    public final def codegen
    public final def build
+   public final def test
    public final def dependencies
    public final def packageInfo
 
-   private BuildConfiguration(archive, projects, codegen, build, dependencies, packageInfo) {
+   private BuildConfiguration(archive, projects, codegen, build, test, dependencies, packageInfo) {
       this.archive = archive
       this.projects = projects
       this.codegen = codegen
       this.build = build
+      this.test = test
       this.dependencies = dependencies
       this.packageInfo = packageInfo
    }
 
-   static BuildConfiguration load(def script, String jsonFile) {      
+   static BuildConfiguration load(def script, String jsonFile) {
       def config = script.readJSON file: jsonFile
 
       // Convert the JSON to HashMaps instead of using the JsonObject
@@ -39,6 +41,7 @@ class BuildConfiguration implements Serializable {
          convertedJson.projects,
          convertedJson.codegen,
          convertedJson.build,
+         convertedJson.test,
          convertedJson.dependencies,
          convertedJson.package)
    }
@@ -50,6 +53,7 @@ class BuildConfiguration implements Serializable {
             Projects: $projects
             Codegen: $codegen
             Build: $build
+            Tests: $test
             Dependencies: $dependencies
             Package: $packageInfo
          """.stripIndent()
