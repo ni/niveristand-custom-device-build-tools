@@ -2,7 +2,7 @@ package ni.vsbuild.steps
 
 import ni.vsbuild.BuildConfiguration
 
-class LvVITesterStep {
+class LvVITesterStep extends LvStep {
 
    def testPath
 
