@@ -27,9 +27,20 @@ class Archive extends AbstractStage {
 
    // Builds a string of the form <archiveLocation>\\export\\<branch>\\<build_number>
    private void setArchiveLocation() {
-      archiveLocation = configuration.archive.get('archive_location') +
-         "\\${script.getComponentParts()['organization']}" +
-         "\\export\\${script.env.BRANCH_NAME}\\" +
+      def organization = script.getComponentParts()['organization']
+
+      // Organization may not exist for multibranch pipelines not using
+      // the GitHub Branch Source Plugin
+      if(!organization) {
+         organization = ''
+      }
+      else {
+         organization = "$organization\\"
+      }
+
+      archiveLocation = "${configuration.archive.get('archive_location')}\\" +
+         "$organization" +
+         "export\\${script.env.BRANCH_NAME}\\" +
          "Build ${script.currentBuild.number}"
    }
 
