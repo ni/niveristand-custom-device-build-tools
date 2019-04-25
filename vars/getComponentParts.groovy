@@ -7,7 +7,9 @@ def call() {
    def parts = ['branch', 'repo', 'organization']
 
    for(i = 0; i < tokenCount; i++) {
-      partMap[parts[i]] = tokens[index]
+      if(parts[i]) {
+         partMap[parts[i]] = tokens[index]
+      }
       index--
    }
 
