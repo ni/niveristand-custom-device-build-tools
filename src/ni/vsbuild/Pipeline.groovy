@@ -119,6 +119,8 @@ class Pipeline implements Serializable {
       }
 
       script.parallel builders
+
+      validateBuild()
    }
 
    protected void executeStages() {
@@ -148,6 +150,31 @@ class Pipeline implements Serializable {
          // Write a manifest
          script.echo "Writing manifest to $MANIFEST_FILE"
          script.writeJSON file: MANIFEST_FILE, json: manifest, pretty: 3
+      }
+   }
+
+   // This method is here to catch builds with issue 50:
+   // https://github.com/ni/niveristand-custom-device-build-tools/issues/50
+   // If this issue is encountered, the build will still show success even
+   // though an export for the desired version is not actually created.
+   // We should fail the build instead of returning false success.
+   private void validateBuild() {      
+      String nodeLabel = ''
+      if (pipelineInformation.nodeLabel?.trim()) {
+         nodeLabel = pipelineInformation.nodeLabel
+      }
+
+      script.node(nodeLabel) {
+         script.stage("Validation") {
+            script.echo("Validating build output.")
+            def component = script.getComponentParts()['repo']
+            def exportDir = script.env."${component}_DEP_DIR"
+            pipelineInformation.lvVersions.each { version ->
+               if(!script.fileExists("$exportDir\\$version")) {
+                  script.failBuild("Failed to build version $version. See issue: https://github.com/ni/niveristand-custom-device-build-tools/issues/50")
+               }
+            }
+         }
       }
    }
 }
