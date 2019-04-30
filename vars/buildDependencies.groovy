@@ -17,9 +17,28 @@ def call(buildInformation) {
 
          // Allow Jenkinsfile to override which dependencies to use
          if(env."$dependencyDir") {
-            def usedDependency = env."$dependencyDir"
-            echo "Using dependency $usedDependency."
-            return
+            String nodeLabel = ''
+            if (buildInformation.nodeLabel?.trim()) {
+               nodeLabel = buildInformation.nodeLabel
+            }
+
+            def dependencyFound = false
+            node(nodeLabel) {
+               stage("Dependency Validation") {
+                  def desiredDependency = env."$dependencyDir"
+                  if(fileExists(desiredDependency)) {
+                     echo "Using dependency $desiredDependency."
+                     dependencyFound = true
+                  }
+                  else {
+                     echo "$desiredDependency does not exist. Rebuilding $dependency."
+                  }
+               }
+            }
+
+            if(dependencyFound) {
+               return
+            }
          }
 
          escapedBranchName = "${env.BRANCH_NAME}".replace("/", "%2F")
