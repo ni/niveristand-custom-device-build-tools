@@ -9,9 +9,38 @@ def call(buildInformation) {
    echo "Building dependencies for job ${env.JOB_NAME}."
    
    def dependencyBuild
+   def dependencyDir
    
    buildInformation.dependencies.each{dependency->
       try {
+         dependencyDir = "${dependency}_DEP_DIR"
+
+         // Allow Jenkinsfile to override which dependencies to use
+         if(env."$dependencyDir") {
+            String nodeLabel = ''
+            if (buildInformation.nodeLabel?.trim()) {
+               nodeLabel = buildInformation.nodeLabel
+            }
+
+            def dependencyFound = false
+            node(nodeLabel) {
+               stage("Dependency Validation") {
+                  def desiredDependency = env."$dependencyDir"
+                  if(fileExists(desiredDependency)) {
+                     echo "Using dependency $desiredDependency."
+                     dependencyFound = true
+                  }
+                  else {
+                     echo "$desiredDependency does not exist. Rebuilding $dependency."
+                  }
+               }
+            }
+
+            if(dependencyFound) {
+               return
+            }
+         }
+
          escapedBranchName = "${env.BRANCH_NAME}".replace("/", "%2F")
          dependencyBuild = build "../$dependency/${escapedBranchName}"
       } catch(AbortException e) {
@@ -28,7 +57,6 @@ def call(buildInformation) {
    
       // set env vars for downstream projects to know where archives are
       def buildVariables = dependencyBuild.buildVariables
-      def dependencyDir = "${dependency}_DEP_DIR"
       if(buildVariables.containsKey(dependencyDir)) {
          env."$dependencyDir" = buildVariables[dependencyDir]
       }
