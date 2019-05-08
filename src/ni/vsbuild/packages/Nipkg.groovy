@@ -93,7 +93,19 @@ class Nipkg extends AbstractPackage {
    }
 
    private void stagePayload() {
+      def stageDirectory = "$PACKAGE_DIRECTORY\\$DATA_DIRECTORY"
+
+      if(!installDestination) {
+         // Create the stage directory to enable building
+         // empty packages.
+         // An empty package (virtual package) is useful for
+         // defining package relationships without requiring a
+         // package payload.
+         script.bat "mkdir \"$stageDirectory\""
+         return
+      }
+
       def destination = updateVersionVariables(installDestination)
-      script.copyFiles(payloadDir, "$PACKAGE_DIRECTORY\\$DATA_DIRECTORY\\$destination")
+      script.copyFiles(payloadDir, "$stageDirectory\\$destination")
    }
 }
