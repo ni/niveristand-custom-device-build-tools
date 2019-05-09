@@ -93,6 +93,14 @@ class Nipkg extends AbstractPackage {
    }
 
    private void stagePayload() {
+      if(!installDestination) {
+         // If installDestination is not provided, build an
+         // empty package (virtual package).
+         // A virtual package is useful for defining package
+         // relationships without requiring a package payload.
+         return
+      }
+
       def destination = updateVersionVariables(installDestination)
       script.copyFiles(payloadDir, "$PACKAGE_DIRECTORY\\$DATA_DIRECTORY\\$destination")
    }
