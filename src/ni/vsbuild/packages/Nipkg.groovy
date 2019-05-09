@@ -103,5 +103,8 @@ class Nipkg extends AbstractPackage {
 
       def destination = updateVersionVariables(installDestination)
       script.copyFiles(payloadDir, "$PACKAGE_DIRECTORY\\$DATA_DIRECTORY\\$destination")
+
+      // Don't include manifest in package
+      script.bat "del /f /s /q \"$PACKAGE_DIRECTORY\\$DATA_DIRECTORY\\$destination\\manifest.*\""
    }
 }
