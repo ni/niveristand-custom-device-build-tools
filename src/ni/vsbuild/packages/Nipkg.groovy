@@ -28,7 +28,7 @@ class Nipkg extends AbstractPackage {
       stageFiles()
 
       def nipkgOutput = script.nipkgBuild(PACKAGE_DIRECTORY, PACKAGE_DIRECTORY)
-      script.copyFiles(PACKAGE_DIRECTORY, "\"$payloadDir\\$INSTALLER_DIRECTORY\"", nipkgOutput)
+      script.copyFiles(PACKAGE_DIRECTORY, "\"$payloadDir\\$INSTALLER_DIRECTORY\"", [files: nipkgOutput])
    }
 
    // This method is responsible for setting up the directory and file
@@ -102,9 +102,6 @@ class Nipkg extends AbstractPackage {
       }
 
       def destination = updateVersionVariables(installDestination)
-      script.copyFiles(payloadDir, "$PACKAGE_DIRECTORY\\$DATA_DIRECTORY\\$destination")
-
-      // Don't include manifest in package
-      script.bat "del /f /s /q \"$PACKAGE_DIRECTORY\\$DATA_DIRECTORY\\$destination\\manifest.*\""
+      script.copyFiles(payloadDir, "$PACKAGE_DIRECTORY\\$DATA_DIRECTORY\\$destination", [exclusions: "*manifest.*"])
    }
 }
