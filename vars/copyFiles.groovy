@@ -1,17 +1,21 @@
-def call(sourceDirectory, destinationDirectory, files=null) {
+def call(sourceDirectory, destinationDirectory, options=[:]) {
    def copyCommand = "robocopy \"$sourceDirectory\" \"$destinationDirectory\""
 
    // These switches are for console output suppression so we don't get a bunch of junk
    // in our logs
    // https://ss64.com/nt/robocopy.html
-   def commandSwitches = "/NFL /NDL /NJH /NJS /nc /ns /np"
+   def commandSwitches = "/nfl /ndl /njh /njs /nc /ns /np"
+
+   if(options.exclusions) {
+      commandSwitches = "$commandSwitches /xf \"${options.exclusions}\""
+   }
 
    // If the files argument is not passed, mirror the entire source to destination
-   if(!files || files == null) {
-      commandSwitches = "$commandSwitches /MIR"
+   if(options.files) {
+      copyCommand = "$copyCommand \"${options.files}\""
    }
    else {
-      copyCommand = "$copyCommand \"$files\""
+      commandSwitches = "$commandSwitches /mir"
    }
 
    // robocopy uses multiple return codes for success
