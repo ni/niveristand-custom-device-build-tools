@@ -10,6 +10,7 @@ def call(buildInformation) {
    
    def dependencyBuild
    def dependencyDir
+   def branchName = env.CHANGE_BRANCH ?: env.BRANCH_NAME
    
    buildInformation.dependencies.each{dependency->
       try {
@@ -41,7 +42,6 @@ def call(buildInformation) {
             }
          }
 
-         def branchName = env.CHANGE_BRANCH ?: env.BRANCH_NAME
          escapedBranchName = "$branchName".replace("/", "%2F")
          dependencyBuild = build "../$dependency/${escapedBranchName}"
       } catch(AbortException e) {
