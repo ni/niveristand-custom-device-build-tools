@@ -41,13 +41,14 @@ def call(buildInformation) {
             }
          }
 
-         escapedBranchName = "${env.BRANCH_NAME}".replace("/", "%2F")
+         def branchName = env.CHANGE_BRANCH ?: env.BRANCH_NAME
+         escapedBranchName = "$branchName".replace("/", "%2F")
          dependencyBuild = build "../$dependency/${escapedBranchName}"
       } catch(AbortException e) {
          // check if there is a job for the current branch name
          if(e.getMessage().startsWith('No item named')) {
             echo e.getMessage()
-            echo "Building branch master instead of ${env.BRANCH_NAME}."
+            echo "Building branch master instead of $branchName."
             dependencyBuild = build "../$dependency/master"
          } else {
             // job was found, but an exception occurred during build
