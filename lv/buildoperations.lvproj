@@ -37,6 +37,7 @@
 			<Item Name="ExecuteMultipleBuildSpecs.lvclass" Type="LVClass" URL="../operations/ExecuteMultipleBuildSpecs/ExecuteMultipleBuildSpecs.lvclass"/>
 			<Item Name="SecureRunVI.lvclass" Type="LVClass" URL="../operations/SecureRunVI/SecureRunVI.lvclass"/>
 			<Item Name="SetConditionalSymbol.lvclass" Type="LVClass" URL="../operations/SetConditionalSymbol/SetConditionalSymbol.lvclass"/>
+			<Item Name="UniquifyFullyQualifiedVIName.lvclass" Type="LVClass" URL="../operations/UniquifyFullyQualifiedVIName/UniquifyFullyQualifiedVIName.lvclass"/>
 		</Item>
 		<Item Name="Utilities" Type="Folder">
 			<Item Name="Diff" Type="Folder">
@@ -46,6 +47,7 @@
 				<Item Name="VIDiffUtilities.lvlib" Type="Library" URL="../operations/DiffVI/Modules/Utilities/VIDiffUtilities.lvlib"/>
 			</Item>
 			<Item Name="BuildSecurity.lvlib" Type="Library" URL="../operations/Utilities/BuildSecurity/BuildSecurity.lvlib"/>
+			<Item Name="FixPath.vi" Type="VI" URL="../operations/Utilities/FixPath.vi"/>
 		</Item>
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="vi.lib" Type="Folder">

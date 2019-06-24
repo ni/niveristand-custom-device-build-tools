@@ -13,8 +13,6 @@ def diff_vi(old_vi, new_vi, output_dir, workspace, lv_version):
     """
     Generates a diff of LabVIEW VIs
 
-    VIs which fail to be diffed are logged to {output_dir}/diff_failures.txt.
-
     :param old_vi: The older version of the VI; if bool(vi1) is false, the VI is assumed to be newly added
     :param new_vi: The newer version of the VI
     :param output_dir: The directory in which to store output
@@ -37,14 +35,38 @@ def diff_vi(old_vi, new_vi, output_dir, workspace, lv_version):
         command_args.extend(["-OldVI", old_vi])
 
     subprocess.call(["taskkill", "/IM", "labview.exe", "/F"])
-    try:
-        subprocess.check_call(command_args)
-    except subprocess.CalledProcessError:
-        print("Failed to diff \"{0}\" and \"{1}\".".format(old_vi, new_vi))
-        traceback.print_exc()
+    subprocess.check_call(command_args)
 
-        with open(output_dir + "\\diff_failures.txt", "a+") as file:
-            file.write(new_vi + "\n")
+
+def uniquify_fully_qualified_name(vi, output_dir, workspace, lv_version):
+    """
+    Renames a VI or its owning library such that it has a different fully qualified name.
+
+    This is useful for ensuring LabVIEW can diff files properly.
+
+    :param vi: The file you want to diff
+    :param output_dir: The directory in which to store output
+    :param workspace: The directory above the niveristand-custom-device-build-tools
+    :param lv_version: The year version of LabVIEW to use for diffing
+    """
+
+    version_path = labview_path_from_year(lv_version)
+
+    command_args = [
+        "LabVIEWCLI.exe",
+        "-LabVIEWPath", version_path,
+        "-AdditionalOperationDirectory", workspace + r"\niveristand-custom-device-build-tools\lv\operations\\",
+        "-OperationName", "UniquifyFullyQualifiedVIName",
+        "-VI", vi,
+    ]
+
+    subprocess.call(["taskkill", "/IM", "labview.exe", "/F"])
+    output = subprocess.check_output(command_args).decode("utf-8")
+    match = re.search(r"^Unique Fully Qualified VI Name: (.+)$", output, re.MULTILINE)
+
+    if not match:
+        raise ValueError("Could not find VI name in output")
+    return match.group(1).strip()
 
 
 def labview_path_from_year(year):
@@ -101,25 +123,35 @@ def get_changed_labview_files(target_ref):
 
 
 def diff_repo(workspace, output_dir, target_branch, lv_version):
+    """
+    Generate image diffs for LabVIEW VIs in a Git repo.
+
+    VIs which fail to be diffed are logged to {output_dir}/diff_failures.txt.
+    """
     diffs = get_changed_labview_files(target_branch)
 
     with export_repo(target_branch) as directory:
         for status, filename in diffs:
-            if status == "A":
-                print("Diffing added file: " + filename)
-                diff_vi(None, path.abspath(filename), path.abspath(output_dir), workspace, lv_version)
-            elif status == "M":
-                print("Diffing modified file: " + filename)
-                # LabVIEW won't let us load two files with the same name into memory,
-                # so we copy the old file to have a new name. This isn't perfect - the VIs
-                # it references will still pull in the new versions of dependencies - but it
-                # is better than nothing.
-                old_file = path.join(directory.name, filename)
-                copied_file = path.join(path.dirname(old_file), "_COPY_" + path.basename(filename))
-                shutil.copy(old_file, copied_file)
-                diff_vi(copied_file, path.abspath(filename), path.abspath(output_dir), workspace, lv_version)
-            else:
-                print("Unknown file status: " + filename)
+            try:
+                if status == "A":
+                    print("Diffing added file: " + filename)
+                    diff_vi(None, path.abspath(filename), path.abspath(output_dir), workspace, lv_version)
+                elif status == "M":
+                    print("Diffing modified file: " + filename)
+                    # LabVIEW won't let us load two files with the same name into memory,
+                    # so we need to ensure the files have unique fully-qualified names.
+                    old_file = path.join(directory.name, filename)
+                    old_file_unique = uniquify_fully_qualified_name(path.abspath(old_file), path.abspath(output_dir), workspace, lv_version)
+                    diff_vi(old_file_unique, path.abspath(filename), path.abspath(output_dir), workspace, lv_version)
+                else:
+                    print("Unknown file status: " + filename)
+            except:
+                print("Failed to diff \"{0}\".".format(filename))
+                traceback.print_exc()
+                with open(output_dir + "\\diff_failures.txt", "a+") as file:
+                    file.write(filename + "\n")
+            finally:
+                subprocess.check_call(["git", "reset", "--hard"], cwd=directory.name)
 
 
 if __name__ == "__main__":
