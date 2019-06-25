@@ -11,7 +11,6 @@
 	<Item Name="CreateDirs.vi" Type="VI" URL="../CreateDirs.vi"/>
 	<Item Name="FilePaths.ctl" Type="VI" URL="../FilePaths.ctl"/>
 	<Item Name="InputVIs.ctl" Type="VI" URL="../InputVIs.ctl"/>
-	<Item Name="LoadContainer.vi" Type="VI" URL="../LoadContainer.vi"/>
 	<Item Name="OpenVIs.vi" Type="VI" URL="../OpenVIs.vi"/>
 	<Item Name="Output Folders.ctl" Type="VI" URL="../Output Folders.ctl"/>
 	<Item Name="RandomString.vi" Type="VI" URL="../RandomString.vi"/>
