@@ -6,7 +6,7 @@ Two files are required in order to use this pipeline for a given repository, a `
 
 ### Node Labels
 Each node capable of building a custom device must have the label *'veristand'* and a label for each version of LabVIEW/VeriStand installed.
-A node that is capable of building a custom device for VeriStand 2016 and 2017 would have the labels `veristand, 2016, 2017`.
+A node that is capable of building a custom device for VeriStand 2016 and 2017 would have the labels `veristand`, `2016`, and `2017`.
 
 ### Jenkinsfile
 The pipeline is used by a `Jenkinsfile` defined in other repositories in this organization.
