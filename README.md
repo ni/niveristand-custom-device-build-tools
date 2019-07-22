@@ -11,7 +11,7 @@ A node that is capable of building a custom device for VeriStand 2016 and 2017 w
 ### Jenkinsfile
 The pipeline is used by a `Jenkinsfile` defined in other repositories in this organization.
 
-The Jenkins server must be configured to load this library implicitly, either by the Jenkins Pipeline Global Library or as a Shared Pipeline Library within a job folder. To build a custom device for LabVIEW/VeriStand 2016 and 2017 if the library name configured in Jenkins is `vs-common-build`:
+The Jenkins server must be configured to load this library implicitly, either by the Jenkins Pipeline Global Library or as a Shared Pipeline Library within a job folder. To build a custom device for LabVIEW/VeriStand 2016 and 2017 if the library name configured in Jenkins is `vs-build-tools`:
 
 ```groovy
 // Jenkinsfile
