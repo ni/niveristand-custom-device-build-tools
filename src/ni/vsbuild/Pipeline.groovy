@@ -107,7 +107,7 @@ class Pipeline implements Serializable {
             script.node(nodeLabel) {
                setup(lvVersion)
 
-               def configuration = BuildConfiguration.load(script, JSON_FILE)
+               def configuration = BuildConfiguration.load(script, JSON_FILE, lvVersion)
                configuration.printInformation(script)
 
                def builder = new Builder(script, configuration, lvVersion)

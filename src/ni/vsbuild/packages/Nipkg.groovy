@@ -80,9 +80,6 @@ class Nipkg extends AbstractPackage {
       def fullVersion = getFullVersion()
 
       def replacements = ['nipkg_version': fullVersion, 'display_version': baseVersion]
-      script.versionReplacementExpressions().each { expression ->
-         replacements."$expression" = lvVersion
-      }
 
       def updatedText = text
       replacements.each {expression, value ->
