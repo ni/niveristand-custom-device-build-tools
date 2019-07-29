@@ -81,7 +81,7 @@ class BuildConfiguration implements Serializable {
    }
 
    private def replaceTags(def script, def jsonItem, def lvVersion) {
-      if(jsonItem instanceof jva.lang.String) {
+      if(jsonItem instanceof java.lang.String) {
          script.echo "jsonItem is String"
       }
       return jsonItem
