@@ -81,8 +81,7 @@ class BuildConfiguration implements Serializable {
    }
 
    private static def replaceTags(def script, def jsonItem, def lvVersion) {
-      if(jsonItem instanceof java.lang.String ||
-         jsonItem instanceof org.codehaus.groovy.runtime.GStringImpl) {
+      if(jsonItem instanceof java.lang.String || jsonItem instanceof org.codehaus.groovy.runtime.GStringImpl) {
 
          def replacedValue = jsonItem
          script.versionReplacementExpressions().each {expression ->
