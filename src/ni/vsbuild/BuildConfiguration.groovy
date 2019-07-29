@@ -82,7 +82,7 @@ class BuildConfiguration implements Serializable {
 
    private static def replaceTags(def script, def jsonItem, def lvVersion) {
       if(jsonItem instanceof java.lang.String ||
-         jsonItem instanceof org.codehaus.groovy.runtime.GStringImpl) {
+         jsonItem instanceof groovy.lang.GString) {
 
          def replacedValue = jsonItem
          script.versionReplacementExpressions().each {expression ->
@@ -93,7 +93,7 @@ class BuildConfiguration implements Serializable {
       }
 
       if(jsonItem instanceof java.util.ArrayList) {
-         for(def i=0; i< jsonItem.size(); i++) {
+         for(def i = 0; i < jsonItem.size(); i++) {
             jsonItem[i] = replaceTags(script, jsonItem[i], lvVersion)
          }
       }
