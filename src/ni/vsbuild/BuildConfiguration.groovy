@@ -36,6 +36,8 @@ class BuildConfiguration implements Serializable {
       // functionality that is required for this build system
       def convertedJson = new JsonSlurperClassic().parseText(config.toString())
 
+      convertedJson = replaceTags(script, convertedJson, '2018')
+
       return new BuildConfiguration(
          convertedJson.archive,
          convertedJson.projects,
@@ -76,5 +78,12 @@ class BuildConfiguration implements Serializable {
       }
 
       return list
+   }
+
+   private def replaceTags(def script, def jsonItem, def lvVersion) {
+      if(jsonItem instanceof jva.lang.String) {
+         script.echo "jsonItem is String"
+      }
+      return jsonItem
    }
 }
