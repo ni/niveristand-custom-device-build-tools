@@ -28,13 +28,15 @@ class BuildConfiguration implements Serializable {
       this.packageInfo = packageInfo
    }
 
-   static BuildConfiguration load(def script, String jsonFile) {
+   static BuildConfiguration load(def script, String jsonFile, String lvVersion) {
       def config = script.readJSON file: jsonFile
 
       // Convert the JSON to HashMaps instead of using the JsonObject
       // because the Pipeline security plugin disables lots of JsonObject
       // functionality that is required for this build system
       def convertedJson = new JsonSlurperClassic().parseText(config.toString())
+
+      convertedJson = replaceTags(script, convertedJson, lvVersion)
 
       return new BuildConfiguration(
          convertedJson.archive,
@@ -76,5 +78,32 @@ class BuildConfiguration implements Serializable {
       }
 
       return list
+   }
+
+   private static def replaceTags(def script, def jsonItem, def lvVersion) {
+      if(jsonItem instanceof java.lang.String ||
+         jsonItem instanceof groovy.lang.GString) {
+
+         def replacedValue = jsonItem
+         script.versionReplacementExpressions().each {expression ->
+            replacedValue = replacedValue.replaceAll("\\{$expression\\}", lvVersion)
+         }
+
+         return replacedValue
+      }
+
+      if(jsonItem instanceof java.util.ArrayList) {
+         for(def i = 0; i < jsonItem.size(); i++) {
+            jsonItem[i] = replaceTags(script, jsonItem[i], lvVersion)
+         }
+      }
+
+      if(jsonItem instanceof java.util.HashMap) {
+         for(def key : jsonItem.keySet()) {
+            jsonItem[key] = replaceTags(script, jsonItem[key], lvVersion)
+         }
+      }
+
+      return jsonItem
    }
 }
