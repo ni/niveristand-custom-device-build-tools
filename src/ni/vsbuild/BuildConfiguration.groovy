@@ -103,7 +103,4 @@ class BuildConfiguration implements Serializable {
             jsonItem[key] = replaceTags(script, jsonItem[key], lvVersion)
          }
       }
-
-      return jsonItem
-   }
 }
