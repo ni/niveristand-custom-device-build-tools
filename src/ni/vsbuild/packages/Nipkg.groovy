@@ -8,7 +8,6 @@ class Nipkg extends AbstractPackage {
    private static final String INSTRUCTIONS_FILE_NAME = "instructions"
    private static final String CONTROL_DIRECTORY = "control"
    private static final String DATA_DIRECTORY = "data"
-   private static final String INSTALLER_DIRECTORY = "installer"
 
    def installDestination
    def controlFile
@@ -28,11 +27,11 @@ class Nipkg extends AbstractPackage {
       this.instructionsFile = packageInfo.get('instructions_file') ?: INSTRUCTIONS_FILE_NAME
    }
 
-   void buildPackage() {
+   void buildPackage(outputLocation) {
       stageFiles()
 
       def nipkgOutput = script.nipkgBuild(PACKAGE_DIRECTORY, PACKAGE_DIRECTORY)
-      script.copyFiles(PACKAGE_DIRECTORY, "\"$payloadDir\\$INSTALLER_DIRECTORY\"", [files: nipkgOutput])
+      script.copyFiles(PACKAGE_DIRECTORY, outputLocation, [files: nipkgOutput])
    }
 
    // This method is responsible for setting up the directory and file
