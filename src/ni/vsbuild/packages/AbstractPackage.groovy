@@ -20,7 +20,7 @@ abstract class AbstractPackage implements Buildable {
 
    void build() {
       script.echo "Building $type package..."
-      def outputLocation = "\"$packageOutputDir\\$INSTALLER_DIRECTORY\""
+      def outputLocation = "$packageOutputDir\\$INSTALLER_DIRECTORY"
       buildPackage(outputLocation)
       script.echo "$type package built."
    }
