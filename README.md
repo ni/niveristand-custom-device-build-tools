@@ -51,7 +51,7 @@ project = '{cd}'
 Stages are ordered by the pipeline. Steps within the codegen and build stages are executed in the top to bottom order specified in `build.toml`. For a complete description of the available TOML configuration options, see the [build.toml specification](docs/Toml%20Help.md).
 
 ## LabVIEW Version
-The LabVIEW source for this repository is saved for LabVIEW 2014, but is forward compatible to newer versions.
+The LabVIEW source for this repository is saved for LabVIEW 2015, but is forward compatible to newer versions.
 
 ## Dependencies
 The following top-level dependencies are required on the build machine to use the repository:
