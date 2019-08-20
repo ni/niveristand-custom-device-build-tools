@@ -340,13 +340,19 @@ Key | Description | Required
 The nipkg package type builds a package that can be installed through NI Package Manager (NIPM). NIPM must be installed on the build machine in order to build this type.
 
 ###### Supported Keys
+
 Key | Description | Required
 -|-|-
 `payload_dir` | location of files to be packaged | **YES**
 `install_destination` | location where packaged files should be installed | **YES**
 `<lvVersion>_install_destination` | location where packaged files should be installed if building with the supplied lvVersion | **NO**
+`control_file` | name of the file used for creating an NIPM File Package | **NO**
+`instructions_file` | name of the instructions XML used for creating an NIPM File Package | **NO**
+`package_output_dir` | base directory where the package file will be created | **NO**
 
 ###### Example
+Build a single `.nipkg` using the default `control_file`, `instructions_file`, and `package_output_dir`. For defaults, see **Notes** section below.
+
 ```
 [package]
 type = 'nipkg'
@@ -355,16 +361,45 @@ install_destination = 'documents\National Instruments\NI VeriStand {veristand_ve
 2016_install_destination = 'documents\\National Instruments\\NI VeriStand {veristand_version}\\Custom Devices\\SLSC Plug-ins'
 ```
 
+Build multiple `.nipkg` files.
+
+```
+[[package]]
+type = 'nipkg'
+payload_dir = 'Built'
+install_destination = 'documents\National Instruments\NI VeriStand {veristand_version}\Custom Devices'
+control_file = 'control_custom_device'
+
+[[package]]
+type = 'nipkg'
+payload_dir = 'includes'
+install_destination = 'documents\National Instruments\NI VeriStand {veristand_version}\Shared'
+control_file = 'control_includes'
+instructions_file = 'instructions_includes'
+package_output_dir = 'Built'
+```
+
+###### Notes
+The defaults for the **nipkg** stage are below.
+
+Key | Default
+-|-
+`control_file` | `$WORKSPACE/control`
+`instructions_file` | `$WORKSPACE/instructions`
+`package_output_dir` | `$payload_dir/installer`
+
 ---
 
 ##### zip
 
-The zip package type builds a compressed package that can be installed using ZIP decompression utilities. Most operating systems natively support inflating a compressed ZIP file.
+The zip package type builds a compressed package that can be installed using ZIP decompression utilities. Most operating systems natively support inflating a compressed ZIP file. If no `package_output_dir` is supplied, the `.zip` file will be created at `$payload_dir/installer`.
 
 ###### Supported Keys
 Key | Description | Required
 -|-|-
 `payload_dir` | location of files to be compressed and packaged | **YES**
+`package_output_dir` | base directory where the package file will be created | **NO**
+
 
 ###### Example
 ```
@@ -374,7 +409,9 @@ payload_dir = 'Source'
 ```
 
 ### Notes
+
 If no package stage is defined in `build.toml` this stage will not be added to the pipeline. If a package stage is defined, an archive stage must also be defined.
+
 ---
 
 ## Archive

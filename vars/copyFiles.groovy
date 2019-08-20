@@ -10,6 +10,10 @@ def call(sourceDirectory, destinationDirectory, options=[:]) {
       commandSwitches = "$commandSwitches /xf \"${options.exclusions}\""
    }
 
+   if(options.directoryExclusions) {
+      commandSwitches = "$commandSwitches /xd \"${options.directoryExclusions}\""
+   }
+
    // If the files argument is not passed, mirror the entire source to destination
    if(options.files) {
       copyCommand = "$copyCommand \"${options.files}\""
