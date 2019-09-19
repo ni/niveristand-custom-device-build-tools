@@ -6,7 +6,7 @@ class StringSubstitution implements Serializable {
       def replacements = [
             "labview_version": lvVersion,
             "veristand_version": lvVersion,
-            "labview_short_version": lvVersion.substring(lvVersion.length() - 2),
+            "labview_short_version": lvVersion.substring(2),
       ]
       replacements = replacements + additionalReplacements
 
