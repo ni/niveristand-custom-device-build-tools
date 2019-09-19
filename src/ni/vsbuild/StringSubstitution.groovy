@@ -8,12 +8,12 @@ class StringSubstitution implements Serializable {
             "veristand_version": lvVersion,
             "labview_short_version": "19",
       ]
-      replacements = replacements + additionalReplacements
+//      replacements = replacements + additionalReplacements
 
       def updatedText = text
-      replacements.each { expression, value ->
-         updatedText = updatedText.replaceAll("\\{$expression\\}", value)
-      }
+//      replacements.each { expression, value ->
+//         updatedText = updatedText.replaceAll("\\{$expression\\}", value)
+//      }
 
       return updatedText
    }
