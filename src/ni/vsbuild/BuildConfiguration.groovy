@@ -84,12 +84,7 @@ class BuildConfiguration implements Serializable {
       if(jsonItem instanceof java.lang.String ||
          jsonItem instanceof groovy.lang.GString) {
 
-         def replacedValue = jsonItem
-         script.versionReplacementExpressions().each {expression ->
-            replacedValue = replacedValue.replaceAll("\\{$expression\\}", lvVersion)
-         }
-
-         return replacedValue
+         return StringSubstitution.replaceStrings(jsonItem, lvVersion)
       }
 
       if(jsonItem instanceof java.util.ArrayList) {

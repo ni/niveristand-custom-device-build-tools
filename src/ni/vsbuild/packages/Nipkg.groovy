@@ -1,5 +1,7 @@
 package ni.vsbuild.packages
 
+import ni.vsbuild.StringSubstitution
+
 class Nipkg extends AbstractPackage {
 
    static final String PACKAGE_DIRECTORY = "nipkg"
@@ -84,17 +86,8 @@ class Nipkg extends AbstractPackage {
       def baseVersion = getBaseVersion()
       def fullVersion = getFullVersion()
 
-      def replacements = ['nipkg_version': fullVersion, 'display_version': baseVersion]
-      script.versionReplacementExpressions().each { expression ->
-         replacements."$expression" = lvVersion
-      }
-
-      def updatedText = text
-      replacements.each {expression, value ->
-         updatedText = updatedText.replaceAll("\\{$expression\\}", value)
-      }
-
-      return updatedText
+      def additionalReplacements = ['nipkg_version': fullVersion, 'display_version': baseVersion]
+      return StringSubstitution.replaceStrings(text, lvVersion, additionalReplacements)
    }
 
    private void stagePayload() {
