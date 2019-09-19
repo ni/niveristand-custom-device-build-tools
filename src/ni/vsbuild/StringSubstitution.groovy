@@ -8,7 +8,7 @@ class StringSubstitution implements Serializable {
             "veristand_version": lvVersion,
             "labview_short_version": lvVersion.substring(lvVersion.length() - 2),
       ]
-      replacements << additionalReplacements
+      replacements = replacements + additionalReplacements
 
       def updatedText = text
       replacements.each { expression, value ->
