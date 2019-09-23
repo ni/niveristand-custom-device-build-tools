@@ -11,22 +11,13 @@ class Nipkg extends AbstractPackage {
    private static final String CONTROL_DIRECTORY = "control"
    private static final String DATA_DIRECTORY = "data"
 
-   def payloadDir
-   def installDestination
+   def payloadMap
    def controlFile
    def instructionsFile
 
    Nipkg(script, packageInfo, lvVersion) {
       super(script, packageInfo, lvVersion)
-      this.payloadDir = packageInfo.get('payload_dir')
-
-      // Yes, I'm calling toString() on what appears to be a string, but is not actually
-      // java.lang.String. Instead, the interpolated string is a groovy.lang.GString.
-      // http://docs.groovy-lang.org/latest/html/documentation/index.html#_double_quoted_string
-      // There appears to be a bug in Groovy's runtime argument overloading evaluation
-      // that fails to find the key when a GString is passed to getAt() instead of a String
-      // https://stackoverflow.com/questions/39145121/why-i-cannot-get-exactly-the-same-gstring-as-was-put-to-map-in-groovy
-      this.installDestination = packageInfo.get("${lvVersion}_install_destination".toString()) ?: packageInfo.get('install_destination')
+      createPayloadMap(packageInfo)
       this.controlFile = packageInfo.get('control_file') ?: CONTROL_FILE_NAME
       this.instructionsFile = packageInfo.get('instructions_file') ?: INSTRUCTIONS_FILE_NAME
    }
@@ -36,6 +27,28 @@ class Nipkg extends AbstractPackage {
 
       def nipkgOutput = script.nipkgBuild(PACKAGE_DIRECTORY, PACKAGE_DIRECTORY)
       script.copyFiles(PACKAGE_DIRECTORY, "\"$outputLocation\"", [files: nipkgOutput])
+   }
+
+   private void createPayloadMap(packageInfo) {
+      def payloadDir = packageInfo.get('payload_dir')
+      // Yes, I'm calling toString() on what appears to be a string, but is not actually
+      // java.lang.String. Instead, the interpolated string is a groovy.lang.GString.
+      // http://docs.groovy-lang.org/latest/html/documentation/index.html#_double_quoted_string
+      // There appears to be a bug in Groovy's runtime argument overloading evaluation
+      // that fails to find the key when a GString is passed to getAt() instead of a String
+      // https://stackoverflow.com/questions/39145121/why-i-cannot-get-exactly-the-same-gstring-as-was-put-to-map-in-groovy
+      def installDestination = packageInfo.get("${lvVersion}_install_destination".toString()) ?: packageInfo.get('install_destination')
+
+      if (payloadDir) {
+         this.payloadMap = [payloadDir: installDestination]
+      } else {
+         this.payloadMap = packageInfo.get('payload_map')
+      }
+
+      if (!this.payloadMap) {
+         throw new RuntimeException("Building an nipkg requires either 'payload_map'," +
+               "or 'payload_dir' and 'install_destination' to be specified.")
+      }
    }
 
    // This method is responsible for setting up the directory and file
@@ -93,15 +106,20 @@ class Nipkg extends AbstractPackage {
    }
 
    private void stagePayload() {
-      if(!installDestination) {
-         // If installDestination is not provided, build an
-         // empty package (virtual package).
-         // A virtual package is useful for defining package
-         // relationships without requiring a package payload.
-         return
+      if (this.payloadMap.size() == 1) {
+         def value = this.payloadMap.toArray()[0]
+         if (!value) {
+            // If installDestination is not provided, build an
+            // empty package (virtual package).
+            // A virtual package is useful for defining package
+            // relationships without requiring a package payload.
+            return
+         }
       }
 
-      def destination = updateVersionVariables(installDestination)
-      script.copyFiles(payloadDir, "$PACKAGE_DIRECTORY\\$DATA_DIRECTORY\\$destination", [directoryExclusions: INSTALLER_DIRECTORY])
+      this.payloadMap.each { payloadDir, installDestination ->
+         def destination = updateVersionVariables(installDestination)
+         script.copyFiles(payloadDir, "$PACKAGE_DIRECTORY\\$DATA_DIRECTORY\\$destination", [directoryExclusions: INSTALLER_DIRECTORY])
+      }
    }
 }
