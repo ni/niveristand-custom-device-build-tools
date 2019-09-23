@@ -108,7 +108,7 @@ class Nipkg extends AbstractPackage {
 
    private void stagePayload() {
       if (this.payloadMap.size() == 1) {
-         def value = this.payloadMap.toArray()[0]
+         def value = this.payloadMap.values().first()
          if (!value) {
             // If installDestination is not provided, build an
             // empty package (virtual package).
