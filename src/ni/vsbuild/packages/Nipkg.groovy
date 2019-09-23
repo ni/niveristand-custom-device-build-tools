@@ -41,7 +41,7 @@ class Nipkg extends AbstractPackage {
       def installDestination = packageInfo.get("${lvVersion}_install_destination".toString()) ?: packageInfo.get('install_destination')
 
       if (payloadDir) {
-         this.payloadMap = [payloadDir: installDestination]
+         this.payloadMap = [(payloadDir): installDestination]
       } else {
          this.payloadMap = packageInfo.get('payload_map')
       }
