@@ -11,12 +11,14 @@ class Nipkg extends AbstractPackage {
    private static final String CONTROL_DIRECTORY = "control"
    private static final String DATA_DIRECTORY = "data"
 
+   def payloadDir
    def installDestination
    def controlFile
    def instructionsFile
 
    Nipkg(script, packageInfo, lvVersion) {
       super(script, packageInfo, lvVersion)
+      this.payloadDir = packageInfo.get('payload_dir')
 
       // Yes, I'm calling toString() on what appears to be a string, but is not actually
       // java.lang.String. Instead, the interpolated string is a groovy.lang.GString.
