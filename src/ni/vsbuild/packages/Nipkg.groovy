@@ -29,6 +29,7 @@ class Nipkg extends AbstractPackage {
       script.copyFiles(PACKAGE_DIRECTORY, "\"$outputLocation\"", [files: nipkgOutput])
    }
 
+   @NonCPS
    private void createPayloadMap(packageInfo) {
       def payloadDir = packageInfo.get('payload_dir')
       // Yes, I'm calling toString() on what appears to be a string, but is not actually
