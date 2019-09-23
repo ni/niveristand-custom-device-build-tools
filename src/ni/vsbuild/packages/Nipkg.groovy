@@ -17,7 +17,7 @@ class Nipkg extends AbstractPackage {
 
    Nipkg(script, packageInfo, lvVersion) {
       super(script, packageInfo, lvVersion)
-      createPayloadMap(packageInfo)
+      this.createPayloadMap(packageInfo)
       this.controlFile = packageInfo.get('control_file') ?: CONTROL_FILE_NAME
       this.instructionsFile = packageInfo.get('instructions_file') ?: INSTRUCTIONS_FILE_NAME
    }
