@@ -107,7 +107,6 @@ class Nipkg extends AbstractPackage {
    }
 
    private void stagePayload() {
-      this.script.echo this.payloadMap.toString()
       if (this.payloadMap.size() == 1) {
          def value = this.payloadMap.values().first()
          if (!value) {
