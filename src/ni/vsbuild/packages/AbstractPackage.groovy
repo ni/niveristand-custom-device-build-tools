@@ -6,7 +6,6 @@ abstract class AbstractPackage implements Buildable {
 
    def script
    def type
-   def payloadDir
    def lvVersion
    def packageOutputDir
 
@@ -14,7 +13,6 @@ abstract class AbstractPackage implements Buildable {
       this.script = script
       this.lvVersion = lvVersion
       this.type = packageInfo.get('type')
-      this.payloadDir = packageInfo.get('payload_dir')
       this.packageOutputDir = packageInfo.get('package_output_dir') ?: packageInfo.get('payload_dir')
    }
 

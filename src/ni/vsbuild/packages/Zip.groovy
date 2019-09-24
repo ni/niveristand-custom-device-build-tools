@@ -2,8 +2,11 @@ package ni.vsbuild.packages
 
 class Zip extends AbstractPackage {
 
+   def payloadDir
+
    Zip(script, packageInfo, lvVersion) {
       super(script, packageInfo, lvVersion)
+      this.payloadDir = packageInfo.get('payload_dir')
    }
 
    void buildPackage(outputLocation) {
