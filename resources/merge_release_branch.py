@@ -51,5 +51,10 @@ if __name__ == "__main__":
     import sys
 
     file_contents = toml.load(sys.argv[1])
-    for project in file_contents.values():
+    for name, project in file_contents.items():
+        print()
+        print("*" * 80)
+        print("Merging release branch '{0}' for {1}".format(project["version"], name))
+        print("*" * 80)
         integrate_release(project["url"], project["version"], project["directory"])
+        print()
