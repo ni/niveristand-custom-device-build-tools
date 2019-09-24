@@ -43,7 +43,7 @@ class Nipkg extends AbstractPackage {
       if (payloadDir) {
          this.payloadMap = [(payloadDir): installDestination]
       } else {
-         this.payloadMap = packageInfo.get('payload_map')[0]
+         this.payloadMap = packageInfo.get('payload_map')
       }
 
       if (!this.payloadMap) {
