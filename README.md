@@ -60,6 +60,12 @@ The following top-level dependencies are required on the build machine to use th
 - [LabVIEW Command Line Interface](http://www.ni.com/en-us/support/downloads/software-products/download.ni-labview-command-line-interface.html)
 - [Python](https://www.python.org/downloads/) (Version 3.6.3 or later)
 
+The following plugins are required on the Jenkins server:
+
+- [Pipeline Plugin](https://wiki.jenkins.io/display/JENKINS/Pipeline+Plugin)
+- [Pipeline Utility Steps Plugin](https://wiki.jenkins.io/display/JENKINS/Pipeline+Utility+Steps+Plugin)
+- [GitHub Branch Source Plugin](https://wiki.jenkins.io/display/JENKINS/GitHub+Branch+Source+Plugin)
+
 ## Git History & Rebasing Policy
 Branch rebasing and other history modifications will be listed here, with several notable exceptions:
 - Branches prefixed with `dev/` may be rebased, overwritten, or deleted at any time.
