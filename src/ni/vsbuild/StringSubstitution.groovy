@@ -44,14 +44,15 @@ class StringSubstitution implements Serializable {
       // Update the upper bound with each additional year release that uses the same package name format
       // Once we no longer need the legacy codes (i.e. the minimum supported VeriStand version is 2019) we
       // can deprecate this function, and just use the package names and versions directly.
-      for (int year = 19; year <= 20; year++)
+      def upperYearBound = 20
+      for (int year = 19; year <= upperYearBound; year++)
       {
          substitutionStrings.put(
                "ni-veristand-20${year}".toString(),
                "ni-veristand-20${year}".toString(),
          )
       }
-      for (int year = 18; year <= 20; year++)
+      for (int year = 18; year <= upperYearBound; year++)
       {
          substitutionStrings.put(
                "AUTOVERSION_ni-labview-20${year}-x86".toString(),
