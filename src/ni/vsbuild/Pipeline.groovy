@@ -10,7 +10,6 @@ class Pipeline implements Serializable {
 
    def script
    PipelineInformation pipelineInformation
-   def stages = []
 
    static class Builder implements Serializable {
 
@@ -113,9 +112,9 @@ class Pipeline implements Serializable {
                configuration.printInformation(script)
 
                def builder = new Builder(script, configuration, lvVersion, MANIFEST_FILE)
-               this.stages = builder.buildPipeline()
+               def stages = builder.buildPipeline()
 
-               executeStages()
+               executeStages(stages)
             }
          }
       }
@@ -125,7 +124,7 @@ class Pipeline implements Serializable {
       validateBuild()
    }
 
-   protected void executeStages() {
+   protected void executeStages(stages) {
       for (Stage stage : stages) {
          try {
             stage.execute()
