@@ -10,6 +10,7 @@ class Pipeline implements Serializable {
 
    def script
    PipelineInformation pipelineInformation
+   private String jsonConfig
 
    static class Builder implements Serializable {
 
@@ -109,7 +110,7 @@ class Pipeline implements Serializable {
             script.node(nodeLabel) {
                setup(lvVersion)
 
-               def configuration = BuildConfiguration.load(script, JSON_FILE, lvVersion)
+               def configuration = BuildConfiguration.loadString(script, getJsonConfig(), lvVersion)
                configuration.printInformation(script)
 
                def builder = new Builder(script, configuration, lvVersion, MANIFEST_FILE)
@@ -135,35 +136,50 @@ class Pipeline implements Serializable {
       }
    }
 
-   private boolean validateShouldBuildPipeline() {
-      // We do not want to rebuild if our output would clobber existing data.
-      // This can happen if the Jenkins build numbers reset, or e.g. due to
-      // multiple repositories unintentionally exporting to the same location.
-      def manifest = script.readJSON text: '{}'
+   private String getJsonConfig() {
+      if (jsonConfig) {
+         return jsonConfig
+      }
 
+      def manifest = script.readJSON text: '{}'
+      def config
       script.node(pipelineInformation.nodeLabel) {
-         script.stage('Checkout_validateShouldBuildPipeline') {
+         script.stage('Checkout_getJsonConfig') {
             script.deleteDir()
             script.echo 'Attempting to get source from repo.'
             script.timeout(time: 5, unit: 'MINUTES'){
                manifest['scm'] = script.checkout(script.scm)
             }
          }
-         def arbitraryLvVersion = pipelineInformation.lvVersions[0]
-         script.stage('Setup_validateShouldBuildPipeline') {
+         script.stage('Setup_getJsonConfig') {
             script.cloneBuildTools()
-            script.buildSetup(arbitraryLvVersion)
-         }
+            script.toml2json()
 
-         def configuration = BuildConfiguration.load(script, JSON_FILE, arbitraryLvVersion)
-         if (!configuration.archive) {
-            // We won't clobber anything if we aren't archiving
-            return
+            config = script.readJSON file: JSON_FILE
          }
+      }
 
-         def archiveLocation = Archive.calculateArchiveLocation(script, configuration)
-         if (script.fileExists(archiveLocation)) {
-            script.failBuild("Refusing to build, $archiveLocation already exists and would be overwritten.")
+      jsonConfig = config.toString()
+      return jsonConfig
+   }
+
+   private boolean validateShouldBuildPipeline() {
+      // We do not want to rebuild if our output would clobber existing data.
+      // This can happen if the Jenkins build numbers reset, or e.g. due to
+      // multiple repositories unintentionally exporting to the same location.
+      def arbitraryLvVersion = pipelineInformation.lvVersions[0]
+      def configuration = BuildConfiguration.loadString(script, getJsonConfig(), arbitraryLvVersion)
+      if (!configuration.archive) {
+         // We won't clobber anything if we aren't archiving
+         return
+      }
+
+      def archiveLocation = Archive.calculateArchiveLocation(script, configuration)
+      script.node(pipelineInformation.nodeLabel) {
+         script.stage('validateShouldBuildPipeline') {
+            if (script.fileExists(archiveLocation)) {
+               script.failBuild("Refusing to build, $archiveLocation already exists and would be overwritten.")
+            }
          }
       }
    }
@@ -180,7 +196,7 @@ class Pipeline implements Serializable {
       }
       script.stage("Setup_$lvVersion") {
          script.cloneBuildTools()
-         script.buildSetup(lvVersion)
+         script.setLabVIEWPath(lvVersion)
 
          // Write a manifest
          script.echo "Writing manifest to $MANIFEST_FILE"
