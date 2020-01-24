@@ -88,6 +88,7 @@ class Pipeline implements Serializable {
    }
 
    void execute() {
+      validateShouldBuildPipeline()
 
       // build dependencies before starting this pipeline
       script.buildDependencies(pipelineInformation)
@@ -130,6 +131,39 @@ class Pipeline implements Serializable {
             stage.execute()
          } catch (err) {
             script.failBuild(err.getMessage())
+         }
+      }
+   }
+
+   private boolean validateShouldBuildPipeline() {
+      // We do not want to rebuild if our output would clobber existing data.
+      // This can happen if the Jenkins build numbers reset, or e.g. due to
+      // multiple repositories unintentionally exporting to the same location.
+      def manifest = script.readJSON text: '{}'
+
+      script.node(pipelineInformation.nodeLabel) {
+         script.stage('Checkout_validateShouldBuildPipeline') {
+            script.deleteDir()
+            script.echo 'Attempting to get source from repo.'
+            script.timeout(time: 5, unit: 'MINUTES'){
+               manifest['scm'] = script.checkout(script.scm)
+            }
+         }
+         def arbitraryLvVersion = pipelineInformation.lvVersions[0]
+         script.stage('Setup_validateShouldBuildPipeline') {
+            script.cloneBuildTools()
+            script.buildSetup(arbitraryLvVersion)
+         }
+
+         def configuration = BuildConfiguration.load(script, JSON_FILE, arbitraryLvVersion)
+         if (!configuration.archive) {
+            // We won't clobber anything if we aren't archiving
+            return
+         }
+
+         def archiveLocation = Archive.calculateArchiveLocation(script, configuration)
+         if (script.fileExists(archiveLocation)) {
+            script.failBuild("Refusing to build, $archiveLocation already exists and would be overwritten.")
          }
       }
    }
