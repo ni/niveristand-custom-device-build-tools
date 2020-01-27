@@ -10,6 +10,10 @@ class Pipeline implements Serializable {
 
    def script
    PipelineInformation pipelineInformation
+
+   // Call getJsonConfig(), instead of accessing this variable directly.
+   // getJsonConfig() uses this variable internally for caching,
+   // so it may or may not be set.
    private String jsonConfig
 
    static class Builder implements Serializable {
@@ -163,7 +167,7 @@ class Pipeline implements Serializable {
       return jsonConfig
    }
 
-   private boolean validateShouldBuildPipeline() {
+   private void validateShouldBuildPipeline() {
       // We do not want to rebuild if our output would clobber existing data.
       // This can happen if the Jenkins build numbers reset, or e.g. due to
       // multiple repositories unintentionally exporting to the same location.

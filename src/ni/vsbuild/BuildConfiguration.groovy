@@ -28,11 +28,6 @@ class BuildConfiguration implements Serializable {
       this.packageInfo = packageInfo
    }
 
-   static BuildConfiguration load(def script, String jsonFile, String lvVersion) {
-      def config = script.readJSON file: jsonFile
-      return loadString(script, config.toString(), lvVersion)
-   }
-
    static BuildConfiguration loadString(def script, String jsonConfig, String lvVersion) {
       // Convert the JSON to HashMaps instead of using the JsonObject
       // because the Pipeline security plugin disables lots of JsonObject
