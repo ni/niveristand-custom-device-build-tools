@@ -15,8 +15,27 @@ class Archive extends AbstractStage {
       this.manifestFile = manifestFile
    }
 
+   // Builds a string of the form <archiveLocation>\\export\\<branch>\\<build_number>
+   static String calculateArchiveLocation(script, BuildConfiguration configuration) {
+      def organization = script.getComponentParts()['organization']
+
+      // Organization may not exist for multibranch pipelines not using
+      // the GitHub Branch Source Plugin
+      if(!organization) {
+         organization = ''
+      }
+      else {
+         organization = "$organization\\"
+      }
+
+      return ("${configuration.archive.get('archive_location')}\\" +
+         "$organization" +
+         "export\\${script.env.BRANCH_NAME}\\" +
+         "Build ${script.currentBuild.number}").toString()
+   }
+
    void executeStage() {
-      setArchiveLocation()
+      archiveLocation = calculateArchiveLocation(script, configuration)
 
       script.echo "Archiving build to $archiveLocation"
       def buildOutputDir = configuration.archive.get('build_output_dir')
@@ -31,25 +50,6 @@ class Archive extends AbstractStage {
       archiveManifest(versionedArchive)
 
       setArchiveVar()
-   }
-
-   // Builds a string of the form <archiveLocation>\\export\\<branch>\\<build_number>
-   private void setArchiveLocation() {
-      def organization = script.getComponentParts()['organization']
-
-      // Organization may not exist for multibranch pipelines not using
-      // the GitHub Branch Source Plugin
-      if(!organization) {
-         organization = ''
-      }
-      else {
-         organization = "$organization\\"
-      }
-
-      archiveLocation = "${configuration.archive.get('archive_location')}\\" +
-         "$organization" +
-         "export\\${script.env.BRANCH_NAME}\\" +
-         "Build ${script.currentBuild.number}"
    }
 
    // Set an env var that points to the archive so dependents can find it
