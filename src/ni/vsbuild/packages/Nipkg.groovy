@@ -29,6 +29,10 @@ class Nipkg extends AbstractPackage {
       script.copyFiles(PACKAGE_DIRECTORY, "\"$outputLocation\"", [files: nipkgOutput])
    }
 
+   String[] getConfigurationFiles() {
+      return [this.controlFile, this.instructionsFile]
+   }
+
    @NonCPS
    private void createPayloadMap(packageInfo) {
       def payloadDir = packageInfo.get('payload_dir')

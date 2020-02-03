@@ -3,6 +3,7 @@ package ni.vsbuild.packages
 abstract class AbstractPackage implements Buildable {
 
    static final String INSTALLER_DIRECTORY = "installer"
+   static final String INVALID_VERSION = "0.0.0"
 
    def script
    def type
@@ -25,7 +26,21 @@ abstract class AbstractPackage implements Buildable {
 
    abstract void buildPackage(outputLocation)
 
+   // Returns files that affect the package build.
+   // This is used as a heuristic for determining whether
+   // to build packages for a pull request, and does not
+   // need to be exhaustive. This should not include the
+   // build.toml file or build output.
+   String[] getConfigurationFiles() {
+      return []
+   }
+
    protected def getBaseVersion() {
+      if (script.env.CHANGE_ID) {
+         // Assign an invalid version to pull requests
+         return INVALID_VERSION
+      }
+
       def baseVersion = script.env.BRANCH_NAME.split("[-/]")[1]
       def versionPartCount = baseVersion.tokenize(".").size()
 
