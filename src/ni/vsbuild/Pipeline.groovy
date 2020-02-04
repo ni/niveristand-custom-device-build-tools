@@ -187,7 +187,9 @@ class Pipeline implements Serializable {
             script.toml2json()
 
             config = script.readJSON file: JSON_FILE
-            changedFiles = script.getChangedFiles()
+            if (script.env.CHANGE_ID) {
+               changedFiles = script.getChangedFiles()
+            }
          }
       }
 
