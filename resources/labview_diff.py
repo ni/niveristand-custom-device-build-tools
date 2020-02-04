@@ -8,6 +8,8 @@ import traceback
 from contextlib import contextmanager
 from os import path
 
+import git_utilities
+
 
 def diff_vi(old_vi, new_vi, output_dir, workspace, lv_version):
     """
@@ -90,14 +92,14 @@ def get_changed_labview_files(target_ref):
     :param target_ref: The git ref to check for changed files against
     :return: Tuples of the form (status, filename) where status is either "A" or "M", depending on whether the file was added or modified.
     """
-    diff_args = ["git", "diff", "--name-status", "--diff-filter=AM", target_ref + "...", "HEAD"]
-    diff_output = subprocess.check_output(diff_args).decode("utf-8")
+    changed_files = git_utilities.get_changed_files(target_ref)
 
-    # https://regex101.com/r/EFVDVV/1
-    diff_regex = re.compile(r"^([AM])\s+(.*\.vi[tm]?)$", re.MULTILINE)
+    # https://regex101.com/r/W3riqw/1
+    diff_regex = re.compile(r"^(.*\.vi[tm]?)$", re.MULTILINE)
 
-    for match in re.finditer(diff_regex, diff_output):
-        yield match.group(1), match.group(2)
+    for status, filename in changed_files:
+        if re.match(diff_regex, filename):
+            yield status, filename
 
 
 def diff_repo(workspace, output_dir, target_branch, lv_version):

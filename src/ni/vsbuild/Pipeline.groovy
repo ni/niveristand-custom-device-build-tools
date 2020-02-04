@@ -10,11 +10,8 @@ class Pipeline implements Serializable {
 
    def script
    PipelineInformation pipelineInformation
-
-   // Call getJsonConfig(), instead of accessing this variable directly.
-   // getJsonConfig() uses this variable internally for caching,
-   // so it may or may not be set.
-   private String jsonConfig
+   String jsonConfig
+   def changedFiles
 
    static class Builder implements Serializable {
 
@@ -22,13 +19,15 @@ class Pipeline implements Serializable {
       BuildConfiguration buildConfiguration
       String lvVersion
       String manifestFile
+      def changedFiles
       def stages = []
 
-      Builder(def script, BuildConfiguration buildConfiguration, String lvVersion, String manifestFile) {
+      Builder(def script, BuildConfiguration buildConfiguration, String lvVersion, String manifestFile, def changedFiles) {
          this.script = script
          this.buildConfiguration = buildConfiguration
          this.lvVersion = lvVersion
          this.manifestFile = manifestFile
+         this.changedFiles = changedFiles
       }
 
       def withCodegenStage() {
@@ -44,22 +43,53 @@ class Pipeline implements Serializable {
       }
 
       def withPackageStage() {
-         stages << new Package(script, buildConfiguration, lvVersion)
+         def packageStage = new Package(script, buildConfiguration, lvVersion)
+         
+         if (shouldBuildPackage(packageStage)) {
+            stages << packageStage
+         }
       }
 
       def withArchiveStage() {
          stages << new Archive(script, buildConfiguration, lvVersion, manifestFile)
       }
 
-      // The plan is to enable automatic merging from master to
-      // release or hotfix branch packages and not build packages
-      // for any other branches, including master. The version must
-      // be appended to the release or hotfix branch name after a
-      // dash (-) or slash (/).
-      def shouldBuildPackage() {
-         return buildConfiguration.packageInfo &&
+      def shouldBuildPackage(def packageStage) {
+         // The plan is to enable automatic merging from master to
+         // release or hotfix branch packages and not build packages
+         // for any other branches, including master. The version must
+         // be appended to the release or hotfix branch name after a
+         // dash (-) or slash (/).
+         def branchNameMatches = buildConfiguration.packageInfo &&
             (script.env.BRANCH_NAME.startsWith("release") ||
             script.env.BRANCH_NAME.startsWith("hotfix"))
+         if (branchNameMatches) {
+            return true
+         }
+
+         // We build packages for pull requests which modify files related
+         // to package building. Without this, testing these changes either
+         // requires the user to replay a previous build and force a package
+         // build, or to submit the changes and hope that they were correct.
+         // Since the build is exported as a pull request, other tooling
+         // shouldn't be checking for the package output.
+         if (script.env.CHANGE_ID) {
+            def configurationFiles = ["build.toml"] as Set
+            for (def pkg : packageStage.getPackages()) {
+               for (def file : pkg.getConfigurationFiles()) {
+                  configurationFiles.add(file.toLowerCase())
+               }
+            }
+
+            for (def file : changedFiles) {
+               if (file.toLowerCase() in configurationFiles) {
+                  script.echo "Running package stage because file \"${file}\" was changed."
+                  return true
+               }
+            }
+         }
+
+         return false
       }
 
       def buildPipeline() {
@@ -75,7 +105,7 @@ class Pipeline implements Serializable {
             withTestStage()
          }
 
-         if(shouldBuildPackage()) {
+         if(buildConfiguration.packageInfo) {
             withPackageStage()
          }
 
@@ -93,6 +123,7 @@ class Pipeline implements Serializable {
    }
 
    void execute() {
+      readBuildInformation()
       validateShouldBuildPipeline()
 
       // build dependencies before starting this pipeline
@@ -114,10 +145,10 @@ class Pipeline implements Serializable {
             script.node(nodeLabel) {
                setup(lvVersion)
 
-               def configuration = BuildConfiguration.loadString(script, getJsonConfig(), lvVersion)
+               def configuration = BuildConfiguration.loadString(script, jsonConfig, lvVersion)
                configuration.printInformation(script)
 
-               def builder = new Builder(script, configuration, lvVersion, MANIFEST_FILE)
+               def builder = new Builder(script, configuration, lvVersion, MANIFEST_FILE, changedFiles)
                def stages = builder.buildPipeline()
 
                executeStages(stages)
@@ -140,31 +171,29 @@ class Pipeline implements Serializable {
       }
    }
 
-   private String getJsonConfig() {
-      if (jsonConfig) {
-         return jsonConfig
-      }
-
+   private void readBuildInformation() {
       def manifest = script.readJSON text: '{}'
       def config
       script.node(pipelineInformation.nodeLabel) {
-         script.stage('Checkout_getJsonConfig') {
+         script.stage('Checkout_readBuildInformation') {
             script.deleteDir()
             script.echo 'Attempting to get source from repo.'
             script.timeout(time: 5, unit: 'MINUTES'){
                manifest['scm'] = script.checkout(script.scm)
             }
          }
-         script.stage('Setup_getJsonConfig') {
+         script.stage('Setup_readBuildInformation') {
             script.cloneBuildTools()
             script.toml2json()
 
             config = script.readJSON file: JSON_FILE
+            if (script.env.CHANGE_ID) {
+               changedFiles = script.getChangedFiles()
+            }
          }
       }
 
       jsonConfig = config.toString()
-      return jsonConfig
    }
 
    private void validateShouldBuildPipeline() {
@@ -172,7 +201,7 @@ class Pipeline implements Serializable {
       // This can happen if the Jenkins build numbers reset, or e.g. due to
       // multiple repositories unintentionally exporting to the same location.
       def arbitraryLvVersion = pipelineInformation.lvVersions[0]
-      def configuration = BuildConfiguration.loadString(script, getJsonConfig(), arbitraryLvVersion)
+      def configuration = BuildConfiguration.loadString(script, jsonConfig, arbitraryLvVersion)
       if (!configuration.archive) {
          // We won't clobber anything if we aren't archiving
          return
