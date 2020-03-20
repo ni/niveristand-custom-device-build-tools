@@ -6,7 +6,7 @@ import groovy.json.JsonSlurperClassic
 def call() {
    def resourcesDir = "${WORKSPACE}\\niveristand-custom-device-build-tools\\resources"
 
-   def commandOutput = bat returnStdout: true, script: "python ${resourcesDir}/get_changed_files.py"
+   def commandOutput = bat returnStdout: true, script: "python ${resourcesDir}/get_changed_files.py --target origin/${env.CHANGE_TARGET}"
    changedFiles = commandOutput.trim().split("\n")[1]
    return new JsonSlurperClassic().parseText(changedFiles)
 }
