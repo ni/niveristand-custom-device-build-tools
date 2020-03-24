@@ -72,4 +72,4 @@ Branch rebasing and other history modifications will be listed here, with severa
 - Pull requests may be squashed on merge.
 
 ## License
-The NI VeriStand Custom Device Testing Tools are licensed under an MIT-style license (see LICENSE). Other incorporated projects may be licensed under different licenses. All licenses allow for non-commercial and commercial use.
+The NI VeriStand Custom Device Build Tools are licensed under an MIT-style license (see LICENSE). Other incorporated projects may be licensed under different licenses. All licenses allow for non-commercial and commercial use.
