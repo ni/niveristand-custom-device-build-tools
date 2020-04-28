@@ -6,7 +6,7 @@ By default dependencies are always rebuilt. If the branch name being built on th
 
 This is not always the desired behavior. For a variety of reasons (e.g. the branch names do not match, the branches are part of pull requests which override the branch name in Jenkins, debugging with fixed dependencies), it may be beneficial to use an existing build of the dependencies, instead of rebuilding from source.
 
-The build tools support specifying a path to use for a given dependency's built artifacts as an environment variable. These environment variables can be easily set in a Jenkinsfile, either directly in the repository or when replaying a previous build.
+The build tools support specifying a path to use for a given dependency's built artifacts as an environment variable. These environment variables can be easily set in a Jenkinsfile, either directly in the repository or when replaying a previous build. The environment variable should be the dependency name suffixed with **`_DEP_DIR`**, and should refer to a path to a previous build's output.
 
 In the example below, `dependency-A` would use an existing built artifact, while `dependency-B` would be rebuilt as usual.
 
