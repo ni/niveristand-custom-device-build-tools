@@ -207,9 +207,14 @@ class Pipeline implements Serializable {
          return
       }
 
+      def archiveParentLocation = Archive.calculateArchiveParentLocation(script, configuration)
       def archiveLocation = Archive.calculateArchiveLocation(script, configuration)
       script.node(pipelineInformation.nodeLabel) {
          script.stage('validateShouldBuildPipeline') {
+            if (script.fileExists(archiveParentLocation + "\\norebuild")) {
+               script.failBuild("Refusing to build, norebuild file exists.")
+            }
+
             if (script.fileExists(archiveLocation)) {
                script.failBuild("Refusing to build, $archiveLocation already exists and would be overwritten.")
             }

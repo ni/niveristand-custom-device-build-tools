@@ -15,8 +15,8 @@ class Archive extends AbstractStage {
       this.manifestFile = manifestFile
    }
 
-   // Builds a string of the form <archiveLocation>\\export\\<branch>\\<build_number>
-   static String calculateArchiveLocation(script, BuildConfiguration configuration) {
+   // Builds a string of the form <archiveLocation>\\export\\<branch>
+   static String calculateArchiveParentLocation(script, BuildConfiguration configuration) {
       def organization = script.getComponentParts()['organization']
 
       // Organization may not exist for multibranch pipelines not using
@@ -30,8 +30,13 @@ class Archive extends AbstractStage {
 
       return ("${configuration.archive.get('archive_location')}\\" +
          "$organization" +
-         "export\\${script.env.BRANCH_NAME}\\" +
-         "Build ${script.currentBuild.number}").toString()
+         "export\\${script.env.BRANCH_NAME}\\").toString()
+   }
+
+   // Builds a string of the form <archiveLocation>\\export\\<branch>\\<build_number>
+   static String calculateArchiveLocation(script, BuildConfiguration configuration) {
+      return (calculateArchiveParentLocation(script, configuration)
+            + "\\Build ${script.currentBuild.number}").toString()
    }
 
    void executeStage() {
