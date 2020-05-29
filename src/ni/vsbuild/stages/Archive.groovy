@@ -30,7 +30,7 @@ class Archive extends AbstractStage {
 
       return ("${configuration.archive.get('archive_location')}\\" +
          "$organization" +
-         "export\\${script.env.BRANCH_NAME}\\").toString()
+         "export\\${script.env.BRANCH_NAME}").toString()
    }
 
    // Builds a string of the form <archiveLocation>\\export\\<branch>\\<build_number>
