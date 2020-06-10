@@ -51,7 +51,7 @@ class Nipkg extends AbstractPackage {
       }
 
       if (!this.payloadMap) {
-         script.failBuild("Building an nipkg requires either 'payload_map'," +
+         script.failBuild("Building an nipkg requires either 'payload_map', " +
                "or 'payload_dir' and 'install_destination' to be specified.")
       }
    }
