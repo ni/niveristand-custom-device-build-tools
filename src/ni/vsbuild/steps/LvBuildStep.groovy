@@ -77,7 +77,7 @@ abstract class LvBuildStep extends LvProjectStep {
    }
 
    private String getLibraryName(String library) {
-      return library.tokenize("\").last()
+      return library.tokenize("\\").last()
    }
 
 }
