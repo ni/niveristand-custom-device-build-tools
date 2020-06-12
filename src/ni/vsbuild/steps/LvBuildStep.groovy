@@ -36,14 +36,27 @@ abstract class LvBuildStep extends LvProjectStep {
 
       def dependencies = configuration.dependencies
       for(def key : dependencies.keySet()) {
-         def dependencyDir = getDependencyPath(key)
+         //def dependencyDir = getDependencyPath("$key")
+         if(!dependencyTarget) {
+            return
+         }
+
+         def dependencyDir
+         def archiveDir = script.env."${key}_DEP_DIR"
+         if(archiveDir) {
+            dependencyDir = "$archiveDir\\$lvVersion"
+         }
+         else {
+            dependencyDir = script.env.WORKSPACE
+         }
 
          def dependency = dependencies.get(key)
          def copyLocation = dependency.get('copy_location')
          def libraries = dependency.get('libraries')
 
          for(def library : libraries) {
-            def libraryName = getLibraryName(library)
+            //def libraryName = getLibraryName(library)
+            def libraryName = library.tokenize("\\").last()
             script.bat "copy /y \"$dependencyDir\\$dependencyTarget\\$library\" \"$copyLocation\\$libraryName\""
          }
       }
