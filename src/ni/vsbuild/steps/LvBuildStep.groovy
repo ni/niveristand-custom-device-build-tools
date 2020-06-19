@@ -1,6 +1,7 @@
 package ni.vsbuild.steps
 
 import ni.vsbuild.BuildConfiguration
+import ni.vsbuild.StringSubstitution
 
 abstract class LvBuildStep extends LvProjectStep {
 
@@ -41,23 +42,16 @@ abstract class LvBuildStep extends LvProjectStep {
             return
          }
 
-         def dependencyDir
-         def archiveDir = script.env."${key}_DEP_DIR"
-         if(archiveDir) {
-            dependencyDir = "$archiveDir\\$lvVersion"
-         }
-         else {
-            dependencyDir = script.env.WORKSPACE
-         }
+         def dependencyDir = getDependencyPath(key)
 
          def dependency = dependencies.get(key)
          def copyLocation = dependency.get('copy_location')
          def libraries = dependency.get('libraries')
 
          for(def library : libraries) {
-            //def libraryName = getLibraryName(library)
-            def libraryName = library.tokenize("\\").last()
-            script.bat "copy /y \"$dependencyDir\\$dependencyTarget\\$library\" \"$copyLocation\\$libraryName\""
+            def libraryName = getLibraryName(library)
+            def convertedLibrary = StringSubstitution.replaceStrings(library, lvVersion, ['target' : dependencyTarget])
+            script.bat "copy /y \"$dependencyDir\\$convertedLibrary\" \"$copyLocation\\$libraryName\""
          }
       }
    }
@@ -78,10 +72,10 @@ abstract class LvBuildStep extends LvProjectStep {
 
    protected abstract void executeBuildStep(String projectPath)
 
-   private String getDependencyPath(String key) {
+   protected String getDependencyPath(String key) {
       def dependencyDir = script.env."${key}_DEP_DIR"
       if(dependencyDir) {
-         return "$dependencyDir\\$lvVersion"
+         return "$dependencyDir\\$lvVersion\\$dependencyTarget"
       }
 
       // Dependency was not built as part of dependencies.
@@ -89,7 +83,7 @@ abstract class LvBuildStep extends LvProjectStep {
       return script.env.WORKSPACE
    }
 
-   private String getLibraryName(String library) {
+   protected String getLibraryName(String library) {
       return library.tokenize("\\").last()
    }
 
