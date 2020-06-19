@@ -31,26 +31,21 @@ abstract class LvBuildStep extends LvProjectStep {
    }
 
    protected void copyDependencies(BuildConfiguration configuration) {
-      if(!configuration.dependencies) {
+      if(!(configuration.dependencies && dependencyTarget)) {
          return
       }
 
       def dependencies = configuration.dependencies
       for(def key : dependencies.keySet()) {
-         if(!dependencyTarget) {
-            return
-         }
-
          def dependencyDir = getDependencyPath(key)
-
          def dependency = dependencies.get(key)
          def copyLocation = dependency.get('copy_location')
          def libraries = dependency.get('libraries')
 
          for(def library : libraries) {
             def libraryName = getLibraryName(library)
-            def convertedLibrary = StringSubstitution.replaceStrings(library, lvVersion, ['target' : dependencyTarget])
-            script.bat "copy /y \"$dependencyDir\\$convertedLibrary\" \"$copyLocation\\$libraryName\""
+            def substitutedLibraryPath = StringSubstitution.replaceStrings(library, lvVersion, ['target' : dependencyTarget])
+            script.bat "copy /y \"$dependencyDir\\$substitutedLibraryPath\" \"$copyLocation\\$libraryName\""
          }
       }
    }
@@ -71,6 +66,11 @@ abstract class LvBuildStep extends LvProjectStep {
 
    protected abstract void executeBuildStep(String projectPath)
 
+   // The following methods are protected instead of private due to
+   // an issue with closures in child classes. Making these private
+   // causes a MissingMethodException for these methods because Groovy
+   // is looking for the definition in the child class.
+   // https://dzone.com/articles/groovy-closures-do-not-have
    protected String getDependencyPath(String key) {
       def dependencyDir = script.env."${key}_DEP_DIR"
       if(dependencyDir) {
@@ -78,7 +78,7 @@ abstract class LvBuildStep extends LvProjectStep {
       }
 
       // Dependency was not built as part of dependencies.
-      // Look for local dependency
+      // Use local dependency directory
       return script.env.WORKSPACE
    }
 
