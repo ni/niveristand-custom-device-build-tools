@@ -37,7 +37,6 @@ abstract class LvBuildStep extends LvProjectStep {
 
       def dependencies = configuration.dependencies
       for(def key : dependencies.keySet()) {
-         //def dependencyDir = getDependencyPath("$key")
          if(!dependencyTarget) {
             return
          }
