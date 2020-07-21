@@ -123,42 +123,19 @@ class Pipeline implements Serializable {
    }
 
    void execute() {
-      readBuildInformation()
-      validateShouldBuildPipeline()
+      try {
+         readBuildInformation()
+         validateShouldBuildPipeline()
 
-      // build dependencies before starting this pipeline
-      script.buildDependencies(pipelineInformation)
+         // build dependencies before starting this pipeline
+         script.buildDependencies(pipelineInformation)
 
-      def builders = [:]
-
-      for(String version : pipelineInformation.lvVersions) {
-
-         // need to bind the variable before the closure - can't do 'for (version in lvVersions)'
-         def lvVersion = version
-
-         String nodeLabel = lvVersion
-         if (pipelineInformation.nodeLabel?.trim()) {
-            nodeLabel = "$nodeLabel && ${pipelineInformation.nodeLabel}"
-         }
-
-         builders[lvVersion] = {
-            script.node(nodeLabel) {
-               setup(lvVersion)
-
-               def configuration = BuildConfiguration.loadString(script, jsonConfig, lvVersion)
-               configuration.printInformation(script)
-
-               def builder = new Builder(script, configuration, lvVersion, MANIFEST_FILE, changedFiles)
-               def stages = builder.buildPipeline()
-
-               executeStages(stages)
-            }
-         }
+         runBuild()
+         validateBuild()
       }
-
-      script.parallel builders
-
-      validateBuild()
+      finally {
+         notify()
+      }
    }
 
    protected void executeStages(stages) {
@@ -200,8 +177,7 @@ class Pipeline implements Serializable {
       // We do not want to rebuild if our output would clobber existing data.
       // This can happen if the Jenkins build numbers reset, or e.g. due to
       // multiple repositories unintentionally exporting to the same location.
-      def arbitraryLvVersion = pipelineInformation.lvVersions[0]
-      def configuration = BuildConfiguration.loadString(script, jsonConfig, arbitraryLvVersion)
+      def configuration = getArbitraryVersionConfiguration()
       if (!configuration.archive) {
          // We won't clobber anything if we aren't archiving
          return
@@ -222,6 +198,37 @@ class Pipeline implements Serializable {
       }
    }
 
+   private void runBuild() {
+      def builders = [:]
+
+      for(String version : pipelineInformation.lvVersions) {
+
+         // need to bind the variable before the closure - can't do 'for (version in lvVersions)'
+         def lvVersion = version
+
+         String nodeLabel = lvVersion
+         if (pipelineInformation.nodeLabel?.trim()) {
+            nodeLabel = "$nodeLabel && ${pipelineInformation.nodeLabel}"
+         }
+
+         builders[lvVersion] = {
+            script.node(nodeLabel) {
+               setup(lvVersion)
+
+               def configuration = BuildConfiguration.loadString(script, jsonConfig, lvVersion)
+               configuration.printInformation(script)
+
+               def builder = new Builder(script, configuration, lvVersion, MANIFEST_FILE, changedFiles)
+               def stages = builder.buildPipeline()
+
+               executeStages(stages)
+            }
+         }
+      }
+
+      script.parallel builders
+   }
+
    private void setup(lvVersion) {
       def manifest = script.readJSON text: '{}'
 
@@ -239,6 +246,25 @@ class Pipeline implements Serializable {
          // Write a manifest
          script.echo "Writing manifest to $MANIFEST_FILE"
          script.writeJSON file: MANIFEST_FILE, json: manifest, pretty: 3
+      }
+   }
+
+   private void notify() {
+      def pipelineResult = PipelineStatus.getResult(script)
+      if (pipelineResult == PipelineResult.SUCCESS) {
+         // Don't spam notifications if the build is consistently successful
+         return
+      }
+
+      // Send notification if defined in build.toml
+      def configuration = getArbitraryVersionConfiguration()
+      if (!configuration.notificationInfo) {
+         return
+      }
+
+      script.node(pipelineInformation.nodeLabel) {
+         Stage notifyStage = new Notify(script, configuration, pipelineResult)
+         notifyStage.execute()
       }
    }
 
@@ -265,5 +291,11 @@ class Pipeline implements Serializable {
             }
          }
       }
+   }
+
+   private String getArbitraryVersionConfiguration() {
+      def arbitraryLvVersion = pipelineInformation.lvVersions[0]
+      def configuration = BuildConfiguration.loadString(script, jsonConfig, arbitraryLvVersion)
+      return configuration
    }
 }
