@@ -6,7 +6,7 @@ public class NotificationMessage implements Serializable {
 
    public static String getSimpleMessage(def script, PipelineResult result) {
       def message = "Build ${script.env.JOB_NAME} ${result.toString()}."
-      return header
+      return message
    }
 
    public static String getDetailedMessage(def script, PipelineResult result) {
@@ -14,5 +14,6 @@ public class NotificationMessage implements Serializable {
          Build ${script.env.BUILD_ID} of ${script.env.JOB_NAME} finished with a result of ${result.name()}.
          ${script.env.BUILD_URL}
          """.stripIndent()
+      return message
    }
 }
