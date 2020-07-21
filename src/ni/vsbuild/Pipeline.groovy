@@ -134,7 +134,7 @@ class Pipeline implements Serializable {
          validateBuild()
       }
       finally {
-         notify()
+         sendNotification()
       }
    }
 
@@ -249,7 +249,7 @@ class Pipeline implements Serializable {
       }
    }
 
-   private void notify() {
+   private void sendNotification() {
       def pipelineResult = PipelineStatus.getResult(script)
       if (pipelineResult == PipelineResult.SUCCESS) {
          // Don't spam notifications if the build is consistently successful
