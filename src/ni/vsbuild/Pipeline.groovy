@@ -251,8 +251,9 @@ class Pipeline implements Serializable {
 
    private void sendNotification() {
       def pipelineResult = PipelineStatus.getResult(script)
-      if (pipelineResult == PipelineResult.SUCCESS) {
+      if (pipelineResult == PipelineResult.SUCCESS || pipelineResult == PipelineResult.ABORTED) {
          // Don't spam notifications if the build is consistently successful
+         // or if the build was manually aborted
          return
       }
 

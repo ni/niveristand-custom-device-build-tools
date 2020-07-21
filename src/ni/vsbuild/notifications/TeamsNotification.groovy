@@ -4,8 +4,10 @@ import ni.vsbuild.PipelineResult
 
 class TeamsNotification extends AbstractNotification {
 
-   private static final String GREEN = '00FF00'
+   private static final String GRAY = '808080'
+   private static final String GREEN = '008000'
    private static final String RED = 'FF0000'
+   private static final String YELLOW = 'FFFF00'
 
    TeamsNotification(script, notificationInfo) {
       super(script, notificationInfo)
@@ -20,6 +22,14 @@ class TeamsNotification extends AbstractNotification {
    }
 
    private String getNotificationColor(pipelineResult) {
+      if (pipelineResult == PipelineResult.ABORTED) {
+         return TeamsNotification.GRAY
+      }
+
+      if (pipelineResult == PipelineResult.UNSTABLE) {
+         return TeamsNotification.YELLOW
+      }
+
       def successfulResult = (pipelineResult == PipelineResult.SUCCESS || pipelineResult == PipelineResult.FIXED)
       def notificationColor = successfulResult ? TeamsNotification.GREEN : TeamsNotification.RED
       return notificationColor
