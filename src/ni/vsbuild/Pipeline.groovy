@@ -257,6 +257,11 @@ class Pipeline implements Serializable {
          return
       }
 
+      if (!(script.env.BRANCH_NAME.startsWith("master") || script.env.BRANCH_NAME.startsWith("release"))) {
+         // Don't notify for branches that are not mainline or release
+         return
+      }
+
       // Send notification if defined in build.toml
       def configuration = getArbitraryVersionConfiguration()
       if (!configuration.notificationInfo) {
