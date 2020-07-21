@@ -1,5 +1,7 @@
 package ni.vsbuild.notifications
 
+import ni.vsbuild.PipelineResult
+
 class TeamsNotification extends AbstractNotification {
 
    private static final String GREEN = '00FF00'
