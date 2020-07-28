@@ -7,34 +7,46 @@ import ni.vsbuild.notifications.NotificationFactory
 class Notify implements Stage {
 
    private static final String STAGE_NAME = 'Notify'
+   private static final String DEFAULT_BRANCHES = "(^master\$|^release[-/]+[0-9.]+)"
 
    def script
-   def configuration
+   def nodeLabel
+   def notificationInfo
    PipelineResult pipelineResult
 
-   Notify(script, configuration, pipelineResult) {
+   Notify(script, nodeLabel, notificationInfo, pipelineResult) {
       this.script = script
-      this.configuration = configuration
+      this.nodeLabel = nodeLabel
+      this.notificationInfo = notificationInfo
       this.pipelineResult = pipelineResult
    }
 
    void execute() {
-      script.stage(STAGE_NAME) {
-         def notificationInfoCollection = []
+      // Only notify if current branch matches the regex used for determining whether
+      // to send notification
+      def notificationBranches = notificationInfo.get('branch_pattern') ?: DEFAULT_BRANCHES
+      if (!script.env.BRANCH_NAME.matches(notificationBranches)) {
+         return
+      }
 
-         // Developers can specify a single notification [Notification]
-         // or a collection of notifications [[Notification]].
-         // Test the notification information parameter and iterate as needed.
-         if (configuration.notificationInfo instanceof Collection) {
-            notificationInfoCollection = configuration.notificationInfo
-         }
-         else {
-            notificationInfoCollection.add(configuration.notificationInfo)
-         }
+      script.node(nodeLabel) {
+         script.stage(STAGE_NAME) {
+            def notificationInfoCollection = []
 
-         for (def notificationInfo : notificationInfoCollection) {
-            Notification notification = NotificationFactory.createNotification(script, notificationInfo)
-            notification.notify(pipelineResult)
+            // Developers can specify a single notification [Notification]
+            // or a collection of notifications [[Notification]].
+            // Test the notification information parameter and iterate as needed.
+            if (notificationInfo instanceof Collection) {
+               notificationInfoCollection = notificationInfo
+            }
+            else {
+               notificationInfoCollection.add(notificationInfo)
+            }
+
+            for (def notificationInfoItem : notificationInfoCollection) {
+               Notification notification = NotificationFactory.createNotification(script, notificationInfoItem)
+               notification.notify(pipelineResult)
+            }
          }
       }
    }

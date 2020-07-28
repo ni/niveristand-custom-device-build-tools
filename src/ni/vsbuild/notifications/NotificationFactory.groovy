@@ -7,7 +7,7 @@ class NotificationFactory implements Serializable {
    static Notification createNotification(script, notificationInfo) {
       def type = notificationInfo.get('type')
 
-      if(type == 'teams') {
+      if (type == 'teams') {
          return new TeamsNotification(script, notificationInfo)
       }
 
