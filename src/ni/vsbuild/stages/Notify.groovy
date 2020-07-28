@@ -7,6 +7,10 @@ import ni.vsbuild.notifications.NotificationFactory
 class Notify implements Stage {
 
    private static final String STAGE_NAME = 'Notify'
+   
+   // Default to match "master" exactly and "release" followed by a / or -
+   // followed by a numeric version number
+   // https://regex101.com/r/dGkJ3o/1
    private static final String DEFAULT_BRANCHES = "(^master\$|^release[-/]+[0-9.]+)"
 
    def script
