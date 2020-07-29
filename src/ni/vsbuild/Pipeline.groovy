@@ -265,7 +265,6 @@ class Pipeline implements Serializable {
 
       Stage notifyStage = new Notify(script, pipelineInformation.nodeLabel, configuration.notificationInfo, pipelineResult)
       notifyStage.execute()
-
    }
 
    // This method is here to catch builds with issue 50:
