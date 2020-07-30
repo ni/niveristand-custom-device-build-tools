@@ -37,12 +37,13 @@ abstract class LvBuildStep extends LvProjectStep {
 
       def dependencies = configuration.dependencies
       for(def key : dependencies.keySet()) {
-         def dependencyDir = getDependencyPath(key)
+         //def dependencyDir = getDependencyPath(key)
          def dependency = dependencies.get(key)
          def copyLocation = dependency.get('copy_location')
          def libraries = dependency.get('libraries')
 
          for(def library : libraries) {
+            def dependencyDir = getDependencyPath(key, library)
             def libraryName = getLibraryName(library)
             def substitutedLibraryPath = StringSubstitution.replaceStrings(library, lvVersion, ['target' : dependencyTarget])
             script.bat "copy /y \"$dependencyDir\\$substitutedLibraryPath\" \"$copyLocation\\$libraryName\""
@@ -71,15 +72,26 @@ abstract class LvBuildStep extends LvProjectStep {
    // causes a MissingMethodException for these methods because Groovy
    // is looking for the definition in the child class.
    // https://dzone.com/articles/groovy-closures-do-not-have
-   protected String getDependencyPath(String key) {
+   protected String getDependencyPath(String key, String library) {
       def dependencyDir = script.env."${key}_DEP_DIR"
-      if(dependencyDir) {
-         return "$dependencyDir\\$lvVersion\\$dependencyTarget"
+      if (!dependencyDir) {
+         // Dependency was not built as part of dependencies.
+         // Use local dependency directory
+         return script.env.WORKSPACE
       }
 
-      // Dependency was not built as part of dependencies.
-      // Use local dependency directory
-      return script.env.WORKSPACE
+      def dependencyPath = "$dependencyDir\\$lvVersion"
+      def targetFoundInLibraryPath = library =~ /\{target\}/
+      if (targetFoundInLibraryPath) {
+         // Return the versioned dependency path and let
+         // the target substitution happen in the in the
+         // library path
+         return dependencyPath
+      }
+
+      // Append dependency target to the end of dependency
+      // path before adding library path
+      return "$dependencyPath\\$dependencyTarget"
    }
 
    protected String getLibraryName(String library) {
