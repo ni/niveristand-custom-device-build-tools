@@ -13,7 +13,7 @@ class Pipeline implements Serializable {
    String jsonConfig
    def changedFiles
 
-   int checkoutTimeoutInMinutes = 10;
+   int checkoutTimeoutInMinutes = 10
 
    static class Builder implements Serializable {
 
