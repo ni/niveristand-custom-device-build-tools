@@ -13,6 +13,8 @@ class Pipeline implements Serializable {
    String jsonConfig
    def changedFiles
 
+   int checkoutTimeoutInMinutes = 10;
+
    static class Builder implements Serializable {
 
       def script
@@ -155,7 +157,7 @@ class Pipeline implements Serializable {
          script.stage('Checkout_readBuildInformation') {
             script.deleteDir()
             script.echo 'Attempting to get source from repo.'
-            script.timeout(time: 10, unit: 'MINUTES'){
+            script.timeout(time: checkoutTimeoutInMinutes, unit: 'MINUTES'){
                manifest['scm'] = script.checkout(script.scm)
             }
          }
@@ -235,7 +237,7 @@ class Pipeline implements Serializable {
       script.stage("Checkout_$lvVersion") {
          script.deleteDir()
          script.echo 'Attempting to get source from repo.'
-         script.timeout(time: 5, unit: 'MINUTES'){
+         script.timeout(time: checkoutTimeoutInMinutes, unit: 'MINUTES'){
             manifest['scm'] = script.checkout(script.scm)
          }
       }
