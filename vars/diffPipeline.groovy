@@ -14,6 +14,8 @@ def call(lvVersion) {
       return
    }
 
+   int timeoutInMinutes = 10
+
    node(lvVersion) {
       echo 'Starting build...'
       stage('Pre-Clean') {
@@ -21,11 +23,11 @@ def call(lvVersion) {
       }
       stage('SCM_Checkout') {
          echo 'Attempting to get source from repo...'
-         timeout(time: 5, unit: 'MINUTES') {
+         timeout(time: timeoutInMinutes, unit: 'MINUTES') {
             checkout scm
          }
 
-         timeout(time: 5, unit: 'MINUTES') {
+         timeout(time: timeoutInMinutes, unit: 'MINUTES') {
             cloneBuildTools()
          }
       }
