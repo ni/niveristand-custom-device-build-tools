@@ -97,9 +97,9 @@ class Nipkg extends AbstractPackage {
       script.writeFile file: "$PACKAGE_DIRECTORY\\$destination\\$outputFileName", text: updatedText
    }
 
-   // The plan is to enable automatic merging from master to
+   // The plan is to enable automatic merging from main to
    // release or hotfix branch packages and not build packages
-   // for any other branches, including master. The version must
+   // for any other branches, including main. The version must
    // be appended to the release or hotfix branch name after a
    // dash (-) or slash (/).
    private String updateVersionVariables(text) {

@@ -48,8 +48,8 @@ def call(buildInformation) {
          // check if there is a job for the current branch name
          if(e.getMessage().startsWith('No item named')) {
             echo e.getMessage()
-            echo "Building branch master instead of $branchName."
-            dependencyBuild = build "../$dependency/master"
+            echo "Building branch main instead of $branchName."
+            dependencyBuild = build "../$dependency/main"
          } else {
             // job was found, but an exception occurred during build
             throw e

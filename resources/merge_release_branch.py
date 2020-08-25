@@ -6,7 +6,7 @@ from pathlib import Path
 
 def integrate_release(url, version, working_directory):
     """
-    Integrates changes from the master branch of a git repository to a release branch named release/{version}.
+    Integrates changes from the main branch of a git repository to a release branch named release/{version}.
 
     This can be called multiple times with the same url and working directory; in this case, the repository will
     not be cloned from scratch but will instead pull down changes to the existing repo.
@@ -38,7 +38,7 @@ def integrate_release(url, version, working_directory):
 
         destination_branch = "release/{0}".format(version)
 
-        check_call("git checkout master")
+        check_call("git checkout main")
         check_call("git pull")
         check_call("git checkout -B " + destination_branch)
         check_call("git push -u origin " + destination_branch)
