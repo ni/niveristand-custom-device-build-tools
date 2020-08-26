@@ -11,7 +11,7 @@ class Notify implements Stage {
    // Default to match "main" exactly and "release" followed by a / or -
    // followed by a numeric version number
    // https://regex101.com/r/dGkJ3o/3
-   private static final String DEFAULT_BRANCHES = "(^main$|^release[-\/]+[0-9.]+)"
+   private static final String DEFAULT_BRANCHES = "(^main$|^release[-/]+[0-9.]+)"
 
    def script
    def nodeLabel
