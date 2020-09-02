@@ -61,7 +61,7 @@ def export_repo(target_ref):
     """
     Export a copy of the repository at a given ref to a temporary directory.
 
-    :param target_ref: The ref you want to export, e.g. `origin\master`
+    :param target_ref: The ref you want to export, e.g. `origin\main`
     :return: A temporaryfile.TemporaryDirectory containing the repository at the given ref
     """
 
@@ -144,7 +144,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--target",
         help="Target branch or ref the diff is being generated against",
-        default="origin/master"
+        default="origin/main"
     )
 
     args = parser.parse_args()

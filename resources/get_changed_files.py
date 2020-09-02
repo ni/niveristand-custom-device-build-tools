@@ -14,7 +14,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--target",
         help="Target branch or ref to generate a list of changed files against",
-        default="origin/master"
+        default="origin/main"
     )
 
     args = parser.parse_args()

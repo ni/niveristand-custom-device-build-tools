@@ -57,9 +57,9 @@ class Pipeline implements Serializable {
       }
 
       def shouldBuildPackage(def packageStage) {
-         // The plan is to enable automatic merging from master to
+         // The plan is to enable automatic merging from main to
          // release or hotfix branch packages and not build packages
-         // for any other branches, including master. The version must
+         // for any other branches, including main. The version must
          // be appended to the release or hotfix branch name after a
          // dash (-) or slash (/).
          def branchNameMatches = buildConfiguration.packageInfo &&

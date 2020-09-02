@@ -1,7 +1,7 @@
 // Taken from https://github.com/LabVIEW-DCAF/buildsystem/blob/master/vars/lvDiff.groovy
 
 def call(lvVersion, diffingPicRepo, githubDiffToken) {
-   echo 'Running LabVIEW diff build between origin/master and this commit'
+   echo 'Running LabVIEW diff build between origin/main and this commit'
    def diffDir = "${WORKSPACE}\\diff_dir"
    def resourcesDir = "${WORKSPACE}\\niveristand-custom-device-build-tools\\resources"
    bat "if exist ${diffDir} rmdir /s /q ${diffDir}"
@@ -19,7 +19,7 @@ def call(lvVersion, diffingPicRepo, githubDiffToken) {
       
       pip install requests
       
-      python -u "${resourcesDir}/labview_diff.py" "${WORKSPACE}" "${diffDir}" ${lvVersion} --target=origin/master
+      python -u "${resourcesDir}/labview_diff.py" "${WORKSPACE}" "${diffDir}" ${lvVersion} --target=origin/main
       @python -u "${resourcesDir}/github_commenter.py" --token="${githubDiffToken}" --pic-dir="${diffDir}" --pull-req="${CHANGE_ID}" --info="${JOB_NAME}" --pic-repo="${diffingPicRepo}"
       
       call ${venvDir}\\Scripts\\deactivate.bat
