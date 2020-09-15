@@ -9,7 +9,7 @@ def call(base_directory) {
       virtualenv ${venvDir}
       call ${venvDir}\\Scripts\\activate.bat
       
-      python -u "${resourcesDir}/find_latest_directory.py" base_directory
+      python -u "${resourcesDir}/find_latest_directory.py" "$base_directory"
       
       call ${venvDir}\\Scripts\\deactivate.bat
       rmdir /s /q ${venvDir}
