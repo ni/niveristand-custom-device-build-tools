@@ -3,24 +3,11 @@ import json
 import os
 import sys
 
-from os.path import exists, getmtime, join
+from os.path import exists, join
 
 archive_dir = sys.argv[1]
 latest_commit = sys.argv[2]
 versions = sys.argv[3:len(sys.argv)]
-
-def find_latest_directory(base_path):
-    """
-    Returns the directory in base path that was last modified.
-    
-    :param base_path: The path to search.
-    :return The directory that was last modified.
-    """
-
-    sub_dirs = glob.glob(join(base_path, '*'))
-    if not sub_dirs:
-        return None
-    return max(sub_dirs, key=getmtime)
 
 
 def validate_versions_exist(base_dir, versions):
@@ -47,11 +34,10 @@ def trigger_rebuild():
     sys.exit(0)
 
 
-final_dir = find_latest_directory(archive_dir)
-validate_versions_exist(final_dir, versions)
+validate_versions_exist(archive_dir, versions)
 
 # just choose an arbitrary version because commit is the same
 # for all versions
-validate_commits_match(final_dir, versions[0])
+validate_commits_match(archive_dir, versions[0])
 
 print(False)
