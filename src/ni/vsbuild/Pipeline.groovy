@@ -196,6 +196,9 @@ class Pipeline implements Serializable {
             if (script.fileExists(archiveLocation)) {
                script.failBuild("Refusing to build, $archiveLocation already exists and would be overwritten.")
             }
+
+            def lastBuildLocation = script.findLatestDirectory(archiveLocation)
+            script.echo "last build location is $lastBuildLocation"
          }
       }
    }
