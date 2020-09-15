@@ -3,6 +3,7 @@ def call(base_directory) {
    // because Groovy will spawn a separate shell for each call.
    // Instead, build a multi-line string and execute it all at once.
    def venvDir = "env"
+   def resourcesDir = "${WORKSPACE}\\niveristand-custom-device-build-tools\\resources"
    def output = bat returnStdout: true, script: """
       pip install virtualenv
       virtualenv ${venvDir}
