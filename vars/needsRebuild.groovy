@@ -1,4 +1,4 @@
-def call(baseDirectory) {
+def call(archiveDir, lvVersions) {
    // We can't source a Python virtualenv in one call and use it in another,
    // because Groovy will spawn a separate shell for each call.
    // Instead, build a multi-line string and execute it all at once.
@@ -9,7 +9,7 @@ def call(baseDirectory) {
       virtualenv ${venvDir}
       call ${venvDir}\\Scripts\\activate.bat
       
-      python -u "${resourcesDir}/find_latest_directory.py" "$baseDirectory"
+      python -u "${resourcesDir}/needs_rebuild.py" "$archiveDir" somecommit 2020
       
       call ${venvDir}\\Scripts\\deactivate.bat
       rmdir /s /q ${venvDir}
