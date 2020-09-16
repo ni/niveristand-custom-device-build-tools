@@ -1,7 +1,7 @@
+import ast
 import glob
 import json
 import os
-import json
 import sys
 
 from os.path import exists, join
@@ -10,7 +10,7 @@ archive_dir = sys.argv[1]
 latest_commit = sys.argv[2]
 versions = sys.argv[3]
 
-versions_list = json.loads(versions)
+versions_list = ast.literal_eval(versions)
 print(versions_list)
 
 
