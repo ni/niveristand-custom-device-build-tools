@@ -22,7 +22,7 @@ def validate_versions_exist(base_dir, versions):
 
 
 def validate_commits_match(base_dir, version):
-    manifest_file = join(base_dir, version, 'installer', 'manifest.json')
+    manifest_file = join(base_dir, str(version), 'installer', 'manifest.json')
     if not exists(manifest_file):
         trigger_rebuild()
 
