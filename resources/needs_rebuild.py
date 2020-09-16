@@ -7,7 +7,6 @@ from os.path import exists, join
 
 def validate_versions_exist(base_dir, versions):
     for version in versions_list:
-        print(version)
         version_string = str(version)
         if not exists(join(base_dir, version_string)):
             return False
