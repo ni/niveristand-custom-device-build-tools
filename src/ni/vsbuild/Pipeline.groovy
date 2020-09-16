@@ -201,6 +201,7 @@ class Pipeline implements Serializable {
 
             // If build was not caused by an upstream job, i.e. it was started manually
             // or because of a source change, always build it.
+            // Note that the Jenkins CI lists this method as EXPERIMENTAL, but it has worked for many years.
             def upstreamBuild = script.currentBuild.getBuildCauses('hudson.model.Cause$UpstreamCause')
             if (!upstreamBuild) {
                return true
@@ -212,8 +213,6 @@ class Pipeline implements Serializable {
             // If not, tell the upstream job to use the previous build artifacts.
             def lastBuildLocation = script.findLatestDirectory(archiveParentLocation)
             def rebuild = script.needsRebuild(lastBuildLocation, commit, pipelineInformation.lvVersions)
-            script.echo "Rebuild is $rebuild"
-            script.echo "-----------------------------"
             if (rebuild.toLowerCase() == 'false') {
                def component = script.getComponentParts()['repo']
                def depDir = "${component}_DEP_DIR"
