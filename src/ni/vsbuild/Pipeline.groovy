@@ -204,7 +204,7 @@ class Pipeline implements Serializable {
             if (rebuild.toLowerCase() == 'false') {
                def component = script.getComponentParts()['repo']
                def depDir = "${component}_DEP_DIR"
-               script.env."$depDir" = lastBuildLocation
+               script.env."$depDir" = lastBuildLocation.trim()
                script.echo "No changes since last successful build. Using dependency at $lastBuildLocation."
                return false
             }
