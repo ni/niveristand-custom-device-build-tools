@@ -202,11 +202,16 @@ class Pipeline implements Serializable {
             def lastBuildLocation = script.findLatestDirectory(archiveParentLocation)
             def rebuild = script.needsRebuild(lastBuildLocation, commit, pipelineInformation.lvVersions)
             if (rebuild.toLowerCase() == 'false') {
-               def component = script.getComponentParts()['repo']
-               def depDir = "${component}_DEP_DIR"
-               script.env."$depDir" = lastBuildLocation.trim()
-               script.echo "No changes since last successful build. Using dependency at $lastBuildLocation."
-               return false
+               // Only use existing build if this build was started by an upstream job
+               // i.e. this build was kicked as part of a dependency build
+               // If build was started manually or from branch indexing, build it
+               if (script.currentBuild.getBuildCauses('hudson.model.Cause$UpstreamCause') {
+                  def component = script.getComponentParts()['repo']
+                  def depDir = "${component}_DEP_DIR"
+                  script.env."$depDir" = lastBuildLocation.trim()
+                  script.echo "No changes since last successful build. Using dependency at $lastBuildLocation."
+                  return false
+               }
             }
 
             return true
