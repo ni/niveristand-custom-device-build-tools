@@ -5,9 +5,6 @@ import sys
 
 from os.path import exists, join
 
-print(sys.argv[1])
-print(len(sys.argv))
-
 archive_dir = sys.argv[1]
 latest_commit = sys.argv[2]
 versions = sys.argv[3:len(sys.argv)]

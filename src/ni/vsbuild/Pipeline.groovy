@@ -127,13 +127,14 @@ class Pipeline implements Serializable {
    void execute() {
       try {
          def commit = readBuildInformation()
-         validateShouldBuildPipeline(commit)
+         if (validateShouldBuildPipeline(commit)) {
 
-         // build dependencies before starting this pipeline
-         script.buildDependencies(pipelineInformation)
+            // build dependencies before starting this pipeline
+            script.buildDependencies(pipelineInformation)
 
-         runBuild()
-         validateBuild()
+            runBuild()
+            validateBuild()
+         }
       }
       finally {
          sendNotification()
@@ -176,14 +177,14 @@ class Pipeline implements Serializable {
       return manifest['scm']['GIT_COMMIT']
    }
 
-   private void validateShouldBuildPipeline(def commit) {
+   private def validateShouldBuildPipeline(commit) {
       // We do not want to rebuild if our output would clobber existing data.
       // This can happen if the Jenkins build numbers reset, or e.g. due to
       // multiple repositories unintentionally exporting to the same location.
       def configuration = getArbitraryVersionConfiguration()
       if (!configuration.archive) {
          // We won't clobber anything if we aren't archiving
-         return
+         return True
       }
 
       def archiveParentLocation = Archive.calculateArchiveParentLocation(script, configuration)
@@ -200,7 +201,7 @@ class Pipeline implements Serializable {
 
             def lastBuildLocation = script.findLatestDirectory(archiveParentLocation)
             def rebuild = script.needsRebuild(lastBuildLocation, commit, pipelineInformation.lvVersions)
-            script.echo "needs rebuild $rebuild"
+            return rebuild.toLowerCase() == 'true'
          }
       }
    }
