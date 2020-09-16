@@ -16,6 +16,7 @@ def call(archiveDir, commit, lvVersions) {
       rmdir /s /q ${venvDir}
    """
 
+   script.echo "$output"
    def trimmedOutput = output.trim()
    return trimmedOutput.substring(trimmedOutput.lastIndexOf("\n")).trim()
 }
