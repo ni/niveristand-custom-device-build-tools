@@ -208,7 +208,7 @@ class Pipeline implements Serializable {
                if (script.currentBuild.getBuildCauses('hudson.model.Cause$UpstreamCause')) {
                   def component = script.getComponentParts()['repo']
                   def depDir = "${component}_DEP_DIR"
-                  script.env."$depDir" = lastBuildLocation.trim()
+                  script.env."$depDir" = lastBuildLocation
                   script.echo "No changes since last successful build. Setting build output to $lastBuildLocation."
                   return false
                }

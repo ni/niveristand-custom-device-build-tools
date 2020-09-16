@@ -10,7 +10,6 @@ latest_commit = sys.argv[2]
 versions = sys.argv[3]
 
 versions_list = json.loads(versions)
-print(versions_list)
 
 
 def validate_versions_exist(base_dir, versions):

@@ -16,5 +16,5 @@ def call(baseDirectory) {
    """
 
    def trimmedOutput = output.trim()
-   return trimmedOutput.substring(trimmedOutput.lastIndexOf("\n"))
+   return trimmedOutput.substring(trimmedOutput.lastIndexOf("\n")).trim()
 }
