@@ -184,7 +184,7 @@ class Pipeline implements Serializable {
       def configuration = getArbitraryVersionConfiguration()
       if (!configuration.archive) {
          // We won't clobber anything if we aren't archiving
-         return True
+         return true
       }
 
       def archiveParentLocation = Archive.calculateArchiveParentLocation(script, configuration)
@@ -201,7 +201,15 @@ class Pipeline implements Serializable {
 
             def lastBuildLocation = script.findLatestDirectory(archiveParentLocation)
             def rebuild = script.needsRebuild(lastBuildLocation, commit, pipelineInformation.lvVersions)
-            return rebuild.toLowerCase() == 'true'
+            if (rebuild.toLowerCase() == 'false') {
+               def component = script.getComponentParts()['repo']
+               def depDir = "${component}_DEP_DIR"
+               script.env."$depDir" = archiveLocation
+               script.echo "No changes since last successful build. Using dependency at $archiveLocation."
+               return false
+            }
+
+            return true
          }
       }
    }
