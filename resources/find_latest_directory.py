@@ -4,10 +4,14 @@ import sys
 
 from os.path import exists, getmtime, join
 
-archive_dir = sys.argv[1]
-print(archive_dir)
 
-sub_dirs = glob.glob(join(archive_dir, '*'))
-if not sub_dirs:
-    print(None)
-print(max(sub_dirs, key=getmtime))
+def find_latest_directory(base_path):
+    sub_dirs = glob.glob(join(base_path, '*'))
+    if not sub_dirs:
+        return None
+    return max(sub_dirs, key=getmtime)
+
+
+if __name__ == "__main__":
+    archive_dir = sys.argv[1]
+    print(find_latest_directory(archive_dir))
