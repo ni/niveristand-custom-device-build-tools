@@ -1,4 +1,3 @@
-import ast
 import glob
 import json
 import os
@@ -10,14 +9,15 @@ archive_dir = sys.argv[1]
 latest_commit = sys.argv[2]
 versions = sys.argv[3]
 
-versions_list = ast.literal_eval(versions)
+versions_list = json.loads(versions)
 print(versions_list)
 
 
 def validate_versions_exist(base_dir, versions):
     for version in versions_list:
         print(version)
-        if not exists(join(base_dir, version)):
+        version_string = str(version)
+        if not exists(join(base_dir, version_string)):
             trigger_rebuild()
 
 
