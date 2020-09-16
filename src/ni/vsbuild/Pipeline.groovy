@@ -201,6 +201,10 @@ class Pipeline implements Serializable {
 
             // If build was not caused by an upstream job, i.e. it was started manually
             // or because of a source change, always build it.
+            def allBuildCauses = script.currentBuild.getBuildCauses()
+            script.echo "$allBuildCauses"
+            def upstreamBuild = script.currentBuild.getBuildCauses('hudson.model.Cause$UpstreamCause')
+            script.echo "Upstream build is $upstreamBuild."
             if (!script.currentBuild.getBuildCauses('hudson.model.Cause$UpstreamCause')) {
                return true
             }
