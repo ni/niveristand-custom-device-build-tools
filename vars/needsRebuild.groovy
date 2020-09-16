@@ -17,5 +17,6 @@ def call(archiveDir, commit, lvVersions) {
    """
 
    def trimmedOutput = output.trim()
-   return trimmedOutput.substring(trimmedOutput.lastIndexOf("\n")).trim()
+   def result = trimmedOutput.substring(trimmedOutput.lastIndexOf("\n")).trim()
+   return result.toLowerCase() == 'true'
 }
