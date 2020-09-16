@@ -198,7 +198,7 @@ class Pipeline implements Serializable {
             }
 
             def lastBuildLocation = script.findLatestDirectory(archiveParentLocation)
-            def rebuild = script.needsRebuild(lastBuildLocation, pipelineInformation.lvVersions)
+            def rebuild = script.needsRebuild(lastBuildLocation, "somecommit", pipelineInformation.lvVersions)
             script.echo "needs rebuild $rebuild"
          }
       }
