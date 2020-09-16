@@ -9,9 +9,8 @@ print(sys.argv[1])
 print(len(sys.argv))
 
 archive_dir = sys.argv[1]
-print(archive_dir)
-#latest_commit = sys.argv[2]
-#versions = sys.argv[3:len(sys.argv)]
+latest_commit = sys.argv[2]
+versions = sys.argv[3:len(sys.argv)]
 
 
 def validate_versions_exist(base_dir, versions):
