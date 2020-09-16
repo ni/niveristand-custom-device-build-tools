@@ -15,5 +15,6 @@ def call(baseDirectory) {
       rmdir /s /q ${venvDir}
    """
 
-   return output
+   def trimmedOutput = output.trim()
+   return trimmedOutput.substring(trimmedOutput.lastIndexOf("\n"))
 }
