@@ -1,6 +1,7 @@
 import glob
 import json
 import os
+import json
 import sys
 
 from os.path import exists, join
@@ -8,11 +9,13 @@ from os.path import exists, join
 archive_dir = sys.argv[1]
 latest_commit = sys.argv[2]
 versions = sys.argv[3]
-print(versions)
+
+versions_list = json.loads(versions)
+print(versions_list)
 
 
-def validate_versions_exist(base_dir, *versions):
-    for version in versions:
+def validate_versions_exist(base_dir, versions):
+    for version in versions_list:
         print(version)
         if not exists(join(base_dir, version)):
             trigger_rebuild()
@@ -36,10 +39,10 @@ def trigger_rebuild():
     sys.exit(0)
 
 
-validate_versions_exist(archive_dir, versions)
+validate_versions_exist(archive_dir, versions_list)
 
 # just choose an arbitrary version because commit is the same
 # for all versions
-validate_commits_match(archive_dir, versions[0])
+validate_commits_match(archive_dir, versions_list[0])
 
 print(False)
