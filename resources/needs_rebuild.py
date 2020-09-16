@@ -7,10 +7,10 @@ from os.path import exists, join
 
 archive_dir = sys.argv[1]
 latest_commit = sys.argv[2]
-versions = sys.argv[3:len(sys.argv)]
+versions = sys.argv[3]
 
 
-def validate_versions_exist(base_dir, versions):
+def validate_versions_exist(base_dir, *versions):
     for version in versions:
         if not exists(join(base_dir, version)):
             trigger_rebuild()

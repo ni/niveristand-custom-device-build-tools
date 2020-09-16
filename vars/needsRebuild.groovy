@@ -10,7 +10,7 @@ def call(archiveDir, commit, lvVersions) {
       virtualenv ${venvDir}
       call ${venvDir}\\Scripts\\activate.bat
       
-      python -u "${resourcesDir}/needs_rebuild.py" "$trimmedDir" $commit 2020
+      python -u "${resourcesDir}/needs_rebuild.py" "$trimmedDir" $commit "$lvVersions"
       
       call ${venvDir}\\Scripts\\deactivate.bat
       rmdir /s /q ${venvDir}
