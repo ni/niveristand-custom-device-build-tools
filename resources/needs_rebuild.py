@@ -38,10 +38,10 @@ def trigger_rebuild():
     sys.exit(0)
 
 
-#validate_versions_exist(archive_dir, versions)
+validate_versions_exist(archive_dir, versions)
 
 # just choose an arbitrary version because commit is the same
 # for all versions
-#validate_commits_match(archive_dir, versions[0])
+validate_commits_match(archive_dir, versions[0])
 
 print(False)
