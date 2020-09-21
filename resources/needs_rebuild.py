@@ -13,7 +13,7 @@ def validate_versions_exist(base_dir, versions):
     return True
 
 
-def validate_commits_match(base_dir, version):
+def validate_commits_match(base_dir, latest_commit, version):
     manifest_file = join(base_dir, str(version), 'installer', 'manifest.json')
     if not exists(manifest_file):
         return False
@@ -28,13 +28,13 @@ def validate_commits_match(base_dir, version):
     return True
 
 
-def should_rebuild(archive_dir, commit, versions):
+def should_rebuild(archive_dir, latest_commit, versions):
     if not validate_versions_exist(archive_dir, versions):
         return True
 
     # just choose an arbitrary version because commit is the same
     # for all versions
-    if not validate_commits_match(archive_dir, versions[0]):
+    if not validate_commits_match(archive_dir, latest_commit, versions[0]):
         return True
 
     return False
