@@ -126,14 +126,25 @@ class Pipeline implements Serializable {
 
    void execute() {
       try {
-         readBuildInformation()
-         validateShouldBuildPipeline()
+         def commit = readBuildInformation()
 
-         // build dependencies before starting this pipeline
-         script.buildDependencies(pipelineInformation)
+         def configuration = getArbitraryVersionConfiguration()
+         def rebuild = true
+         if (configuration.archive) {
+            def archiveParentLocation = Archive.calculateArchiveParentLocation(script, configuration)
+            script.node(pipelineInformation.nodeLabel) {
+               validateShouldBuildPipeline(archiveParentLocation, configuration)
+               rebuild = checkIfRebuildNeeded(archiveParentLocation, commit)
+            }
+         }
+         if (rebuild) {
 
-         runBuild()
-         validateBuild()
+            // build dependencies before starting this pipeline
+            script.buildDependencies(pipelineInformation)
+
+            runBuild()
+            validateBuild()
+         }
       }
       finally {
          sendNotification()
@@ -150,7 +161,7 @@ class Pipeline implements Serializable {
       }
    }
 
-   private void readBuildInformation() {
+   private def readBuildInformation() {
       def manifest = script.readJSON text: '{}'
       def config
       script.node(pipelineInformation.nodeLabel) {
@@ -173,30 +184,50 @@ class Pipeline implements Serializable {
       }
 
       jsonConfig = config.toString()
+      return manifest['scm']['GIT_COMMIT']
    }
 
-   private void validateShouldBuildPipeline() {
+   private void validateShouldBuildPipeline(archiveParentLocation, configuration) {
       // We do not want to rebuild if our output would clobber existing data.
       // This can happen if the Jenkins build numbers reset, or e.g. due to
       // multiple repositories unintentionally exporting to the same location.
-      def configuration = getArbitraryVersionConfiguration()
-      if (!configuration.archive) {
-         // We won't clobber anything if we aren't archiving
-         return
-      }
-
-      def archiveParentLocation = Archive.calculateArchiveParentLocation(script, configuration)
       def archiveLocation = Archive.calculateArchiveLocation(script, configuration)
-      script.node(pipelineInformation.nodeLabel) {
-         script.stage('validateShouldBuildPipeline') {
-            if (script.fileExists(archiveParentLocation + "\\norebuild")) {
-               script.failBuild("Refusing to build, norebuild file exists.")
-            }
-
-            if (script.fileExists(archiveLocation)) {
-               script.failBuild("Refusing to build, $archiveLocation already exists and would be overwritten.")
-            }
+      script.stage('validateShouldBuildPipeline') {
+         if (script.fileExists(archiveParentLocation + "\\norebuild")) {
+            script.failBuild("Refusing to build, norebuild file exists.")
          }
+
+         if (script.fileExists(archiveLocation)) {
+            script.failBuild("Refusing to build, $archiveLocation already exists and would be overwritten.")
+         }
+      }
+   }
+
+   private def checkIfRebuildNeeded(archiveParentLocation, commit) {
+      script.stage('checkIfRebuildNeeded') {
+         // If build was not caused by an upstream job, i.e. it was started manually
+         // or because of a source change, always build it.
+         // Note that the Jenkins CI lists this method as EXPERIMENTAL, but it has worked for many years.
+         def upstreamBuild = script.currentBuild.getBuildCauses('hudson.model.Cause$UpstreamCause')
+         if (!upstreamBuild) {
+            return true
+         }
+
+         // If build was started by an upstream job, check if there have been any
+         // changes to the repo since the last successful build.
+         // If there are changes, do the build.
+         def lastBuildLocation = script.findLatestDirectory(archiveParentLocation)
+         def rebuild = script.needsRebuild(lastBuildLocation, commit, pipelineInformation.lvVersions)
+         if (rebuild) {
+            return true
+         }
+
+         // If no changes, tell the upstream job to use the previous build artifacts.
+         def component = script.getComponentParts()['repo']
+         def depDir = "${component}_DEP_DIR"
+         script.env."$depDir" = lastBuildLocation
+         script.echo "No changes since last successful build. Setting build output to $lastBuildLocation."
+         return false
       }
    }
 
