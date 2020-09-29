@@ -17,10 +17,10 @@ def integrate_release(url, version, working_directory):
         and is a git repository, the repository will be updated in place instead of cloning from scratch.
     """
 
-    assert url.endswith(".git"), \
-        'Expected url to end with ".git"'
-    assert match(r"^\d+\.\d+(\.\d+)?$", version), \
-        'Version must be in format "x.y" or "x.y.z"'  # https://regex101.com/r/xqyo5X/2
+    assert url.endswith(".git"), 'Expected url to end with ".git"'
+    assert match(
+        r"^\d+\.\d+(\.\d+)?$", version
+    ), 'Version must be in format "x.y" or "x.y.z"'  # https://regex101.com/r/xqyo5X/2
     working_directory_path = Path(working_directory)
 
     previous_working_directory = getcwd()

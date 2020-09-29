@@ -9,12 +9,12 @@ def main(target):
 
 if __name__ == "__main__":
     import argparse
-    
+
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
         "--target",
         help="Target branch or ref to generate a list of changed files against",
-        default="origin/main"
+        default="origin/main",
     )
 
     args = parser.parse_args()
