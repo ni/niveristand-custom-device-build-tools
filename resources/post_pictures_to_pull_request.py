@@ -11,11 +11,11 @@ _moduleLogger = logging.getLogger(__name__)
 
 
 def _create_header(token):
-    return {'Authorization': 'token %s' % token.strip()}
+    return {"Authorization": "token %s" % token.strip()}
 
 
 def _read_picture(file_name):
-    with open(file_name, 'rb') as text:
+    with open(file_name, "rb") as text:
         return base64.b64encode(text.read()).decode()
 
 
@@ -24,16 +24,16 @@ def _post_file(file_data, folder, file_name, header, picRepo):
     new_file_data = json.dumps({"message": "commit message", "content": file_data})
 
     # post a picture to a repo
-    url = 'https://api.github.com/repos/%s/contents/%s/%s' % (picRepo, folder, file_name)
+    url = "https://api.github.com/repos/%s/contents/%s/%s" % (picRepo, folder, file_name)
 
     r = requests.put(url, data=new_file_data, headers=header)
     if r.ok:
-        _moduleLogger.info('Response code: %s', r.status_code)
+        _moduleLogger.info("Response code: %s", r.status_code)
     else:
-        _moduleLogger.error('Bad response url: %s', url)
-        _moduleLogger.error('Bad response code: %s', r.status_code)
-        _moduleLogger.error('Bad response text: %s', r.text)
-    return r.json()['content']['download_url']
+        _moduleLogger.error("Bad response url: %s", url)
+        _moduleLogger.error("Bad response code: %s", r.status_code)
+        _moduleLogger.error("Bad response text: %s", r.text)
+    return r.json()["content"]["download_url"]
 
 
 def _post_comment_to_pr(urlPicPairs, diffFailures, pullRequestInfo, prNumber, header):
@@ -64,21 +64,22 @@ Notice something funny? Help fix me on [my GitHub repo.](https://github.com/ni/n
     data = json.dumps({"body": body})
     r = requests.post(url, data=data, headers=header)
     if r.ok:
-        _moduleLogger.info('Response code: %s', r.status_code)
+        _moduleLogger.info("Response code: %s", r.status_code)
     else:
-        _moduleLogger.error('Bad response url: %s', url)
-        _moduleLogger.error('Bad response code: %s', r.status_code)
-        _moduleLogger.error('Bad response text: %s', r.text)
+        _moduleLogger.error("Bad response url: %s", url)
+        _moduleLogger.error("Bad response code: %s", r.status_code)
+        _moduleLogger.error("Bad response text: %s", r.text)
 
 
 def post_pictures_to_pull_request(token, localPicfileDirectory, pullRequestInfo, prNumber, picRepo):
-    print("post_pictures_to_pull_request: ###, {0}, {1}, {2}, {3}".format(localPicfileDirectory,
-                                                                          pullRequestInfo,
-                                                                          prNumber,
-                                                                          picRepo))
+    print(
+        "post_pictures_to_pull_request: ###, {0}, {1}, {2}, {3}".format(
+            localPicfileDirectory, pullRequestInfo, prNumber, picRepo
+        )
+    )
     header = _create_header(token)
     pics = [f for f in os.listdir(localPicfileDirectory) if f.endswith(".png")]
-    folder = pullRequestInfo + '/' + datetime.datetime.now().strftime('%Y-%m-%d/%H:%M:%S')
+    folder = pullRequestInfo + "/" + datetime.datetime.now().strftime("%Y-%m-%d/%H:%M:%S")
     picUrls = []
     for pic in pics:
         picData = _read_picture(os.path.join(localPicfileDirectory, pic))

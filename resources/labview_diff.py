@@ -28,11 +28,16 @@ def diff_vi(old_vi, new_vi, output_dir, workspace, lv_version):
 
     command_args = [
         "LabVIEWCLI.exe",
-        "-LabVIEWPath", version_path,
-        "-AdditionalOperationDirectory", workspace + r"\niveristand-custom-device-build-tools\lv\operations\\",
-        "-OperationName", "DiffVI",
-        "-NewVI", new_vi,
-        "-OutputDir", output_dir,
+        "-LabVIEWPath",
+        version_path,
+        "-AdditionalOperationDirectory",
+        workspace + r"\niveristand-custom-device-build-tools\lv\operations\\",
+        "-OperationName",
+        "DiffVI",
+        "-NewVI",
+        new_vi,
+        "-OutputDir",
+        output_dir,
     ]
 
     if old_vi:
@@ -42,7 +47,7 @@ def diff_vi(old_vi, new_vi, output_dir, workspace, lv_version):
     try:
         subprocess.check_call(command_args)
     except subprocess.CalledProcessError:
-        print("Failed to diff \"{0}\" and \"{1}\".".format(old_vi, new_vi))
+        print('Failed to diff "{0}" and "{1}".'.format(old_vi, new_vi))
         traceback.print_exc()
 
         with open(output_dir + "\\diff_failures.txt", "a+") as file:
@@ -54,7 +59,9 @@ def labview_path_from_year(year):
     if env_key in os.environ:
         return os.environ[env_key]
 
-    return r"{0}\National Instruments\LabVIEW {1}\LabVIEW.exe".format(os.environ["ProgramFiles(x86)"], year)
+    return r"{0}\National Instruments\LabVIEW {1}\LabVIEW.exe".format(
+        os.environ["ProgramFiles(x86)"], year
+    )
 
 
 def export_repo(target_ref):
@@ -109,7 +116,9 @@ def diff_repo(workspace, output_dir, target_branch, lv_version):
         for status, filename in diffs:
             if status == "A":
                 print("Diffing added file: " + filename)
-                diff_vi(None, path.abspath(filename), path.abspath(output_dir), workspace, lv_version)
+                diff_vi(
+                    None, path.abspath(filename), path.abspath(output_dir), workspace, lv_version
+                )
             elif status == "M":
                 print("Diffing modified file: " + filename)
                 # LabVIEW won't let us load two files with the same name into memory,
@@ -119,7 +128,13 @@ def diff_repo(workspace, output_dir, target_branch, lv_version):
                 old_file = path.join(directory.name, filename)
                 copied_file = path.join(path.dirname(old_file), "_COPY_" + path.basename(filename))
                 shutil.copy(old_file, copied_file)
-                diff_vi(copied_file, path.abspath(filename), path.abspath(output_dir), workspace, lv_version)
+                diff_vi(
+                    copied_file,
+                    path.abspath(filename),
+                    path.abspath(output_dir),
+                    workspace,
+                    lv_version,
+                )
             else:
                 print("Unknown file status: " + filename)
 
@@ -131,20 +146,16 @@ if __name__ == "__main__":
     parser.add_argument(
         "workspace",
         help="Directory which contains the `niveristand-custom-device-build-tools` repository "
-             "(as opposed to the `niveristand-custom-device-build-tools` repository itself)"
+        "(as opposed to the `niveristand-custom-device-build-tools` repository itself)",
     )
+    parser.add_argument("output_dir", help="Directory in which to generate output")
     parser.add_argument(
-        "output_dir",
-        help="Directory in which to generate output"
-    )
-    parser.add_argument(
-        "labview_version",
-        help="Year version of LabVIEW you wish to use for diffing"
+        "labview_version", help="Year version of LabVIEW you wish to use for diffing"
     )
     parser.add_argument(
         "--target",
         help="Target branch or ref the diff is being generated against",
-        default="origin/main"
+        default="origin/main",
     )
 
     args = parser.parse_args()

@@ -14,14 +14,14 @@ def validate_versions_exist(base_dir, versions):
 
 
 def validate_commits_match(base_dir, commit, version):
-    manifest_file = join(base_dir, str(version), 'installer', 'manifest.json')
+    manifest_file = join(base_dir, str(version), "installer", "manifest.json")
     if not exists(manifest_file):
         return False
 
     with open(manifest_file) as f:
         data = json.load(f)
 
-    previous_commit = data['scm']['GIT_COMMIT']
+    previous_commit = data["scm"]["GIT_COMMIT"]
     if previous_commit.lower() != commit.lower():
         return False
 

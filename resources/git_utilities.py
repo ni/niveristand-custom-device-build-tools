@@ -1,6 +1,7 @@
 import re
 import subprocess
 
+
 def get_changed_files(target_ref):
     """
     Get files which have changed compared to the target ref.
