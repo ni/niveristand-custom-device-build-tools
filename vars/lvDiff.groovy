@@ -19,7 +19,7 @@ def call(lvVersion, diffingPicRepo, githubDiffToken) {
       
       pip install requests
       
-      python -u "${resourcesDir}/labview_diff.py" "${WORKSPACE}" "${diffDir}" ${lvVersion} --target=origin/main
+      python -u "${resourcesDir}/labview_diff.py" "${WORKSPACE}" "${diffDir}" ${lvVersion} --target=origin/${env.CHANGE_TARGET}
       @python -u "${resourcesDir}/github_commenter.py" --token="${githubDiffToken}" --pic-dir="${diffDir}" --pull-req="${CHANGE_ID}" --info="${JOB_NAME}" --pic-repo="${diffingPicRepo}"
       
       call ${venvDir}\\Scripts\\deactivate.bat
