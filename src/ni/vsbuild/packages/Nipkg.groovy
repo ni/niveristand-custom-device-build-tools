@@ -23,9 +23,13 @@ class Nipkg extends AbstractPackage {
    }
 
    void buildPackage(outputLocation) {
+      script.echo "Staging files for $controlFile"
       stageFiles()
 
+      script.echo "Building nipkg for $controlFile"
       def nipkgOutput = script.nipkgBuild(PACKAGE_DIRECTORY, PACKAGE_DIRECTORY)
+      
+      script.echo "Copying files for $controlFile"
       script.copyFiles(PACKAGE_DIRECTORY, "\"$outputLocation\"", [files: nipkgOutput])
    }
 
