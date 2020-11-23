@@ -321,8 +321,19 @@ class Pipeline implements Serializable {
                   script.failBuild("Failed to build version $version. See issue: https://github.com/ni/niveristand-custom-device-build-tools/issues/50")
                }
             }
+
+            createFinishedFile(exportDir)
          }
       }
+   }
+
+   // Create a file indicating the build is finished.
+   // If this file exists, the build was successful.
+   // If this file does not exist, the build was either unsuccessful
+   // or is still in progress -- in either case, the archive should
+   // not be consumed.
+   private void createFinishedFile(exportDir) {
+      script.bat "type nul > \"$exportDir\\.finished\""
    }
 
    private String getArbitraryVersionConfiguration() {
