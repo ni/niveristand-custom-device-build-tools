@@ -52,7 +52,12 @@ def call(lvVersion) {
          }
       }
       stage('Cleanup') {
-         deleteDir()
+         try {
+            deleteDir()
+         }
+         catch (CompositeIOException | FileSystemException e) {
+               echo "Directory cleanup failed"
+         }
       }
    }
 }
