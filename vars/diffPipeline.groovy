@@ -2,6 +2,8 @@
 
 import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
 import hudson.AbortException
+import java.nio.file.FileSystemException
+import jenkins.util.io.CompositeIOException
 
 //note: this script assumes that it will be invoked from another script after that script has defined the necessary parameters
 
