@@ -44,7 +44,7 @@ class StringSubstitution implements Serializable {
       // Update the upper bound with each additional year release that uses the same package name format
       // Once we no longer need the legacy codes (i.e. the minimum supported VeriStand version is 2019) we
       // can deprecate this function, and just use the package names and versions directly.
-      def upperYearBound = 20
+      def upperYearBound = 21
       for (int year = 19; year <= upperYearBound; year++)
       {
          substitutionStrings.put(
