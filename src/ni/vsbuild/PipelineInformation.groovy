@@ -19,5 +19,9 @@ class PipelineInformation implements Serializable {
       }
       
       script.echo "$infoString"
-   }  
+   }
+
+   public List<String> runtimeVersions() {
+      return lvVersions.collect{version -> version.lvRuntimeVersion}.unique()
+   }
 }

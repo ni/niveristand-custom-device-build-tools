@@ -217,7 +217,7 @@ class Pipeline implements Serializable {
          // changes to the repo since the last successful build.
          // If there are changes, do the build.
          def lastBuildLocation = script.findLatestDirectory(archiveParentLocation)
-         def rebuild = script.needsRebuild(lastBuildLocation, commit, pipelineInformation.lvVersions)
+         def rebuild = script.needsRebuild(lastBuildLocation, commit, pipelineInformation.runtimeVersions())
          if (rebuild) {
             return true
          }
@@ -337,7 +337,7 @@ class Pipeline implements Serializable {
    }
 
    private String getArbitraryVersionConfiguration() {
-      def arbitraryLvVersion = pipelineInformation.lvVersions[0]
+      def arbitraryLvVersion = pipelineInformation.runtimeVersions()[0]
       def configuration = BuildConfiguration.loadString(script, jsonConfig, arbitraryLvVersion)
       return configuration
    }
