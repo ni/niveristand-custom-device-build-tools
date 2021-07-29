@@ -3,10 +3,10 @@ package ni.vsbuild
 class PipelineInformation implements Serializable {
 
    public final String nodeLabel
-   public final List<String> lvVersions
+   public final List<LabviewBuildVersion> lvVersions
    public final List<String> dependencies
 
-   public PipelineInformation(String nodeLabel, List<String> lvVersions, List<String> dependencies = []) {
+   public PipelineInformation(String nodeLabel, List<LabviewBuildVersion> lvVersions, List<String> dependencies = []) {
       this.nodeLabel = nodeLabel
       this.lvVersions = lvVersions
       this.dependencies = dependencies
