@@ -2,14 +2,17 @@ package ni.vsbuild
 
 class LabviewBuildVersion implements Serializable {
 
-   private static Integer DEFAULT_LABVIEW_BITNESS = 32
+   private static Integer 32_BIT = 32
+   private static Integer 64_BIT = 64
+
+   public static Integer DEFAULT_LABVIEW_BITNESS = 32_BIT
 
    public final String lvRuntimeVersion
    public final Architecture architecture
 
-   LabviewBuildVersion(String lvRuntimeVersion, int bitness) {
+   LabviewBuildVersion(String lvRuntimeVersion, int bitness = DEFAULT_LABVIEW_BITNESS) {
       this.lvRuntimeVersion = lvRuntimeVersion
-      this.architecture = bitness == 32 ? Architecture.x86 : Architecture.x64
+      this.architecture = bitness == 32_BIT ? Architecture.x86 : Architecture.x64
    }
 
    public String getLabviewPath() {
