@@ -79,7 +79,7 @@ abstract class LvBuildStep extends LvProjectStep {
          return script.env.WORKSPACE
       }
 
-      def dependencyPath = "$dependencyDir\\$lvVersion"
+      def dependencyPath = "$dependencyDir\\${lvVersion.lvRuntimeVersion}\\${lvVersion.architecture}"
       def targetFoundInLibraryPath = library =~ /\{target\}/
       if (targetFoundInLibraryPath) {
          // Return the versioned dependency path and let
