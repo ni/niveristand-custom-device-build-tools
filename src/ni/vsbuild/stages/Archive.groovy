@@ -49,7 +49,7 @@ class Archive extends AbstractStage {
          buildOutputDir = BuildConfiguration.STAGING_DIR
       }
 
-      def versionedArchive = "$archiveLocation\\$lvVersion"
+      def versionedArchive = "$archiveLocation\\${lvVersion.lvRuntimeVersion\\${lvVersion.architecture}"
       script.copyFiles(buildOutputDir, versionedArchive)
 
       archiveManifest(versionedArchive)

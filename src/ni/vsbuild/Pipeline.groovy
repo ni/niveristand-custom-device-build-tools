@@ -19,12 +19,12 @@ class Pipeline implements Serializable {
 
       def script
       BuildConfiguration buildConfiguration
-      String lvVersion
+      LvBuildVersion lvVersion
       String manifestFile
       def changedFiles
       def stages = []
 
-      Builder(def script, BuildConfiguration buildConfiguration, String lvVersion, String manifestFile, def changedFiles) {
+      Builder(def script, BuildConfiguration buildConfiguration, LvBuildVersion lvVersion, String manifestFile, def changedFiles) {
          this.script = script
          this.buildConfiguration = buildConfiguration
          this.lvVersion = lvVersion
@@ -239,7 +239,7 @@ class Pipeline implements Serializable {
          // need to bind the variable before the closure - can't do 'for (version in lvVersions)'
          def lvVersion = version
 
-         String nodeLabel = lvVersion
+         String nodeLabel = lvVersion.lvRuntimeVersion
          if (pipelineInformation.nodeLabel?.trim()) {
             nodeLabel = "$nodeLabel && ${pipelineInformation.nodeLabel}"
          }

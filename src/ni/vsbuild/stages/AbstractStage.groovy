@@ -1,6 +1,7 @@
 package ni.vsbuild.stages
 
 import ni.vsbuild.BuildConfiguration
+import ni.vsbuild.LvBuildVersion
 
 abstract class AbstractStage implements Stage {
 
@@ -9,7 +10,7 @@ abstract class AbstractStage implements Stage {
    def configuration
    def lvVersion
 
-   AbstractStage(script, String stageName, BuildConfiguration configuration, String lvVersion) {
+   AbstractStage(script, String stageName, BuildConfiguration configuration, LvBuildVersion lvVersion) {
       this.script = script
       this.stageName = stageName
       this.configuration = configuration

@@ -23,7 +23,7 @@ class Codegen extends AbstractStepStage {
 
       for(def project : projects) {
          def path = project.get('path')
-         script.copyProjectConfig(path, lvVersion)
+         script.copyProjectConfig(path, lvVersion.lvRuntimeVersion)
       }
    }
 }
