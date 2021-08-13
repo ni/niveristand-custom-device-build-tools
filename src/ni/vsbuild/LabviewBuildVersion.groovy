@@ -10,7 +10,7 @@ class LabviewBuildVersion implements Serializable {
    public final String lvRuntimeVersion
    public final Architecture architecture
 
-   LabviewBuildVersion(String lvRuntimeVersion, int bitness = DEFAULT_LABVIEW_BITNESS) {
+   LabviewBuildVersion(String lvRuntimeVersion, int bitness = 32) {
       this.lvRuntimeVersion = lvRuntimeVersion
       this.architecture = bitness == 32 ? Architecture.x86 : Architecture.x64
    }
