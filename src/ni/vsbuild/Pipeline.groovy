@@ -337,7 +337,7 @@ class Pipeline implements Serializable {
    }
 
    private String getArbitraryVersionConfiguration() {
-      def arbitraryLvVersion = pipelineInformation.runtimeVersions()[0]
+      def arbitraryLvVersion = pipelineInformation.lvVersions[lvVersions.keySet()[0]][0]
       def configuration = BuildConfiguration.loadString(script, jsonConfig, arbitraryLvVersion)
       return configuration
    }
