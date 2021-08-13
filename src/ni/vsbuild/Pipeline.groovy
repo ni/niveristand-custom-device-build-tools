@@ -19,12 +19,12 @@ class Pipeline implements Serializable {
 
       def script
       BuildConfiguration buildConfiguration
-      LvBuildVersion lvVersion
+      LabviewBuildVersion lvVersion
       String manifestFile
       def changedFiles
       def stages = []
 
-      Builder(def script, BuildConfiguration buildConfiguration, LvBuildVersion lvVersion, String manifestFile, def changedFiles) {
+      Builder(def script, BuildConfiguration buildConfiguration, LabviewBuildVersion lvVersion, String manifestFile, def changedFiles) {
          this.script = script
          this.buildConfiguration = buildConfiguration
          this.lvVersion = lvVersion
