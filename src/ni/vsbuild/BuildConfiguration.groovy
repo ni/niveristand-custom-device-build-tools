@@ -30,7 +30,7 @@ class BuildConfiguration implements Serializable {
       this.notificationInfo = notificationInfo
    }
 
-   static BuildConfiguration loadString(def script, String jsonConfig, LvBuildVersion lvVersion) {
+   static BuildConfiguration loadString(def script, String jsonConfig, LabviewBuildVersion lvVersion) {
       // Convert the JSON to HashMaps instead of using the JsonObject
       // because the Pipeline security plugin disables lots of JsonObject
       // functionality that is required for this build system
