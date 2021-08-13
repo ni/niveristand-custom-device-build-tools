@@ -2,9 +2,6 @@ package ni.vsbuild
 
 class LabviewBuildVersion implements Serializable {
 
-   //private static Integer 32_BIT = 32
-   //private static Integer 64_BIT = 64
-
    public static Integer DEFAULT_LABVIEW_BITNESS = 32
 
    public final String lvRuntimeVersion
@@ -15,9 +12,9 @@ class LabviewBuildVersion implements Serializable {
       this.architecture = bitness == 32 ? Architecture.x86 : Architecture.x64
    }
 
-   public String getLabviewPath() {
+   public String getLabviewPath(def script) {
       def baseVersion = (lvRuntimeVersion =~ /^[0-9]+/).getAt(0)
-      def progFilesDir = architecture.programFilesDir()
+      def progFilesDir = script.getWindowsVar(architecture.programFilesVar)
       return "$progFilesDir\\National Instruments\\LabVIEW ${baseVersion}\\LabVIEW.exe"
    }
 

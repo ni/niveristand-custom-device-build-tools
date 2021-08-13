@@ -3,11 +3,10 @@ package ni.vsbuild
 class StringSubstitution implements Serializable {
 
    public static String replaceStrings(text, lvVersion, additionalReplacements = [:]) {
-      def runtimeVersion = lvVersion.lvRuntimeVersion
       def replacements = [
-            "labview_version": runtimeVersion,
-            "veristand_version": runtimeVersion,
-            "labview_short_version": runtimeVersion.substring(runtimeVersion.length() - 2),
+            "labview_version": lvVersion,
+            "veristand_version": lvVersion,
+            "labview_short_version": lvVersion.substring(lvVersion.length() - 2),
       ]
       replacements << getLegacySubstitutionStrings()
       replacements << additionalReplacements

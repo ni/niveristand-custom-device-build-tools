@@ -30,13 +30,13 @@ class BuildConfiguration implements Serializable {
       this.notificationInfo = notificationInfo
    }
 
-   static BuildConfiguration loadString(def script, String jsonConfig, LabviewBuildVersion lvVersion) {
+   static BuildConfiguration loadString(def script, String jsonConfig, String lvVersion) {
       // Convert the JSON to HashMaps instead of using the JsonObject
       // because the Pipeline security plugin disables lots of JsonObject
       // functionality that is required for this build system
       def convertedJson = new JsonSlurperClassic().parseText(jsonConfig)
 
-      convertedJson = replaceTags(script, convertedJson, lvVersion.lvRuntimeVersion)
+      convertedJson = replaceTags(script, convertedJson, lvVersion)
 
       return new BuildConfiguration(
          convertedJson.archive,

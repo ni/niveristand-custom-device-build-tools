@@ -248,7 +248,7 @@ class Pipeline implements Serializable {
             script.node(nodeLabel) {
                setup(lvVersion)
 
-               def configuration = BuildConfiguration.loadString(script, jsonConfig, lvVersion)
+               def configuration = BuildConfiguration.loadString(script, jsonConfig, lvVersion.lvRuntimeVersion)
                configuration.printInformation(script)
 
                def builder = new Builder(script, configuration, lvVersion, MANIFEST_FILE, changedFiles)
@@ -317,7 +317,7 @@ class Pipeline implements Serializable {
             def component = script.getComponentParts()['repo']
             def exportDir = script.env."${component}_DEP_DIR"
             pipelineInformation.lvVersions.each { version ->
-               if(!script.fileExists("$exportDir\\$version")) {
+               if(!script.fileExists("$exportDir\\${version.lvRuntimeVersion}")) {
                   script.failBuild("Failed to build version $version. See issue: https://github.com/ni/niveristand-custom-device-build-tools/issues/50")
                }
             }
@@ -337,8 +337,8 @@ class Pipeline implements Serializable {
    }
 
    private String getArbitraryVersionConfiguration() {
-      def arbitraryLvVersion = pipelineInformation.lvVersions[lvVersions.keySet()[0]][0]
-      def configuration = BuildConfiguration.loadString(script, jsonConfig, arbitraryLvVersion)
+      def arbitraryLvVersion = pipelineInformation.lvVersions[0]
++     def configuration = BuildConfiguration.loadString(script, jsonConfig, arbitraryLvVersion.lvRuntimeVersion)
       return configuration
    }
 }
