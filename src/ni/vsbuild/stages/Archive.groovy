@@ -51,7 +51,7 @@ class Archive extends AbstractStage {
 
       def versionedArchive = "$archiveLocation\\${lvVersion.lvRuntimeVersion}"
       def versionedArchitectureArchive = "$versionedArchive\\${lvVersion.architecture}"
-      script.copyFiles(buildOutputDir, versionedArchitectureArchive)
+      script.copyFiles(buildOutputDir, versionedArchitectureArchive, [exclusions: getInstallerExtensions()])
 
       archiveManifest(versionedArchive)
 
@@ -74,6 +74,13 @@ class Archive extends AbstractStage {
       if(!script.fileExists("$versionedInstallerDir\\$manifestFileName")) {
          def manifestDirectory = manifestFile.take(splitIndex)
          script.copyFiles(manifestDirectory, versionedInstallerDir, [files: manifestFileName])
+         script.copyFiles(manifestDirectory, versionedInstallerDir, [files: getInstallerExtensions()])
       }
+   }
+
+   private List<String> getInstallerExtensions() {
+      // Add the '*' wildcard character to the beginning of installer extensions
+      // and separate each extension by a space so it can be used by copyFiles()
+      return installerExtensions().collect{element -> "*.$element"}.join(' ')
    }
 }
