@@ -16,7 +16,8 @@ def call(sourceDirectory, destinationDirectory, options=[:]) {
 
    // If the files argument is not passed, mirror the entire source to destination
    if(options.files) {
-      copyCommand = "$copyCommand \"${options.files}\""
+      def filesToCopy = formatFileList(options.files)
+      copyCommand = "$copyCommand $filesToCopy"
    }
    else {
       commandSwitches = "$commandSwitches /mir"
