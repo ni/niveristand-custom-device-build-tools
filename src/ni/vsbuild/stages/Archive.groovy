@@ -81,6 +81,6 @@ class Archive extends AbstractStage {
    private List<String> getInstallerExtensions() {
       // Add the '*' wildcard character to the beginning of installer extensions
       // and separate each extension by a space so it can be used by copyFiles()
-      return installerExtensions().collect{element -> "*.$element"}.join(' ')
+      return script.installerExtensions().collect{element -> "*.$element"}.join(' ')
    }
 }
