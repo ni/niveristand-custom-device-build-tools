@@ -45,11 +45,12 @@ class Archive extends AbstractStage {
 
       script.echo "Archiving build to $archiveLocation"
       def buildOutputDir = configuration.archive.get('build_output_dir')
-      def installerOutputDir = "$buildOutputDir\\$INSTALLER_DIR"
 
       if(script.fileExists(BuildConfiguration.STAGING_DIR)) {
          buildOutputDir = BuildConfiguration.STAGING_DIR
       }
+
+      def installerOutputDir = "$buildOutputDir\\$INSTALLER_DIR"
 
       def versionedArchive = "$archiveLocation\\${lvVersion.lvRuntimeVersion}"
       def versionedArchitectureArchive = "$versionedArchive\\${lvVersion.architecture}"
