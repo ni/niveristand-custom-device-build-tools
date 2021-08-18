@@ -2,7 +2,7 @@ package ni.vsbuild
 
 class LabviewBuildVersion implements Serializable {
 
-   public static Integer DEFAULT_LABVIEW_BITNESS = 32
+   public static final int DEFAULT_LABVIEW_BITNESS = 32
 
    public final String lvRuntimeVersion
    public final Architecture architecture
