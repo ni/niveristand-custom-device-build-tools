@@ -5,6 +5,7 @@ import ni.vsbuild.BuildConfiguration
 class Archive extends AbstractStage {
 
    private static final String MANIFEST_ARCHIVE_DIR = 'installer'
+   private static final String INSTALLER_DIR = 'installer
 
    private String archiveLocation
    private String manifestFile
@@ -49,9 +50,13 @@ class Archive extends AbstractStage {
          buildOutputDir = BuildConfiguration.STAGING_DIR
       }
 
+      def installerOutputDir = "$buildOutputDir\\$INSTALLER_DIR"
+
       def versionedArchive = "$archiveLocation\\${lvVersion.lvRuntimeVersion}"
       def versionedArchitectureArchive = "$versionedArchive\\${lvVersion.architecture}"
+      def versionedInstallerDir = "$versionedArchive\\$INSTALLER_DIR"
       script.copyFiles(buildOutputDir, versionedArchitectureArchive, [exclusions: getInstallerExtensions()])
+      script.copyFiles(installerOutputDir, versionedInstallerDir, [files: getInstallerExtensions()])
 
       archiveManifest(versionedArchive)
 
@@ -74,7 +79,6 @@ class Archive extends AbstractStage {
       if(!script.fileExists("$versionedInstallerDir\\$manifestFileName")) {
          def manifestDirectory = manifestFile.take(splitIndex)
          script.copyFiles(manifestDirectory, versionedInstallerDir, [files: manifestFileName])
-         script.copyFiles(manifestDirectory, versionedInstallerDir, [files: getInstallerExtensions()])
       }
    }
 
