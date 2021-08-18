@@ -44,7 +44,7 @@ abstract class LvBuildStep extends LvProjectStep {
          for(def library : libraries) {
             def dependencyDir = getDependencyPath(key, library)
             def libraryName = getLibraryName(library)
-            def substitutedLibraryPath = StringSubstitution.replaceStrings(library, lvVersion, ['target' : dependencyTarget])
+            def substitutedLibraryPath = StringSubstitution.replaceStrings(library, lvVersion.lvRuntimeVersion, ['target' : dependencyTarget])
             script.bat "copy /y \"$dependencyDir\\$substitutedLibraryPath\" \"$copyLocation\\$libraryName\""
          }
       }
@@ -79,7 +79,7 @@ abstract class LvBuildStep extends LvProjectStep {
          return script.env.WORKSPACE
       }
 
-      def dependencyPath = "$dependencyDir\\$lvVersion"
+      def dependencyPath = "$dependencyDir\\${lvVersion.lvRuntimeVersion}\\${lvVersion.architecture}"
       def targetFoundInLibraryPath = library =~ /\{target\}/
       if (targetFoundInLibraryPath) {
          // Return the versioned dependency path and let

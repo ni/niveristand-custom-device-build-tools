@@ -46,7 +46,7 @@ class Nipkg extends AbstractPackage {
       // There appears to be a bug in Groovy's runtime argument overloading evaluation
       // that fails to find the key when a GString is passed to getAt() instead of a String
       // https://stackoverflow.com/questions/39145121/why-i-cannot-get-exactly-the-same-gstring-as-was-put-to-map-in-groovy
-      def installDestination = packageInfo.get("${lvVersion}_install_destination".toString()) ?: packageInfo.get('install_destination')
+      def installDestination = packageInfo.get("${lvVersion.lvRuntimeVersion}_install_destination".toString()) ?: packageInfo.get('install_destination')
 
       if (payloadDir) {
          this.payloadMap = [(payloadDir): installDestination]
@@ -111,7 +111,7 @@ class Nipkg extends AbstractPackage {
       def fullVersion = getFullVersion()
 
       def additionalReplacements = ['nipkg_version': fullVersion, 'display_version': baseVersion]
-      return StringSubstitution.replaceStrings(text, lvVersion, additionalReplacements)
+      return StringSubstitution.replaceStrings(text, lvVersion.lvRuntimeVersion, additionalReplacements)
    }
 
    private void stagePayload() {

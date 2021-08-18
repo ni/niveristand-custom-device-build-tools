@@ -4,12 +4,13 @@ import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
 import hudson.AbortException
 import java.nio.file.FileSystemException
 import jenkins.util.io.CompositeIOException
+import ni.vsbuild.LabviewBuildVersion
 
 //note: this script assumes that it will be invoked from another script after that script has defined the necessary parameters
 
 //This script further assumes that Jenkins is configured (via the Pipeline Shared Libraries plugin) to implicitly include https://github.com/ni/niveristand-custom-device-build-tools
 
-def call(lvVersion) {
+def call(String lvVersion) {
    // Skip diffing for build which aren't pull-requests.
    // Only pull-requests will have the change ID set.
    if (!env.CHANGE_ID) {
@@ -62,4 +63,15 @@ def call(lvVersion) {
          }
       }
    }
+}
+
+def call(HashMap<Integer, List<String>> lvVersions) {
+   // The diff script currently expects a 32-bit LabVIEW version.
+   // Get the first 32-bit build version to use for the diff
+   // by looking up the list of versions in the version map using the
+   // 32-bit key and then indexing the first item in the list.
+   // Ultimately, we may need to figure out a way to diff in either
+   // bitness, but for now, we will keep it the same.
+   def firstVersionEntry = lvVersions[32][0]
+   call(firstVersionEntry)
 }

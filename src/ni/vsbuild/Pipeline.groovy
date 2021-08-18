@@ -19,12 +19,12 @@ class Pipeline implements Serializable {
 
       def script
       BuildConfiguration buildConfiguration
-      String lvVersion
+      LabviewBuildVersion lvVersion
       String manifestFile
       def changedFiles
       def stages = []
 
-      Builder(def script, BuildConfiguration buildConfiguration, String lvVersion, String manifestFile, def changedFiles) {
+      Builder(def script, BuildConfiguration buildConfiguration, LabviewBuildVersion lvVersion, String manifestFile, def changedFiles) {
          this.script = script
          this.buildConfiguration = buildConfiguration
          this.lvVersion = lvVersion
@@ -217,7 +217,7 @@ class Pipeline implements Serializable {
          // changes to the repo since the last successful build.
          // If there are changes, do the build.
          def lastBuildLocation = script.findLatestDirectory(archiveParentLocation)
-         def rebuild = script.needsRebuild(lastBuildLocation, commit, pipelineInformation.lvVersions)
+         def rebuild = script.needsRebuild(lastBuildLocation, commit, pipelineInformation.runtimeVersions())
          if (rebuild) {
             return true
          }
@@ -239,7 +239,7 @@ class Pipeline implements Serializable {
          // need to bind the variable before the closure - can't do 'for (version in lvVersions)'
          def lvVersion = version
 
-         String nodeLabel = lvVersion
+         String nodeLabel = lvVersion.lvRuntimeVersion
          if (pipelineInformation.nodeLabel?.trim()) {
             nodeLabel = "$nodeLabel && ${pipelineInformation.nodeLabel}"
          }
@@ -248,7 +248,7 @@ class Pipeline implements Serializable {
             script.node(nodeLabel) {
                setup(lvVersion)
 
-               def configuration = BuildConfiguration.loadString(script, jsonConfig, lvVersion)
+               def configuration = BuildConfiguration.loadString(script, jsonConfig, lvVersion.lvRuntimeVersion)
                configuration.printInformation(script)
 
                def builder = new Builder(script, configuration, lvVersion, MANIFEST_FILE, changedFiles)
@@ -317,7 +317,7 @@ class Pipeline implements Serializable {
             def component = script.getComponentParts()['repo']
             def exportDir = script.env."${component}_DEP_DIR"
             pipelineInformation.lvVersions.each { version ->
-               if(!script.fileExists("$exportDir\\$version")) {
+               if(!script.fileExists("$exportDir\\${version.lvRuntimeVersion}")) {
                   script.failBuild("Failed to build version $version. See issue: https://github.com/ni/niveristand-custom-device-build-tools/issues/50")
                }
             }
@@ -338,7 +338,7 @@ class Pipeline implements Serializable {
 
    private String getArbitraryVersionConfiguration() {
       def arbitraryLvVersion = pipelineInformation.lvVersions[0]
-      def configuration = BuildConfiguration.loadString(script, jsonConfig, arbitraryLvVersion)
+      def configuration = BuildConfiguration.loadString(script, jsonConfig, arbitraryLvVersion.lvRuntimeVersion)
       return configuration
    }
 }

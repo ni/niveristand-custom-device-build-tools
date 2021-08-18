@@ -7,16 +7,19 @@ def call(sourceDirectory, destinationDirectory, options=[:]) {
    def commandSwitches = "/nfl /ndl /njh /njs /nc /ns /np"
 
    if(options.exclusions) {
-      commandSwitches = "$commandSwitches /xf \"${options.exclusions}\""
+      def filesToExclude = formatFileList(options.exclusions)
+      commandSwitches = "$commandSwitches /xf $filesToExclude"
    }
 
    if(options.directoryExclusions) {
-      commandSwitches = "$commandSwitches /xd \"${options.directoryExclusions}\""
+      def dirsToExclude = formatFileList(options.directoryExclusions)
+      commandSwitches = "$commandSwitches /xd $dirsToExclude"
    }
 
    // If the files argument is not passed, mirror the entire source to destination
    if(options.files) {
-      copyCommand = "$copyCommand \"${options.files}\""
+      def filesToCopy = formatFileList(options.files)
+      copyCommand = "$copyCommand $filesToCopy"
    }
    else {
       commandSwitches = "$commandSwitches /mir"
