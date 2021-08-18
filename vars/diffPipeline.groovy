@@ -67,7 +67,9 @@ def call(String lvVersion) {
 
 def call(HashMap<Integer, List<String>> lvVersions) {
    // The diff script currently expects a 32-bit LabVIEW version.
-   // Get the first 32-bit build version to use for the diff.
+   // Get the first 32-bit build version to use for the diff
+   // by looking up the list of versions in the version map using the
+   // 32-bit key and then indexing the first item in the list.
    // Ultimately, we may need to figure out a way to diff in either
    // bitness, but for now, we will keep it the same.
    def firstVersionEntry = lvVersions[32][0]
