@@ -5,7 +5,7 @@ import ni.vsbuild.BuildConfiguration
 class Archive extends AbstractStage {
 
    private static final String MANIFEST_ARCHIVE_DIR = 'installer'
-   private static final String INSTALLER_DIR = 'installer
+   private static final String INSTALLER_DIR = 'installer'
 
    private String archiveLocation
    private String manifestFile
