@@ -9,7 +9,7 @@ class LabviewBuildVersion implements Serializable {
 
    LabviewBuildVersion(String lvRuntimeVersion, int bitness = 32) {
       this.lvRuntimeVersion = lvRuntimeVersion
-      this.architecture = bitness == 32 ? Architecture.x86 : Architecture.x64
+      this.architecture = Architecture.bitnessToArchitecture(bitness)
    }
 
    public String getLabviewPath(def script) {
@@ -21,7 +21,7 @@ class LabviewBuildVersion implements Serializable {
    @NonCPS
    @Override
    public String toString() {
-      def bitness = architecture == Architecture.x86 ? "(32-bit)" : "(64-bit)"
-      return "$lvRuntimeVersion $bitness"
+      def bitness = Architecture.architectureToBitness(architecture)
+      return "$lvRuntimeVersion (${bitness}-bit)"
    }
 }

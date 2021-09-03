@@ -9,4 +9,12 @@ enum Architecture {
    Architecture(String value) {
       this.programFilesVar = value
    }
+
+   static Architecture bitnessToArchitecture(int bitness) {
+      return bitness == 32 ? Architecture.x86 : Architecture.x64
+   }
+
+   static int architectureToBitness(Architecture arch) {
+      return arch == Architecture.x86 ? 32 : 64
+   }
 }
