@@ -17,6 +17,10 @@ abstract class LvBuildStep extends LvProjectStep {
    }
 
    void executeStep(BuildConfiguration configuration) {
+      if(!supportedArchitecture()) {
+         return
+      }
+
       copyDependencies(configuration)
 
       def resolvedProject = resolveProject(configuration)
