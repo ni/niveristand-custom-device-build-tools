@@ -5,22 +5,22 @@ import ni.vsbuild.Architecture
 abstract class LvStep extends AbstractStep {
 
    def lvVersion
-   def architecture
+   def bitness
 
    LvStep(script, mapStep, lvVersion) {
       super(script, mapStep)
       this.lvVersion = lvVersion
-      this.architecture = Architecture.bitnessToArchitecture(this.outputDir = mapStep.get('bitness'))
+      this.bitness = mapStep.get('bitness')
    }
 
    // Return true if the current build architecture matches
    // the desired architecture for the step. If no specific
    // architecture is defined for the step, return true.
    public boolean supportedArchitecture() {
-      if(!architecture) {
+      if(!bitness) {
          return true
       }
 
-      return lvVersion.architecture == this.architecture
+      return lvVersion.architecture == Architecture.bitnessToArchitecture(bitness as Integer)
    }
 }
