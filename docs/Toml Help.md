@@ -130,6 +130,7 @@ Key | Description | Required
 `target` | name of the target that owns the `build_spec` | **YES**
 `build_spec` | name of the specification to be built | **YES**
 `dependency_target` | path prepended to a dependency's `libraries` key to fetch the correct version of a dependency | **NO**
+`bitness` | limit this step to build only for the provided bitness, either 32 or 64 | **NO**
 `output_dir` | path prepended to a dependency's `libraries` key | **NO** (**_deprecated_**)
 `output_libraries` | array of libraries to be copied to the `output_dir` | **NO** (**_deprecated_**)
 
@@ -144,6 +145,17 @@ type = 'lvBuildSpec'
 project = '{first}' # uses the value 'src\first.lvproj' from the example in the Projects section of this document
 target = 'My Computer'
 build_spec = 'Configuration Release'
+```
+
+Execute a build spec with no dependencies and no alteration of the output directory, but only for a 32-bit LabVIEW version.
+```
+[[build.steps]]
+name = 'Configuration Library'
+type = 'lvBuildSpec'
+project = '{first}' # uses the value 'src\first.lvproj' from the example in the Projects section of this document
+target = 'My Computer'
+build_spec = 'Configuration Release'
+bitness = '32'
 ```
 
 Execute a build spec and require the 64-bit Linux dependency libraries.
@@ -182,6 +194,7 @@ Key | Description | Required
 `project` | reference to the project table in the projects section of `build.toml`  | **YES**
 `build_spec` | name of the specification to be built | **YES**
 `dependency_target` | path prepended to a dependency's `libraries` key to fetch the correct version of a dependency | **NO**
+`bitness` | limit this step to build only for the provided bitness, either 32 or 64 | **NO**
 
 
 ###### Example
@@ -192,6 +205,16 @@ name = 'Engine Libraries'
 type = 'lvBuildSpecAllTargets'
 project = '{first}' # uses the value 'src\first.lvproj' from the example in the Projects section of this document
 build_spec = 'Engine Release'
+```
+
+Execute a build spec with no dependencies, but only for a 64-bit LabVIEW version.
+```
+[[build.steps]]
+name = 'Engine Libraries'
+type = 'lvBuildSpecAllTargets'
+project = '{first}' # uses the value 'src\first.lvproj' from the example in the Projects section of this document
+build_spec = 'Engine Release'
+bitness = '64'
 ```
 
 Execute a build spec and require the 64-bit Linux dependency libraries.
@@ -214,6 +237,7 @@ The LvBuildAll step builds all build specs under all targets in the specified pr
 Key | Description | Required
 -|-|-
 `project` | reference to the project table in the projects section of `build.toml`  | **YES**
+`bitness` | limit this step to build only for the provided bitness, either 32 or 64 | **NO**
 
 ###### Example
 ```
