@@ -3,10 +3,14 @@ package ni.vsbuild
 class StringSubstitution implements Serializable {
 
    public static String replaceStrings(text, lvVersion, additionalReplacements = [:]) {
+      def year = lvVersion.lvRuntimeVersion
+      def architecture = lvVersion.architecture
       def replacements = [
-            "labview_version": lvVersion,
-            "veristand_version": lvVersion,
-            "labview_short_version": lvVersion.substring(lvVersion.length() - 2),
+            "labview_version": year,
+            "veristand_version": year,
+            "labview_short_version": year.substring(year.length() - 2),
+            "pkg_x86_bitness_suffix": architecture == Architecture.x86 ? "-x86" : "",
+            "nipaths_64_bitness_suffix": architecture == Architecture.x64 ? "64" : "",
       ]
       replacements << getLegacySubstitutionStrings()
       replacements << additionalReplacements
@@ -28,6 +32,8 @@ class StringSubstitution implements Serializable {
       return updatedText
    }
 
+   // TODO: These are deprecated as we target VeriStand 2019 as a minimum version,
+   // but we need to remove their usage in custom devices before removing the definitions.
    private static Map<String, String> getLegacySubstitutionStrings()
    {
       def substitutionStrings = [

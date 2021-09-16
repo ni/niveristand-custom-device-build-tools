@@ -28,7 +28,7 @@ class Nipkg extends AbstractPackage {
 
       script.echo "Building nipkg for $controlFile"
       def nipkgOutput = script.nipkgBuild(PACKAGE_DIRECTORY, PACKAGE_DIRECTORY)
-      
+
       script.echo "Copying files for $controlFile"
       script.copyFiles(PACKAGE_DIRECTORY, "\"$outputLocation\"", [files: nipkgOutput])
    }
@@ -111,7 +111,7 @@ class Nipkg extends AbstractPackage {
       def fullVersion = getFullVersion()
 
       def additionalReplacements = ['nipkg_version': fullVersion, 'display_version': baseVersion]
-      return StringSubstitution.replaceStrings(text, lvVersion.lvRuntimeVersion, additionalReplacements)
+      return StringSubstitution.replaceStrings(text, lvVersion, additionalReplacements)
    }
 
    private void stagePayload() {

@@ -46,7 +46,7 @@ class Pipeline implements Serializable {
 
       def withPackageStage() {
          def packageStage = new Package(script, buildConfiguration, lvVersion)
-         
+
          if (shouldBuildPackage(packageStage)) {
             stages << packageStage
          }
@@ -234,7 +234,7 @@ class Pipeline implements Serializable {
    private void runBuild() {
       def builders = [:]
 
-      for(String version : pipelineInformation.lvVersions) {
+      for(LabviewBuildVersion version : pipelineInformation.lvVersions) {
 
          // need to bind the variable before the closure - can't do 'for (version in lvVersions)'
          def lvVersion = version
@@ -248,7 +248,7 @@ class Pipeline implements Serializable {
             script.node(nodeLabel) {
                setup(lvVersion)
 
-               def configuration = BuildConfiguration.loadString(script, jsonConfig, lvVersion.lvRuntimeVersion)
+               def configuration = BuildConfiguration.loadString(script, jsonConfig, lvVersion)
                configuration.printInformation(script)
 
                def builder = new Builder(script, configuration, lvVersion, MANIFEST_FILE, changedFiles)
@@ -305,7 +305,7 @@ class Pipeline implements Serializable {
    // If this issue is encountered, the build will still show success even
    // though an export for the desired version is not actually created.
    // We should fail the build instead of returning false success.
-   private void validateBuild() {      
+   private void validateBuild() {
       String nodeLabel = ''
       if (pipelineInformation.nodeLabel?.trim()) {
          nodeLabel = pipelineInformation.nodeLabel
@@ -338,7 +338,7 @@ class Pipeline implements Serializable {
 
    private String getArbitraryVersionConfiguration() {
       def arbitraryLvVersion = pipelineInformation.lvVersions[0]
-      def configuration = BuildConfiguration.loadString(script, jsonConfig, arbitraryLvVersion.lvRuntimeVersion)
+      def configuration = BuildConfiguration.loadString(script, jsonConfig, arbitraryLvVersion)
       return configuration
    }
 }
