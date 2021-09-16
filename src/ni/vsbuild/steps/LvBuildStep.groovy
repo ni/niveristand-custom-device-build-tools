@@ -48,13 +48,13 @@ abstract class LvBuildStep extends LvProjectStep {
          for(def library : libraries) {
             def dependencyDir = getDependencyPath(key, library)
             def libraryName = getLibraryName(library)
-            def substitutedLibraryPath = StringSubstitution.replaceStrings(library, lvVersion.lvRuntimeVersion, ['target' : dependencyTarget])
+            def substitutedLibraryPath = StringSubstitution.replaceStrings(library, lvVersion, ['target' : dependencyTarget])
             script.bat "copy /y \"$dependencyDir\\$substitutedLibraryPath\" \"$copyLocation\\$libraryName\""
          }
       }
    }
 
-   protected void stageLibraries(String outputDir, BuildConfiguration configuration) {      
+   protected void stageLibraries(String outputDir, BuildConfiguration configuration) {
       def buildOutputDir = configuration.archive.get('build_output_dir')
       def stageDir = BuildConfiguration.STAGING_DIR
 
