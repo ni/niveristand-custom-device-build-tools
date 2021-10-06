@@ -195,6 +195,7 @@ Key | Description | Required
 `build_spec` | name of the specification to be built | **YES**
 `dependency_target` | path prepended to a dependency's `libraries` key to fetch the correct version of a dependency | **NO**
 `bitness` | limit this step to build only for the provided bitness, either 32 or 64 | **NO**
+`bitness_versions` | list of LabVIEW versions where the `bitness` key applies | **NO**
 
 
 ###### Example
@@ -216,6 +217,18 @@ project = '{first}' # uses the value 'src\first.lvproj' from the example in the 
 build_spec = 'Engine Release'
 bitness = '64'
 ```
+
+Execute a build spec with no dependencies, but only for a 64-bit if LabVIEW version is 2020 or 2021. For other versions, build regardless of bitness.
+```
+[[build.steps]]
+name = 'Engine Libraries'
+type = 'lvBuildSpecAllTargets'
+project = '{first}' # uses the value 'src\first.lvproj' from the example in the Projects section of this document
+build_spec = 'Engine Release'
+bitness = '64'
+bitness_versions = ['2020', '2021']
+```
+
 
 Execute a build spec and require the 64-bit Linux dependency libraries.
 This is a little weird because there shouldn't be multiple build specs of the same name if specific dependencies are required, but it still works. Using lvBuildSpec would be more concise.
