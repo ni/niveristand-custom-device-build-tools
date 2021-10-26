@@ -30,9 +30,18 @@ class LvSetConditionalSymbolStep extends LvProjectStep {
       def expressionParts = condition.split()
       def leftSide = expressionParts[0]
       def operator = expressionParts[1]
-      def rightSide = expressionParts[2]
 
-      leftSide = this."$leftSide"
+      // All this nonsense because Jenkins security won't let me slice the list.
+      // If https://issues.jenkins.io/browse/JENKINS-52036 is ever fixed (it says it
+      // is, but the PR was closed without being merged), this whole section becomes
+      // def rightSide = expressionParts[2..-1].join(' ')
+      def rightSide = ''
+      for (int i = 2; i < expressionParts.size(); i++) {
+         rightSide = "$rightSide ${expressionParts[i]}"
+      }
+      rightSide = rightSide.trim()
+
+      leftSide = this."$leftSide".toString()
 
       if(operator.equals("<")) {
          return leftSide < rightSide
