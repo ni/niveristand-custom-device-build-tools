@@ -8,10 +8,10 @@ class PostArchivePackageStrategy implements PackageStrategy {
       this.lvVersion = lvVersion
    }
 
-   void filterPackageCollection(packageCollection) {
-      packageCollection.removeAll { !(it.get('multi_bitness')) \
-                                    || ((it.get('multi_bitness_versions')) \
-                                       && !(it.get('multi_bitness_versions').contains(lvVersion.lvRuntimeVersion)))
+   def filterPackageCollection(packageCollection) {
+      return packageCollection.findAll { it.get('multi_bitness') \
+                                          &&  (!(it.get('multi_bitness_versions')) \
+                                             || (it.get('multi_bitness_versions').contains(lvVersion.lvRuntimeVersion)))
       }
    }
 }

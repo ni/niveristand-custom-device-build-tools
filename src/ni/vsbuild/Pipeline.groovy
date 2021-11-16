@@ -1,6 +1,7 @@
 package ni.vsbuild
 
 import ni.vsbuild.stages.*
+import ni.vsbuild.packages.PostArchivePackageStrategy
 
 class Pipeline implements Serializable {
 
@@ -23,6 +24,7 @@ class Pipeline implements Serializable {
       String manifestFile
       def changedFiles
       def stages = []
+      def postStages = []
 
       Builder(def script, BuildConfiguration buildConfiguration, LabviewBuildVersion lvVersion, String manifestFile, def changedFiles) {
          this.script = script
@@ -50,6 +52,12 @@ class Pipeline implements Serializable {
          if (shouldBuildPackage(packageStage)) {
             stages << packageStage
          }
+
+         def postArchivePackageStage = new Package(script, buildConfiguration, lvVersion, new PostArchivePackageStrategy(lvVersion))
+
+         if (shouldBuildPackage(postArchivePackageStage)) {
+            postStages << postArchivePackageStage
+         }
       }
 
       def withArchiveStage() {
@@ -57,6 +65,10 @@ class Pipeline implements Serializable {
       }
 
       def shouldBuildPackage(def packageStage) {
+         if (!packageStage.stageRequired()) {
+             return false
+         }
+
          // The plan is to enable automatic merging from main to
          // release or hotfix branch packages and not build packages
          // for any other branches, including main. The version must
