@@ -278,7 +278,7 @@ class Pipeline implements Serializable {
    }
 
    private void runPostArchiveBuild() {
-      def stages = postArchiveStages.entrySet().collect { it.value }
+      def stages = postArchiveStages.values()
       script.echo("postArchiveStages: $stages")
    }
 
