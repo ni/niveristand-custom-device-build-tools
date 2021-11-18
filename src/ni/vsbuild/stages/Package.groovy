@@ -16,8 +16,7 @@ class Package extends AbstractStage {
    }
 
    Package(script, configuration, lvVersion) {
-      super(script, 'Package', configuration, lvVersion)
-      this.strategy = new DefaultPackageStrategy(lvVersion)
+      this(script, configuration, lvVersion, new DefaultPackageStrategy(lvVersion))
    }
 
    void executeStage() {

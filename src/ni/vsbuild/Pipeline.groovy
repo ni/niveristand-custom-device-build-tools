@@ -13,6 +13,7 @@ class Pipeline implements Serializable {
    PipelineInformation pipelineInformation
    String jsonConfig
    def changedFiles
+   def postArchiveStages = [:]
 
    int checkoutTimeoutInMinutes = 10
 
@@ -127,7 +128,7 @@ class Pipeline implements Serializable {
             withArchiveStage()
          }
 
-         return stages
+         return [stages, postStages]
       }
    }
 
@@ -155,6 +156,7 @@ class Pipeline implements Serializable {
             script.buildDependencies(pipelineInformation)
 
             runBuild()
+            runPostArchiveBuild()
             validateBuild()
          }
       }
@@ -264,7 +266,8 @@ class Pipeline implements Serializable {
                configuration.printInformation(script)
 
                def builder = new Builder(script, configuration, lvVersion, MANIFEST_FILE, changedFiles)
-               def stages = builder.buildPipeline()
+               def (stages, postStages) = builder.buildPipeline()
+               addPostArchiveStages(postStages)
 
                executeStages(stages)
             }
@@ -272,6 +275,11 @@ class Pipeline implements Serializable {
       }
 
       script.parallel builders
+   }
+
+   private void runPostArchiveBuild() {
+      def stages = postArchiveStages.entrySet().collect { it.value }
+      script.echo("postArchiveStages: $stages")
    }
 
    private void setup(lvVersion) {
@@ -291,6 +299,22 @@ class Pipeline implements Serializable {
          // Write a manifest
          script.echo "Writing manifest to $MANIFEST_FILE"
          script.writeJSON file: MANIFEST_FILE, json: manifest, pretty: 3
+      }
+   }
+
+   private void addPostArchiveStages(stages) {
+      for (def stage : stages) {
+         def key = [stage.getClass(), stage.lvVersion.lvRuntimeVersion]
+
+         // Only add one post-archive stage per stage type and LV year version.
+         // Post-archive should only be used for stages requiring both 32- and
+         // 64-bit versions of the same LV year version. If a stage already
+         // exists for that combination, don't add another.
+         if (postArchiveStages[key]) {
+            continue
+         }
+
+         postArchiveStages[key] = stage
       }
    }
 
