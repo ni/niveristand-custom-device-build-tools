@@ -8,4 +8,6 @@ interface PackageStrategy extends Serializable {
    // remove/removeAll.
    def filterPackageCollection(packageCollection)
 
+   def createNipkgPayloadMap(payloadMap)
+
 }

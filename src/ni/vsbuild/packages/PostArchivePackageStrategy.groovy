@@ -14,4 +14,8 @@ class PostArchivePackageStrategy implements PackageStrategy {
                                              || (it.get('multi_bitness_versions').contains(lvVersion.lvRuntimeVersion)))
       }
    }
+
+   def createNipkgPayloadMap(payloadMap) {
+      return payloadMap
+   }
 }

@@ -48,16 +48,19 @@ class Nipkg extends AbstractPackage {
       // https://stackoverflow.com/questions/39145121/why-i-cannot-get-exactly-the-same-gstring-as-was-put-to-map-in-groovy
       def installDestination = packageInfo.get("${lvVersion.lvRuntimeVersion}_install_destination".toString()) ?: packageInfo.get('install_destination')
 
+      def configurationPayloadMap
       if (payloadDir) {
-         this.payloadMap = [(payloadDir): installDestination]
+         configurationPayloadMap = [(payloadDir): installDestination]
       } else {
-         this.payloadMap = packageInfo.get('payload_map')
+         configurationPayloadMap = packageInfo.get('payload_map')
       }
 
-      if (!this.payloadMap) {
+      if (!configurationPayloadMap) {
          script.failBuild("Building an nipkg requires either 'payload_map', " +
                "or 'payload_dir' and 'install_destination' to be specified.")
       }
+
+      this.payloadMap = strategy.createNipkgPayloadMap(configurationPayloadMap)
    }
 
    // This method is responsible for setting up the directory and file
