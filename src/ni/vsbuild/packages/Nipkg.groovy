@@ -60,7 +60,7 @@ class Nipkg extends AbstractPackage {
                "or 'payload_dir' and 'install_destination' to be specified.")
       }
 
-      this.payloadMap = strategy.createNipkgPayloadMap(configurationPayloadMap)
+      this.payloadMap = configurationPayloadMap
    }
 
    // This method is responsible for setting up the directory and file
