@@ -15,9 +15,9 @@ class Nipkg extends AbstractPackage {
    def controlFile
    def instructionsFile
 
-   Nipkg(script, packageInfo, lvVersion) {
+   Nipkg(script, packageInfo, lvVersion, strategy) {
       super(script, packageInfo, lvVersion)
-      this.createPayloadMap(packageInfo)
+      this.createPayloadMap(packageInfo, strategy)
       this.controlFile = packageInfo.get('control_file') ?: CONTROL_FILE_NAME
       this.instructionsFile = packageInfo.get('instructions_file') ?: INSTRUCTIONS_FILE_NAME
    }
@@ -38,7 +38,7 @@ class Nipkg extends AbstractPackage {
    }
 
    @NonCPS
-   private void createPayloadMap(packageInfo) {
+   private void createPayloadMap(packageInfo, strategy) {
       def payloadDir = packageInfo.get('payload_dir')
       // Yes, I'm calling toString() on what appears to be a string, but is not actually
       // java.lang.String. Instead, the interpolated string is a groovy.lang.GString.
@@ -60,7 +60,7 @@ class Nipkg extends AbstractPackage {
                "or 'payload_dir' and 'install_destination' to be specified.")
       }
 
-      this.payloadMap = configurationPayloadMap
+      this.payloadMap = strategy.createNipkgPayloadMap(configurationPayloadMap)
    }
 
    // This method is responsible for setting up the directory and file

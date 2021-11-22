@@ -44,7 +44,7 @@ class Package extends AbstractStage {
 
       this.@packages = []
       for (def packageInfo : packageInfoCollection) {
-         Buildable pkg = PackageFactory.createPackage(script, packageInfo, lvVersion)
+         Buildable pkg = PackageFactory.createPackage(script, packageInfo, lvVersion, strategy)
          this.@packages.add(pkg)
       }
    }

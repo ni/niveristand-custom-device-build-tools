@@ -15,6 +15,7 @@ class PostArchivePackageStrategy implements PackageStrategy {
       }
    }
 
+   @NonCPS
    def createNipkgPayloadMap(payloadMap) {
       return payloadMap
    }
