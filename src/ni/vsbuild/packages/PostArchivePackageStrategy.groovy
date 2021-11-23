@@ -18,18 +18,23 @@ class PostArchivePackageStrategy implements PackageStrategy {
    }
 
    def getOutputDirectory(script, outputDir) {
-      def component = script.getComponentParts()['repo']
-      def archiveLocation = script.env."${component}_DEP_DIR"
-      return "$archiveLocation\\${lvVersion.lvRuntimeVersion}"
+      def baseOutputDirectory = getBaseOutputDirectory(script)
+      return "$baseOutputDirectory\\${AbstractPackage.INSTALLER_DIRECTORY}"
    }
 
    def createNipkgPayloadMap(script, payloadMap, outputDir) {
-      def newOutputDir = getOutputDirectory(script, outputDir)
+      def newOutputDir = getBaseOutputDirectory(script)
       def newMap = [:]
       for (def key : payloadMap.keySet()) {
          Architecture.values().each { newMap[key.replace(outputDir, "$newOutputDir\\$it")] = payloadMap[key] }
       }
 
       return newMap
+   }
+
+   private def getBaseOutputDirectory(script) {
+      def component = script.getComponentParts()['repo']
+      def archiveLocation = script.env."${component}_DEP_DIR"
+      return "$archiveLocation\\${lvVersion.lvRuntimeVersion}"
    }
 }

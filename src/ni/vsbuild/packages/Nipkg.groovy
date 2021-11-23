@@ -33,7 +33,7 @@ class Nipkg extends AbstractPackage {
 
       def outputDirectory = this.strategy.getOutputDirectory(script, outputLocation)
       script.echo "Copying files for $controlFile"
-      script.copyFiles(PACKAGE_DIRECTORY, "\"$outputDirectory\"", [files: nipkgOutput])
+      script.copyFiles(PACKAGE_DIRECTORY, outputDirectory, [files: nipkgOutput])
    }
 
    String[] getConfigurationFiles() {
