@@ -31,7 +31,7 @@ class Nipkg extends AbstractPackage {
       script.echo "Building nipkg for $controlFile"
       def nipkgOutput = script.nipkgBuild(PACKAGE_DIRECTORY, PACKAGE_DIRECTORY)
 
-      def outputDirectory = this.strategy.getOutputDirectory(outputLocation)
+      def outputDirectory = this.strategy.getOutputDirectory(script, outputLocation)
       script.echo "Copying files for $controlFile"
       script.copyFiles(PACKAGE_DIRECTORY, "\"$outputDirectory\"", [files: nipkgOutput])
    }
