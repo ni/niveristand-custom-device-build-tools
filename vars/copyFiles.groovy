@@ -22,7 +22,10 @@ def call(sourceDirectory, destinationDirectory, options=[:]) {
       copyCommand = "$copyCommand $filesToCopy"
    }
    else {
-      commandSwitches = "$commandSwitches /mir"
+      // The /xx command enables mirroring while not removing existing files.
+      // This is what enables merging directories and allows creating post-archive
+      // steps.
+      commandSwitches = "$commandSwitches /xx /mir"
    }
 
    // robocopy uses multiple return codes for success

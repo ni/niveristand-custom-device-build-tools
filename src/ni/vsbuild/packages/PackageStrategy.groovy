@@ -8,7 +8,8 @@ interface PackageStrategy extends Serializable {
    // remove/removeAll.
    def filterPackageCollection(packageCollection)
 
-   @NonCPS
-   def createNipkgPayloadMap(payloadMap)
+   def getOutputDirectory(script, outputDir)
+
+   def createNipkgPayloadMap(script, payloadMap, outputDir)
 
 }

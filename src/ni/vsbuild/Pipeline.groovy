@@ -156,8 +156,7 @@ class Pipeline implements Serializable {
             script.buildDependencies(pipelineInformation)
 
             runBuild()
-            runPostArchiveBuild()
-            validateBuild()
+            runPostArchive()
          }
       }
       finally {
@@ -277,11 +276,6 @@ class Pipeline implements Serializable {
       script.parallel builders
    }
 
-   private void runPostArchiveBuild() {
-      def stages = postArchiveStages.values()
-      script.echo("postArchiveStages: $stages")
-   }
-
    private void setup(lvVersion) {
       def manifest = script.readJSON text: '{}'
 
@@ -299,22 +293,6 @@ class Pipeline implements Serializable {
          // Write a manifest
          script.echo "Writing manifest to $MANIFEST_FILE"
          script.writeJSON file: MANIFEST_FILE, json: manifest, pretty: 3
-      }
-   }
-
-   private void addPostArchiveStages(stages) {
-      for (def stage : stages) {
-         def key = [stage.getClass(), stage.lvVersion.lvRuntimeVersion]
-
-         // Only add one post-archive stage per stage type and LV year version.
-         // Post-archive should only be used for stages requiring both 32- and
-         // 64-bit versions of the same LV year version. If a stage already
-         // exists for that combination, don't add another.
-         if (postArchiveStages[key]) {
-            continue
-         }
-
-         postArchiveStages[key] = stage
       }
    }
 
@@ -336,30 +314,57 @@ class Pipeline implements Serializable {
       notifyStage.execute()
    }
 
-   // This method is here to catch builds with issue 50:
-   // https://github.com/ni/niveristand-custom-device-build-tools/issues/50
-   // If this issue is encountered, the build will still show success even
-   // though an export for the desired version is not actually created.
-   // We should fail the build instead of returning false success.
-   private void validateBuild() {
+   private void addPostArchiveStages(stages) {
+      for (def stage : stages) {
+         def key = [stage.getClass(), stage.lvVersion.lvRuntimeVersion]
+
+         // Only add one post-archive stage per stage type and LV year version.
+         // Post-archive should only be used for stages requiring both 32- and
+         // 64-bit versions of the same LV year version. If a stage already
+         // exists for that combination, don't add another.
+         if (postArchiveStages[key]) {
+            continue
+         }
+
+         postArchiveStages[key] = stage
+      }
+   }
+
+   private void runPostArchive() {
       String nodeLabel = ''
       if (pipelineInformation.nodeLabel?.trim()) {
          nodeLabel = pipelineInformation.nodeLabel
       }
 
       script.node(nodeLabel) {
-         script.stage("Validation") {
-            script.echo("Validating build output.")
-            def component = script.getComponentParts()['repo']
-            def exportDir = script.env."${component}_DEP_DIR"
-            pipelineInformation.lvVersions.each { version ->
-               if(!script.fileExists("$exportDir\\${version.lvRuntimeVersion}")) {
-                  script.failBuild("Failed to build version $version. See issue: https://github.com/ni/niveristand-custom-device-build-tools/issues/50")
-               }
-            }
+         executePostArchiveStages()
+         validateBuild()
+      }
+   }
 
-            createFinishedFile(exportDir)
+   private void executePostArchiveStages() {
+      script.stage("Post-Archive") {
+         executeStages(postArchiveStages.values())
+      }
+   }
+
+   // This method is here to catch builds with issue 50:
+   // https://github.com/ni/niveristand-custom-device-build-tools/issues/50
+   // If this issue is encountered, the build will still show success even
+   // though an export for the desired version is not actually created.
+   // We should fail the build instead of returning false success.
+   private void validateBuild() {
+      script.stage("Validation") {
+         script.echo("Validating build output.")
+         def component = script.getComponentParts()['repo']
+         def exportDir = script.env."${component}_DEP_DIR"
+         pipelineInformation.lvVersions.each { version ->
+            if(!script.fileExists("$exportDir\\${version.lvRuntimeVersion}")) {
+               script.failBuild("Failed to build version $version. See issue: https://github.com/ni/niveristand-custom-device-build-tools/issues/50")
+            }
          }
+
+         createFinishedFile(exportDir)
       }
    }
 

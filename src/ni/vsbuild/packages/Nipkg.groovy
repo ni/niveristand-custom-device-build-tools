@@ -14,12 +14,14 @@ class Nipkg extends AbstractPackage {
    def payloadMap
    def controlFile
    def instructionsFile
+   def strategy
 
    Nipkg(script, packageInfo, lvVersion, strategy) {
       super(script, packageInfo, lvVersion)
-      this.createPayloadMap(packageInfo, strategy)
+      this.createPayloadMap(packageInfo)
       this.controlFile = packageInfo.get('control_file') ?: CONTROL_FILE_NAME
       this.instructionsFile = packageInfo.get('instructions_file') ?: INSTRUCTIONS_FILE_NAME
+      this.strategy = strategy
    }
 
    void buildPackage(outputLocation) {
@@ -29,8 +31,9 @@ class Nipkg extends AbstractPackage {
       script.echo "Building nipkg for $controlFile"
       def nipkgOutput = script.nipkgBuild(PACKAGE_DIRECTORY, PACKAGE_DIRECTORY)
 
+      def outputDirectory = this.strategy.getOutputDirectory(outputLocation)
       script.echo "Copying files for $controlFile"
-      script.copyFiles(PACKAGE_DIRECTORY, "\"$outputLocation\"", [files: nipkgOutput])
+      script.copyFiles(PACKAGE_DIRECTORY, "\"$outputDirectory\"", [files: nipkgOutput])
    }
 
    String[] getConfigurationFiles() {
@@ -38,7 +41,7 @@ class Nipkg extends AbstractPackage {
    }
 
    @NonCPS
-   private void createPayloadMap(packageInfo, strategy) {
+   private void createPayloadMap(packageInfo) {
       def payloadDir = packageInfo.get('payload_dir')
       // Yes, I'm calling toString() on what appears to be a string, but is not actually
       // java.lang.String. Instead, the interpolated string is a groovy.lang.GString.
@@ -48,19 +51,16 @@ class Nipkg extends AbstractPackage {
       // https://stackoverflow.com/questions/39145121/why-i-cannot-get-exactly-the-same-gstring-as-was-put-to-map-in-groovy
       def installDestination = packageInfo.get("${lvVersion.lvRuntimeVersion}_install_destination".toString()) ?: packageInfo.get('install_destination')
 
-      def configurationPayloadMap
       if (payloadDir) {
-         configurationPayloadMap = [(payloadDir): installDestination]
+         this.payloadMap = [(payloadDir): installDestination]
       } else {
-         configurationPayloadMap = packageInfo.get('payload_map')
+         this.payloadMap = packageInfo.get('payload_map')
       }
 
-      if (!configurationPayloadMap) {
+      if (!this.payloadMap) {
          script.failBuild("Building an nipkg requires either 'payload_map', " +
                "or 'payload_dir' and 'install_destination' to be specified.")
       }
-
-      this.payloadMap = strategy.createNipkgPayloadMap(configurationPayloadMap)
    }
 
    // This method is responsible for setting up the directory and file
@@ -129,7 +129,8 @@ class Nipkg extends AbstractPackage {
          }
       }
 
-      this.payloadMap.each { payloadDir, installDestination ->
+      def finalMap = this.strategy.createNipkgPayloadMap(script, this.payloadMap, packageOutputDir)
+      finalMap.each { payloadDir, installDestination ->
          def destination = updateVersionVariables(installDestination)
          script.copyFiles(payloadDir, "$PACKAGE_DIRECTORY\\$DATA_DIRECTORY\\$destination", [directoryExclusions: INSTALLER_DIRECTORY])
       }

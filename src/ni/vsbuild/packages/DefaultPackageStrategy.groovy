@@ -15,8 +15,11 @@ class DefaultPackageStrategy implements PackageStrategy {
       }
    }
 
-   @NonCPS
-   def createNipkgPayloadMap(payloadMap) {
+   def getOutputDirectory(script, outputDir) {
+      return outputDir
+   }
+
+   def createNipkgPayloadMap(script, payloadMap, outputDir) {
       return payloadMap
    }
 }
