@@ -2,13 +2,21 @@ package ni.vsbuild.stages
 
 import ni.vsbuild.packages.Buildable
 import ni.vsbuild.packages.PackageFactory
+import ni.vsbuild.packages.PackageStrategy
+import ni.vsbuild.packages.DefaultPackageStrategy
 
 class Package extends AbstractStage {
 
    private def packages
+   private PackageStrategy strategy
+
+   Package(script, configuration, lvVersion, strategy) {
+      super(script, 'Package', configuration, lvVersion)
+      this.strategy = strategy
+   }
 
    Package(script, configuration, lvVersion) {
-      super(script, 'Package', configuration, lvVersion)
+      this(script, configuration, lvVersion, new DefaultPackageStrategy(lvVersion))
    }
 
    void executeStage() {
@@ -26,7 +34,22 @@ class Package extends AbstractStage {
       return this.@packages
    }
 
+   boolean stageRequired() {
+      def packageInfoCollection = getPackageInfoCollection()
+      return !packageInfoCollection.isEmpty()
+   }
+
    private void createPackages() {
+      def packageInfoCollection = getPackageInfoCollection()
+
+      this.@packages = []
+      for (def packageInfo : packageInfoCollection) {
+         Buildable pkg = PackageFactory.createPackage(script, packageInfo, lvVersion, strategy)
+         this.@packages.add(pkg)
+      }
+   }
+
+   private def getPackageInfoCollection() {
       def packageInfoCollection = []
       // Developers can specify a single package [Package] or a collection of packages [[Package]].
       // Test the package information parameter and iterate as needed.
@@ -37,10 +60,7 @@ class Package extends AbstractStage {
          packageInfoCollection.add(configuration.packageInfo)
       }
 
-      this.@packages = []
-      for (def packageInfo : packageInfoCollection) {
-         Buildable pkg = PackageFactory.createPackage(script, packageInfo, lvVersion)
-         this.@packages.add(pkg)
-      }
+      packageInfoCollection = strategy.filterPackageCollection(packageInfoCollection)
+      return packageInfoCollection
    }
 }

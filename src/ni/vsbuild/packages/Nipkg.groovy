@@ -14,12 +14,14 @@ class Nipkg extends AbstractPackage {
    def payloadMap
    def controlFile
    def instructionsFile
+   def strategy
 
-   Nipkg(script, packageInfo, lvVersion) {
+   Nipkg(script, packageInfo, lvVersion, strategy) {
       super(script, packageInfo, lvVersion)
       this.createPayloadMap(packageInfo)
       this.controlFile = packageInfo.get('control_file') ?: CONTROL_FILE_NAME
       this.instructionsFile = packageInfo.get('instructions_file') ?: INSTRUCTIONS_FILE_NAME
+      this.strategy = strategy
    }
 
    void buildPackage(outputLocation) {
@@ -29,8 +31,9 @@ class Nipkg extends AbstractPackage {
       script.echo "Building nipkg for $controlFile"
       def nipkgOutput = script.nipkgBuild(PACKAGE_DIRECTORY, PACKAGE_DIRECTORY)
 
+      def outputDirectory = this.strategy.getOutputDirectory(script, outputLocation)
       script.echo "Copying files for $controlFile"
-      script.copyFiles(PACKAGE_DIRECTORY, "\"$outputLocation\"", [files: nipkgOutput])
+      script.copyFiles(PACKAGE_DIRECTORY, outputDirectory, [files: nipkgOutput])
    }
 
    String[] getConfigurationFiles() {
@@ -126,7 +129,8 @@ class Nipkg extends AbstractPackage {
          }
       }
 
-      this.payloadMap.each { payloadDir, installDestination ->
+      def finalMap = this.strategy.createNipkgPayloadMap(script, this.payloadMap, packageOutputDir)
+      finalMap.each { payloadDir, installDestination ->
          def destination = updateVersionVariables(installDestination)
          script.copyFiles(payloadDir, "$PACKAGE_DIRECTORY\\$DATA_DIRECTORY\\$destination", [directoryExclusions: INSTALLER_DIRECTORY])
       }

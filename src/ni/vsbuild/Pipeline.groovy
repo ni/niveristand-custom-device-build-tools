@@ -1,6 +1,7 @@
 package ni.vsbuild
 
 import ni.vsbuild.stages.*
+import ni.vsbuild.packages.PostArchivePackageStrategy
 
 class Pipeline implements Serializable {
 
@@ -12,6 +13,7 @@ class Pipeline implements Serializable {
    PipelineInformation pipelineInformation
    String jsonConfig
    def changedFiles
+   def postArchiveStages = [:]
 
    int checkoutTimeoutInMinutes = 10
 
@@ -23,6 +25,7 @@ class Pipeline implements Serializable {
       String manifestFile
       def changedFiles
       def stages = []
+      def postStages = []
 
       Builder(def script, BuildConfiguration buildConfiguration, LabviewBuildVersion lvVersion, String manifestFile, def changedFiles) {
          this.script = script
@@ -50,6 +53,12 @@ class Pipeline implements Serializable {
          if (shouldBuildPackage(packageStage)) {
             stages << packageStage
          }
+
+         def postArchivePackageStage = new Package(script, buildConfiguration, lvVersion, new PostArchivePackageStrategy(lvVersion))
+
+         if (shouldBuildPackage(postArchivePackageStage)) {
+            postStages << postArchivePackageStage
+         }
       }
 
       def withArchiveStage() {
@@ -57,6 +66,10 @@ class Pipeline implements Serializable {
       }
 
       def shouldBuildPackage(def packageStage) {
+         if (!packageStage.stageRequired()) {
+             return false
+         }
+
          // The plan is to enable automatic merging from main to
          // release or hotfix branch packages and not build packages
          // for any other branches, including main. The version must
@@ -115,7 +128,7 @@ class Pipeline implements Serializable {
             withArchiveStage()
          }
 
-         return stages
+         return [stages, postStages]
       }
    }
 
@@ -143,7 +156,7 @@ class Pipeline implements Serializable {
             script.buildDependencies(pipelineInformation)
 
             runBuild()
-            validateBuild()
+            runPostArchive()
          }
       }
       finally {
@@ -252,7 +265,8 @@ class Pipeline implements Serializable {
                configuration.printInformation(script)
 
                def builder = new Builder(script, configuration, lvVersion, MANIFEST_FILE, changedFiles)
-               def stages = builder.buildPipeline()
+               def (stages, postStages) = builder.buildPipeline()
+               addPostArchiveStages(postStages)
 
                executeStages(stages)
             }
@@ -300,30 +314,37 @@ class Pipeline implements Serializable {
       notifyStage.execute()
    }
 
-   // This method is here to catch builds with issue 50:
-   // https://github.com/ni/niveristand-custom-device-build-tools/issues/50
-   // If this issue is encountered, the build will still show success even
-   // though an export for the desired version is not actually created.
-   // We should fail the build instead of returning false success.
-   private void validateBuild() {
+   private void addPostArchiveStages(stages) {
+      for (def stage : stages) {
+         def key = [stage.getClass(), stage.lvVersion.lvRuntimeVersion]
+
+         // Only add one post-archive stage per stage type and LV year version.
+         // Post-archive should only be used for stages requiring both 32- and
+         // 64-bit versions of the same LV year version. If a stage already
+         // exists for that combination, don't add another.
+         if (postArchiveStages[key]) {
+            continue
+         }
+
+         postArchiveStages[key] = stage
+      }
+   }
+
+   private void runPostArchive() {
       String nodeLabel = ''
       if (pipelineInformation.nodeLabel?.trim()) {
          nodeLabel = pipelineInformation.nodeLabel
       }
 
       script.node(nodeLabel) {
-         script.stage("Validation") {
-            script.echo("Validating build output.")
-            def component = script.getComponentParts()['repo']
-            def exportDir = script.env."${component}_DEP_DIR"
-            pipelineInformation.lvVersions.each { version ->
-               if(!script.fileExists("$exportDir\\${version.lvRuntimeVersion}")) {
-                  script.failBuild("Failed to build version $version. See issue: https://github.com/ni/niveristand-custom-device-build-tools/issues/50")
-               }
-            }
+         executePostArchiveStages()
+         createFinishedFile()
+      }
+   }
 
-            createFinishedFile(exportDir)
-         }
+   private void executePostArchiveStages() {
+      script.stage("Post-Archive") {
+         executeStages(postArchiveStages.values())
       }
    }
 
@@ -332,7 +353,9 @@ class Pipeline implements Serializable {
    // If this file does not exist, the build was either unsuccessful
    // or is still in progress -- in either case, the archive should
    // not be consumed.
-   private void createFinishedFile(exportDir) {
+   private void createFinishedFile() {
+      def component = script.getComponentParts()['repo']
+      def exportDir = script.env."${component}_DEP_DIR"
       script.bat "type nul > \"$exportDir\\.finished\""
    }
 
