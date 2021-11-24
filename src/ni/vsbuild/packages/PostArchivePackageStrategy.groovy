@@ -10,6 +10,12 @@ class PostArchivePackageStrategy implements PackageStrategy {
       this.lvVersion = lvVersion
    }
 
+   // Returns all packages with a configuration where
+   // multi_bitness is defined AND
+   // the current LabVIEW version matches one of the versions
+   // specified for multi-bitness packaging.
+   // If no versions are specified, include the package with the
+   // assumption that multi_bitness exists for ALL versions.
    def filterPackageCollection(packageCollection) {
       return packageCollection.findAll { it.get('multi_bitness') \
                                           &&  (!(it.get('multi_bitness_versions')) \

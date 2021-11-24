@@ -338,7 +338,7 @@ class Pipeline implements Serializable {
 
       script.node(nodeLabel) {
          executePostArchiveStages()
-         validateBuild()
+         createFinishedFile()
       }
    }
 
@@ -348,32 +348,14 @@ class Pipeline implements Serializable {
       }
    }
 
-   // This method is here to catch builds with issue 50:
-   // https://github.com/ni/niveristand-custom-device-build-tools/issues/50
-   // If this issue is encountered, the build will still show success even
-   // though an export for the desired version is not actually created.
-   // We should fail the build instead of returning false success.
-   private void validateBuild() {
-      script.stage("Validation") {
-         script.echo("Validating build output.")
-         def component = script.getComponentParts()['repo']
-         def exportDir = script.env."${component}_DEP_DIR"
-         pipelineInformation.lvVersions.each { version ->
-            if(!script.fileExists("$exportDir\\${version.lvRuntimeVersion}")) {
-               script.failBuild("Failed to build version $version. See issue: https://github.com/ni/niveristand-custom-device-build-tools/issues/50")
-            }
-         }
-
-         createFinishedFile(exportDir)
-      }
-   }
-
    // Create a file indicating the build is finished.
    // If this file exists, the build was successful.
    // If this file does not exist, the build was either unsuccessful
    // or is still in progress -- in either case, the archive should
    // not be consumed.
-   private void createFinishedFile(exportDir) {
+   private void createFinishedFile() {
+      def component = script.getComponentParts()['repo']
+      def exportDir = script.env."${component}_DEP_DIR"
       script.bat "type nul > \"$exportDir\\.finished\""
    }
 
