@@ -10,7 +10,10 @@ import ni.vsbuild.LabviewBuildVersion
 
 //This script further assumes that Jenkins is configured (via the Pipeline Shared Libraries plugin) to implicitly include https://github.com/ni/niveristand-custom-device-build-tools
 
-def call(String lvVersion) {
+// The default timeout for diffing is 60 minutes. This is normally sufficient to render all VI diffs.
+// For large diffs, this timeout can be overridden in the Jenkinsfile, either by modifying the Jenkinsfile
+// in the repo or by setting the value when running a Jenkins replay.
+def call(String lvVersion, int diffTimeout = 60) {
    // Skip diffing for build which aren't pull-requests.
    // Only pull-requests will have the change ID set.
    if (!env.CHANGE_ID) {
@@ -37,7 +40,7 @@ def call(String lvVersion) {
       // If this change is a pull request, diff vis.
       stage('Diff VIs') {
          try {
-            timeout(time: 60, unit: 'MINUTES') {
+            timeout(time: diffTimeout, unit: 'MINUTES') {
                lvDiff(lvVersion, env.DIFFING_PIC_REPO, env.GITHUB_DIFF_TOKEN)
                echo 'Diff Succeeded!'
             }
@@ -65,7 +68,7 @@ def call(String lvVersion) {
    }
 }
 
-def call(HashMap<Integer, List<String>> lvVersions) {
+def call(HashMap<Integer, List<String>> lvVersions, int diffTimeout = 60) {
    // The diff script currently expects a 32-bit LabVIEW version.
    // Get the first 32-bit build version to use for the diff
    // by looking up the list of versions in the version map using the
@@ -73,5 +76,5 @@ def call(HashMap<Integer, List<String>> lvVersions) {
    // Ultimately, we may need to figure out a way to diff in either
    // bitness, but for now, we will keep it the same.
    def firstVersionEntry = lvVersions[32][0]
-   call(firstVersionEntry)
+   call(firstVersionEntry, diffTimeout)
 }
