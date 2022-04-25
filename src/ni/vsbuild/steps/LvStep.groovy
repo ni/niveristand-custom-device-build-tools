@@ -41,7 +41,7 @@ abstract class LvStep extends AbstractStep {
       return lvVersion.architecture == Architecture.bitnessToArchitecture(bitness as Integer)
    }
 
-   public boolean atLeastMiniumVersion() {
+   public boolean atLeastMinimumVersion() {
       return lvVersion.lvRuntimeVersion >= minimumVersion
    }
 }
