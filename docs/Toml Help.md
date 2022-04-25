@@ -131,6 +131,7 @@ Key | Description | Required
 `build_spec` | name of the specification to be built | **YES**
 `dependency_target` | path prepended to a dependency's `libraries` key to fetch the correct version of a dependency | **NO**
 `bitness` | limit this step to build only for the provided bitness, either 32 or 64 | **NO**
+`minimum_version` | only run this step if the current version is at least the version specified | **NO**
 `output_dir` | path prepended to a dependency's `libraries` key | **NO** (**_deprecated_**)
 `output_libraries` | array of libraries to be copied to the `output_dir` | **NO** (**_deprecated_**)
 
@@ -169,6 +170,17 @@ build_spec = 'Engine Release'
 dependency_target = 'linux64' # get dependencies from linux64 directory
 ```
 
+Execute a build spec, but only if the current LabVIEW version is the same or newer than LabVIEW 2020.
+```
+[[build.steps]]
+name = 'Configuration Library'
+type = 'lvBuildSpec'
+project = '{first}' # uses the value 'src\first.lvproj' from the example in the Projects section of this document
+target = 'My Computer'
+build_spec = 'Configuration Release'
+minimum_version = '2020'
+```
+
 (**_Deprecated_**) Execute a build spec and output the specified libraries to a specific sub-directory. Builds spec My Library and copies output.llb to a pharlap directory instead of leaving it where it was built.
 ```
 [[build.steps]]
@@ -196,6 +208,7 @@ Key | Description | Required
 `dependency_target` | path prepended to a dependency's `libraries` key to fetch the correct version of a dependency | **NO**
 `bitness` | limit this step to build only for the provided bitness, either 32 or 64 | **NO**
 `bitness_versions` | list of LabVIEW versions where the `bitness` key applies | **NO**
+`minimum_version` | only run this step if the current version is at least the version specified | **NO**
 
 
 ###### Example
@@ -251,6 +264,7 @@ Key | Description | Required
 -|-|-
 `project` | reference to the project table in the projects section of `build.toml`  | **YES**
 `bitness` | limit this step to build only for the provided bitness, either 32 or 64 | **NO**
+`minimum_version` | only run this step if the current version is at least the version specified | **NO**
 
 ###### Example
 ```
@@ -273,6 +287,7 @@ Key | Description | Required
 `condition` | expression to determine which value is chosen for `symbol | **YES**
 `true_value` | desired value of `symbol` when `condition` evaluates to TRUE | **YES**
 `false_value` | desired value of `symbol` when `condition` evaluates to FALSE | **YES**
+`minimum_version` | only run this step if the current version is at least the version specified | **NO**
 
 ###### Example
 ```
