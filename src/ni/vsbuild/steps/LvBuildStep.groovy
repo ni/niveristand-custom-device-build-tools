@@ -21,6 +21,10 @@ abstract class LvBuildStep extends LvProjectStep {
          return
       }
 
+      if(!atLeastMinimumVersion()) {
+         return
+      }
+
       copyDependencies(configuration)
 
       def resolvedProject = resolveProject(configuration)

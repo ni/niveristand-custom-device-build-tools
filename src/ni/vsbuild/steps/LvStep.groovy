@@ -7,12 +7,14 @@ abstract class LvStep extends AbstractStep {
    def lvVersion
    def bitness
    def bitnessVersions
+   def minimumVersion
 
    LvStep(script, mapStep, lvVersion) {
       super(script, mapStep)
       this.lvVersion = lvVersion
       this.bitness = mapStep.get('bitness')
       this.bitnessVersions = mapStep.get('bitness_versions')
+      this.minimumVersion = mapStep.get('minimum_version')
    }
 
    // Return true if the current build architecture matches
@@ -37,5 +39,9 @@ abstract class LvStep extends AbstractStep {
       //If no version-specific entry or the current version is found in the list
       //of specific versions, check the bitness of the current version.
       return lvVersion.architecture == Architecture.bitnessToArchitecture(bitness as Integer)
+   }
+
+   public boolean atLeastMinimumVersion() {
+      return lvVersion.lvRuntimeVersion >= minimumVersion
    }
 }
