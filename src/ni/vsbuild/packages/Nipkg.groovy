@@ -112,8 +112,9 @@ class Nipkg extends AbstractPackage {
    private String updateVersionVariables(text) {
       def baseVersion = getBaseVersion()
       def fullVersion = getFullVersion()
+      def majorVersion = getMajorVersion()
 
-      def additionalReplacements = ['nipkg_version': fullVersion, 'display_version': baseVersion]
+      def additionalReplacements = ['nipkg_version': fullVersion, 'display_version': baseVersion, 'major_version': majorVersion]
       return StringSubstitution.replaceStrings(text, lvVersion, additionalReplacements)
    }
 

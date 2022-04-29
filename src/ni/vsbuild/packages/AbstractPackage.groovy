@@ -41,13 +41,8 @@ abstract class AbstractPackage implements Buildable {
          return INVALID_VERSION
       }
 
-      def baseVersion = script.env.BRANCH_NAME.split("[-/]")[1]
-      def versionPartCount = baseVersion.tokenize(".").size()
-
-      def versionPartsToDisplay = 3
-      for(versionPartCount; versionPartCount < versionPartsToDisplay; versionPartCount++) {
-         baseVersion = "${baseVersion}.0"
-      }
+      def branchVersion = script.env.BRANCH_NAME.split("[-/]")[1]
+      def baseVersion = buildVersionString(branchVersion)
 
       return baseVersion
    }
@@ -57,5 +52,24 @@ abstract class AbstractPackage implements Buildable {
       def fullVersion = "${baseVersion}.${script.currentBuild.number}"
 
       return fullVersion
+   }
+
+   protected def getMajorVersion() {
+      def baseVersion = getBaseVersion()
+      def majorVersion = buildVersionString(baseVersion.tokenize(".")[0])
+
+      return majorVersion
+   }
+
+   private def buildVersionString(def startingVersion) {
+      def finalVersion = startingVersion
+      def versionPartCount = startingVersion.tokenize(".").size()
+
+      def versionPartsToDisplay = 3
+      for(versionPartCount; versionPartCount < versionPartsToDisplay; versionPartCount++) {
+         finalVersion = "${finalVersion}.0"
+      }
+
+      return finalVersion
    }
 }
