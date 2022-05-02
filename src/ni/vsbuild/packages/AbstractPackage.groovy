@@ -61,7 +61,7 @@ abstract class AbstractPackage implements Buildable {
       return majorVersion
    }
 
-   private def buildVersionString(def startingVersion) {
+   protected def buildVersionString(def startingVersion) {
       def finalVersion = startingVersion
       def versionPartCount = startingVersion.tokenize(".").size()
 
