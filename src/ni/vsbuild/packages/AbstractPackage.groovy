@@ -56,7 +56,7 @@ abstract class AbstractPackage implements Buildable {
 
    protected def getMajorVersion() {
       def baseVersion = getBaseVersion()
-      def majorVersion = buildVersionString(baseVersion.tokenize(".")[0])
+      def majorVersion = baseVersion.tokenize(".")[0]
 
       return majorVersion
    }
