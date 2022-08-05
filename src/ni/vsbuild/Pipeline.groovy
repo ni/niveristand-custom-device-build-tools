@@ -326,7 +326,12 @@ class Pipeline implements Serializable {
             continue
          }
 
-         postArchiveStages[key] = stage
+         // Only add the x64 stage. Post-archive should not be used
+         // if multiple bitness is not required and x64 is the
+         // architecture to be used for building packages in that case.
+         if (stage.lvVersion.architecture == Architecture.x64) {
+            postArchiveStages[key] = stage
+         }
       }
    }
 
