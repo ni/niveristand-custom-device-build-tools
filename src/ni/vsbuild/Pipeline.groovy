@@ -318,15 +318,16 @@ class Pipeline implements Serializable {
       for (def stage : stages) {
          def key = [stage.getClass(), stage.lvVersion.lvRuntimeVersion]
 
-         // Only add one post-archive stage per stage type and LV year version.
-         // Post-archive should only be used for stages requiring both 32- and
-         // 64-bit versions of the same LV year version. If a stage already
-         // exists for that combination, don't add another.
-         if (postArchiveStages[key]) {
-            continue
-         }
+         // Only add the x64 stage. Post-archive should not be used
+         // if multiple bitness is not required and x64 is the
+         // architecture to be used for building packages in that case.
+         if (stage.lvVersion.architecture == Architecture.x64) {
+            if (postArchiveStages[key]) {
+               script.failBuild("Attempted to add multiple post-archive stages for $key.")
+            }
 
-         postArchiveStages[key] = stage
+            postArchiveStages[key] = stage
+         }
       }
    }
 
