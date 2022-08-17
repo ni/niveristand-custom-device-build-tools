@@ -4,7 +4,7 @@ def call(retryAttempts = 3) {
    retry(retryAttempts) {
       echo 'Attempting to delete workspace'
       if (!firstAttempt) {
-         sleep time: 5, unit: SECONDS
+         sleep time: 5, unit: 'SECONDS'
       } else {
          firstAttempt = false
       }
