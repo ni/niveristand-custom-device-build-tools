@@ -179,7 +179,7 @@ class Pipeline implements Serializable {
       def config
       script.node(pipelineInformation.nodeLabel) {
          script.stage('Checkout_readBuildInformation') {
-            script.deleteDir()
+            script.cleanWorkspace()
             script.echo 'Attempting to get source from repo.'
             script.timeout(time: checkoutTimeoutInMinutes, unit: 'MINUTES'){
                manifest['scm'] = script.checkout(script.scm)
@@ -280,7 +280,7 @@ class Pipeline implements Serializable {
       def manifest = script.readJSON text: '{}'
 
       script.stage("Checkout_$lvVersion") {
-         script.deleteDir()
+         script.cleanWorkspace()
          script.echo 'Attempting to get source from repo.'
          script.timeout(time: checkoutTimeoutInMinutes, unit: 'MINUTES'){
             manifest['scm'] = script.checkout(script.scm)

@@ -25,7 +25,7 @@ def call(String lvVersion, int diffTimeout = 60) {
    node(lvVersion) {
       echo 'Starting build...'
       stage('Pre-Clean') {
-         deleteDir()
+         cleanWorkspace()
       }
       stage('SCM_Checkout') {
          echo 'Attempting to get source from repo...'
@@ -59,7 +59,7 @@ def call(String lvVersion, int diffTimeout = 60) {
       }
       stage('Cleanup') {
          try {
-            deleteDir()
+            cleanWorkspace()
          }
          catch (CompositeIOException | FileSystemException e) {
                echo "Directory cleanup failed"
