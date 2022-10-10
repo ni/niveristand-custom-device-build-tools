@@ -3,7 +3,7 @@ package ni.vsbuild.packages
 abstract class AbstractPackage implements Buildable {
 
    static final String INSTALLER_DIRECTORY = "installer"
-   static final String INVALID_VERSION = "0.0.0"
+   static final String INVALID_VERSION = "23.0.0"
 
    def script
    def type
@@ -35,6 +35,17 @@ abstract class AbstractPackage implements Buildable {
       return []
    }
 
+   protected def getQuarterlyDisplayVersion() {
+      // Rather than try to finalize the versioning policy now,
+      // punt and just handle the immediate case.
+      def baseVersion = getBaseVersion()
+      if (baseVersion == "23.0.0") {
+         return "2023 Q1"
+      }
+
+      return baseVersion
+   }
+
    protected def getBaseVersion() {
       if (script.env.CHANGE_ID) {
          // Assign an invalid version to pull requests
@@ -59,6 +70,20 @@ abstract class AbstractPackage implements Buildable {
       def majorVersion = baseVersion.tokenize(".")[0]
 
       return majorVersion
+   }
+
+   protected def getMinorVersion() {
+      def baseVersion = getBaseVersion()
+      def minorVersion = baseVersion.tokenize(".")[1]
+
+      return minorVersion
+   }
+
+   protected def getUpdateVersion() {
+      def baseVersion = getBaseVersion()
+      def updateVersion = baseVersion.tokenize(".")[2]
+
+      return updateVersion
    }
 
    protected def buildVersionString(def startingVersion) {
