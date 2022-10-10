@@ -3,7 +3,7 @@ package ni.vsbuild.packages
 abstract class AbstractPackage implements Buildable {
 
    static final String INSTALLER_DIRECTORY = "installer"
-   static final String INVALID_VERSION = "23.0.0"
+   static final String INVALID_VERSION = "0.0.0"
 
    def script
    def type
