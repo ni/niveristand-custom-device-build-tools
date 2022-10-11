@@ -113,8 +113,20 @@ class Nipkg extends AbstractPackage {
       def baseVersion = getBaseVersion()
       def fullVersion = getFullVersion()
       def majorVersion = getMajorVersion()
+      def minorVersion = getMinorVersion()
+      def updateVersion = getUpdateVersion()
 
-      def additionalReplacements = ['nipkg_version': fullVersion, 'display_version': baseVersion, 'major_version': majorVersion]
+      def additionalReplacements = [
+         'major_version': majorVersion,
+         'minor_version': minorVersion,
+         'update_version': updateVersion,
+         'major_minor_version': "$majorVersion.$minorVersion",
+         'major_minor_update_version': "$majorVersion.$minorVersion.$updateVersion",
+         'major_minor_update_build_version': fullVersion,
+         'nipkg_version': fullVersion,
+         'display_version': baseVersion,
+         'quarterly_display_version': getQuarterlyDisplayVersion(),
+      ]
       return StringSubstitution.replaceStrings(text, lvVersion, additionalReplacements)
    }
 
