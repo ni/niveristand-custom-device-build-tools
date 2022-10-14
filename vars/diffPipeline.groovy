@@ -75,6 +75,6 @@ def call(HashMap<Integer, List<String>> lvVersions, int diffTimeout = 60) {
    // 32-bit key and then indexing the first item in the list.
    // Ultimately, we may need to figure out a way to diff in either
    // bitness, but for now, we will keep it the same.
-   def firstVersionEntry = lvVersions[32][0]
+   def firstVersionEntry = lvVersions[64][0]
    call(firstVersionEntry, diffTimeout)
 }
