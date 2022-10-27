@@ -4,7 +4,7 @@ import ni.vsbuild.BuildConfiguration
 
 class LvClearCacheStep extends LvStep {
 
-   LvRunViStep(script, mapStep, lvVersion) {
+   LvClearCacheStepStep(script, mapStep, lvVersion) {
       super(script, mapStep, lvVersion)
    }
 
