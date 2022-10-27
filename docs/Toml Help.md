@@ -17,6 +17,7 @@ There are two types of configuration captured in the build file:
       * [lvBuildSpecAllTargets](#lvbuildspecalltargets)
       * [lvBuildAll](#lvbuildall)
       * [lvSetConditionalDisableSymbol](#lvsetconditionaldisablesymbol)
+      * [lvClearCache](#lvclearcache)
    * [Codegen](#codegen)
    * [Build](#build)
    * [Package](#package)
@@ -305,6 +306,21 @@ false_value = '2016 or earlier'
 The symbol must already exist in the project. This step will not create a new disable symbol.
 
 `condition` may only use comparison with `lvVersion` currently. The supported operators are `<` `<=` `>` `>=` `==`, and `!=`.
+
+---
+
+##### lvClearCache
+The LvClearCache step clears both the LabVIEW compiled code cache and the Application Builder cache. This may be useful to work around some intermittent build failures.
+
+###### Supported Keys
+This step does not have any additional configuration.
+
+###### Example
+```
+[[codegen.steps]]
+name = 'Clear Cache'
+type = 'lvClearCache'
+```
 
 ---
 

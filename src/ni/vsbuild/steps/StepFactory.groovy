@@ -40,6 +40,10 @@ class StepFactory implements Serializable {
          return new LvVITesterStep(script, mapStep, lvVersion)
       }
 
+      if(type == 'lvClearCache') {
+         return new LvClearCacheStep(script, mapStep, lvVersion)
+      }
+
       script.failBuild("Type \'$type\' is invalid for step \'${mapStep.get('name')}\'.")
    }
 }
