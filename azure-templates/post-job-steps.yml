@@ -17,13 +17,13 @@ steps:
     - powershell: |
         rm -r "nipkg"
         mkdir "nipkg"
-        cp -R "$(customDevice)\${{ parameters.buildOutputLocation }}\*" "nipkg\data\documents\National Instruments\NI VeriStand 2020\Custom Devices\National Instruments"
+        cp -R "$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*" "nipkg\data\documents\National Instruments\NI VeriStand 2020\Custom Devices\National Instruments"
       displayName: Generate nipkg File structure (INCOMPLETE)
     - script: echo "this is incomplete"
       displayName: Pack nipkg (INCOMPLETE)
   - powershell: |
       Copy-Item `
-      -Path "$(customDevice)\${{ parameters.buildOutputLocation }}\*" `
+      -Path "$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*" `
       -Destination "${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\$(Build.BuildId)\$(lvVersion)\$(architecture)\" `
       -Recurse
     displayName: Copying built files to nirvana Archive

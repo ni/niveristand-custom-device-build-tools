@@ -16,13 +16,13 @@ steps:
 ###########  Set lvproj Config  ###########
       # Check if lvproj config files placed for this project, if not, place the file
     - powershell: |
-        $fileExists = Test-Path -Path "$(customDevice)\${{ parameters.projectLocation }}.config"
+        $fileExists = Test-Path -Path "$(customDeviceRepoName)\${{ parameters.projectLocation }}.config"
         Write-Output "##vso[task.setvariable variable=configFileExists]$fileExists"
       displayName: Check if config file exists already for ${{ parameters.projectLocation }}
 
       # Copy and update lvproj.config file to project
     - powershell: |
-        Write-Host "##vso[task.setvariable variable=lvConfigFilePath]$(customDevice)\${{ parameters.projectLocation }}.config"
+        Write-Host "##vso[task.setvariable variable=lvConfigFilePath]$(customDeviceRepoName)\${{ parameters.projectLocation }}.config"
       displayName: Determine lvproj config file path
       condition: eq(variables['configFileExists'], 'False')
   
@@ -47,10 +47,10 @@ steps:
         echo on
         $(lvCLICall) ^
         -OperationName "${{ parameters.buildOperation }}" ^
-        -ProjectPath "%cd%\$(customDevice)\${{ parameters.projectLocation }}" ^
+        -ProjectPath "%cd%\$(customDeviceRepoName)\${{ parameters.projectLocation }}" ^
         $(targetArgument) ^
         $(buildSpecArgument) ^
-        -LogFilePath "%cd%\$(customDevice)\lvBuildSpecs.log"
+        -LogFilePath "%cd%\$(customDeviceRepoName)\lvBuildSpecs.log"
       displayName: Build ${{ parameters.buildSpec }} on ${{ parameters.target }} in ${{ parameters.projectLocation }}
     - script: taskkill /im labview.exe /f
       displayName: Close LabVIEW
