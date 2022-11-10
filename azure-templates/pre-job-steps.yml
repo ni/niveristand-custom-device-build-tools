@@ -1,0 +1,52 @@
+# File: pre-job-steps.yml
+##### Steps Template Before Any Builds #####
+
+# Inputs: buildTools, customDevice, lvVersion
+parameters:
+  - name: customDevice
+    type: string
+  - name: lvVersion
+    type: string
+  - name: buildTools
+    type: string
+    default: niveristand-custom-device-build-tools
+
+
+steps:
+###########  Configure Job-wide Variables  ###########
+  # --- lvConfigVersion (.NET Assembly Version), lvPath, architecture ---
+  - ${{ if eq( parameters.lvVersion, '2020' )}}:
+    - powershell: |
+        Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
+        Write-Host "##vso[task.setvariable variable=architecture]x86"
+        Write-Host "##vso[task.setvariable variable=lvConfigVersion]8.0.0.0"
+      displayName: Use .NET Assembly 8.0.0.0 & 32-bit
+  - ${{ if eq( parameters.lvVersion, '2021' )}}:
+    - powershell: |
+        Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
+        Write-Host "##vso[task.setvariable variable=architecture]x64"
+        Write-Host "##vso[task.setvariable variable=lvConfigVersion]9.0.0.0"
+      displayName: Use .NET Assembly 9.0.0.0 & 64-bit
+  - ${{ if eq( parameters.lvVersion, '2023' )}}:
+    - powershell: |
+        Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
+        Write-Host "##vso[task.setvariable variable=architecture]x64"
+        Write-Host "##vso[task.setvariable variable=lvConfigVersion]10.0.0.0"
+      displayName: Use .NET Assembly 10.0.0.0 & 64-bit
+  # --- buildTools, customDevice, lvVersion, lvCLICall ---
+  - powershell: |
+      Write-Host '##vso[task.setvariable variable=buildTools]${{ parameters.buildTools }}'
+      Write-Host '##vso[task.setvariable variable=customDevice]${{ parameters.customDevice }}'
+      Write-Host '##vso[task.setvariable variable=lvVersion]${{ parameters.lvVersion }}'
+      Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ parameters.buildTools }}\lv\operations"'
+    displayName: Define Job-wide Variables
+
+###########  Checkout Necessary Repos  ###########
+  - checkout: self
+    displayName: Check out ${{ parameters.customDevice }} repository
+  - checkout: ${{ parameters.buildTools }}
+    displayName: Check out NI VS Custom Device Build Tools repository
+
+###########  Clear Compile Cache  ###########
+  - script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\$(buildTools)\lv\operations\Utilities\ClearCache.vi" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvClearCache.log"
+    displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersion }}
