@@ -1,7 +1,3 @@
-# File: pre-job-steps.yml
-##### Steps Template Before Any Builds #####
-
-# Inputs: buildTools, lvVersion
 parameters:
   - name: customDeviceRepoName
     type: string
@@ -31,14 +27,23 @@ steps:
   - ${{ if eq( parameters.lvVersion, '2020' )}}:
     - powershell: |
         Write-Host "##vso[task.setvariable variable=lvConfigVersion]8.0.0.0"
+        Write-Host '##vso[task.setvariable variable=shortLvVersion]20'
+        Write-Host '##vso[task.setvariable variable=releaseVersion]20.0.0'
+        Write-Host '##vso[task.setvariable variable=quarterlyReleaseVersion]$(releaseVersion)'
       displayName: Use .NET Assembly 8.0.0.0
   - ${{ if eq( parameters.lvVersion, '2021' )}}:
     - powershell: |
         Write-Host "##vso[task.setvariable variable=lvConfigVersion]9.0.0.0"
+        Write-Host '##vso[task.setvariable variable=shortLvVersion]21'
+        Write-Host '##vso[task.setvariable variable=releaseVersion]21.0.0'
+        Write-Host '##vso[task.setvariable variable=quarterlyReleaseVersion]$(releaseVersion)'
       displayName: Use .NET Assembly 9.0.0.0
   - ${{ if eq( parameters.lvVersion, '2023' )}}:
     - powershell: |
         Write-Host "##vso[task.setvariable variable=lvConfigVersion]10.0.0.0"
+        Write-Host '##vso[task.setvariable variable=shortLvVersion]23'
+        Write-Host '##vso[task.setvariable variable=releaseVersion]23.0.0'
+        Write-Host '##vso[task.setvariable variable=quarterlyReleaseVersion]2023 Q1'
       displayName: Use .NET Assembly 10.0.0.0
   # --- buildTools, lvVersion, lvCLICall ---
   - powershell: |

@@ -1,7 +1,3 @@
-# File: build-op-steps.yaml
-##### Steps Template for each Build Operation #####
-
-###########  Input Parameters for Template  ###########
 parameters:
   - name: projectLocation
     type: string
@@ -14,46 +10,40 @@ parameters:
 
 steps:
 ###########  Set lvproj Config  ###########
-      # Check if lvproj config files placed for this project, if not, place the file
-    - powershell: |
-        $fileExists = Test-Path -Path "$(customDeviceRepoName)\${{ parameters.projectLocation }}.config"
-        Write-Output "##vso[task.setvariable variable=configFileExists]$fileExists"
-      displayName: Check if config file exists already for ${{ parameters.projectLocation }}
+  - powershell: |
+      $fileExists = Test-Path -Path "$(customDeviceRepoName)\${{ parameters.projectLocation }}.config"
+      Write-Output "##vso[task.setvariable variable=configFileExists]$fileExists"
+    displayName: Check if config file exists already for ${{ parameters.projectLocation }}
 
-      # Copy and update lvproj.config file to project
-    - powershell: |
-        Write-Host "##vso[task.setvariable variable=lvConfigFilePath]$(customDeviceRepoName)\${{ parameters.projectLocation }}.config"
-      displayName: Determine lvproj config file path
-      condition: eq(variables['configFileExists'], 'False')
-  
-    - powershell: |
-        Copy-Item "$(buildTools)\resources\LabVIEW.exe.config" -Destination "$(lvConfigFilePath)"
-        (Get-Content -Path '$(lvConfigFilePath)') -replace '2016.0.0.0', '$(lvConfigVersion)' | Set-Content -Path '$(lvConfigFilePath)'
-      displayName: Update lvproj.config to reference correct .NET Assembly version for ${{ parameters.projectLocation }}
-      condition: eq(variables['configFileExists'], 'False')
+  - powershell: |
+      $lvConfigFilePath = '$(customDeviceRepoName)\${{ parameters.projectLocation }}.config'
+      Copy-Item "$(buildTools)\resources\LabVIEW.exe.config" -Destination $lvConfigFilePath
+      (Get-Content -Path $lvConfigFilePath) -replace '2016.0.0.0', '$(lvConfigVersion)' | Set-Content -Path $lvConfigFilePath
+    displayName: Place lvproj.config file for ${{ parameters.projectLocation }}
+    condition: eq(variables['configFileExists'], 'False') # skip if lvproj.config already placed
 
 ###########  Execute LabVIEW Build Operation  ###########
-    - powershell: |
-        Write-Host '##vso[task.setvariable variable=targetArgument]'
-        Write-Host '##vso[task.setvariable variable=buildSpecArgument]'
-      displayName: reset TargetName and BuildSpec
-    - powershell: Write-Host '##vso[task.setvariable variable=targetArgument]-TargetName "${{ parameters.target }}" '
-      displayName: specify TargetNames
-      condition: ne('${{ parameters.target }}', '')
-    - powershell: Write-Host '##vso[task.setvariable variable=buildSpecArgument]-BuildSpecName "${{ parameters.buildSpec }}" '
-      displayName: specify BuildSpecs
-      condition: ne('${{ parameters.buildSpec }}', '')
-    - script: |
-        echo on
-        $(lvCLICall) ^
-        -OperationName "${{ parameters.buildOperation }}" ^
-        -ProjectPath "%cd%\$(customDeviceRepoName)\${{ parameters.projectLocation }}" ^
-        $(targetArgument) ^
-        $(buildSpecArgument) ^
-        -LogFilePath "%cd%\$(customDeviceRepoName)\lvBuildSpecs.log"
-      displayName: Build ${{ parameters.buildSpec }} on ${{ parameters.target }} in ${{ parameters.projectLocation }}
-    - script: taskkill /im labview.exe /f
-      displayName: Close LabVIEW
-      condition: always() # always close LabVIEW, even if previous step fails
+  - powershell: |
+      Write-Host '##vso[task.setvariable variable=targetArgument]'
+      Write-Host '##vso[task.setvariable variable=buildSpecArgument]'
+    displayName: reset TargetName and BuildSpec
+  - powershell: Write-Host '##vso[task.setvariable variable=targetArgument]-TargetName "${{ parameters.target }}" '
+    displayName: specify TargetNames
+    condition: ne('${{ parameters.target }}', '')
+  - powershell: Write-Host '##vso[task.setvariable variable=buildSpecArgument]-BuildSpecName "${{ parameters.buildSpec }}" '
+    displayName: specify BuildSpecs
+    condition: ne('${{ parameters.buildSpec }}', '')
+  - script: |
+      echo on
+      $(lvCLICall) ^
+      -OperationName "${{ parameters.buildOperation }}" ^
+      -ProjectPath "%cd%\$(customDeviceRepoName)\${{ parameters.projectLocation }}" ^
+      $(targetArgument) ^
+      $(buildSpecArgument) ^
+      -LogFilePath "%cd%\$(customDeviceRepoName)\lvBuildSpecs.log"
+    displayName: Build ${{ parameters.buildSpec }} on ${{ parameters.target }} in ${{ parameters.projectLocation }}
+  - script: taskkill /im labview.exe /f
+    displayName: Close LabVIEW
+    condition: always() # always close LabVIEW, even if previous step fails
 
 
