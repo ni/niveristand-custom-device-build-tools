@@ -1,0 +1,125 @@
+parameters:
+    # build step parameters are broken out as part of parameters to allow defaults to be set for individual items
+  - name: buildStep
+    type: object
+  - name: dependencies
+    type: object
+# Note: the following variables are defined in pre-job-steps.yml:
+  # lvVersion, architecture, customDeviceRepoName, lvConfigVersion, 
+  # buildTools, lvCLICall
+
+steps:
+  - ${{ each dependency in parameters.dependencies }}: # TEMPORARY - default branchName is 'azure-pipelines' until things are actually committed to main on dependencies
+    - ${{ if ne( dependency.file, '' )}}:
+      - task: PowerShell@2
+        displayName: Copy dependency ${{ dependency.file }} to ${{ dependency.destination }}
+        inputs:
+          targetType: 'inline'
+          script: |
+            Write-Output "Configuring target directory environment..."
+            If ('${{ parameters.buildStep.target }}' -eq 'My Computer')
+            {
+              $dependencyTargetDirectory = "Windows"
+            }
+            If ('${{ parameters.buildStep.target }}' -eq 'Linux x64')
+            {
+              $dependencyTargetDirectory = "Linux_x64"
+            }
+            `
+            $branchName = 'main'
+            If ('$(Build.SourceBranchName)' -ne $branchName )
+            {
+              Write-Output "Checking for builds of $(Build.SourceBranchName) branch..."
+              If (Test-Path -Path "${{ dependency.source }}\NI\export\$(Build.SourceBranchName)\*\$(lvVersion)\$(architecture)") 
+              {
+                Write-Output "branch was found, using $(Build.SourceBranchName) instead of $branchName..."
+                $branchName = '$(Build.SourceBranchName)'
+              }
+              Else
+              {
+                Write-Output "branch not found, using a build of $branchName..."
+              }
+            }
+            Else
+            {
+              Write-Output "Using $branchName branch..."
+            }
+            `
+            Write-Output "Finding latest successful build of dependency ${{ dependency.file }}..."
+            $allDependencyBuilds = Get-ChildItem `
+              -Path "${{ dependency.source }}\NI\export\$branchName\*" `
+              | Sort {$_.Name} -Descending
+            Foreach ($build in $allDependencyBuilds)
+            {
+              Write-Output "Checking $build..."
+              If((Test-Path -Path "$build\$(lvVersion)\$(architecture)\"))
+              {
+                Write-Output "latest successful build: $build"
+                $dependencyFilePath = "$build\$(lvVersion)\$(architecture)\$dependencyTargetDirectory\${{ dependency.file }}"
+                Break
+              }
+            }
+            `
+            Write-Output "Copying dependency ${{ dependency.file }}..."
+            If (-not(Test-Path -Path '$(customDeviceRepoName)\${{ dependency.destination }}'))
+            {
+              New-Item `
+                -Path '$(customDeviceRepoName)\${{ dependency.destination }}' `
+                -ItemType 'Directory'
+            }
+            Copy-Item `
+              -Path $dependencyFilePath `
+              -Destination '$(customDeviceRepoName)\${{ dependency.destination }}\' `
+              -Recurse `
+              -Force
+
+  - task: PowerShell@2
+    displayName: Prepare to build ${{ parameters.buildStep.buildSpec }} on ${{ parameters.buildStep.target }} in ${{ parameters.buildStep.projectLocation }}
+    inputs:
+      targetType: 'inline'
+      script: |
+        Write-Output "Add LabVIEW config file if needed..."
+        If (-not(Test-Path -Path "$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}.config"))
+        {
+          $lvConfigFilePath = '$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}.config'
+          Copy-Item "$(buildTools)\resources\LabVIEW.exe.config" -Destination $lvConfigFilePath
+          (Get-Content -Path $lvConfigFilePath) -replace '2016.0.0.0', '$(lvConfigVersion)' | Set-Content -Path $lvConfigFilePath
+        }
+        `
+        Write-Output "Set target and buildSpec arguments if needed..."
+        If ('${{ parameters.buildStep.target }}' -eq 'All')
+        {
+          Write-Host '##vso[task.setvariable variable=targetArgument]'
+        } 
+        Else
+        {
+          Write-Host '##vso[task.setvariable variable=targetArgument]-TargetName "${{ parameters.buildStep.target }}" '
+        }
+        If ('${{ parameters.buildStep.buildSpec }}' -eq 'All')
+        {
+          Write-Host '##vso[task.setvariable variable=buildSpecArgument]'
+        }
+        Else
+        {
+          Write-Host '##vso[task.setvariable variable=buildSpecArgument]-BuildSpecName "${{ parameters.buildStep.buildSpec }}" '
+        }
+
+  - task: CmdLine@2
+    displayName: Build ${{ parameters.buildStep.buildSpec }} on ${{ parameters.buildStep.target }} in ${{ parameters.buildStep.projectLocation }}
+    inputs:
+      script: |
+        echo on
+        $(lvCLICall) ^
+          -OperationName "${{ parameters.buildStep.buildOperation }}" ^
+          -ProjectPath "%cd%\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}" ^
+          $(targetArgument) ^
+          $(buildSpecArgument) ^
+          -LogFilePath "%cd%\$(customDeviceRepoName)\lvBuildSpecs.log"
+
+  - task: CmdLine@2
+    displayName: Close LabVIEW
+    condition: always() # close LabVIEW even if previous steps failed
+    inputs:
+      script: taskkill /im labview.exe /f
+    
+

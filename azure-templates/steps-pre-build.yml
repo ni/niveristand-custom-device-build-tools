@@ -1,0 +1,79 @@
+parameters:
+  - name: lvVersionToBuild
+    type: object
+  - name: releaseVersion
+    type: string
+  - name: quarterlyReleaseVersion
+    type: string
+  - name: archiveLocation
+    type: string
+  - name: buildOutputLocation
+    type: string
+
+steps:
+  - task: PowerShell@2
+    displayName: Configure Job-wide Variables for LabVIEW ${{ parameters.lvVersionToBuild.version }} ${{ parameters.lvVersionToBuild.bitness }}
+    inputs: 
+      targetType: 'inline'
+      script: |
+        Write-Output "Defining repository variables..."
+        Write-Host '##vso[task.setvariable variable=buildTools]niveristand-custom-device-build-tools'
+        Write-Host '##vso[task.setvariable variable=archivePath]${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\'
+        $customDeviceRepoName = '$(Build.Repository.Name)' -replace '.+\/', ''
+        Write-Host "##vso[task.setvariable variable=customDeviceRepoName]$customDeviceRepoName"
+        Write-Host "##vso[task.setvariable variable=buildOutputPath]$customDeviceRepoName\${{ parameters.buildOutputLocation }}"
+        Write-Host "##vso[task.setvariable variable=nipkgPath]$customDeviceRepoName\nipkg"
+        `
+        Write-Output 'Configuring release version...'
+        Write-Host '##vso[task.setvariable variable=releaseVersion]${{ parameters.releaseVersion }}'
+        Write-Host '##vso[task.setvariable variable=quarterlyReleaseVersion]${{ parameters.quarterlyReleaseVersion }}'
+        Write-Host '##vso[task.setvariable variable=lvVersion]${{ parameters.lvVersionToBuild.version }}'
+        If ('${{ parameters.lvVersionToBuild.bitness }}' -eq '32bit')
+        {
+          Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW ${{ parameters.lvVersionToBuild.version }}'
+          Write-Host '##vso[task.setvariable variable=architecture]x86'
+          Write-Host '##vso[task.setvariable variable=nipkgx86suffix]-x86'
+          Write-Host '##vso[task.setvariable variable=nipkgx64suffix]'
+        }
+        If ('${{ parameters.lvVersionToBuild.bitness }}' -eq '64bit')
+        {
+          Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW ${{ parameters.lvVersionToBuild.version }}'
+          Write-Host '##vso[task.setvariable variable=architecture]x64'
+          Write-Host '##vso[task.setvariable variable=nipkgx86suffix]'
+          Write-Host '##vso[task.setvariable variable=nipkgx64suffix]64'
+        }     
+        `
+        If ('${{ parameters.lvVersionToBuild.version }}' -eq '2020')
+        {
+          Write-Host '##vso[task.setvariable variable=lvConfigVersion]8.0.0.0'
+          Write-Host '##vso[task.setvariable variable=shortLvVersion]20'
+        }
+        If ('${{ parameters.lvVersionToBuild.version }}' -eq '2021')
+        {
+          Write-Host '##vso[task.setvariable variable=lvConfigVersion]9.0.0.0'
+          Write-Host '##vso[task.setvariable variable=shortLvVersion]21'
+        }
+        If ('${{ parameters.lvVersionToBuild.version }}' -eq '2023')
+        {
+          Write-Host '##vso[task.setvariable variable=lvConfigVersion]10.0.0.0'
+          Write-Host '##vso[task.setvariable variable=shortLvVersion]23'
+        }
+
+  - powershell: Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\$(buildTools)\lv\operations"'
+    displayName: Set LabVIEWCLI path
+
+  - checkout: self
+    displayName: Check out repository to build
+
+  - checkout: niveristand-custom-device-build-tools
+    displayName: Check out NI VS Custom Device Build Tools repository
+
+  - task: CmdLine@2
+    displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersionToBuild.version }}
+    inputs:
+      script: |
+        echo on
+        $(lvCLICall) ^
+          -OperationName "SecureRunVI" ^
+          -VIPath "%cd%\$(buildTools)\lv\operations\Utilities\ClearCache.vi" ^
+          -LogFilePath "%cd%\$(customDeviceRepoName)\lvClearCache.log"
