@@ -1,0 +1,88 @@
+parameters:
+  - name: packages
+    type: object
+  - name: pack
+    type: boolean
+# Note: the following variables are defined in pre-job-steps.yml:
+  # nipkgPath, customDeviceRepoName, lvVersion, releaseVersion, 
+  # quarterlyReleaseVersion shortLvVersion, buildOutputPath, 
+  # archivePath, architecture
+
+steps:
+  - ${{ if eq( parameters.pack, true )}}:
+    - ${{ each package in parameters.packages }}:
+      - task: PowerShell@2
+        displayName: Stage nipkg directory
+        inputs:
+          targetType: 'inline'
+          script: |
+            Write-Output "setting up nipkg directory..."
+            If (Test-Path '$(nipkgPath)') 
+            { 
+              Remove-Item -Path '$(nipkgPath)' -Recurse -Force 
+            }
+            New-Item -Path '$(nipkgPath)' -ItemType 'Directory'
+            New-Item -Path '$(nipkgPath)' -Name 'control' -ItemType 'Directory'
+            New-Item -Path '$(nipkgPath)' -Name 'data' -ItemType 'Directory'
+            New-Item -Path '$(nipkgPath)' -Name 'debian-binary' -ItemType 'File'
+            Set-Content '$(nipkgPath)\debian-binary' '2.0\n'
+            Copy-Item `
+              -Path '$(customDeviceRepoName)\${{ package.controlFileName }}' `
+              -Destination '$(nipkgPath)\control\control'
+            `
+            Write-Output "updating nipkg control version parameters..."
+            $contents = (Get-Content -Path '$(nipkgPath)\control\control')`
+              -replace '{veristand_version}', '$(lvVersion)'`
+              -replace '{labview_version}', '$(lvVersion)'`
+              -replace '{nipkg_version}', '$(releaseVersion)'`
+              -replace '{display_version}', '$(releaseVersion)'`
+              -replace '{quarterly_display_version}', '$(quarterlyReleaseVersion)'`
+              -replace '{labview_short_version}', '$(shortLvVersion)'
+            Write-Output $contents
+            Set-Content -Value $contents -Path '$(nipkgPath)\control\control'
+
+      - ${{ each payloadMap in package.payloadMaps }}:
+        - task: PowerShell@2
+          displayName: Copying payload ${{ payloadMap.payloadLocation }} to install location
+          inputs:
+            targetType: 'inline'
+            script: |
+              New-Item -Path '$(nipkgPath)\data\${{ payloadMap.installLocation }}' -ItemType 'Directory' 
+              Copy-Item `
+                -Path '$(customDeviceRepoName)\${{ payloadMap.payloadLocation }}\*' `
+                -Destination '$(nipkgPath)\data\${{ payloadMap.installLocation }}'
+
+      - task: CmdLine@2
+        displayName: Pack nipkg
+        inputs:
+          script: '"%PROGRAMFILES%\National Instruments\NI Package Manager\nipkg.exe" pack "$(nipkgPath)" "$(nipkgPath)"'
+        
+
+      - task: PowerShell@2
+        displayName: Copy installer to build output location
+        inputs:
+          targetType: 'inline'
+          script: |
+            $installerPath = '$(buildOutputPath)\installer'
+            If (-not(Test-Path $installerPath)) 
+            {
+              New-Item -Path $installerPath -ItemType 'Directory'
+            }
+            Copy-Item `
+              -Path '$(nipkgPath)\*' `
+              -Destination $installerPath `
+              -Include *.nipkg `
+              -Recurse
+
+  - task: PowerShell@2
+    displayName: Copy built files to Archive location
+    inputs:
+      targetType: 'inline'
+      script: |
+        New-Item `
+          -Path "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\$(architecture)" `
+          -ItemType 'Directory'
+        Copy-Item `
+          -Path "$(buildOutputPath)\*" `
+          -Destination "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\$(architecture)\" `
+          -Recurse
