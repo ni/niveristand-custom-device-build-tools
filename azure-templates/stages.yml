@@ -30,15 +30,15 @@ parameters:
 
 # Note: If custom build steps are needed for a particular custom device, copy this entire template into the azure-pipeline and add steps before/after as needed
 stages:
-  - stage: build  
+  - stage: Build
     pool:
-      name: custom-device-temp # TEMPORARY, eventually use an official build pool of custom device agents
+      name: custom-device-temp # TEMPORARY, eventually use an official build pool of custom device agents!!
       demands:
         - agent.os -equals Windows_NT
     jobs:
       - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
         - job: Job${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
-          displayName: Build for LabVIEW ${{ lvVersionToBuild.version }}
+          displayName: LabVIEW ${{ lvVersionToBuild.version }}
           steps:
             - template: steps-pre-build.yml@niveristand-custom-device-build-tools # Configure variables, check out repos, Clear cache
               parameters:
@@ -60,7 +60,7 @@ stages:
                 pack:     ${{ parameters.pack }}
         # if all jobs have passed, place .finished file in top level archive location TEMPORARY - linked to imitation-cd instead of build-tools
       - job: Finalize
-        displayName: Confirm All Builds Passed
+        displayName: Final Validation
         dependsOn:
           - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
             - Job${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
@@ -68,7 +68,19 @@ stages:
         steps:
           # archivePath defined in pre-job-steps.yml
         - powershell: |
+            If ('$(Build.Reason)' -eq 'PullRequest')
+            {
+              Write-Output "Setting variables for Pull Requests..."
+              $sourceBranch = "$(System.PullRequest.SourceBranch)" -replace 'dev/', ''
+            } 
+            Else
+            {
+              Write-Output "Setting variables for general builds..."
+              $sourceBranch = "$(Build.SourceBranchName)"
+            }
+            Write-Output "Using $sourceBranch in final validation path..."
+            Write-Output "All previous jobs complete.  Storing .finished file..."
             New-Item `
-              -Path "${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\$(Build.BuildNumber)" `
+              -Path "${{ parameters.archiveLocation }}\NI\export\$sourceBranch\$(Build.BuildNumber)" `
               -Name ".finished" `
               -ItemType "File"
