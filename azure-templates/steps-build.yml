@@ -9,7 +9,7 @@ parameters:
   # buildTools, lvCLICall
 
 steps:
-  - ${{ each dependency in parameters.dependencies }}: # TEMPORARY - default branchName is 'azure-pipelines' until things are actually committed to main on dependencies
+  - ${{ each dependency in parameters.dependencies }}:
     - ${{ if ne( dependency.file, '' )}}:
       - task: PowerShell@2
         displayName: Copy dependency ${{ dependency.file }} to ${{ dependency.destination }}
