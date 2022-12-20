@@ -56,6 +56,7 @@ steps:
               Write-Output "Checking $build..."
               If (Test-Path -Path "$build\$(lvVersion)\$(architecture)\")
               {
+                Write-Output "Checking for .finished file..."
                 If (Test-Path -Path "$build\.finished")
                 {
                   Write-Output "latest successful build: $build"
