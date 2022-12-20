@@ -54,15 +54,18 @@ steps:
             Foreach ($build in $allDependencyBuilds)
             {
               Write-Output "Checking $build..."
-              If(-not(Test-Path -Path "$build\.finished"))
+              If (Test-Path -Path "$build\$(lvVersion)\$(architecture)\")
               {
-                Write-Output ".finished file not found at $build"
-              }
-              Elseif (Test-Path -Path "$build\$(lvVersion)\$(architecture)\")
-              {
-                Write-Output "latest successful build: $build"
-                $dependencyFilePath = "$build\$(lvVersion)\$(architecture)\$dependencyTargetDirectory\${{ dependency.file }}"
-                Break
+                If (Test-Path -Path "$build\.finished")
+                {
+                  Write-Output "latest successful build: $build"
+                  $dependencyFilePath = "$build\$(lvVersion)\$(architecture)\$dependencyTargetDirectory\${{ dependency.file }}"
+                  Break
+                }
+                Else
+                {
+                  Write-Output ".finished file not found at $build"
+                }
               }
             }
             If (-not $dependencyFilePath)
