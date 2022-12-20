@@ -56,6 +56,7 @@ steps:
               Write-Output "Checking $build..."
               If(-not(Test-Path -Path "$build\.finished"))
               {
+                Write-Output ".finished file not found at $build"
                 Break
               }
               If(Test-Path -Path "$build\$(lvVersion)\$(architecture)\")
