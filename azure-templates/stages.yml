@@ -40,7 +40,7 @@ stages:
         - job: Job${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
           displayName: LabVIEW ${{ lvVersionToBuild.version }}
           steps:
-            - template: steps-pre-build.yml@niveristand-custom-device-build-tools # Configure variables, check out repos, Clear cache
+            - template: steps-pre-build.yml # Configure variables, check out repos, Clear cache
               parameters:
                 lvVersionToBuild:        ${{ lvVersionToBuild }}
                 releaseVersion:          ${{ parameters.releaseVersion }}
@@ -49,12 +49,12 @@ stages:
                 buildOutputLocation:     ${{ parameters.buildOutputLocation }}
 
             - ${{ each buildStep in parameters.buildSteps }}:
-              - template: steps-build.yml@niveristand-custom-device-build-tools # config file and build specs
+              - template: steps-build.yml # config file and build specs
                 parameters:
                   buildStep:    ${{ buildStep }}
                   dependencies: ${{ parameters.dependencies }}
 
-            - template: steps-post-build.yml@niveristand-custom-device-build-tools # nipkg and archive
+            - template: steps-post-build.yml # nipkg and archive
               parameters:
                 packages: ${{ parameters.packages }}
                 pack:     ${{ parameters.pack }}
