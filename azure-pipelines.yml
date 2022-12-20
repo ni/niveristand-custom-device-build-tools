@@ -14,7 +14,7 @@ resources:
       name:       ni/niveristand-custom-device-build-tools
 
 stages:
-  - template: azure-templates/stages.yml
+  - template: azure-templates/stages.yml@niveristand-custom-device-build-tools
     parameters:
 
 # Test Versions - At least 1 of each supported LabVIEW version and 1 of each bitness
