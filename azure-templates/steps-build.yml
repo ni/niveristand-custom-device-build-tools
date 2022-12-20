@@ -10,7 +10,7 @@ parameters:
 
 steps:
   - ${{ each dependency in parameters.dependencies }}:
-    - ${{ if ne( dependency.file, '' )}}:
+    - ${{ if and( ne( dependency.file, '' ), ne( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
       - task: PowerShell@2
         displayName: Copy dependency ${{ dependency.file }} to ${{ dependency.destination }}
         inputs:
