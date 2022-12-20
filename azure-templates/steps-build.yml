@@ -57,9 +57,8 @@ steps:
               If(-not(Test-Path -Path "$build\.finished"))
               {
                 Write-Output ".finished file not found at $build"
-                Break
               }
-              If(Test-Path -Path "$build\$(lvVersion)\$(architecture)\")
+              Elseif (Test-Path -Path "$build\$(lvVersion)\$(architecture)\")
               {
                 Write-Output "latest successful build: $build"
                 $dependencyFilePath = "$build\$(lvVersion)\$(architecture)\$dependencyTargetDirectory\${{ dependency.file }}"
