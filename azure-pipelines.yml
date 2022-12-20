@@ -1,0 +1,92 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+      - release/*
+
+resources:
+  repositories:
+    - repository: niveristand-custom-device-build-tools
+      type:       github
+      ref:        main
+      endpoint:   ni (2)
+      name:       ni/niveristand-custom-device-build-tools
+
+stages:
+  - template: azure-templates/stages.yml
+    parameters:
+
+# Test Versions - At least 1 of each supported LabVIEW version and 1 of each bitness
+      lvVersionsToBuild: 
+        - version: '2020'
+          bitness: '32bit'
+        - version: '2021'
+          bitness: '64bit'
+        - version: '2023'
+          bitness: '64bit'
+
+# Test Dependencies - multiple dependencies that are expected in the build steps below this
+      dependencies:
+        - source: '\\nirvana\Measurements\VeriStandAddons\prototype\dependency-test-1'
+          file: 'DependencyLibrary1.lvlibp'
+          destination: 'test-build\Includes'
+        - source: '\\nirvana\Measurements\VeriStandAddons\prototype\dependency-test-2'
+          file: 'DependencyLibrary2.lvlibp'
+          destination: 'test-build\Other\Includes'
+
+# Test Individual Build Specs using standard build operations in LabVIEW
+      buildSteps:
+        - projectLocation: 'test-build\Source\IndividualBuildSpecs.lvproj'
+          buildOperation: 'ExecuteBuildSpec'
+          target: 'My Computer'
+          buildSpec: 'BuildSpecSameName'
+
+        - projectLocation: 'test-build\Source\IndividualBuildSpecs.lvproj'
+          buildOperation: 'ExecuteBuildSpec'
+          target: 'My Computer'
+          buildSpec: 'BuildSpecUnique1'
+
+        - projectLocation: 'test-build\Source\IndividualBuildSpecs.lvproj'
+          buildOperation: 'ExecuteBuildSpec'
+          target: 'Linux x64'
+          buildSpec: 'BuildSpecSameName'
+
+        - projectLocation: 'test-build\Source\IndividualBuildSpecs.lvproj'
+          buildOperation: 'ExecuteBuildSpec'
+          target: 'Linux x64'
+          buildSpec: 'BuildSpecUnique2'
+
+# Test BuildAllTargets special build operation in LabVIEW
+        - projectLocation: 'test-build\Source\AllTargetBuildSpecs.lvproj'
+          buildOperation: 'ExecuteBuildSpecAllTargets'
+          target: 'This value does not matter'
+          buildSpec: 'BuildSpecAllTargets'
+
+# Test BuildAll special build operation in LabVIEW
+        - projectLocation: 'test-build\Source\AllBuildSpecs.lvproj'
+          buildOperation: 'ExecuteAllBuildSpecs'
+          target: 'This value does not matter'
+          buildSpec: 'This value does not matter'
+
+      releaseVersion: '23.0.0'
+      quarterlyReleaseVersion: '2023 Q1'
+      buildOutputLocation: 'Built'
+      archiveLocation: '\\nirvana\Measurements\VeriStandAddons\prototype\niveristand-custom-device-build-tools'
+
+# Test Building multiple packages with multiple payload maps
+      pack: true
+      packages:
+        - controlFileName: 'control-a'
+          payloadMaps:
+            - payloadLocation: 'test-build\Built\Output-1A'
+              installLocation: 'documents\National Instruments\NI VeriStand $(lvVersion)\Build Tools Test\Output-1A'
+            - payloadLocation: 'test-build\Built\Output-2A'
+              installLocation: 'documents\National Instruments\NI VeriStand $(lvVersion)\Build Tools Test\Output-2A'
+
+        - controlFileName: 'control-b'
+          payloadMaps:
+            - payloadLocation: 'test-build\Built\Output-1B'
+              installLocation: 'documents\National Instruments\NI VeriStand $(lvVersion)\Build Tools Test\Output-1B'
+            - payloadLocation: 'test-build\Built\Output-2B'
+              installLocation: 'documents\National Instruments\NI VeriStand $(lvVersion)\Build Tools Test\Output-2B'
