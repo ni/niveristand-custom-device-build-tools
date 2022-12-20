@@ -54,7 +54,7 @@ steps:
             Foreach ($build in $allDependencyBuilds)
             {
               Write-Output "Checking $build..."
-              If(Test-Path -Path "$build\.finished")
+              If(-not(Test-Path -Path "$build\.finished"))
               {
                 Break
               }
