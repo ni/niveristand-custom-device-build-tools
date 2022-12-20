@@ -91,11 +91,11 @@ steps:
   - powershell: Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\$(buildTools)\lv\operations"'
     displayName: Set LabVIEWCLI path
 
-  - checkout: self
-    displayName: Check out repository to build
-
   - checkout: niveristand-custom-device-build-tools
     displayName: Check out NI VS Custom Device Build Tools repository
+
+  - checkout: self
+    displayName: Check out repository to build
 
   - task: CmdLine@2
     displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersionToBuild.version }}
