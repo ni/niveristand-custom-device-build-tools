@@ -126,14 +126,6 @@ steps:
         {
           Write-Error "invalid buildStep.buildOperation provided.  Valid options are ExecuteBuildSpec, ExecuteBuildSpecAllTargets, and ExecuteAllBuildSpecs."
         }
-        `
-        Foreach ($codegenViPath in ${{ parameters.codegenViPaths }})
-        {
-          If ($codegenViPath -ne '')
-          {
-
-          }
-        }
 
   - ${{ each codegenVi in parameters.codegenVis }}:
     - task: CmdLine@2
