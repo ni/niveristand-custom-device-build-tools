@@ -140,10 +140,10 @@ steps:
               -VIPath "%cd%\$(customDeviceRepoName)\${{ codegenVi }}" ^
               -LogFilePath "%cd%\$(customDeviceRepoName)\lvCodegen.log"
 
-  - ${{ if parameters.buildStep.overrideBitness }}:
+  - ${{ if parameters.buildStep.overrideBitness.bitness }}:
     - ${{ each lvVersion in parameters.buildStep.overrideBitness.lvVersions }}: 
       - task: PowerShell@2
-        displayName: override bitness for this build step
+        displayName: override bitness for this build step (checking for ${{ lvVersion }})
         inputs:
           targetType: 'inline'
           failOnStdErr: true
