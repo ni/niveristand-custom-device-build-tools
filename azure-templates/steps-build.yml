@@ -154,12 +154,12 @@ steps:
             If ('${{ parameters.buildStep.overrideBitness.bitness }}' -eq '32bit')
             {
               Write-Output "Overriding variables for 32-bit..."
-              Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW ${{ parameters.lvVersionToBuild.version }}'
+              Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW $(lvVersion)'
             }
             Elseif ('${{ parameters.buildStep.overrideBitness.bitness }}' -eq '64bit')
             {
               Write-Output "Overriding variables for 64-bit..."
-              Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW ${{ parameters.lvVersionToBuild.version }}'
+              Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW $(lvVersion)'
             }
             Else
             {
