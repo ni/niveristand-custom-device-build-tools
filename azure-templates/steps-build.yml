@@ -4,6 +4,8 @@ parameters:
     type: object
   - name: dependencies
     type: object
+  - name: codegenVis
+    type: object
 # Note: the following variables are defined in pre-job-steps.yml:
   # lvVersion, architecture, customDeviceRepoName, lvConfigVersion, 
   # buildTools, lvCLICall
@@ -124,6 +126,25 @@ steps:
         {
           Write-Error "invalid buildStep.buildOperation provided.  Valid options are ExecuteBuildSpec, ExecuteBuildSpecAllTargets, and ExecuteAllBuildSpecs."
         }
+        `
+        Foreach ($codegenViPath in ${{ parameters.codegenViPaths }})
+        {
+          If ($codegenViPath -ne '')
+          {
+
+          }
+        }
+
+  - ${{ each codegenVi in parameters.codegenVis }}:
+    - task: CmdLine@2
+      displayName: Run codegen step ${{ codegenVi }}
+      inputs:
+        script: |
+          echo on
+          $(lvCLICall) ^
+            -OperationName "SecureRunVI" ^
+            -VIPath "%cd%\$(customDeviceRepoName)\${{ codegenVi }}" ^
+            -LogFilePath "%cd%\$(customDeviceRepoName)\lvCodegen.log"
 
   - task: CmdLine@2
     displayName: Build ${{ parameters.buildStep.buildSpec }} on ${{ parameters.buildStep.target }} in ${{ parameters.buildStep.projectLocation }}
