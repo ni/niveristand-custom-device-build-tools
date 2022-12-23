@@ -140,15 +140,19 @@ steps:
               -VIPath "%cd%\$(customDeviceRepoName)\${{ codegenVi }}" ^
               -LogFilePath "%cd%\$(customDeviceRepoName)\lvCodegen.log"
 
-  - ${{ if eq(length(parameters.buildStep.overrideBitness), 0) }}:
-    - task: PowerShell@2
-      displayName: check for overriding bitness for this build step
-      inputs:
-        targetType: 'inline'
-        failOnStdErr: true
-        script: |
+    # if overrideBitness is specified
+  - task: PowerShell@2
+    displayName: check for overriding bitness for this build step
+    inputs:
+      targetType: 'inline'
+      failOnStdErr: true
+      script: |
+        If ('${{ parameters.buildStep.overrideBitness.lvVersions }}' -ne '')
+        {
+          Write-Output "Override bitness optional input found..."
           Foreach ( overrideLvVersion in ${{ parameters.buildStep.overrideBitness.lvVersions }})
           {
+            Write-Output "Checking whether this build is for $overrideLvVersion..."
             If ($overrideLvVersion -eq '$(lvVersion)')
             {
               Write-Output "Version matches override parameter, overriding bitness..."
@@ -172,6 +176,7 @@ steps:
               Write-Output "Matching LV version not found, using existing bitness configuration..."
             }
           }
+        }
 
   - task: CmdLine@2
     displayName: Build ${{ parameters.buildStep.buildSpec }} on ${{ parameters.buildStep.target }} in ${{ parameters.buildStep.projectLocation }}
