@@ -129,7 +129,7 @@ steps:
         }
 
   - ${{ each codegenVi in parameters.codegenVis }}:
-    - ${{ if and ( ne(codegenVi, '' ), eq( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
+    - ${{ if and( ne(codegenVi, '' ), eq( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
       - task: CmdLine@2
         displayName: Run codegen step ${{ codegenVi }}
         inputs:
@@ -140,7 +140,7 @@ steps:
               -VIPath "%cd%\$(customDeviceRepoName)\${{ codegenVi }}" ^
               -LogFilePath "%cd%\$(customDeviceRepoName)\lvCodegen.log"
 
-  - ${{ if any(overrideBitness in parameters.buildStep)}}:
+  - ${{ if parameters.buildStep.overrideBitness }}:
     - ${{ each lvVersion in parameters.buildStep.overrideBitness.lvVersions }}: 
       - task: PowerShell@2
         displayName: override bitness for this build step
@@ -148,7 +148,7 @@ steps:
           targetType: 'inline'
           failOnStdErr: true
           script: |
-            If ('${{ parameters.buildStep.overrideBitness.lvVersion }}' -eq '$(lvVersion)')
+            If ('${{ lvVersion }}' -eq '$(lvVersion)')
             {
               Write-Output "Version matches override parameter, overriding bitness..."
               If ('${{ parameters.buildStep.overrideBitness.bitness }}' -eq '32bit')
