@@ -35,6 +35,11 @@ stages:
           file: 'DependencyLibrary2.lvlibp'
           destination: 'test-build\Other\Includes'
 
+# Test Codegen Steps
+      codegenVis:
+        - 'test-build\Source\codegenTest\codegen1.vi'
+        - 'test-build\Source\codegenTest\codegen2.vi'
+
 # Test Individual Build Specs using standard build operations in LabVIEW
       buildSteps:
         - projectLocation: 'test-build\Source\IndividualBuildSpecs.lvproj'
