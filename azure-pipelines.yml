@@ -71,20 +71,20 @@ stages:
 
       releaseVersion: '23.0.0'
       quarterlyReleaseVersion: '2023 Q1'
-      buildOutputLocation: 'Built'
+      buildOutputLocation: 'test-build\Built'
       archiveLocation: '\\nirvana\Measurements\VeriStandAddons\prototype\niveristand-custom-device-build-tools'
 
 # Test Building multiple packages with multiple payload maps
       pack: true
       packages:
-        - controlFileName: 'control-a'
+        - controlFileName: 'test-build\control-a'
           payloadMaps:
             - payloadLocation: 'test-build\Built\Output-1A'
               installLocation: 'documents\National Instruments\NI VeriStand $(lvVersion)\Build Tools Test\Output-1A'
             - payloadLocation: 'test-build\Built\Output-2A'
               installLocation: 'documents\National Instruments\NI VeriStand $(lvVersion)\Build Tools Test\Output-2A'
 
-        - controlFileName: 'control-b'
+        - controlFileName: 'test-build\control-b'
           payloadMaps:
             - payloadLocation: 'test-build\Built\Output-1B'
               installLocation: 'documents\National Instruments\NI VeriStand $(lvVersion)\Build Tools Test\Output-1B'
