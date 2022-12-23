@@ -73,6 +73,9 @@ stages:
           buildOperation: 'ExecuteAllBuildSpecs'
           target: 'This value does not matter'
           buildSpec: 'This value does not matter'
+          overrideBitness: 
+            - lvVersions: { 2021, 2023 }
+              bitness: '32bit'
 
       releaseVersion: '23.0.0'
       quarterlyReleaseVersion: '2023 Q1'

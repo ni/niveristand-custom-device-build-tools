@@ -6,6 +6,7 @@ parameters:
     type: object
   - name: codegenVis
     type: object
+
 # Note: the following variables are defined in pre-job-steps.yml:
   # lvVersion, architecture, customDeviceRepoName, lvConfigVersion, 
   # buildTools, lvCLICall
@@ -138,6 +139,37 @@ steps:
               -OperationName "SecureRunVI" ^
               -VIPath "%cd%\$(customDeviceRepoName)\${{ codegenVi }}" ^
               -LogFilePath "%cd%\$(customDeviceRepoName)\lvCodegen.log"
+
+  - ${{ if any(overrideBitness in parameters.buildStep)}}:
+    - ${{ each lvVersion in parameters.buildStep.overrideBitness.lvVersions }}: 
+      - task: PowerShell@2
+        displayName: override bitness for this build step
+        inputs:
+          targetType: 'inline'
+          failOnStdErr: true
+          script: |
+            If ('${{ parameters.buildStep.overrideBitness.lvVersion }}' -eq '$(lvVersion)')
+            {
+              Write-Output "Version matches override parameter, overriding bitness..."
+              If ('${{ parameters.buildStep.overrideBitness.bitness }}' -eq '32bit')
+              {
+                Write-Output "Overriding variables for 32-bit..."
+                Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW ${{ parameters.lvVersionToBuild.version }}'
+              }
+              Elseif ('${{ parameters.buildStep.overrideBitness.bitness }}' -eq '64bit')
+              {
+                Write-Output "Overriding variables for 64-bit..."
+                Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW ${{ parameters.lvVersionToBuild.version }}'
+              }
+              Else
+              {
+                Write-Error "Invalid Bitness defined in overrideBitness.  Use either 32bit or 64bit."
+              }
+            }
+            Else
+            {
+              Write-Output "Matching LV version not found, using existing bitness configuration..."
+            }
 
   - task: CmdLine@2
     displayName: Build ${{ parameters.buildStep.buildSpec }} on ${{ parameters.buildStep.target }} in ${{ parameters.buildStep.projectLocation }}
