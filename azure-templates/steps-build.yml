@@ -130,9 +130,9 @@ steps:
           Write-Error "invalid buildStep.buildOperation provided.  Valid options are ExecuteBuildSpec, ExecuteBuildSpecAllTargets, and ExecuteAllBuildSpecs."
         }
         Write-Output "reset build variables for version and bitness..."
-        Write-Host "##vso[task.setvariable variable=lvVersionCurrentStep]$(lvVersion)"
-        Write-Host "##vso[task.setvariable variable=architectureCurrentStep]$(architecture)"
-        Write-Host "##vso[task.setvariable variable=lvCLICallCurrentStep]$(lvCLICall)"
+        Write-Host '##vso[task.setvariable variable=lvVersionCurrentStep]$(lvVersion)'
+        Write-Host '##vso[task.setvariable variable=architectureCurrentStep]$(architecture)'
+        Write-Host '##vso[task.setvariable variable=lvCLICallCurrentStep]$(lvCLICall)'
 
   - ${{ each override in parameters.buildStep.overrideBitness }}:
     - ${{ if eq(override.lvVersion, parameters.lvVersionToBuild.version) }}:
@@ -145,12 +145,12 @@ steps:
             Write-Host "##vso[task.setvariable variable=lvVersionCurrentStep]${{override.lvVersion}}"
             If ('$(override.bitness)' -eq '32bit')
             {
-              Write-Host "##vso[task.setvariable variable=lvPathCurrentStep]C:\Program Files (x86)\National Instruments\LabVIEW ${{ override.version }}"
+              Write-Host '##vso[task.setvariable variable=lvPathCurrentStep]C:\Program Files (x86)\National Instruments\LabVIEW ${{ override.version }}'
               Write-Host '##vso[task.setvariable variable=architectureCurrentStep]x86'
             }
             Elseif ('$(override.bitness)' -eq '64bit')
             {
-              Write-Host "##vso[task.setvariable variable=lvPathCurrentStep]C:\Program Files\National Instruments\LabVIEW ${{ override.version }}"
+              Write-Host '##vso[task.setvariable variable=lvPathCurrentStep]C:\Program Files\National Instruments\LabVIEW ${{ override.version }}'
               Write-Host '##vso[task.setvariable variable=architectureCurrentStep]x64'
             }
             Else
