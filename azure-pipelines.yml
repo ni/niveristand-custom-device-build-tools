@@ -62,22 +62,22 @@ stages:
           target: 'Linux x64'
           buildSpec: 'BuildSpecUnique2'
 
-# Test BuildAllTargets special build operation in LabVIEW
+# Test BuildAllTargets special build operation in LabVIEW, override bitness with other operations before and after
         - projectLocation: 'test-build\Source\AllTargetBuildSpecs.lvproj'
           buildOperation: 'ExecuteBuildSpecAllTargets'
           target: 'This value does not matter'
           buildSpec: 'BuildSpecAllTargets'
+          overrideBitness: 
+            - lvVersion: '2021'
+              bitness:   '32bit'
+            - lvVersion: '2023'
+              bitness:   '32bit'
 
 # Test BuildAll special build operation in LabVIEW
         - projectLocation: 'test-build\Source\AllBuildSpecs.lvproj'
           buildOperation: 'ExecuteAllBuildSpecs'
           target: 'This value does not matter'
           buildSpec: 'This value does not matter'
-          overrideBitness: 
-            - lvVersion: '2021'
-              bitness:   '32bit'
-            - lvVersion: '2023'
-              bitness:   '32bit'
 
       releaseVersion: '23.0.0'
       quarterlyReleaseVersion: '2023 Q1'

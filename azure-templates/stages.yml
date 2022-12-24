@@ -61,9 +61,10 @@ stages:
             - ${{ each buildStep in parameters.buildSteps }}:
               - template: steps-build.yml # config file and build specs
                 parameters:
-                  buildStep:    ${{ buildStep }}
-                  dependencies: ${{ parameters.dependencies }}
-                  codegenVis: ${{ parameters.codegenVis }}
+                  buildStep:          ${{ buildStep }}
+                  dependencies:       ${{ parameters.dependencies }}
+                  codegenVis:         ${{ parameters.codegenVis }}
+                  notOverrideVersion: ${{ lvVersionToBuild.version }}
 
             - template: steps-post-build.yml # nipkg and archive
               parameters:
