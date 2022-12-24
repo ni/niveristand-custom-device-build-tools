@@ -129,37 +129,20 @@ steps:
         {
           Write-Error "invalid buildStep.buildOperation provided.  Valid options are ExecuteBuildSpec, ExecuteBuildSpecAllTargets, and ExecuteAllBuildSpecs."
         }
-        Write-Output "reset build variables for version and bitness..."
-        Write-Host '##vso[task.setvariable variable=lvVersionCurrentStep]$(lvVersion)'
-        Write-Host '##vso[task.setvariable variable=architectureCurrentStep]$(architecture)'
-        Write-Host '##vso[task.setvariable variable=lvCLICallCurrentStep]$(lvCLICall)'
+        `
+        Write-Output "resetting build skip variable..."
+        Write-Host "##vso[task.setvariable variable=skipBuildStep]False"
 
-  - ${{ each override in parameters.buildStep.overrideBitness }}:
-    - ${{ if eq(override.lvVersion, parameters.lvVersionToBuild.version) }}:
+  - ${{ each exclusion in parameters.buildStep.exclude }}:
+    - ${{ if and( eq(exclusion.version, parameters.lvVersionsToBuild.version), eq(exclusion.bitness, parameters.lvVersionsToBuild.bitness)) }}:
       - task: PowerShell@2
-        displayName: set lvVersion and bitness override values
+        displayName: exclusion found, build step will be skipped
         inputs:
           targetType: 'inline'
           failOnStdErr: true
           script: |
-            Write-Host "##vso[task.setvariable variable=lvVersionCurrentStep]${{override.lvVersion}}"
-            If ('$(override.bitness)' -eq '32bit')
-            {
-              Write-Host '##vso[task.setvariable variable=lvPathCurrentStep]C:\Program Files (x86)\National Instruments\LabVIEW ${{ override.version }}'
-              Write-Host '##vso[task.setvariable variable=architectureCurrentStep]x86'
-            }
-            Elseif ('$(override.bitness)' -eq '64bit')
-            {
-              Write-Host '##vso[task.setvariable variable=lvPathCurrentStep]C:\Program Files\National Instruments\LabVIEW ${{ override.version }}'
-              Write-Host '##vso[task.setvariable variable=architectureCurrentStep]x64'
-            }
-            Else
-            {
-              Write-Error "Invalid Bitness defined in overrideBitness parameter.  Use either 32bit or 64bit."
-            }
+            Write-Host "##vso[task.setvariable variable=skipBuildStep]True"
 
-      - powershell: Write-Host '##vso[task.setvariable variable=lvCLICallCurrentStep]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPathCurrentStep)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\$(buildTools)\lv\operations"'
-        displayName: Override LabVIEWCLI path
 
   - ${{ each codegenVi in parameters.codegenVis }}:
     - ${{ if and( ne(codegenVi, '' ), eq( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
@@ -168,42 +151,27 @@ steps:
         inputs:
           script: |
             echo on
-            $(lvCLICallCurrentStep) ^
-              -OperationName "SecureRunVI" ^
-              -VIPath "%cd%\$(customDeviceRepoName)\${{ codegenVi }}" ^
-              -LogFilePath "%cd%\$(customDeviceRepoName)\lvCodegen.log"
+            if '$(skipBuildStep)' == 'True' ^
+              $(lvCLICall) ^
+                -OperationName "SecureRunVI" ^
+                -VIPath "%cd%\$(customDeviceRepoName)\${{ codegenVi }}" ^
+                -LogFilePath "%cd%\$(customDeviceRepoName)\lvCodegen.log"
 
   - task: CmdLine@2
     displayName: Build ${{ parameters.buildStep.buildSpec }} on ${{ parameters.buildStep.target }} in ${{ parameters.buildStep.projectLocation }}
     inputs:
       script: |
         echo on
-        $(lvCLICallCurrentStep) ^
-          -OperationName "${{ parameters.buildStep.buildOperation }}" ^
-          -ProjectPath "%cd%\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}" ^
-          $(targetArgument) ^
-          $(buildSpecArgument) ^
-          -LogFilePath "%cd%\$(customDeviceRepoName)\lvBuildSpecs.log"
+        if '$(skipBuildStep)' == 'True' ^
+          $(lvCLICall) ^
+            -OperationName "${{ parameters.buildStep.buildOperation }}" ^
+            -ProjectPath "%cd%\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}" ^
+            $(targetArgument) ^
+            $(buildSpecArgument) ^
+            -LogFilePath "%cd%\$(customDeviceRepoName)\lvBuildSpecs.log"
 
   - task: CmdLine@2
     displayName: Close LabVIEW
     condition: always() # close LabVIEW even if previous steps failed
     inputs:
       script: taskkill /im labview.exe /f
-
-  - task: PowerShell@2
-    displayName: Copy built files to Archive location
-    inputs:
-      targetType: 'inline'
-      script: |
-        If (-not(Test-Path "$(archivePath)\$(Build.BuildNumber)\$(lvVersionCurrentStep)\$(architectureCurrentStep)"))
-        {
-          New-Item `
-            -Path "$(archivePath)\$(Build.BuildNumber)\$(lvVersionCurrentStep)\$(architectureCurrentStep)" `
-            -ItemType 'Directory'
-        }
-        Copy-Item `
-          -Path "$(buildOutputPath)\*" `
-          -Destination "$(archivePath)\$(Build.BuildNumber)\$(lvVersionCurrentStep)\$(architectureCurrentStep)\" `
-          -Recurse   
-

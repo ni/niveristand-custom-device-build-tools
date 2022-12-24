@@ -22,7 +22,11 @@ stages:
         - version: '2020'
           bitness: '32bit'
         - version: '2021'
+          bitness: '32bit'
+        - version: '2021'
           bitness: '64bit'
+        - version: '2023'
+          bitness: '32bit'
         - version: '2023'
           bitness: '64bit'
 
@@ -40,12 +44,17 @@ stages:
         - 'test-build\Source\codegenTest\codegen1.vi'
         - 'test-build\Source\codegenTest\codegen2.vi'
 
-# Test Individual Build Specs using standard build operations in LabVIEW
+# Test Individual Build Specs using standard build operations in LabVIEW, and exclusion rules
       buildSteps:
         - projectLocation: 'test-build\Source\IndividualBuildSpecs.lvproj'
           buildOperation: 'ExecuteBuildSpec'
           target: 'My Computer'
           buildSpec: 'BuildSpecSameName'
+          exclude:
+            - version: '2021'
+              bitness: '32bit'
+            - version: '2023'
+              bitness: '32bit'
 
         - projectLocation: 'test-build\Source\IndividualBuildSpecs.lvproj'
           buildOperation: 'ExecuteBuildSpec'
@@ -56,6 +65,11 @@ stages:
           buildOperation: 'ExecuteBuildSpec'
           target: 'Linux x64'
           buildSpec: 'BuildSpecSameName'
+          exclude:
+            - version: '2021'
+              bitness: '64bit'
+            - version: '2023'
+              bitness: '64bit'
 
         - projectLocation: 'test-build\Source\IndividualBuildSpecs.lvproj'
           buildOperation: 'ExecuteBuildSpec'
@@ -67,11 +81,6 @@ stages:
           buildOperation: 'ExecuteBuildSpecAllTargets'
           target: 'This value does not matter'
           buildSpec: 'BuildSpecAllTargets'
-          overrideBitness: 
-            - lvVersion: '2021'
-              bitness:   '32bit'
-            - lvVersion: '2023'
-              bitness:   '32bit'
 
 # Test BuildAll special build operation in LabVIEW
         - projectLocation: 'test-build\Source\AllBuildSpecs.lvproj'

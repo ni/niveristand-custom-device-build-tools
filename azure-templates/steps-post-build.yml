@@ -72,3 +72,19 @@ steps:
               -Destination $installerPath `
               -Include *.nipkg `
               -Recurse
+
+  - task: PowerShell@2
+    displayName: Copy built files to Archive location
+    inputs:
+      targetType: 'inline'
+      script: |
+        If (-not(Test-Path "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\$(architecture)"))
+        {
+          New-Item `
+            -Path "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\$(architecture)" `
+            -ItemType 'Directory'
+        }
+        Copy-Item `
+          -Path "$(buildOutputPath)\*" `
+          -Destination "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\$(architecture)\" `
+          -Recurse   
