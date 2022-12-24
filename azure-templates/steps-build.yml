@@ -151,7 +151,7 @@ steps:
         inputs:
           script: |
             echo on
-            if '$(skipBuildStep)' == 'True' ^
+            if not '$(skipBuildStep)' == 'True' ^
               $(lvCLICall) ^
                 -OperationName "SecureRunVI" ^
                 -VIPath "%cd%\$(customDeviceRepoName)\${{ codegenVi }}" ^
@@ -162,7 +162,7 @@ steps:
     inputs:
       script: |
         echo on
-        if '$(skipBuildStep)' == 'True' ^
+        if not '$(skipBuildStep)' == 'True' ^
           $(lvCLICall) ^
             -OperationName "${{ parameters.buildStep.buildOperation }}" ^
             -ProjectPath "%cd%\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}" ^
