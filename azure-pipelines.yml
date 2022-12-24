@@ -50,7 +50,7 @@ stages:
           buildOperation: 'ExecuteBuildSpec'
           target: 'My Computer'
           buildSpec: 'BuildSpecSameName'
-          exclude:
+          exclusions:
             - version: '2021'
               bitness: '32bit'
             - version: '2023'
@@ -65,7 +65,7 @@ stages:
           buildOperation: 'ExecuteBuildSpec'
           target: 'Linux x64'
           buildSpec: 'BuildSpecSameName'
-          exclude:
+          exclusions:
             - version: '2021'
               bitness: '64bit'
             - version: '2023'

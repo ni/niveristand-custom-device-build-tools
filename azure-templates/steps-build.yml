@@ -133,8 +133,8 @@ steps:
         Write-Output "resetting build skip variable..."
         Write-Host "##vso[task.setvariable variable=skipBuildStep]False"
 
-  - ${{ each exclusion in parameters.buildStep.exclude }}:
-    - ${{ if and( eq(exclusion.version, parameters.lvVersionsToBuild.version), eq(exclusion.bitness, parameters.lvVersionsToBuild.bitness)) }}:
+  - ${{ each exclusion in parameters.buildStep.exclusions }}:
+    - ${{ if and( eq(exclusion.version, parameters.lvVersionToBuild.version), eq(exclusion.bitness, parameters.lvVersionToBuild.bitness)) }}:
       - task: PowerShell@2
         displayName: exclusion found, build step will be skipped
         inputs:
