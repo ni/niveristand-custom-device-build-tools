@@ -64,7 +64,7 @@ stages:
                   buildStep:          ${{ buildStep }}
                   dependencies:       ${{ parameters.dependencies }}
                   codegenVis:         ${{ parameters.codegenVis }}
-                  notOverrideVersion: ${{ lvVersionToBuild.version }}
+                  lvVersionToBuild:   ${{ lvVersionToBuild }}
 
             - template: steps-post-build.yml # nipkg and archive
               parameters:
