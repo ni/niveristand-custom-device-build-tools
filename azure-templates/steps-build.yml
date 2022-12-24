@@ -172,4 +172,4 @@ steps:
     displayName: Close LabVIEW
     condition: always() # close LabVIEW even if previous steps failed
     inputs:
-      script: taskkill /im labview.exe /f
+      script: if not '$(skipBuildStep)'=='True' taskkill /im labview.exe /f
