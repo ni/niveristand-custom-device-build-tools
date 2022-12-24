@@ -140,43 +140,36 @@ steps:
               -VIPath "%cd%\$(customDeviceRepoName)\${{ codegenVi }}" ^
               -LogFilePath "%cd%\$(customDeviceRepoName)\lvCodegen.log"
 
-    # if overrideBitness is specified
-  - task: PowerShell@2
-    displayName: check for overriding bitness for this build step
-    inputs:
-      targetType: 'inline'
-      failOnStdErr: true
-      script: |
-        If ('${{ parameters.buildStep.overrideBitness.lvVersions }}' -ne '')
-        {
-          Write-Output "Override bitness optional input found..."
-          Foreach ( overrideLvVersion in ${{ parameters.buildStep.overrideBitness.lvVersions }})
+    # if overrideBitness is specified, check for a matching LabVIEW version, then if found, overwrite the bitness to the desired bitness
+  - ${{ each override in parameters.buildStep.overrideBitness }}:
+    - task: PowerShell@2
+      displayName: Override ${{ override.bitness }} for ${{ override.lvVersion }} if version matches
+      inputs:
+        targetType: 'inline'
+        failOnStdErr: true
+        script: |
+          If ('${{ override.lvVersion }}' -eq '$(lvVersion)')
           {
-            Write-Output "Checking whether this build is for $overrideLvVersion..."
-            If ($overrideLvVersion -eq '$(lvVersion)')
+            Write-Output "Version matches override parameter, overriding bitness..."
+            If ('${{ override.bitness }}' -eq '32bit')
             {
-              Write-Output "Version matches override parameter, overriding bitness..."
-              If ('${{ parameters.buildStep.overrideBitness.bitness }}' -eq '32bit')
-              {
-                Write-Output "Overriding variables for 32-bit..."
-                Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW $(lvVersion)'
-              }
-              Elseif ('${{ parameters.buildStep.overrideBitness.bitness }}' -eq '64bit')
-              {
-                Write-Output "Overriding variables for 64-bit..."
-                Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW $(lvVersion)'
-              }
-              Else
-              {
-                Write-Error "Invalid Bitness defined in overrideBitness.  Use either 32bit or 64bit."
-              }
+              Write-Output "Overriding variables for 32-bit..."
+              Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW $(lvVersion)'
+            }
+            Elseif ('${{ override.bitness }}' -eq '64bit')
+            {
+              Write-Output "Overriding variables for 64-bit..."
+              Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW $(lvVersion)'
             }
             Else
             {
-              Write-Output "Matching LV version not found, using existing bitness configuration..."
+              Write-Error "Invalid Bitness defined in overrideBitness.  Use either 32bit or 64bit."
             }
           }
-        }
+          Else
+          {
+            Write-Output "Matching LV version not found, using existing bitness configuration..."
+          }
 
   - task: CmdLine@2
     displayName: Build ${{ parameters.buildStep.buildSpec }} on ${{ parameters.buildStep.target }} in ${{ parameters.buildStep.projectLocation }}
