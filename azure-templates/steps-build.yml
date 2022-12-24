@@ -152,10 +152,10 @@ steps:
           script: |
             echo on
             if not '$(skipBuildStep)' == 'True' ^
-              $(lvCLICall) ^
+              ($(lvCLICall) ^
                 -OperationName "SecureRunVI" ^
                 -VIPath "%cd%\$(customDeviceRepoName)\${{ codegenVi }}" ^
-                -LogFilePath "%cd%\$(customDeviceRepoName)\lvCodegen.log"
+                -LogFilePath "%cd%\$(customDeviceRepoName)\lvCodegen.log")
 
   - task: CmdLine@2
     displayName: Build ${{ parameters.buildStep.buildSpec }} on ${{ parameters.buildStep.target }} in ${{ parameters.buildStep.projectLocation }}
@@ -163,12 +163,12 @@ steps:
       script: |
         echo on
         if not '$(skipBuildStep)' == 'True' ^
-          $(lvCLICall) ^
+          ($(lvCLICall) ^
             -OperationName "${{ parameters.buildStep.buildOperation }}" ^
             -ProjectPath "%cd%\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}" ^
             $(targetArgument) ^
             $(buildSpecArgument) ^
-            -LogFilePath "%cd%\$(customDeviceRepoName)\lvBuildSpecs.log"
+            -LogFilePath "%cd%\$(customDeviceRepoName)\lvBuildSpecs.log")
 
   - task: CmdLine@2
     displayName: Close LabVIEW
