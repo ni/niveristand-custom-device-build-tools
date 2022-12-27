@@ -10,7 +10,7 @@ parameters:
     type: object
 
 # Note: the following variables are defined in pre-job-steps.yml:
-  # lvVersion, architecture, customDeviceRepoName, lvConfigVersion, 
+  # lvVersion, architecture, customDeviceRepoName, lvConfigVersion,
   # buildTools, lvCLICall
 
 steps:
@@ -38,7 +38,7 @@ steps:
             If ('$(sourceBranch)' -ne $branchName )
             {
               Write-Output "Checking for builds of $(sourceBranch) branch..."
-              If (Test-Path -Path "${{ dependency.source }}\NI\export\$(sourceBranch)\*\$(lvVersion)\$(architecture)") 
+              If (Test-Path -Path "${{ dependency.source }}\NI\export\$(sourceBranch)\*\$(lvVersion)\$(architecture)")
               {
                 Write-Output "branch was found, using $(sourceBranch) instead of $branchName..."
                 $branchName = '$(sourceBranch)'
@@ -112,12 +112,12 @@ steps:
           Write-Output "Configuring build operation for all targets and build specs..."
           Write-Host '##vso[task.setvariable variable=targetArgument]'
           Write-Host '##vso[task.setvariable variable=buildSpecArgument]'
-        } 
+        }
         Elseif ('${{ parameters.buildStep.buildOperation }}' -eq 'ExecuteBuildSpecAllTargets')
         {
           Write-Output "Configuring build operation for all targets and single build spec..."
           Write-Host '##vso[task.setvariable variable=targetArgument]'
-          Write-Host '##vso[task.setvariable variable=buildSpecArgument]-BuildSpecName "${{ parameters.buildStep.buildSpec }}" ' 
+          Write-Host '##vso[task.setvariable variable=buildSpecArgument]-BuildSpecName "${{ parameters.buildStep.buildSpec }}" '
         }
         Elseif ('${{ parameters.buildStep.buildOperation }}' -eq 'ExecuteBuildSpec')
         {

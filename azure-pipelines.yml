@@ -18,7 +18,7 @@ stages:
     parameters:
 
 # Test Versions - At least 1 of each supported LabVIEW version and 1 of each bitness
-      lvVersionsToBuild: 
+      lvVersionsToBuild:
         - version: '2020'
           bitness: '32bit'
         - version: '2021'

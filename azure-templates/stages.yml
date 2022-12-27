@@ -84,7 +84,7 @@ stages:
             {
               Write-Output "Setting variables for Pull Requests..."
               $sourceBranch = "$(System.PullRequest.SourceBranch)" -replace 'dev/', ''
-            } 
+            }
             Else
             {
               Write-Output "Setting variables for general builds..."

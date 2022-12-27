@@ -4,8 +4,8 @@ parameters:
   - name: pack
     type: boolean
 # Note: the following variables are defined in pre-job-steps.yml:
-  # nipkgPath, customDeviceRepoName, lvVersion, releaseVersion, 
-  # quarterlyReleaseVersion shortLvVersion, buildOutputPath, 
+  # nipkgPath, customDeviceRepoName, lvVersion, releaseVersion,
+  # quarterlyReleaseVersion shortLvVersion, buildOutputPath,
   # archivePath, architecture
 
 steps:
@@ -17,9 +17,9 @@ steps:
           targetType: 'inline'
           script: |
             Write-Output "setting up nipkg directory..."
-            If (Test-Path '$(nipkgPath)') 
-            { 
-              Remove-Item -Path '$(nipkgPath)' -Recurse -Force 
+            If (Test-Path '$(nipkgPath)')
+            {
+              Remove-Item -Path '$(nipkgPath)' -Recurse -Force
             }
             New-Item -Path '$(nipkgPath)' -ItemType 'Directory'
             New-Item -Path '$(nipkgPath)' -Name 'control' -ItemType 'Directory'
@@ -47,7 +47,7 @@ steps:
           inputs:
             targetType: 'inline'
             script: |
-              New-Item -Path '$(nipkgPath)\data\${{ payloadMap.installLocation }}' -ItemType 'Directory' 
+              New-Item -Path '$(nipkgPath)\data\${{ payloadMap.installLocation }}' -ItemType 'Directory'
               Copy-Item `
                 -Path '$(customDeviceRepoName)\${{ payloadMap.payloadLocation }}\*' `
                 -Destination '$(nipkgPath)\data\${{ payloadMap.installLocation }}'
@@ -55,7 +55,7 @@ steps:
       - task: CmdLine@2
         displayName: Pack nipkg
         inputs:
-          script: '"%PROGRAMFILES%\National Instruments\NI Package Manager\nipkg.exe" pack "$(nipkgPath)" "$(nipkgPath)"'   
+          script: '"%PROGRAMFILES%\National Instruments\NI Package Manager\nipkg.exe" pack "$(nipkgPath)" "$(nipkgPath)"'
 
       - task: PowerShell@2
         displayName: Copy installer to build output location
@@ -63,7 +63,7 @@ steps:
           targetType: 'inline'
           script: |
             $installerPath = '$(buildOutputPath)\installer'
-            If (-not(Test-Path $installerPath)) 
+            If (-not(Test-Path $installerPath))
             {
               New-Item -Path $installerPath -ItemType 'Directory'
             }
@@ -87,4 +87,4 @@ steps:
         Copy-Item `
           -Path "$(buildOutputPath)\*" `
           -Destination "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\$(architecture)\" `
-          -Recurse   
+          -Recurse
