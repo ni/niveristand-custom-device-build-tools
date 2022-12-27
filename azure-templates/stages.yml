@@ -3,17 +3,26 @@ parameters:
   - name: lvVersionsToBuild
     type: object
 
-  # buildSteps: list of {projectLocation, buildOperation, target, buildSpec}
-  - name: buildSteps
+  # codegenVis (optional): string array of codegen VI paths
+  - name: codegenVis
     type: object
+    default:
+      - ''
+
   # dependencies (optional): list of {source, file, destination}
   - name: dependencies
     type: object
     default:
       - file: ''
+
+  # buildSteps: list of {projectLocation, buildOperation, target, buildSpec}
+  - name: buildSteps
+    type: object
+
   # packages: list of {controlFileName, payloadMaps: list of {payloadLocation, installLocation} }
   - name: packages
     type: object
+
   # strings (releaseVersion, quarterlyReleaseVersion, buildOutputLocation, archiveLocation)
   - name: releaseVersion
     type: string
@@ -23,6 +32,7 @@ parameters:
     type: string
   - name: archiveLocation
     type: string
+
   # pack (optional)
   - name: pack
     type: boolean
@@ -38,9 +48,9 @@ stages:
     jobs:
       - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
         - job: Job${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
-          displayName: LabVIEW ${{ lvVersionToBuild.version }}
+          displayName: LabVIEW ${{ lvVersionToBuild.version }} ${{ parameters.lvVersionsToBuild.bitness }}
           steps:
-            - template: steps-pre-build.yml@niveristand-custom-device-build-tools # Configure variables, check out repos, Clear cache
+            - template: steps-pre-build.yml # Configure variables, check out repos, Clear cache
               parameters:
                 lvVersionToBuild:        ${{ lvVersionToBuild }}
                 releaseVersion:          ${{ parameters.releaseVersion }}
@@ -49,12 +59,14 @@ stages:
                 buildOutputLocation:     ${{ parameters.buildOutputLocation }}
 
             - ${{ each buildStep in parameters.buildSteps }}:
-              - template: steps-build.yml@niveristand-custom-device-build-tools # config file and build specs
+              - template: steps-build.yml # config file and build specs
                 parameters:
-                  buildStep:    ${{ buildStep }}
-                  dependencies: ${{ parameters.dependencies }}
+                  buildStep:          ${{ buildStep }}
+                  dependencies:       ${{ parameters.dependencies }}
+                  codegenVis:         ${{ parameters.codegenVis }}
+                  lvVersionToBuild:   ${{ lvVersionToBuild }}
 
-            - template: steps-post-build.yml@niveristand-custom-device-build-tools # nipkg and archive
+            - template: steps-post-build.yml # nipkg and archive
               parameters:
                 packages: ${{ parameters.packages }}
                 pack:     ${{ parameters.pack }}
@@ -72,7 +84,7 @@ stages:
             {
               Write-Output "Setting variables for Pull Requests..."
               $sourceBranch = "$(System.PullRequest.SourceBranch)" -replace 'dev/', ''
-            } 
+            }
             Else
             {
               Write-Output "Setting variables for general builds..."

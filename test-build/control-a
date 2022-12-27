@@ -1,0 +1,16 @@
+Package: ni-veristand-{veristand_version}-test-package
+Version: {nipkg_version}
+Architecture: windows_x64
+Maintainer: National Instruments <support@ni.com>
+XB-Plugin: file
+Description: Test packaging for NI VeriStand {veristand_version}.
+XB-Eula: eula-ni-standard
+Priority: standard
+Homepage: http://www.ni.com
+XB-LanguageSupport: en
+XB-UserVisible: yes
+Section: Add-Ons
+XB-DisplayVersion: {quarterly_display_version}
+XB-DisplayName: Test Package for VeriStand {veristand_version}
+Depends: ni-veristand-{labview_version} (>= {labview_short_version}.0.0), ni-switch (>= 20.0.0)
+Recommends: ni-switch-veristand-{veristand_version}-labview-support (>= {display_version}), ni-switch-veristand-{veristand_version}-labview-examples (>= {display_version})

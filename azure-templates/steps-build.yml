@@ -4,13 +4,19 @@ parameters:
     type: object
   - name: dependencies
     type: object
+  - name: codegenVis
+    type: object
+  - name: lvVersionToBuild
+    type: object
+
 # Note: the following variables are defined in pre-job-steps.yml:
-  # lvVersion, architecture, customDeviceRepoName, lvConfigVersion, 
+  # lvVersion, architecture, customDeviceRepoName, lvConfigVersion,
   # buildTools, lvCLICall
 
 steps:
   - ${{ each dependency in parameters.dependencies }}:
-    - ${{ if ne( dependency.file, '' )}}:
+    - ${{ if and( ne( dependency.file, '' ), eq( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
+        # only use dependencies for ExecuteBuildSpec build operation.  Other build operations do not support dependencies
       - task: PowerShell@2
         displayName: Copy dependency ${{ dependency.file }} to ${{ dependency.destination }}
         inputs:
@@ -32,7 +38,7 @@ steps:
             If ('$(sourceBranch)' -ne $branchName )
             {
               Write-Output "Checking for builds of $(sourceBranch) branch..."
-              If (Test-Path -Path "${{ dependency.source }}\NI\export\$(sourceBranch)\*\$(lvVersion)\$(architecture)") 
+              If (Test-Path -Path "${{ dependency.source }}\NI\export\$(sourceBranch)\*\$(lvVersion)\$(architecture)")
               {
                 Write-Output "branch was found, using $(sourceBranch) instead of $branchName..."
                 $branchName = '$(sourceBranch)'
@@ -54,11 +60,19 @@ steps:
             Foreach ($build in $allDependencyBuilds)
             {
               Write-Output "Checking $build..."
-              If((Test-Path -Path "$build\$(lvVersion)\$(architecture)\"))
+              If (Test-Path -Path "$build\$(lvVersion)\$(architecture)\")
               {
-                Write-Output "latest successful build: $build"
-                $dependencyFilePath = "$build\$(lvVersion)\$(architecture)\$dependencyTargetDirectory\${{ dependency.file }}"
-                Break
+                Write-Output "Checking for .finished file..."
+                If (Test-Path -Path "$build\.finished")
+                {
+                  Write-Output "latest successful build: $build"
+                  $dependencyFilePath = "$build\$(lvVersion)\$(architecture)\$dependencyTargetDirectory\${{ dependency.file }}"
+                  Break
+                }
+                Else
+                {
+                  Write-Output ".finished file not found at $build"
+                }
               }
             }
             If (-not $dependencyFilePath)
@@ -98,12 +112,12 @@ steps:
           Write-Output "Configuring build operation for all targets and build specs..."
           Write-Host '##vso[task.setvariable variable=targetArgument]'
           Write-Host '##vso[task.setvariable variable=buildSpecArgument]'
-        } 
+        }
         Elseif ('${{ parameters.buildStep.buildOperation }}' -eq 'ExecuteBuildSpecAllTargets')
         {
           Write-Output "Configuring build operation for all targets and single build spec..."
           Write-Host '##vso[task.setvariable variable=targetArgument]'
-          Write-Host '##vso[task.setvariable variable=buildSpecArgument]-BuildSpecName "${{ parameters.buildStep.buildSpec }}" ' 
+          Write-Host '##vso[task.setvariable variable=buildSpecArgument]-BuildSpecName "${{ parameters.buildStep.buildSpec }}" '
         }
         Elseif ('${{ parameters.buildStep.buildOperation }}' -eq 'ExecuteBuildSpec')
         {
@@ -115,13 +129,39 @@ steps:
         {
           Write-Error "invalid buildStep.buildOperation provided.  Valid options are ExecuteBuildSpec, ExecuteBuildSpecAllTargets, and ExecuteAllBuildSpecs."
         }
+        `
+        Write-Output "resetting build skip variable..."
+        Write-Host "##vso[task.setvariable variable=skipBuildStep]False"
+
+  - ${{ each exclusion in parameters.buildStep.exclusions }}:
+    - ${{ if and( eq(exclusion.version, parameters.lvVersionToBuild.version), eq(exclusion.bitness, parameters.lvVersionToBuild.bitness)) }}:
+      - task: PowerShell@2
+        displayName: exclusion found, build step will be skipped
+        inputs:
+          targetType: 'inline'
+          failOnStdErr: true
+          script: |
+            Write-Host "##vso[task.setvariable variable=skipBuildStep]True"
+
+
+  - ${{ each codegenVi in parameters.codegenVis }}:
+    - ${{ if and( ne(codegenVi, '' ), eq( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
+      - task: CmdLine@2
+        displayName: Run codegen step ${{ codegenVi }}
+        inputs:
+          script: |
+            echo on
+            if not '$(skipBuildStep)'=='True' $(lvCLICall) ^
+              -OperationName "SecureRunVI" ^
+              -VIPath "%cd%\$(customDeviceRepoName)\${{ codegenVi }}" ^
+              -LogFilePath "%cd%\$(customDeviceRepoName)\lvCodegen.log")
 
   - task: CmdLine@2
     displayName: Build ${{ parameters.buildStep.buildSpec }} on ${{ parameters.buildStep.target }} in ${{ parameters.buildStep.projectLocation }}
     inputs:
       script: |
         echo on
-        $(lvCLICall) ^
+        if not '$(skipBuildStep)'=='True' $(lvCLICall) ^
           -OperationName "${{ parameters.buildStep.buildOperation }}" ^
           -ProjectPath "%cd%\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}" ^
           $(targetArgument) ^
@@ -132,6 +172,4 @@ steps:
     displayName: Close LabVIEW
     condition: always() # close LabVIEW even if previous steps failed
     inputs:
-      script: taskkill /im labview.exe /f
-    
-
+      script: if not '$(skipBuildStep)'=='True' taskkill /im labview.exe /f

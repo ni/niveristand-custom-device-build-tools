@@ -11,12 +11,12 @@ parameters:
     type: string
 
 steps:
-    # Variables that are set in a powershell script cannot be used within the same script 
-    # because the variables are resolved when the script is first loaded, so generate all 
+    # Variables that are set in a powershell script cannot be used within the same script
+    # because the variables are resolved when the script is first loaded, so generate all
     # variables at the beginning.
   - task: PowerShell@2
     displayName: Configure Job-wide Variables for LabVIEW ${{ parameters.lvVersionToBuild.version }} ${{ parameters.lvVersionToBuild.bitness }}
-    inputs: 
+    inputs:
       targetType: 'inline'
       failOnStdErr: true
       script: |
@@ -26,7 +26,7 @@ steps:
         {
           Write-Output "Setting variables for Pull Requests..."
           $sourceBranch = "$(System.PullRequest.SourceBranch)" -replace 'dev/', ''
-        } 
+        }
         Else
         {
           Write-Output "Setting variables for general builds..."
@@ -59,7 +59,7 @@ steps:
           Write-Host '##vso[task.setvariable variable=architecture]x64'
           Write-Host '##vso[task.setvariable variable=nipkgx86suffix]'
           Write-Host '##vso[task.setvariable variable=nipkgx64suffix]64'
-        }     
+        }
         Else
         {
           Write-Error "Invalid Bitness defined in pipeline.  Use either 32bit or 64bit."
@@ -91,11 +91,12 @@ steps:
   - powershell: Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\$(buildTools)\lv\operations"'
     displayName: Set LabVIEWCLI path
 
-  - checkout: self
-    displayName: Check out repository to build
-
   - checkout: niveristand-custom-device-build-tools
     displayName: Check out NI VS Custom Device Build Tools repository
+
+    # The checkout order doesn't matter in most cases, but we want the dev branch (self) to be checked out last so that it's used for PR builds in niveristand-custom-device-build-tools
+  - checkout: self
+    displayName: Check out repository to build
 
   - task: CmdLine@2
     displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersionToBuild.version }}
