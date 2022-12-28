@@ -1,16 +1,14 @@
 parameters:
   - name: packages
     type: object
-  - name: pack
-    type: boolean
 # Note: the following variables are defined in pre-job-steps.yml:
   # nipkgPath, customDeviceRepoName, lvVersion, releaseVersion,
   # quarterlyReleaseVersion shortLvVersion, buildOutputPath,
   # archivePath, architecture
 
 steps:
-  - ${{ if eq( parameters.pack, true )}}:
-    - ${{ each package in parameters.packages }}:
+  - ${{ each package in parameters.packages }}:
+    - ${{ if ne(package.controlFileName, '') }}:
       - task: PowerShell@2
         displayName: Stage nipkg directory
         inputs:

@@ -94,7 +94,6 @@ stages:
       archiveLocation: '\\nirvana\Measurements\VeriStandAddons\prototype\niveristand-custom-device-build-tools'
 
 # Test Building multiple packages with multiple payload maps
-      pack: true
       packages:
         - controlFileName: 'test-build\control-a'
           payloadMaps:
