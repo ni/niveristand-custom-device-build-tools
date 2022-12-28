@@ -35,11 +35,6 @@ parameters:
   - name: archiveLocation
     type: string
 
-  # pack (optional)
-  - name: pack
-    type: boolean
-    default: false
-
 # Note: If custom build steps are needed for a particular custom device, copy this entire template into the azure-pipeline and add steps before/after as needed
 stages:
   - stage: Build
