@@ -145,7 +145,7 @@ steps:
 
 
   - ${{ each codegenVi in parameters.codegenVis }}:
-    - ${{ if and( ne(codegenVi, '' ), eq( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
+    - ${{ if ne(codegenVi, '' )}}:
       - task: CmdLine@2
         displayName: Run codegen step ${{ codegenVi }}
         inputs:
