@@ -22,6 +22,8 @@ parameters:
   # packages: list of {controlFileName, payloadMaps: list of {payloadLocation, installLocation} }
   - name: packages
     type: object
+    default:
+      - controlFileName: ''
 
   # strings (releaseVersion, quarterlyReleaseVersion, buildOutputLocation, archiveLocation)
   - name: releaseVersion
@@ -69,7 +71,7 @@ stages:
             - template: steps-post-build.yml # nipkg and archive
               parameters:
                 packages: ${{ parameters.packages }}
-                pack:     ${{ parameters.pack }}
+
         # if all jobs have passed, place .finished file in top level archive location TEMPORARY - linked to imitation-cd instead of build-tools
       - job: Finalize
         displayName: Final Validation

@@ -40,7 +40,7 @@ steps:
         Write-Host "##vso[task.setvariable variable=buildOutputPath]$customDeviceRepoName\${{ parameters.buildOutputLocation }}"
         Write-Host "##vso[task.setvariable variable=nipkgPath]$customDeviceRepoName\nipkg"
         `
-        Write-Output 'Configuring release version...'
+        Write-Output 'Configuring release version to "${{ parameters.releaseVersion }}"" and quarterlyReleaseVersion to "${{ parameters.quarterlyReleaseVersion }}""...'
         Write-Host '##vso[task.setvariable variable=releaseVersion]${{ parameters.releaseVersion }}'
         Write-Host '##vso[task.setvariable variable=quarterlyReleaseVersion]${{ parameters.quarterlyReleaseVersion }}'
         Write-Host '##vso[task.setvariable variable=lvVersion]${{ parameters.lvVersionToBuild.version }}'

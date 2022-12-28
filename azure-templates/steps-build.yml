@@ -92,6 +92,13 @@ steps:
               -Destination '$(customDeviceRepoName)\${{ dependency.destination }}\' `
               -Recurse `
               -Force
+    - ${{ if and( ne( dependency.file, '' ), ne( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
+      - task: PowerShell@2
+        displayName: dependency not used because buildOperation not supported for this buildStep
+        inputs:
+          targetType: 'inline'
+          failOnStdErr: true
+          script: Write-Output "only use dependencies for ExecuteBuildSpec build operation.  Other build operations do not support dependencies."
 
   - task: PowerShell@2
     displayName: Prepare to build ${{ parameters.buildStep.buildSpec }} on ${{ parameters.buildStep.target }} in ${{ parameters.buildStep.projectLocation }}
