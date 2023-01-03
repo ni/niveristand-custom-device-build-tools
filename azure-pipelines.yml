@@ -38,6 +38,9 @@ stages:
         - source: '\\nirvana\Measurements\VeriStandAddons\prototype\dependency-test-2'
           file: 'DependencyLibrary2.lvlibp'
           destination: 'test-build\Other\Includes'
+        - source: '\\nirvana\Measurements\VeriStandAddons\prototype\dependency-test-3'
+          file: 'DependencyLibrary3.lvlibp'
+          destination: 'test-build\Other\Includes'
 
 # Test Codegen Steps
       codegenVis:
@@ -50,31 +53,31 @@ stages:
           buildOperation: 'ExecuteBuildSpec'
           target: 'My Computer'
           buildSpec: 'BuildSpecSameName'
+
+        - projectLocation: 'test-build\Source\IndividualBuildSpecs.lvproj'
+          buildOperation: 'ExecuteBuildSpec'
+          target: 'My Computer'
+          buildSpec: 'BuildSpecUnique64bitOnly'
           exclusions:
             - version: '2021'
               bitness: '32bit'
             - version: '2023'
               bitness: '32bit'
-
-        - projectLocation: 'test-build\Source\IndividualBuildSpecs.lvproj'
-          buildOperation: 'ExecuteBuildSpec'
-          target: 'My Computer'
-          buildSpec: 'BuildSpecUnique1'
 
         - projectLocation: 'test-build\Source\IndividualBuildSpecs.lvproj'
           buildOperation: 'ExecuteBuildSpec'
           target: 'Linux x64'
           buildSpec: 'BuildSpecSameName'
+
+        - projectLocation: 'test-build\Source\IndividualBuildSpecs.lvproj'
+          buildOperation: 'ExecuteBuildSpec'
+          target: 'Linux x64'
+          buildSpec: 'BuildSpecUnique32bitOnly'
           exclusions:
             - version: '2021'
               bitness: '64bit'
             - version: '2023'
               bitness: '64bit'
-
-        - projectLocation: 'test-build\Source\IndividualBuildSpecs.lvproj'
-          buildOperation: 'ExecuteBuildSpec'
-          target: 'Linux x64'
-          buildSpec: 'BuildSpecUnique2'
 
 # Test BuildAllTargets special build operation in LabVIEW, override bitness with other operations before and after
         - projectLocation: 'test-build\Source\AllTargetBuildSpecs.lvproj'
