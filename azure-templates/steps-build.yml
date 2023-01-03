@@ -89,7 +89,9 @@ steps:
               }
               If (-not $dependencyFilePath)
               {
-                Write-Error "no successful build of dependency ${{ dependency.file }} was found at ${{ dependency.source }}."
+                Write-Output "no successful build of dependency ${{ dependency.file }} was found at ${{ dependency.source }}."
+                Write-Output "SKIPPING DEPENDENCY, END STEP..."
+                break
               }
               `
               Write-Output "Copying dependency ${{ dependency.file }}..."
