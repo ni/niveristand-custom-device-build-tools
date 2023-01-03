@@ -101,13 +101,38 @@ stages:
         - controlFileName: 'test-build\control-a'
           payloadMaps:
             - payloadLocation: 'test-build\Built\Output-1A'
-              installLocation: 'documents\National Instruments\NI VeriStand $(lvVersion)\Build Tools Test\Output-1A'
+              installLocation: 'documents\National Instruments\NI VeriStand $(lvVersion)_$(nipkgx64suffix)\Build Tools Test\Output-1A'
             - payloadLocation: 'test-build\Built\Output-2A'
-              installLocation: 'documents\National Instruments\NI VeriStand $(lvVersion)\Build Tools Test\Output-2A'
+              installLocation: 'documents\National Instruments\NI VeriStand $(lvVersion)_$(nipkgx64suffix)\Build Tools Test\Output-2A'
 
         - controlFileName: 'test-build\control-b'
           payloadMaps:
             - payloadLocation: 'test-build\Built\Output-1B'
-              installLocation: 'documents\National Instruments\NI VeriStand $(lvVersion)\Build Tools Test\Output-1B'
+              installLocation: 'documents\National Instruments\NI VeriStand $(lvVersion)_$(nipkgx64suffix)\Build Tools Test\Output-1B'
             - payloadLocation: 'test-build\Built\Output-2B'
-              installLocation: 'documents\National Instruments\NI VeriStand $(lvVersion)\Build Tools Test\Output-2B'
+              installLocation: 'documents\National Instruments\NI VeriStand $(lvVersion)_$(nipkgx64suffix))\Build Tools Test\Output-2B'
+
+# Test Empty cases
+  - template: azure-templates/stages.yml
+    parameters:
+
+# Test Versions - At least 1 of each supported LabVIEW version and 1 of each bitness
+      lvVersionsToBuild:
+        - version: '2020'
+          bitness: '32bit'
+        - version: '2021'
+          bitness: '64bit'
+        - version: '2023'
+          bitness: '64bit'
+
+# Test Individual Build Specs using standard build operations in LabVIEW, and exclusion rules
+      buildSteps:
+        - projectLocation: 'test-build\Source\EmptyIndividualBuildSpec.lvproj'
+          buildOperation: 'ExecuteBuildSpec'
+          target: 'My Computer'
+          buildSpec: 'EmptySpec'
+
+      releaseVersion: '23.0.0'
+      quarterlyReleaseVersion: '2023 Q1'
+      buildOutputLocation: 'test-build\Built'
+      archiveLocation: '\\nirvana\Measurements\VeriStandAddons\prototype\niveristand-custom-device-build-tools'
