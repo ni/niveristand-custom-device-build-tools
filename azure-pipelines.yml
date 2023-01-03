@@ -129,7 +129,7 @@ stages:
 
 # Test Individual Build Specs using standard build operations in LabVIEW, and exclusion rules
       buildSteps:
-        - projectLocation: 'test-build\Source\EmptyIndividualBuildSpec.lvproj'
+        - projectLocation: 'test-build\Source\EmptyBuildSpec.lvproj'
           buildOperation: 'ExecuteBuildSpec'
           target: 'My Computer'
           buildSpec: 'EmptySpec'
