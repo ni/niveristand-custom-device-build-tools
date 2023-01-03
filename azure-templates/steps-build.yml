@@ -14,6 +14,46 @@ parameters:
   # buildTools, lvCLICall
 
 steps:
+  - task: PowerShell@2
+    displayName: Prepare to build ${{ parameters.buildStep.buildSpec }} on ${{ parameters.buildStep.target }} in ${{ parameters.buildStep.projectLocation }}
+    inputs:
+      targetType: 'inline'
+      failOnStdErr: true
+      script: |
+        If (-not(Test-Path -Path "$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}.config"))
+        {
+          Write-Output "adding .config file to project..."
+          $lvConfigFilePath = '$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}.config'
+          Copy-Item "$(buildTools)\resources\LabVIEW.exe.config" -Destination $lvConfigFilePath
+          (Get-Content -Path $lvConfigFilePath) -replace '2016.0.0.0', '$(lvConfigVersion)' | Set-Content -Path $lvConfigFilePath
+        }
+        `
+        If ('${{ parameters.buildStep.buildOperation }}' -eq 'ExecuteAllBuildSpecs')
+        {
+          Write-Output "Configuring build operation for all targets and build specs..."
+          Write-Host '##vso[task.setvariable variable=targetArgument]'
+          Write-Host '##vso[task.setvariable variable=buildSpecArgument]'
+        }
+        Elseif ('${{ parameters.buildStep.buildOperation }}' -eq 'ExecuteBuildSpecAllTargets')
+        {
+          Write-Output "Configuring build operation for all targets and single build spec..."
+          Write-Host '##vso[task.setvariable variable=targetArgument]'
+          Write-Host '##vso[task.setvariable variable=buildSpecArgument]-BuildSpecName "${{ parameters.buildStep.buildSpec }}" '
+        }
+        Elseif ('${{ parameters.buildStep.buildOperation }}' -eq 'ExecuteBuildSpec')
+        {
+          Write-Output "Configuring build operation for specific target and build spec..."
+          Write-Host '##vso[task.setvariable variable=targetArgument]-TargetName "${{ parameters.buildStep.target }}" '
+          Write-Host '##vso[task.setvariable variable=buildSpecArgument]-BuildSpecName "${{ parameters.buildStep.buildSpec }}" '
+        }
+        Else
+        {
+          Write-Error "invalid buildStep.buildOperation provided.  Valid options are ExecuteBuildSpec, ExecuteBuildSpecAllTargets, and ExecuteAllBuildSpecs."
+        }
+        `
+        Write-Output "resetting build exclusion skip variable..."
+        Write-Host "##vso[task.setvariable variable=skipBuildStep]False"
+
   - ${{ each exclusion in parameters.buildStep.exclusions }}:
     - ${{ if and( eq(exclusion.version, parameters.lvVersionToBuild.version), eq(exclusion.bitness, parameters.lvVersionToBuild.bitness)) }}:
       - task: PowerShell@2
@@ -33,7 +73,11 @@ steps:
           targetType: 'inline'
           failOnStdErr: true
           script: |
-            If ('$(skipBuildStep)' -ne 'True')
+            If ('$(skipBuildStep)' -eq 'True')
+            {
+                Write-Output "dependency copying was skipped because a matching exclusion was found for this build step."
+            }
+            Else
             {
               Write-Output "Configuring target directory environment..."
               If ('${{ parameters.buildStep.target }}' -eq 'My Computer')
@@ -107,10 +151,6 @@ steps:
                 -Recurse `
                 -Force
             }
-            Else
-            {
-              Write-Output "dependency copying was skipped because a matching exclusion was found for this build step."
-            }
     - ${{ if and( ne( dependency.file, '' ), ne( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
       - task: PowerShell@2
         displayName: dependency not used because buildOperation not supported for this buildStep
@@ -118,46 +158,6 @@ steps:
           targetType: 'inline'
           failOnStdErr: true
           script: Write-Output "only use dependencies for ExecuteBuildSpec build operation.  Other build operations do not support dependencies."
-
-  - task: PowerShell@2
-    displayName: Prepare to build ${{ parameters.buildStep.buildSpec }} on ${{ parameters.buildStep.target }} in ${{ parameters.buildStep.projectLocation }}
-    inputs:
-      targetType: 'inline'
-      failOnStdErr: true
-      script: |
-        If (-not(Test-Path -Path "$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}.config"))
-        {
-          Write-Output "adding .config file to project..."
-          $lvConfigFilePath = '$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}.config'
-          Copy-Item "$(buildTools)\resources\LabVIEW.exe.config" -Destination $lvConfigFilePath
-          (Get-Content -Path $lvConfigFilePath) -replace '2016.0.0.0', '$(lvConfigVersion)' | Set-Content -Path $lvConfigFilePath
-        }
-        `
-        If ('${{ parameters.buildStep.buildOperation }}' -eq 'ExecuteAllBuildSpecs')
-        {
-          Write-Output "Configuring build operation for all targets and build specs..."
-          Write-Host '##vso[task.setvariable variable=targetArgument]'
-          Write-Host '##vso[task.setvariable variable=buildSpecArgument]'
-        }
-        Elseif ('${{ parameters.buildStep.buildOperation }}' -eq 'ExecuteBuildSpecAllTargets')
-        {
-          Write-Output "Configuring build operation for all targets and single build spec..."
-          Write-Host '##vso[task.setvariable variable=targetArgument]'
-          Write-Host '##vso[task.setvariable variable=buildSpecArgument]-BuildSpecName "${{ parameters.buildStep.buildSpec }}" '
-        }
-        Elseif ('${{ parameters.buildStep.buildOperation }}' -eq 'ExecuteBuildSpec')
-        {
-          Write-Output "Configuring build operation for specific target and build spec..."
-          Write-Host '##vso[task.setvariable variable=targetArgument]-TargetName "${{ parameters.buildStep.target }}" '
-          Write-Host '##vso[task.setvariable variable=buildSpecArgument]-BuildSpecName "${{ parameters.buildStep.buildSpec }}" '
-        }
-        Else
-        {
-          Write-Error "invalid buildStep.buildOperation provided.  Valid options are ExecuteBuildSpec, ExecuteBuildSpecAllTargets, and ExecuteAllBuildSpecs."
-        }
-        `
-        Write-Output "resetting build skip variable..."
-        Write-Host "##vso[task.setvariable variable=skipBuildStep]False"
 
   - ${{ each codegenVi in parameters.codegenVis }}:
     - ${{ if ne(codegenVi, '' )}}:
