@@ -37,7 +37,8 @@ parameters:
 
 # Note: If custom build steps are needed for a particular custom device, copy this entire template into the azure-pipeline and add steps before/after as needed
 stages:
-  - stage: Build
+  - stage:
+    displayName: Build
     pool:
       name: custom-device-temp # TEMPORARY, eventually use an official build pool of custom device agents!!
       demands:
