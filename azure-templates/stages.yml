@@ -1,4 +1,8 @@
 parameters:
+  - name: stageName
+    type: string
+    default: Build
+
   # lvVersionsToBuild: list of {version, bitness}
   - name: lvVersionsToBuild
     type: object
@@ -39,6 +43,7 @@ parameters:
 stages:
   - stage:
     displayName: Build
+    dependsOn: []
     pool:
       name: custom-device-temp # TEMPORARY, eventually use an official build pool of custom device agents!!
       demands:

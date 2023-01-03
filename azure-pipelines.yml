@@ -16,6 +16,7 @@ resources:
 stages:
   - template: azure-templates/stages.yml
     parameters:
+      stageName: 'Build Complex Case'
 
 # Test Versions - At least 1 of each supported LabVIEW version and 1 of each bitness
       lvVersionsToBuild:
@@ -115,6 +116,7 @@ stages:
 # Test Empty cases
   - template: azure-templates/stages.yml
     parameters:
+      stageName: 'Build Minimal Case'
 
 # Test Versions - At least 1 of each supported LabVIEW version and 1 of each bitness
       lvVersionsToBuild:
