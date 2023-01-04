@@ -95,7 +95,7 @@ stages:
       releaseVersion: '23.0.0'
       quarterlyReleaseVersion: '2023 Q1'
       buildOutputLocation: 'test-build\Built'
-      archiveLocation: '\\nirvana\Measurements\VeriStandAddons\prototype\niveristand-custom-device-build-tools'
+      archiveLocation: '\\nirvana\Measurements\VeriStandAddons\prototype\niveristand-custom-device-build-tools\complexCase'
 
 # Test Building multiple packages with multiple payload maps
       packages:
@@ -117,8 +117,6 @@ stages:
   - template: azure-templates/stages.yml
     parameters:
       stageName: 'Build Minimal Case'
-
-# Test Versions - At least 1 of each supported LabVIEW version and 1 of each bitness
       lvVersionsToBuild:
         - version: '2020'
           bitness: '32bit'
@@ -127,7 +125,6 @@ stages:
         - version: '2023'
           bitness: '64bit'
 
-# Test Individual Build Specs using standard build operations in LabVIEW, and exclusion rules
       buildSteps:
         - projectLocation: 'test-build\Source\EmptyBuildSpec.lvproj'
           buildOperation: 'ExecuteBuildSpec'
@@ -137,4 +134,4 @@ stages:
       releaseVersion: '23.0.0'
       quarterlyReleaseVersion: '2023 Q1'
       buildOutputLocation: 'test-build\Built'
-      archiveLocation: '\\nirvana\Measurements\VeriStandAddons\prototype\niveristand-custom-device-build-tools'
+      archiveLocation: '\\nirvana\Measurements\VeriStandAddons\prototype\niveristand-custom-device-build-tools\emptyCase'
