@@ -14,92 +14,6 @@ parameters:
   # buildTools, lvCLICall
 
 steps:
-  - ${{ each dependency in parameters.dependencies }}:
-    - ${{ if and( ne( dependency.file, '' ), eq( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
-        # only use dependencies for ExecuteBuildSpec build operation.  Other build operations do not support dependencies
-      - task: PowerShell@2
-        displayName: Copy dependency ${{ dependency.file }} to ${{ dependency.destination }}
-        inputs:
-          targetType: 'inline'
-          failOnStdErr: true
-          script: |
-            Write-Output "Configuring target directory environment..."
-            If ('${{ parameters.buildStep.target }}' -eq 'My Computer')
-            {
-              $dependencyTargetDirectory = "Windows"
-            }
-            Elseif ('${{ parameters.buildStep.target }}' -eq 'Linux x64')
-            {
-              $dependencyTargetDirectory = "Linux_x64"
-            }
-            Write-Output "Setting dependency environment to $dependencyTargetDirectory"
-            `
-            $branchName = 'main'
-            If ('$(sourceBranch)' -ne $branchName )
-            {
-              Write-Output "Checking for builds of $(sourceBranch) branch..."
-              If (Test-Path -Path "${{ dependency.source }}\NI\export\$(sourceBranch)\*\$(lvVersion)\$(architecture)")
-              {
-                Write-Output "branch was found, using $(sourceBranch) instead of $branchName..."
-                $branchName = '$(sourceBranch)'
-              }
-              Else
-              {
-                Write-Output "branch not found, using a build of $branchName..."
-              }
-            }
-            Else
-            {
-              Write-Output "Using $branchName branch..."
-            }
-            `
-            Write-Output "Finding latest successful build of dependency ${{ dependency.file }}..."
-            $allDependencyBuilds = Get-ChildItem `
-              -Path "${{ dependency.source }}\NI\export\$branchName\*" `
-              | Sort {$_.Name} -Descending
-            Foreach ($build in $allDependencyBuilds)
-            {
-              Write-Output "Checking $build..."
-              If (Test-Path -Path "$build\$(lvVersion)\$(architecture)\")
-              {
-                Write-Output "Checking for .finished file..."
-                If (Test-Path -Path "$build\.finished")
-                {
-                  Write-Output "latest successful build: $build"
-                  $dependencyFilePath = "$build\$(lvVersion)\$(architecture)\$dependencyTargetDirectory\${{ dependency.file }}"
-                  Break
-                }
-                Else
-                {
-                  Write-Output ".finished file not found at $build"
-                }
-              }
-            }
-            If (-not $dependencyFilePath)
-            {
-              Write-Error "no successful build of dependency ${{ dependency.file }} was found at ${{ dependency.source }}."
-            }
-            `
-            Write-Output "Copying dependency ${{ dependency.file }}..."
-            If (-not(Test-Path -Path '$(customDeviceRepoName)\${{ dependency.destination }}'))
-            {
-              New-Item `
-                -Path '$(customDeviceRepoName)\${{ dependency.destination }}' `
-                -ItemType 'Directory'
-            }
-            Copy-Item `
-              -Path $dependencyFilePath `
-              -Destination '$(customDeviceRepoName)\${{ dependency.destination }}\' `
-              -Recurse `
-              -Force
-    - ${{ if and( ne( dependency.file, '' ), ne( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
-      - task: PowerShell@2
-        displayName: dependency not used because buildOperation not supported for this buildStep
-        inputs:
-          targetType: 'inline'
-          failOnStdErr: true
-          script: Write-Output "only use dependencies for ExecuteBuildSpec build operation.  Other build operations do not support dependencies."
-
   - task: PowerShell@2
     displayName: Prepare to build ${{ parameters.buildStep.buildSpec }} on ${{ parameters.buildStep.target }} in ${{ parameters.buildStep.projectLocation }}
     inputs:
@@ -137,7 +51,7 @@ steps:
           Write-Error "invalid buildStep.buildOperation provided.  Valid options are ExecuteBuildSpec, ExecuteBuildSpecAllTargets, and ExecuteAllBuildSpecs."
         }
         `
-        Write-Output "resetting build skip variable..."
+        Write-Output "resetting build exclusion skip variable..."
         Write-Host "##vso[task.setvariable variable=skipBuildStep]False"
 
   - ${{ each exclusion in parameters.buildStep.exclusions }}:
@@ -150,6 +64,108 @@ steps:
           script: |
             Write-Host "##vso[task.setvariable variable=skipBuildStep]True"
 
+  - ${{ each dependency in parameters.dependencies }}:
+    - ${{ if and( ne( dependency.file, '' ), eq( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
+        # only use dependencies for ExecuteBuildSpec build operation.  Other build operations do not support dependencies
+      - task: PowerShell@2
+        displayName: Copy dependency ${{ dependency.file }} to ${{ dependency.destination }}
+        inputs:
+          targetType: 'inline'
+          failOnStdErr: true
+          script: |
+            If ('$(skipBuildStep)' -eq 'True')
+            {
+                Write-Output "dependency copying was skipped because a matching exclusion was found for this build step."
+            }
+            Else
+            {
+              Write-Output "Configuring target directory environment..."
+              If ('${{ parameters.buildStep.target }}' -eq 'My Computer')
+              {
+                $dependencyTargetDirectory = "Windows"
+              }
+              Elseif ('${{ parameters.buildStep.target }}' -eq 'Linux x64')
+              {
+                $dependencyTargetDirectory = "Linux_x64"
+              }
+              Write-Output "Setting dependency environment to $dependencyTargetDirectory"
+              `
+              $branchName = 'main'
+              If ('$(sourceBranch)' -ne $branchName )
+              {
+                Write-Output "Checking for builds of $(sourceBranch) branch..."
+                If (Test-Path -Path "${{ dependency.source }}\NI\export\$(sourceBranch)\*\$(lvVersion)\$(architecture)")
+                {
+                  Write-Output "branch was found, using $(sourceBranch) instead of $branchName..."
+                  $branchName = '$(sourceBranch)'
+                }
+                Else
+                {
+                  Write-Output "branch not found, using a build of $branchName..."
+                }
+              }
+              Else
+              {
+                Write-Output "Using $branchName branch..."
+              }
+              `
+              Write-Output "Finding latest successful build of dependency ${{ dependency.file }}..."
+              $allDependencyBuilds = Get-ChildItem `
+                -Path "${{ dependency.source }}\NI\export\$branchName\*" `
+                | Sort {$_.Name} -Descending
+              Foreach ($build in $allDependencyBuilds)
+              {
+                Write-Output "Checking $build..."
+                If (Test-Path -Path "$build\$(lvVersion)\$(architecture)\")
+                {
+                  Write-Output "Checking for .finished file..."
+                  If (Test-Path -Path "$build\.finished")
+                  {
+                    Write-Output "latest successful build: $build"
+                    $dependencyFilePath = "$build\$(lvVersion)\$(architecture)\$dependencyTargetDirectory\${{ dependency.file }}"
+                    Break
+                  }
+                  Else
+                  {
+                    Write-Output ".finished file not found at $build"
+                  }
+                }
+              }
+              If (-not $dependencyFilePath)
+              {
+                Write-Output "no successful build of dependency ${{ dependency.file }} was found at ${{ dependency.source }}."
+                Write-Output "SKIPPING DEPENDENCY, END STEP..."
+                break
+              }
+              `
+              Write-Output "Copying dependency ${{ dependency.file }}..."
+              If (-not(Test-Path -Path '$(customDeviceRepoName)\${{ dependency.destination }}'))
+              {
+                New-Item `
+                  -Path '$(customDeviceRepoName)\${{ dependency.destination }}' `
+                  -ItemType 'Directory'
+              }
+              If (Test-Path $dependencyFilePath)
+              {
+                Copy-Item `
+                  -Path $dependencyFilePath `
+                  -Destination '$(customDeviceRepoName)\${{ dependency.destination }}\' `
+                  -Recurse `
+                  -Force
+              }
+              Else
+              {
+                Write-Output "Dependency does not exist at $dependencyFilePath..."
+                Write-Output "SKIPPING DEPENDENCY, END STEP..."
+              }
+            }
+    - ${{ if and( ne( dependency.file, '' ), ne( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
+      - task: PowerShell@2
+        displayName: dependency not used because buildOperation not supported for this buildStep
+        inputs:
+          targetType: 'inline'
+          failOnStdErr: true
+          script: Write-Output "only use dependencies for ExecuteBuildSpec build operation.  Other build operations do not support dependencies."
 
   - ${{ each codegenVi in parameters.codegenVis }}:
     - ${{ if ne(codegenVi, '' )}}:

@@ -60,7 +60,7 @@ steps:
         inputs:
           targetType: 'inline'
           script: |
-            $installerPath = '$(buildOutputPath)\installer'
+            $installerPath = '$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\installer'
             If (-not(Test-Path $installerPath))
             {
               New-Item -Path $installerPath -ItemType 'Directory'

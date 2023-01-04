@@ -76,10 +76,10 @@
 				<Property Name="Source[5].sourceInclusion" Type="Str">Include</Property>
 				<Property Name="SourceCount" Type="Int">6</Property>
 			</Item>
-			<Item Name="BuildSpecUnique1" Type="Source Distribution">
+			<Item Name="BuildSpecUnique64bitOnly" Type="Source Distribution">
 				<Property Name="Bld_autoIncrement" Type="Bool">true</Property>
 				<Property Name="Bld_buildCacheID" Type="Str">{209C80C0-0F7E-4FF7-A785-6C5F94A78B3C}</Property>
-				<Property Name="Bld_buildSpecName" Type="Str">BuildSpecUnique1</Property>
+				<Property Name="Bld_buildSpecName" Type="Str">BuildSpecUnique64bitOnly</Property>
 				<Property Name="Bld_excludedDirectory[0]" Type="Path">vi.lib</Property>
 				<Property Name="Bld_excludedDirectory[0].pathType" Type="Str">relativeToAppDir</Property>
 				<Property Name="Bld_excludedDirectory[1]" Type="Path">instr.lib</Property>
@@ -91,17 +91,17 @@
 				<Property Name="Bld_excludedDirectory[4]" Type="Path">/C/ProgramData/National Instruments/InstCache/20.0</Property>
 				<Property Name="Bld_excludedDirectory[5]" Type="Path">/C/Users/virtual/Documents/LabVIEW Data/2020(32-bit)/ExtraVILib</Property>
 				<Property Name="Bld_excludedDirectoryCount" Type="Int">6</Property>
-				<Property Name="Bld_localDestDir" Type="Path">../Built/Output-1B/NI_AB_PROJECTNAME/BuildSpecUnique1</Property>
+				<Property Name="Bld_localDestDir" Type="Path">../Built/Output-1B/NI_AB_PROJECTNAME/BuildSpecUnique64bitOnly</Property>
 				<Property Name="Bld_localDestDirType" Type="Str">relativeToCommon</Property>
 				<Property Name="Bld_postActionVIID" Type="Ref">/My Computer/Post-Build Action.vi</Property>
 				<Property Name="Bld_previewCacheID" Type="Str">{A6509AD3-0E70-41C4-908C-E6CA5F6E2983}</Property>
 				<Property Name="Bld_version.major" Type="Int">1</Property>
 				<Property Name="Destination[0].destName" Type="Str">Destination Directory</Property>
-				<Property Name="Destination[0].path" Type="Path">../Built/Output-1B/NI_AB_PROJECTNAME/BuildSpecUnique1</Property>
+				<Property Name="Destination[0].path" Type="Path">../Built/Output-1B/NI_AB_PROJECTNAME/BuildSpecUnique64bitOnly</Property>
 				<Property Name="Destination[1].destName" Type="Str">Support Directory</Property>
-				<Property Name="Destination[1].path" Type="Path">../Built/Output-1B/NI_AB_PROJECTNAME/BuildSpecUnique1/data</Property>
+				<Property Name="Destination[1].path" Type="Path">../Built/Output-1B/NI_AB_PROJECTNAME/BuildSpecUnique64bitOnly/data</Property>
 				<Property Name="DestinationCount" Type="Int">2</Property>
-				<Property Name="Source[0].itemID" Type="Str">{46AFBEBF-1E68-4D62-8EFE-5A7035617382}</Property>
+				<Property Name="Source[0].itemID" Type="Str">{25A18BCA-6D33-49A2-AD34-BC4ED63494B0}</Property>
 				<Property Name="Source[0].type" Type="Str">Container</Property>
 				<Property Name="Source[1].destinationIndex" Type="Int">0</Property>
 				<Property Name="Source[1].itemID" Type="Ref">/My Computer/DependencyLibrary1.lvlibp</Property>
@@ -182,6 +182,9 @@
 		<Item Name="DependencyLibrary2.lvlibp" Type="LVLibp" URL="../../Other/Includes/DependencyLibrary2.lvlibp">
 			<Item Name="Dependency.vi" Type="VI" URL="../../Other/Includes/DependencyLibrary2.lvlibp/Dependency.vi"/>
 		</Item>
+		<Item Name="DependencyLibrary3.lvlibp" Type="LVLibp" URL="../../Other/Includes/DependencyLibrary3.lvlibp">
+			<Item Name="Dependency.vi" Type="VI" URL="../../Other/Includes/DependencyLibrary3.lvlibp/Dependency.vi"/>
+		</Item>
 		<Item Name="virtual_instrument.vi" Type="VI" URL="../virtual_instrument.vi"/>
 		<Item Name="Dependencies" Type="Dependencies"/>
 		<Item Name="Build Specifications" Type="Build">
@@ -235,10 +238,10 @@
 				<Property Name="Source[5].sourceInclusion" Type="Str">Include</Property>
 				<Property Name="SourceCount" Type="Int">6</Property>
 			</Item>
-			<Item Name="BuildSpecUnique2" Type="Source Distribution">
+			<Item Name="BuildSpecUnique32bitOnly" Type="Source Distribution">
 				<Property Name="Bld_autoIncrement" Type="Bool">true</Property>
 				<Property Name="Bld_buildCacheID" Type="Str">{73B67D27-960B-4F56-B4E0-490AB8D77FC1}</Property>
-				<Property Name="Bld_buildSpecName" Type="Str">BuildSpecUnique2</Property>
+				<Property Name="Bld_buildSpecName" Type="Str">BuildSpecUnique32bitOnly</Property>
 				<Property Name="Bld_excludedDirectory[0]" Type="Path">vi.lib</Property>
 				<Property Name="Bld_excludedDirectory[0].pathType" Type="Str">relativeToAppDir</Property>
 				<Property Name="Bld_excludedDirectory[1]" Type="Path">instr.lib</Property>
@@ -250,7 +253,7 @@
 				<Property Name="Bld_excludedDirectory[4]" Type="Path">/C/ProgramData/National Instruments/InstCache/20.0</Property>
 				<Property Name="Bld_excludedDirectory[5]" Type="Path">/C/Users/virtual/Documents/LabVIEW Data/2020(32-bit)/ExtraVILib</Property>
 				<Property Name="Bld_excludedDirectoryCount" Type="Int">6</Property>
-				<Property Name="Bld_localDestDir" Type="Path">../Built/Output-2B/NI_AB_PROJECTNAME/NI_AB_TARGETNAME/BuildSpecUnique2</Property>
+				<Property Name="Bld_localDestDir" Type="Path">../Built/Output-2B/NI_AB_PROJECTNAME/NI_AB_TARGETNAME/BuildSpecUnique32bitOnly</Property>
 				<Property Name="Bld_localDestDirType" Type="Str">relativeToCommon</Property>
 				<Property Name="Bld_postActionVIID" Type="Ref">/My Computer/Post-Build Action.vi</Property>
 				<Property Name="Bld_previewCacheID" Type="Str">{C608E7CD-C319-4A46-BAC9-490C0D00FB26}</Property>
@@ -263,7 +266,7 @@
 				<Property Name="Destination[1].path" Type="Path">/home/lvuser/natinst/bin/data</Property>
 				<Property Name="Destination[1].path.type" Type="Str">&lt;none&gt;</Property>
 				<Property Name="DestinationCount" Type="Int">2</Property>
-				<Property Name="Source[0].itemID" Type="Str">{E715296D-446E-4E6B-ABA7-3677F7C9EFAD}</Property>
+				<Property Name="Source[0].itemID" Type="Str">{2DEAD9E1-3680-44FA-A86C-A13B05BDDA7D}</Property>
 				<Property Name="Source[0].type" Type="Str">Container</Property>
 				<Property Name="Source[1].destinationIndex" Type="Int">0</Property>
 				<Property Name="Source[1].itemID" Type="Ref">/Linux x64/DependencyLibrary1.lvlibp</Property>
@@ -283,7 +286,11 @@
 				<Property Name="Source[5].destinationIndex" Type="Int">0</Property>
 				<Property Name="Source[5].itemID" Type="Ref">/Linux x64/codegenFile2</Property>
 				<Property Name="Source[5].sourceInclusion" Type="Str">Include</Property>
-				<Property Name="SourceCount" Type="Int">6</Property>
+				<Property Name="Source[6].destinationIndex" Type="Int">0</Property>
+				<Property Name="Source[6].itemID" Type="Ref">/Linux x64/DependencyLibrary3.lvlibp</Property>
+				<Property Name="Source[6].preventRename" Type="Bool">true</Property>
+				<Property Name="Source[6].sourceInclusion" Type="Str">Include</Property>
+				<Property Name="SourceCount" Type="Int">7</Property>
 			</Item>
 		</Item>
 	</Item>
