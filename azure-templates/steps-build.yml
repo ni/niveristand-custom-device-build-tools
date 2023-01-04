@@ -145,11 +145,19 @@ steps:
                   -Path '$(customDeviceRepoName)\${{ dependency.destination }}' `
                   -ItemType 'Directory'
               }
-              Copy-Item `
-                -Path $dependencyFilePath `
-                -Destination '$(customDeviceRepoName)\${{ dependency.destination }}\' `
-                -Recurse `
-                -Force
+              If (Test-Path $dependencyFilePath)
+              {
+                Copy-Item `
+                  -Path $dependencyFilePath `
+                  -Destination '$(customDeviceRepoName)\${{ dependency.destination }}\' `
+                  -Recurse `
+                  -Force
+              }
+              Else
+              {
+                Write-Output "Dependency does not exist at $dependencyFilePath..."
+                Write-Output "SKIPPING DEPENDENCY, END STEP..."
+              }
             }
     - ${{ if and( ne( dependency.file, '' ), ne( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
       - task: PowerShell@2
