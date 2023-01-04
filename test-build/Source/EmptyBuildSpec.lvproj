@@ -28,16 +28,16 @@
 				<Property Name="Bld_excludedDirectory[4]" Type="Path">/C/ProgramData/National Instruments/InstCache/20.0</Property>
 				<Property Name="Bld_excludedDirectory[5]" Type="Path">/C/Users/virtual/Documents/LabVIEW Data/2020(32-bit)/ExtraVILib</Property>
 				<Property Name="Bld_excludedDirectoryCount" Type="Int">6</Property>
-				<Property Name="Bld_localDestDir" Type="Path">../builds/NI_AB_PROJECTNAME/EmptySpec</Property>
+				<Property Name="Bld_localDestDir" Type="Path">../Built/EmptySpec</Property>
 				<Property Name="Bld_localDestDirType" Type="Str">relativeToCommon</Property>
 				<Property Name="Bld_previewCacheID" Type="Str">{5204454B-426F-43FB-9200-FC7755E38FD0}</Property>
 				<Property Name="Bld_version.major" Type="Int">1</Property>
 				<Property Name="Destination[0].destName" Type="Str">Destination Directory</Property>
-				<Property Name="Destination[0].path" Type="Path">../builds/NI_AB_PROJECTNAME/EmptySpec</Property>
+				<Property Name="Destination[0].path" Type="Path">../Built/EmptySpec</Property>
 				<Property Name="Destination[1].destName" Type="Str">Support Directory</Property>
-				<Property Name="Destination[1].path" Type="Path">../builds/NI_AB_PROJECTNAME/EmptySpec/data</Property>
+				<Property Name="Destination[1].path" Type="Path">../Built/EmptySpec/data</Property>
 				<Property Name="DestinationCount" Type="Int">2</Property>
-				<Property Name="Source[0].itemID" Type="Str">{C667317E-8A19-4013-822C-760C58CC6030}</Property>
+				<Property Name="Source[0].itemID" Type="Str">{E6B9E7A3-99C1-40AF-91BB-768316087843}</Property>
 				<Property Name="Source[0].type" Type="Str">Container</Property>
 				<Property Name="Source[1].destinationIndex" Type="Int">0</Property>
 				<Property Name="Source[1].itemID" Type="Ref">/My Computer/virtual_instrument.vi</Property>
