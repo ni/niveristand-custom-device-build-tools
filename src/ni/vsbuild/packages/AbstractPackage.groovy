@@ -36,14 +36,31 @@ abstract class AbstractPackage implements Buildable {
    }
 
    protected def getQuarterlyDisplayVersion() {
-      // Rather than try to finalize the versioning policy now,
-      // punt and just handle the immediate case.
-      def baseVersion = getBaseVersion()
-      if (baseVersion == "23.0.0") {
-         return "2023 Q1"
+      // Unclear what the policy is for updates at the time of writing
+      if (getUpdateVersion() == "0") {
+         return baseVersion
       }
 
-      return baseVersion
+      def quarter = ""
+      switch (getMinorVersion()) {
+         case "0":
+            quarter = "1"
+            break
+         case "3":
+            quarter = "2"
+            break
+         case "5":
+            quarter = "3"
+            break
+         case "8":
+            quarter = "4"
+            break
+         default:
+            // Unexpected minor version
+            return baseVersion
+      }
+
+      return "20${getMajorVersion()} Q${quarter}"
    }
 
    protected def getBaseVersion() {
