@@ -10,7 +10,7 @@ resources:
     - repository: niveristand-custom-device-build-tools
       type:       github
       ref:        main
-      endpoint:   ni (2)
+      endpoint:   nivs-custom-devices
       name:       ni/niveristand-custom-device-build-tools
 
 stages:

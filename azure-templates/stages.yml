@@ -44,7 +44,7 @@ stages:
   - stage: ${{ parameters.stageName }}
     dependsOn: []
     pool:
-      name: custom-device-temp # TEMPORARY, eventually use an official build pool of custom device agents!!
+      name: DevCentral-VeriStand-CustomDevices
       demands:
         - agent.os -equals Windows_NT
     jobs:
@@ -72,7 +72,7 @@ stages:
               parameters:
                 packages: ${{ parameters.packages }}
 
-        # if all jobs have passed, place .finished file in top level archive location TEMPORARY - linked to imitation-cd instead of build-tools
+        # if all jobs have passed, place .finished file in top level archive location
       - job: Finalize
         displayName: Final Validation
         dependsOn:
