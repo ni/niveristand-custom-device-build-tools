@@ -3,9 +3,6 @@ parameters:
     type: object
   - name: releaseVersion
     type: string
-  - name: quarterlyReleaseVersion
-    type: string
-    default: 1999
   - name: archiveLocation
     type: string
   - name: buildOutputLocation
