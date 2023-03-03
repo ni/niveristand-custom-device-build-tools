@@ -111,7 +111,7 @@ stages:
             - payloadLocation: 'test-build\Built\Output-1B'
               installLocation: 'documents\National Instruments\NI VeriStand $(lvVersion)_$(nipkgx64suffix)\Build Tools Test\Output-1B'
             - payloadLocation: 'test-build\Built\Output-2B'
-              installLocation: 'documents\National Instruments\NI VeriStand $(lvVersion)_$(nipkgx64suffix))\Build Tools Test\Output-2B'
+              installLocation: 'documents\National Instruments\NI VeriStand $(lvVersion)_$(nipkgx64suffix)\Build Tools Test\Output-2B'
 
 # Test Empty cases
   - template: azure-templates/stages.yml
