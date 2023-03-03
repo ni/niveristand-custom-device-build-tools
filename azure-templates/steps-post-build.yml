@@ -48,7 +48,8 @@ steps:
               New-Item -Path '$(nipkgPath)\data\${{ payloadMap.installLocation }}' -ItemType 'Directory'
               Copy-Item `
                 -Path '$(customDeviceRepoName)\${{ payloadMap.payloadLocation }}\*' `
-                -Destination '$(nipkgPath)\data\${{ payloadMap.installLocation }}'
+                -Destination '$(nipkgPath)\data\${{ payloadMap.installLocation }}' `
+                -Recurse
 
       - task: CmdLine@2
         displayName: Pack nipkg
