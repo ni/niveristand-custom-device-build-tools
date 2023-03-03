@@ -56,10 +56,10 @@ steps:
         {
           $derivedQuarterlyReleaseVersion = "20$($releaseData[0]) Q4"
         }
-        Write-Output 'Configuring release version to "${{ parameters.releaseVersion }}" and quarterlyReleaseVersion to "$($derivedQuarterlyReleaseVersion)"...'
-        Write-Host '##vso[task.setvariable variable=releaseVersion]${{ parameters.releaseVersion }}'
-        Write-Host '##vso[task.setvariable variable=quarterlyReleaseVersion]$derivedQuarterlyReleaseVersion'
-        Write-Host '##vso[task.setvariable variable=lvVersion]${{ parameters.lvVersionToBuild.version }}'
+        Write-Output "Configuring release version to ${{ parameters.releaseVersion }} and quarterlyReleaseVersion to $($derivedQuarterlyReleaseVersion)..."
+        Write-Host "##vso[task.setvariable variable=releaseVersion]${{ parameters.releaseVersion }}""
+        Write-Host "##vso[task.setvariable variable=quarterlyReleaseVersion]$derivedQuarterlyReleaseVersion"
+        Write-Host "##vso[task.setvariable variable=lvVersion]${{ parameters.lvVersionToBuild.version }}"
         If ('${{ parameters.lvVersionToBuild.bitness }}' -eq '32bit')
         {
           Write-Output "Setting variables for 32-bit..."
