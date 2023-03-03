@@ -10,7 +10,7 @@ resources:
     - repository: niveristand-custom-device-build-tools
       type:       github
       ref:        main
-      endpoint:   ni (2)
+      endpoint:   nivs-custom-devices
       name:       ni/niveristand-custom-device-build-tools
 
 stages:
@@ -92,8 +92,7 @@ stages:
           target: 'This value does not matter'
           buildSpec: 'This value does not matter'
 
-      releaseVersion: '23.0.0'
-      quarterlyReleaseVersion: '2023 Q1'
+      releaseVersion: '23.3.0'
       buildOutputLocation: 'test-build\Built'
       archiveLocation: '\\nirvana\Measurements\VeriStandAddons\prototype\niveristand-custom-device-build-tools\complexCase'
 
@@ -131,7 +130,6 @@ stages:
           target: 'My Computer'
           buildSpec: 'EmptySpec'
 
-      releaseVersion: '23.0.0'
-      quarterlyReleaseVersion: '2023 Q1'
+      releaseVersion: '23.3.0'
       buildOutputLocation: 'test-build\Built'
       archiveLocation: '\\nirvana\Measurements\VeriStandAddons\prototype\niveristand-custom-device-build-tools\emptyCase'
