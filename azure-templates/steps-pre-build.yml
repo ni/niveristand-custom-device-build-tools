@@ -7,6 +7,8 @@ parameters:
     type: string
   - name: buildOutputLocation
     type: string
+  - name: codegenVis
+    type: object
 
 steps:
     # Variables that are set in a powershell script cannot be used within the same script
@@ -123,3 +125,15 @@ steps:
           -OperationName "SecureRunVI" ^
           -VIPath "%cd%\$(buildTools)\lv\operations\Utilities\ClearCache.vi" ^
           -LogFilePath "%cd%\$(customDeviceRepoName)\lvClearCache.log"
+
+  - ${{ each codegenVi in parameters.codegenVis }}:
+    - ${{ if ne(codegenVi, '' )}}:
+      - task: CmdLine@2
+        displayName: Run codegen step ${{ codegenVi }}
+        inputs:
+          script: |
+            echo on
+            $(lvCLICall) ^
+              -OperationName "SecureRunVI" ^
+              -VIPath "%cd%\$(customDeviceRepoName)\${{ codegenVi }}" ^
+              -LogFilePath "%cd%\$(customDeviceRepoName)\lvCodegen.log"
