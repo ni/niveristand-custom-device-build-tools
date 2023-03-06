@@ -4,8 +4,6 @@ parameters:
     type: object
   - name: dependencies
     type: object
-  - name: codegenVis
-    type: object
   - name: lvVersionToBuild
     type: object
 
@@ -166,18 +164,6 @@ steps:
           targetType: 'inline'
           failOnStdErr: true
           script: Write-Output "only use dependencies for ExecuteBuildSpec build operation.  Other build operations do not support dependencies."
-
-  - ${{ each codegenVi in parameters.codegenVis }}:
-    - ${{ if ne(codegenVi, '' )}}:
-      - task: CmdLine@2
-        displayName: Run codegen step ${{ codegenVi }}
-        inputs:
-          script: |
-            echo on
-            if not '$(skipBuildStep)'=='True' $(lvCLICall) ^
-              -OperationName "SecureRunVI" ^
-              -VIPath "%cd%\$(customDeviceRepoName)\${{ codegenVi }}" ^
-              -LogFilePath "%cd%\$(customDeviceRepoName)\lvCodegen.log")
 
   - task: CmdLine@2
     displayName: Build ${{ parameters.buildStep.buildSpec }} on ${{ parameters.buildStep.target }} in ${{ parameters.buildStep.projectLocation }}

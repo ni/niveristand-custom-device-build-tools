@@ -59,13 +59,13 @@ stages:
                 releaseVersion:          ${{ parameters.releaseVersion }}
                 archiveLocation:         ${{ parameters.archiveLocation }}
                 buildOutputLocation:     ${{ parameters.buildOutputLocation }}
+                codegenVis:              ${{ parameters.codegenVis }}
 
             - ${{ each buildStep in parameters.buildSteps }}:
               - template: steps-build.yml # config file and build specs
                 parameters:
                   buildStep:          ${{ buildStep }}
                   dependencies:       ${{ parameters.dependencies }}
-                  codegenVis:         ${{ parameters.codegenVis }}
                   lvVersionToBuild:   ${{ lvVersionToBuild }}
 
             - template: steps-post-build.yml # nipkg and archive
