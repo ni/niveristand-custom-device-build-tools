@@ -33,13 +33,13 @@ stages:
 
 # Test Dependencies - multiple dependencies that are expected in the build steps below this
       dependencies:
-        - source: '\\nirvana\Measurements\VeriStandAddons\build_tools_test\dependency-test-1'
+        - source: '\\nirvana\Measurements\VeriStandAddons\prototype\dependency-test-1'
           file: 'DependencyLibrary1.lvlibp'
           destination: 'test-build\Includes'
-        - source: '\\nirvana\Measurements\VeriStandAddons\build_tools_test\dependency-test-2'
+        - source: '\\nirvana\Measurements\VeriStandAddons\prototype\dependency-test-2'
           file: 'DependencyLibrary2.lvlibp'
           destination: 'test-build\Other\Includes'
-        - source: '\\nirvana\Measurements\VeriStandAddons\build_tools_test\dependency-test-3'
+        - source: '\\nirvana\Measurements\VeriStandAddons\prototype\dependency-test-3'
           file: 'DependencyLibrary3.lvlibp'
           destination: 'test-build\Other\Includes'
 
@@ -94,7 +94,7 @@ stages:
 
       releaseVersion: '23.3.0'
       buildOutputLocation: 'test-build\Built'
-      archiveLocation: '\\nirvana\Measurements\VeriStandAddons\build_tools_test\niveristand-custom-device-build-tools\complexCase'
+      archiveLocation: '\\nirvana\Measurements\VeriStandAddons\prototype\niveristand-custom-device-build-tools\complexCase'
 
 # Test Building multiple packages with multiple payload maps
       packages:
@@ -132,4 +132,4 @@ stages:
 
       releaseVersion: '23.3.0'
       buildOutputLocation: 'test-build\Built'
-      archiveLocation: '\\nirvana\Measurements\VeriStandAddons\build_tools_test\niveristand-custom-device-build-tools\emptyCase'
+      archiveLocation: '\\nirvana\Measurements\VeriStandAddons\prototype\niveristand-custom-device-build-tools\emptyCase'
