@@ -25,14 +25,14 @@ steps:
         If ('$(Build.Reason)' -eq 'PullRequest')
         {
           Write-Output "Setting variables for Pull Requests..."
-          $sourceBranch = "$(System.PullRequest.SourceBranch)" -replace 'dev/', ''
-          Write-Output "Source branch $(System.PullRequest.SourceBranch), removed dev/"
+          $sourceBranch = "$(System.PullRequest.SourceBranch)"
+          Write-Output "Source branch $(System.PullRequest.SourceBranch)"
         }
         Else
         {
           Write-Output "Setting variables for general builds..."
-          $sourceBranch = "$(System.SourceBranch)" -replace 'refs/head/dev/', ''
-          Write-Output "Source branch $(System.SourceBranch), removed refs/head/dev/"
+          $sourceBranch = "$(Build.SourceBranch)" -replace 'refs/head/', ''
+          Write-Output "Source branch $(Build.SourceBranch), removed refs/head/"
         }
         Write-Output "Using $sourceBranch in archive path..."
         Write-Host "##vso[task.setvariable variable=sourceBranch]$sourceBranch"
