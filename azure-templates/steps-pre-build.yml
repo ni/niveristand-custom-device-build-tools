@@ -31,8 +31,8 @@ steps:
         Else
         {
           Write-Output "Setting variables for general builds..."
-          $sourceBranch = "$(Build.SourceBranch)" -replace 'refs/head/', ''
-          Write-Output "Source branch $(Build.SourceBranch), removed refs/head/"
+          $sourceBranch = "$(Build.SourceBranch)" -replace 'refs/heads/', ''
+          Write-Output "Source branch $(Build.SourceBranch), removed refs/heads/"
         }
         Write-Output "Using $sourceBranch in archive path..."
         Write-Host "##vso[task.setvariable variable=sourceBranch]$sourceBranch"
