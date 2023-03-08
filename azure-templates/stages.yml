@@ -85,12 +85,14 @@ stages:
             If ('$(Build.Reason)' -eq 'PullRequest')
             {
               Write-Output "Setting variables for Pull Requests..."
-              $sourceBranch = "$(System.PullRequest.SourceBranch)" -replace 'dev/', ''
+              $sourceBranch = "$(System.PullRequest.SourceBranch)"
+              Write-Output "Source branch $(System.PullRequest.SourceBranch)"
             }
             Else
             {
               Write-Output "Setting variables for general builds..."
-              $sourceBranch = "$(Build.SourceBranchName)"
+              $sourceBranch = "$(Build.SourceBranch)" -replace 'refs/heads/', ''
+              Write-Output "Source branch $(Build.SourceBranch), removed refs/heads/"
             }
             Write-Output "Using $sourceBranch in final validation path..."
             Write-Output "All previous jobs complete.  Storing .finished file..."
