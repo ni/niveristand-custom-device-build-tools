@@ -32,6 +32,7 @@ steps:
           Write-Output "Setting variables for general builds..."
           $sourceBranch = "$(Build.SourceBranchName)"
         }
+        Write-Output "WHAT IS $(Build.SourceBranch)"
         Write-Output "Using $sourceBranch in archive path..."
         Write-Host "##vso[task.setvariable variable=sourceBranch]$sourceBranch"
         Write-Host "##vso[task.setvariable variable=archivePath]${{ parameters.archiveLocation }}\NI\export\$sourceBranch\"
