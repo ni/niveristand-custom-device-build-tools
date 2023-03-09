@@ -28,11 +28,11 @@ steps:
               -Path '$(customDeviceRepoName)\${{ package.controlFileName }}' `
               -Destination '$(nipkgPath)\control\control'
             `
-            Write-Output "updating nipkg control version parameters..."
+            Write-Output "updating nipkg control version parameters, setting nipkg_version to $(releaseVersion)$env:BUILDCOUNTER..."
             $contents = (Get-Content -Path '$(nipkgPath)\control\control')`
               -replace '{veristand_version}', '$(lvVersion)'`
               -replace '{labview_version}', '$(lvVersion)'`
-              -replace '{nipkg_version}', '$(releaseVersion)'`
+              -replace '{nipkg_version}', '$(releaseVersion)$env:BUILDCOUNTER'`
               -replace '{display_version}', '$(releaseVersion)'`
               -replace '{quarterly_display_version}', '$(quarterlyReleaseVersion)'`
               -replace '{labview_short_version}', '$(shortLvVersion)'
