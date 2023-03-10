@@ -72,7 +72,7 @@ steps:
               -Include *.nipkg `
               -Recurse
             Write-Output "Checking whether this is a release branch..."
-            If (-not($(Build.SourceBranch) -match "release"))
+            If (-not("$(sourceBranch)" -match "release"))
             {
               Write-Output "Not a release branch, so appending branch name to nipkg..."
               $cleanedSourceBranch = "$(sourceBranch)" -replace "\/", ""
