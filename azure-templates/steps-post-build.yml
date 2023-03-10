@@ -28,7 +28,7 @@ steps:
               -Path '$(customDeviceRepoName)\${{ package.controlFileName }}' `
               -Destination '$(nipkgPath)\control\control'
             `
-            Write-Output "updating nipkg control version parameters, setting nipkg_version to $(releaseVersion).$env:BUILDCOUNTER..."
+            Write-Output "updating nipkg control version parameters..."
             $contents = (Get-Content -Path "$(nipkgPath)\control\control") `
               -replace "{veristand_version}", "$(lvVersion)" `
               -replace "{labview_version}", "$(lvVersion)" `
@@ -71,6 +71,16 @@ steps:
               -Destination $installerPath `
               -Include *.nipkg `
               -Recurse
+            Write-Output "Checking whether this is a release branch..."
+            If (-not($(Build.SourceBranch) -match "release"))
+            {
+              Write-Output "Not a release branch, so appending branch name to nipkg..."
+              $cleanedSourceBranch = $sourceBranch -replace "\\", ""
+              Get-ChildItem `
+                -Path "$installerPath\*.nipkg" `
+                | Rename-Item -NewName {$_.Name -replace ".nipkg", "$cleanedSourceBranch\.nipkg"}
+            }
+
 
   - task: PowerShell@2
     displayName: Copy built files to Archive location
