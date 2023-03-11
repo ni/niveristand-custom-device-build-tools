@@ -74,11 +74,11 @@ steps:
             Write-Output "Checking whether this is a release branch..."
             If (-not("$(sourceBranch)" -match "release"))
             {
-              Write-Output "Not a release branch, so appending branch name to nipkg..."
               $cleanedSourceBranch = "$(sourceBranch)" -replace "\/", ""
+              Write-Output "Not a release branch, so appending branch name $cleanedSourceBranch to nipkg..."
               Get-ChildItem `
                 -Path "$installerPath\*.nipkg" `
-                | Rename-Item -NewName {$_.Name -replace ".nipkg", "$cleanedSourceBranch\.nipkg"}
+                | Rename-Item -NewName {$_.Name -replace ".nipkg", "$cleanedSourceBranch.nipkg"}
             }
 
 
