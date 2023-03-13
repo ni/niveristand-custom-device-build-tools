@@ -1,3 +1,6 @@
+# IMPORTANT: Any changes made to this file may need to be duplicated in 
+# ni/niveristand-scan-engine-ethercat-custom-device/custom-packaging.yml
+
 parameters:
   - name: packages
     type: object
@@ -29,15 +32,16 @@ steps:
               -Destination '$(nipkgPath)\control\control'
             `
             Write-Output "updating nipkg control version parameters..."
-            $contents = (Get-Content -Path '$(nipkgPath)\control\control')`
-              -replace '{veristand_version}', '$(lvVersion)'`
-              -replace '{labview_version}', '$(lvVersion)'`
-              -replace '{nipkg_version}', '$(releaseVersion)'`
-              -replace '{display_version}', '$(releaseVersion)'`
-              -replace '{quarterly_display_version}', '$(quarterlyReleaseVersion)'`
-              -replace '{labview_short_version}', '$(shortLvVersion)'
+            $contents = (Get-Content -Path "$(nipkgPath)\control\control") `
+              -replace "{veristand_version}", "$(lvVersion)" `
+              -replace "{labview_version}", "$(lvVersion)" `
+              -replace "{nipkg_version}", "$(releaseVersion).$env:BUILDCOUNTER" `
+              -replace "{display_version}", "$(releaseVersion)" `
+              -replace "{quarterly_display_version}", "$(quarterlyReleaseVersion)" `
+              -replace "{labview_short_version}", "$(shortLvVersion)" `
+              -replace "{nipkgx64suffix}", "$(nipkgx64suffix)"
             Write-Output $contents
-            Set-Content -Value $contents -Path '$(nipkgPath)\control\control'
+            Set-Content -Value $contents -Path "$(nipkgPath)\control\control"
 
       - ${{ each payloadMap in package.payloadMaps }}:
         - task: PowerShell@2
@@ -71,12 +75,28 @@ steps:
               -Destination $installerPath `
               -Include *.nipkg `
               -Recurse
+            Write-Output "Checking whether this is a release branch..."
 
   - task: PowerShell@2
     displayName: Copy built files to Archive location
     inputs:
       targetType: 'inline'
       script: |
+        If (-not("$(sourceBranch)" -match "release"))
+        {
+          $cleanedSourceBranch = "$(sourceBranch)" -replace "\/", "_"
+          Write-Output "Not a release branch, so appending branch name $cleanedSourceBranch to nipkg files..."
+          $packages = Get-ChildItem `
+            -Path "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\installer\*.nipkg"
+          Foreach ($package in $packages)
+          {
+            If (-not("$package" -match "$cleanedSourceBranch.nipkg"))
+            {
+              Rename-Item -Path "$package" -NewName ("$package" -replace ".nipkg", "_$cleanedSourceBranch.nipkg")
+            }
+          }
+        }
+
         If (-not(Test-Path "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\$(architecture)"))
         {
           New-Item `
