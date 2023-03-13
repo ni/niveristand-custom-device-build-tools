@@ -35,7 +35,8 @@ steps:
               -replace "{nipkg_version}", "$(releaseVersion).$env:BUILDCOUNTER" `
               -replace "{display_version}", "$(releaseVersion)" `
               -replace "{quarterly_display_version}", "$(quarterlyReleaseVersion)" `
-              -replace "{labview_short_version}", "$(shortLvVersion)"
+              -replace "{labview_short_version}", "$(shortLvVersion)" `
+              -replace "{nipkgx64suffix}", "$(nipkgx64suffix)"
             Write-Output $contents
             Set-Content -Value $contents -Path "$(nipkgPath)\control\control"
 
