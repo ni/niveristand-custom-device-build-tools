@@ -92,7 +92,7 @@ steps:
           {
             If (-not("$package" -match "$cleanedSourceBranch.nipkg"))
             {
-              Rename-Item -NewName {"$package" -replace "(?!).nipkg", "$cleanedSourceBranch.nipkg"}
+              Rename-Item -NewName "$package" -replace ".nipkg", "$cleanedSourceBranch.nipkg"
             }
           }
         }
