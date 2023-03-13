@@ -1,3 +1,6 @@
+# IMPORTANT: Any changes made to this file may need to be duplicated in 
+# ni/niveristand-scan-engine-ethercat-custom-device/custom-packaging.yml
+
 parameters:
   - name: packages
     type: object
