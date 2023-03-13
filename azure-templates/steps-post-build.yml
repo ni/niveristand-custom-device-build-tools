@@ -88,7 +88,10 @@ steps:
           Write-Output "Not a release branch, so appending branch name $cleanedSourceBranch to nipkg files..."
           Get-ChildItem `
             -Path "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\installer\*.nipkg" `
-            | Rename-Item -NewName {$_.Name -replace ".nipkg", "$cleanedSourceBranch.nipkg"}
+            | If (-not("$_.Name" -match "$cleanedSourceBranch.nipkg"))
+              {
+                Rename-Item -NewName {$_.Name -replace "(?!).nipkg", "$cleanedSourceBranch.nipkg"}
+              }
         }
 
         If (-not(Test-Path "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\$(architecture)"))
