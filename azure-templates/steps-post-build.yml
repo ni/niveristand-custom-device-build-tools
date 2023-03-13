@@ -84,7 +84,7 @@ steps:
       script: |
         If (-not("$(sourceBranch)" -match "release"))
         {
-          $cleanedSourceBranch = "$(sourceBranch)" -replace "\/", ""
+          $cleanedSourceBranch = "$(sourceBranch)" -replace "\/", "_"
           Write-Output "Not a release branch, so appending branch name $cleanedSourceBranch to nipkg files..."
           $packages = Get-ChildItem `
             -Path "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\installer\*.nipkg"
