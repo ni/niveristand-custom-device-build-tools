@@ -90,9 +90,9 @@ steps:
             -Path "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\installer\*.nipkg"
           Foreach ($package in $packages)
           {
-            If (-not("$_.Name" -match "$cleanedSourceBranch.nipkg"))
+            If (-not("$package" -match "$cleanedSourceBranch.nipkg"))
             {
-              Rename-Item -NewName {$_.Name -replace "(?!).nipkg", "$cleanedSourceBranch.nipkg"}
+              Rename-Item -NewName {$package -replace "(?!).nipkg", "$cleanedSourceBranch.nipkg"}
             }
           }
         }
