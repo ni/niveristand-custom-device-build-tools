@@ -72,21 +72,21 @@ steps:
               -Include *.nipkg `
               -Recurse
             Write-Output "Checking whether this is a release branch..."
-            If (-not("$(sourceBranch)" -match "release"))
-            {
-              $cleanedSourceBranch = "$(sourceBranch)" -replace "\/", ""
-              Write-Output "Not a release branch, so appending branch name $cleanedSourceBranch to nipkg..."
-              Get-ChildItem `
-                -Path "$installerPath\*.nipkg" `
-                | Rename-Item -NewName {$_.Name -replace ".nipkg", "$cleanedSourceBranch.nipkg"}
-            }
-
 
   - task: PowerShell@2
     displayName: Copy built files to Archive location
     inputs:
       targetType: 'inline'
       script: |
+        If (-not("$(sourceBranch)" -match "release"))
+        {
+          $cleanedSourceBranch = "$(sourceBranch)" -replace "\/", ""
+          Write-Output "Not a release branch, so appending branch name $cleanedSourceBranch to nipkg files..."
+          Get-ChildItem `
+            -Path "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\installer\*.nipkg" `
+            | Rename-Item -NewName {$_.Name -replace ".nipkg", "$cleanedSourceBranch.nipkg"}
+        }
+
         If (-not(Test-Path "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\$(architecture)"))
         {
           New-Item `
