@@ -114,7 +114,7 @@ steps:
       targetType: 'inline'
       script: |
         $installerPath = '$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\installer'
-        If ( ("$(sourceBranch)" -match "release") -and (-not(Test-Path $installerPath)) )
+        If ( ("$(sourceBranch)" -match "release") -and (Test-Path $installerPath) )
         {
           Write-Output "Adding manifest file to release branch installer directory"
           $jsonFilePath = Join-Path $installerPath "manifest.json"
