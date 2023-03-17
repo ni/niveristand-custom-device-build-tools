@@ -107,3 +107,29 @@ steps:
           -Path "$(buildOutputPath)\*" `
           -Destination "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\$(architecture)\" `
           -Recurse
+
+  - task: PowerShell@2
+    displayName: Create manifest file
+    inputs:
+      targetType: 'inline'
+      script: |
+        $installerPath = '$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\installer'
+        If ( ("$(sourceBranch)" -match "release") -and (Test-Path $installerPath) )
+        {
+          Write-Output "Adding manifest file to release branch installer directory"
+          $jsonFilePath = Join-Path $installerPath "manifest.json"
+          $scmObject = [PSCustomObject]@{
+            GIT_BRANCH = "$(sourceBranch)"
+            GIT_COMMIT = "$(Build.SourceVersion)"
+            GIT_URL = "$(Build.Repository.Uri)"
+          }
+          $outputObject = [PSCustomObject]@{
+            scm = $scmObject
+          }
+          $jsonString = $outputObject | ConvertTo-Json
+          Set-Content -Path $jsonFilePath -Value $jsonString
+        }
+        Else
+        {
+          Write-Output "No release branch packages built; skipping manifest file"
+        }
