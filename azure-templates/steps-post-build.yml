@@ -39,6 +39,7 @@ steps:
               -replace "{display_version}", "$(releaseVersion)" `
               -replace "{quarterly_display_version}", "$(quarterlyReleaseVersion)" `
               -replace "{labview_short_version}", "$(shortLvVersion)" `
+              -replace "{pkg_x86_bitness_suffix}", "$(nipkgx86suffix)" `
               -replace "{nipkgx64suffix}", "$(nipkgx64suffix)"
             Write-Output $contents
             Set-Content -Value $contents -Path "$(nipkgPath)\control\control"
