@@ -122,7 +122,7 @@ steps:
           $scmObject = [PSCustomObject]@{
             GIT_BRANCH = "$(sourceBranch)"
             GIT_COMMIT = "$(Build.SourceVersion)"
-            GIT_URL = "$(Build.Repository.Uri)"
+            GIT_URL = "$(Build.Repository.Uri).git"
           }
           $outputObject = [PSCustomObject]@{
             scm = $scmObject
