@@ -58,6 +58,7 @@ stages:
       - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
         - job: Job${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
           displayName: LabVIEW ${{ lvVersionToBuild.version }} ${{ parameters.lvVersionsToBuild.bitness }}
+          timeoutInMinutes: 120
           steps:
             - template: steps-pre-build.yml # Configure variables, check out repos, Clear cache
               parameters:
