@@ -22,7 +22,7 @@ parameters:
   # buildSteps: list of {projectLocation, buildOperation, target, buildSpec}
   - name: buildSteps
     type: object
-    default: "None"
+    default: 'None'
 
   # packages: list of {controlFileName, payloadMaps: list of {payloadLocation, installLocation} }
   - name: packages
@@ -68,7 +68,7 @@ stages:
                 buildOutputLocation:     ${{ parameters.buildOutputLocation }}
                 codegenVis:              ${{ parameters.codegenVis }}
 
-            - ${{ if ne( parameters.buildSteps, "None" )}}:
+            - ${{ if ne( parameters.buildSteps, 'None' )}}:
               - ${{ each buildStep in parameters.buildSteps }}:
                   - template: steps-build.yml # config file and build specs
                     parameters:
