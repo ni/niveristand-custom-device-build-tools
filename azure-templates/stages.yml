@@ -22,7 +22,7 @@ parameters:
   # buildSteps: list of {projectLocation, buildOperation, target, buildSpec}
   - name: buildSteps
     type: object
-    default: 'None'
+    default: ''
 
   # packages: list of {controlFileName, payloadMaps: list of {payloadLocation, installLocation} }
   - name: packages
