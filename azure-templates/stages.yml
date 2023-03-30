@@ -22,6 +22,7 @@ parameters:
   # buildSteps: list of {projectLocation, buildOperation, target, buildSpec}
   - name: buildSteps
     type: object
+    default: ''
 
   # packages: list of {controlFileName, payloadMaps: list of {payloadLocation, installLocation} }
   - name: packages
@@ -68,12 +69,13 @@ stages:
                 buildOutputLocation:     ${{ parameters.buildOutputLocation }}
                 codegenVis:              ${{ parameters.codegenVis }}
 
-            - ${{ each buildStep in parameters.buildSteps }}:
-              - template: steps-build.yml # config file and build specs
-                parameters:
-                  buildStep:          ${{ buildStep }}
-                  dependencies:       ${{ parameters.dependencies }}
-                  lvVersionToBuild:   ${{ lvVersionToBuild }}
+            - ${{ if ne( parameters.buildSteps, '' )}}:
+              - ${{ each buildStep in parameters.buildSteps }}:
+                  - template: steps-build.yml # config file and build specs
+                    parameters:
+                      buildStep:          ${{ buildStep }}
+                      dependencies:       ${{ parameters.dependencies }}
+                      lvVersionToBuild:   ${{ lvVersionToBuild }}
 
             - template: steps-post-build.yml # nipkg and archive
               parameters:
