@@ -68,7 +68,7 @@ stages:
                 buildOutputLocation:     ${{ parameters.buildOutputLocation }}
                 codegenVis:              ${{ parameters.codegenVis }}
 
-            - ${{ if ne( parameters.buildSteps, 'None' )}}:
+            - ${{ if ne( parameters.buildSteps, '' )}}:
               - ${{ each buildStep in parameters.buildSteps }}:
                   - template: steps-build.yml # config file and build specs
                     parameters:
