@@ -34,13 +34,13 @@ stages:
 # Test Dependencies - multiple dependencies that are expected in the build steps below this
       dependencies:
         - source: '\\nirvana\Measurements\VeriStandAddons\prototype\dependency-test-1'
-          file: 'DependencyLibrary1.lvlibp'
+          file: '$dependencyTargetDirectory\DependencyLibrary1.lvlibp'
           destination: 'test-build\Includes'
         - source: '\\nirvana\Measurements\VeriStandAddons\prototype\dependency-test-2'
-          file: 'DependencyLibrary2.lvlibp'
+          file: '$dependencyTargetDirectory\DependencyLibrary2.lvlibp'
           destination: 'test-build\Other\Includes'
         - source: '\\nirvana\Measurements\VeriStandAddons\prototype\dependency-test-3'
-          file: 'DependencyLibrary3.lvlibp'
+          file: '$dependencyTargetDirectory\DependencyLibrary3.lvlibp'
           destination: 'test-build\Other\Includes'
 
 # Test Codegen Steps

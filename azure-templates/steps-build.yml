@@ -120,7 +120,7 @@ steps:
                   If (Test-Path -Path "$build\.finished")
                   {
                     Write-Output "latest successful build: $build"
-                    $dependencyFilePath = "$build\$(lvVersion)\$(architecture)\$dependencyTargetDirectory\${{ dependency.file }}"
+                    $dependencyFilePath = "$build\$(lvVersion)\$(architecture)\${{ dependency.file }}"
                     Break
                   }
                   Else
