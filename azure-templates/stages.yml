@@ -19,16 +19,21 @@ parameters:
     default:
       - file: ''
 
-  # buildSteps: list of {projectLocation, buildOperation, target, buildSpec}
+  # buildSteps (optional): list of {projectLocation, buildOperation, target, buildSpec}
   - name: buildSteps
     type: object
     default: ''
 
-  # packages: list of {controlFileName, payloadMaps: list of {payloadLocation, installLocation} }
+  # packages (optional): list of {controlFileName, payloadMaps: list of {payloadLocation, installLocation} }
   - name: packages
     type: object
     default:
       - controlFileName: ''
+
+  # submodules (optional): boolean of whether to use submodules
+  - name: submodules
+    type: boolean
+    default: false
 
   # strings (releaseVersion, quarterlyReleaseVersion, buildOutputLocation, archiveLocation)
   - name: releaseVersion
@@ -68,6 +73,7 @@ stages:
                 archiveLocation:         ${{ parameters.archiveLocation }}
                 buildOutputLocation:     ${{ parameters.buildOutputLocation }}
                 codegenVis:              ${{ parameters.codegenVis }}
+                submodules:              ${{ parameters.submodules }}
 
             - ${{ if ne( parameters.buildSteps, '' )}}:
               - ${{ each buildStep in parameters.buildSteps }}:

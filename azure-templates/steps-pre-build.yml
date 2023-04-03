@@ -9,6 +9,8 @@ parameters:
     type: string
   - name: codegenVis
     type: object
+  - name: submodules
+    type: boolean
 
 steps:
     # Variables that are set in a powershell script cannot be used within the same script
@@ -115,8 +117,14 @@ steps:
     displayName: Check out NI VS Custom Device Build Tools repository
 
     # The checkout order doesn't matter in most cases, but we want the dev branch (self) to be checked out last so that it's used for PR builds in niveristand-custom-device-build-tools
-  - checkout: self
-    displayName: Check out repository to build
+  - $ {{ if eq(parameters.submodules, true) }}:
+    - checkout: self
+      displayName: Check out repository to build
+      submodules: true
+
+  - $ {{ if eq(parameters.submodules, False) }}:
+    - checkout: self
+      displayName: Check out repository to build
 
   - task: CmdLine@2
     displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersionToBuild.version }}
