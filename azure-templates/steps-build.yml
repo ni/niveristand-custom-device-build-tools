@@ -80,13 +80,13 @@ steps:
               Write-Output "Configuring target directory environment..."
               If ('${{ parameters.buildStep.target }}' -eq 'My Computer')
               {
-                $targetDirectory = "Windows"
+                $target = "Windows"
               }
               Elseif ('${{ parameters.buildStep.target }}' -eq 'Linux x64')
               {
-                $targetDirectory = "Linux_x64"
+                $target = "Linux_x64"
               }
-              Write-Output "Setting dependency environment to $targetDirectory"
+              Write-Output "Setting dependency environment to $target"
               `
               $branchName = 'main'
               If ('$(sourceBranch)' -ne $branchName )
