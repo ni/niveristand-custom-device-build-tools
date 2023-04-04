@@ -80,13 +80,13 @@ steps:
               Write-Output "Configuring target directory environment..."
               If ('${{ parameters.buildStep.target }}' -eq 'My Computer')
               {
-                $dependencyTargetDirectory = "Windows"
+                $target = "Windows"
               }
               Elseif ('${{ parameters.buildStep.target }}' -eq 'Linux x64')
               {
-                $dependencyTargetDirectory = "Linux_x64"
+                $target = "Linux_x64"
               }
-              Write-Output "Setting dependency environment to $dependencyTargetDirectory"
+              Write-Output "Setting dependency environment to $target"
               `
               $branchName = 'main'
               If ('$(sourceBranch)' -ne $branchName )
@@ -120,7 +120,7 @@ steps:
                   If (Test-Path -Path "$build\.finished")
                   {
                     Write-Output "latest successful build: $build"
-                    $dependencyFilePath = "$build\$(lvVersion)\$(architecture)\$dependencyTargetDirectory\${{ dependency.file }}"
+                    $dependencyFilePath = "$build\$(lvVersion)\$(architecture)\${{ dependency.file }}"
                     Break
                   }
                   Else
