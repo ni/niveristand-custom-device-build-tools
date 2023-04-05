@@ -94,6 +94,7 @@ stages:
               archiveLocation:         ${{ parameters.archiveLocation }}
               buildOutputLocation:     ${{ parameters.buildOutputLocation }}
               codegenVis:              ${{ parameters.codegenVis }}
+              submodules:              ${{ parameters.submodules }}
           - template: steps-diff.yml
             parameters:
               lvVersionToDiff:         $(diffVersion)
