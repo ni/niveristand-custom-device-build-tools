@@ -54,8 +54,7 @@ parameters:
 stages:
   - stage: DiffVIs${{ parameters.stageName }}
     dependsOn: []
-    condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq('${{ parameters.disableDiff }}', false))
-    # TODO: flip logic on condition when a PR goes up
+    condition: and(eq(variables['Build.Reason'], 'PullRequest'), eq('${{ parameters.disableDiff }}', false))
     pool:
       name: DevCentral-VeriStand-CustomDevices
       demands:
