@@ -35,9 +35,9 @@ steps:
       --target "origin/$targetBranch"
       $pullRequestID = "$(System.PullRequest.PullRequestNumber)"
       $jobName = "ni/$(customDeviceRepoName)/PR-$pullRequestID"
-      # python -u "$resourcesDir/github_commenter.py" --token "$(diffbot-token)" `
-      # --pic-dir "$currentDir/diff_dir" --pull-req "$pullRequestID" --info "$jobName" `
-      # --pic-repo "niveristand-diff-bot/diff-images"
+      python -u "$resourcesDir/github_commenter.py" --token "$(diffbot-token)" `
+      --pic-dir "$currentDir/diff_dir" --pull-req "$pullRequestID" --info "$jobName" `
+      --pic-repo "niveristand-diff-bot/diff-images"
     displayName: Diff VIs and publish
   - powershell: |
       Remove-Item env -Recurse
