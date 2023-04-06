@@ -9,6 +9,7 @@ steps:
   - task: PowerShell@2
     displayName: Prepare diff environment
     inputs:
+      targetType: 'inline'
       script: |
         pip install virtualenv
         virtualenv env
@@ -20,12 +21,14 @@ steps:
   - task: PowerShell@2
     displayName: Check out NI VS Custom Device Build Tools repository
     inputs:
+      targetType: 'inline'
       script: |
         git clone https://github.com/ni/niveristand-custom-device-build-tools.git `
           $(customDeviceRepoName)\niveristand-custom-device-build-tools
   - task: PowerShell@2
     displayName: Diff VIs and publish
     inputs:
+      targetType: 'inline'
       script: |
         .\env\Scripts\activate
         cd $(customDeviceRepoName)
@@ -49,6 +52,7 @@ steps:
     displayName: Delete diff environment
     condition: always()
     inputs:
+      targetType: 'inline'
       script: |
         Remove-Item env -Recurse
         cd $(customDeviceRepoName)
