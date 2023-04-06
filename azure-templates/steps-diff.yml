@@ -6,43 +6,51 @@ parameters:
   # customDeviceRepoName
 
 steps:
-  - powershell: |
-      pip install virtualenv
-      virtualenv env
-      .\env\Scripts\activate
-      pip install requests
+  - task: PowerShell@2
     displayName: Prepare diff environment
+    inputs:
+      script: |
+        pip install virtualenv
+        virtualenv env
+        .\env\Scripts\activate
+        pip install requests
   - checkout: self
     fetchDepth: 0
     displayName: Fetch full repo
-  - powershell: |
-      git clone https://github.com/ni/niveristand-custom-device-build-tools.git `
-      $(customDeviceRepoName)\niveristand-custom-device-build-tools
+  - task: PowerShell@2
     displayName: Check out NI VS Custom Device Build Tools repository
-  - powershell: |
-      .\env\Scripts\activate
-      cd $(customDeviceRepoName)
-      $currentDir = Get-Location
-      If (Test-Path $currentDir/diff_dir)
-      {
-        Remove-Item $currentDir/diff_dir -Recurse
-      }
-      New-Item -Path $currentDir -Name "diff_dir" -ItemType "directory"
-      $targetBranch = "$(System.PullRequest.TargetBranch)"
-      $resourcesDir = "niveristand-custom-device-build-tools/resources"
-      python -u $resourcesDir/labview_diff.py `
-      "$currentDir" "$currentDir/diff_dir" "${{parameters.lvVersionToDiff}}" `
-      --target "origin/$targetBranch"
-      $pullRequestID = "$(System.PullRequest.PullRequestNumber)"
-      $jobName = "ni/$(customDeviceRepoName)/PR-$pullRequestID"
-      python -u "$resourcesDir/github_commenter.py" --token "$(diffbot-token)" `
-      --pic-dir "$currentDir/diff_dir" --pull-req "$pullRequestID" --info "$jobName" `
-      --pic-repo "niveristand-diff-bot/diff-images"
+    inputs:
+      script: |
+        git clone https://github.com/ni/niveristand-custom-device-build-tools.git `
+          $(customDeviceRepoName)\niveristand-custom-device-build-tools
+  - task: PowerShell@2
     displayName: Diff VIs and publish
-  - powershell: |
-      Remove-Item env -Recurse
-      cd $(customDeviceRepoName)
-      $currentDir = Get-Location
-      Remove-Item $currentDir/diff_dir -Recurse
+    inputs:
+      script: |
+        .\env\Scripts\activate
+        cd $(customDeviceRepoName)
+        $currentDir = Get-Location
+        If (Test-Path $currentDir/diff_dir)
+        {
+          Remove-Item $currentDir/diff_dir -Recurse
+        }
+        New-Item -Path $currentDir -Name "diff_dir" -ItemType "directory"
+        $targetBranch = "$(System.PullRequest.TargetBranch)"
+        $resourcesDir = "niveristand-custom-device-build-tools/resources"
+        python -u $resourcesDir/labview_diff.py `
+          "$currentDir" "$currentDir/diff_dir" "${{parameters.lvVersionToDiff}}" `
+          --target "origin/$targetBranch"
+        $pullRequestID = "$(System.PullRequest.PullRequestNumber)"
+        $jobName = "ni/$(customDeviceRepoName)/PR-$pullRequestID"
+        python -u "$resourcesDir/github_commenter.py" --token "$(diffbot-token)" `
+          --pic-dir "$currentDir/diff_dir" --pull-req "$pullRequestID" --info "$jobName" `
+          --pic-repo "niveristand-diff-bot/diff-images"
+  - task: PowerShell@2
     displayName: Delete diff environment
     condition: always()
+    inputs:
+      script: |
+        Remove-Item env -Recurse
+        cd $(customDeviceRepoName)
+        $currentDir = Get-Location
+        Remove-Item $currentDir/diff_dir -Recurse
