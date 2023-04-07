@@ -17,6 +17,7 @@ stages:
   - template: azure-templates/stages.yml
     parameters:
       stageName: 'BuildComplexCase'
+      disableDiff: True
 
 # Test Versions - At least 1 of each supported LabVIEW version and 1 of each bitness
       lvVersionsToBuild:
