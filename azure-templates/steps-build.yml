@@ -144,17 +144,17 @@ steps:
               }
               `
               Write-Output "Copying dependency ${{ dependency.file }}..."
-              If (-not(Test-Path -Path '$PWD\$(customDeviceRepoName)\${{ dependency.destination }}'))
+              If (-not(Test-Path -Path "$PWD\$(customDeviceRepoName)\${{ dependency.destination }}"))
               {
                 New-Item `
-                  -Path '$PWD\$(customDeviceRepoName)\${{ dependency.destination }}' `
+                  -Path "$PWD\$(customDeviceRepoName)\${{ dependency.destination }}" `
                   -ItemType 'Directory'
               }
               If (Test-Path $dependencyFilePath)
               {
                 Copy-Item `
                   -Path $dependencyFilePath `
-                  -Destination '$PWD\$(customDeviceRepoName)\${{ dependency.destination }}\' `
+                  -Destination "$PWD\$(customDeviceRepoName)\${{ dependency.destination }}\" `
                   -Recurse `
                   -Force
               }
