@@ -169,14 +169,13 @@ steps:
     displayName: Build ${{ parameters.buildStep.buildSpec }} on ${{ parameters.buildStep.target }} in ${{ parameters.buildStep.projectLocation }}
     inputs:
       script: |
-        echo on
-        REM if "${{ parameters.buildStep.projectOverride}}"=="Absolute" (
-        REM  set project_path = "${{ parameters.buildStep.projectLocation }}"
-        REM ) else (
-          set custom_project_path = "%cd%\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}"
-        REM )
-        echo "using %custom_project_path%"
-        if not '$(skipBuildStep)'=='True' (
+        ECHO on
+        IF "${{ parameters.buildStep.projectOverride}}"=="Absolute" (
+          SET project_path="${{ parameters.buildStep.projectLocation }}"
+        ) ELSE (
+          SET project_path="%cd%\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}"
+        )
+        IF NOT '$(skipBuildStep)'=='True' (
           $(lvCLICall) ^
             -OperationName "${{ parameters.buildStep.buildOperation }}" ^
             -ProjectPath "%custom_project_path%" ^
