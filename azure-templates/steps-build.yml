@@ -26,7 +26,7 @@ steps:
         {
           $lvConfigFilePath = "$PWD\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}.config"
         }
-        If (-not(Test-Path -Path $projectConfigPath))
+        If (-not(Test-Path -Path $lvConfigFilePath))
         {
           Write-Output "adding .config file to project..."
           Copy-Item "$(buildTools)\resources\LabVIEW.exe.config" -Destination $lvConfigFilePath
