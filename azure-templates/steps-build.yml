@@ -170,12 +170,19 @@ steps:
     inputs:
       script: |
         echo on
-        if not '$(skipBuildStep)'=='True' $(lvCLICall) ^
-          -OperationName "${{ parameters.buildStep.buildOperation }}" ^
-          -ProjectPath "%cd%\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}" ^
-          $(targetArgument) ^
-          $(buildSpecArgument) ^
-          -LogFilePath "%cd%\$(customDeviceRepoName)\lvBuildSpecs.log"
+        if "${{ parameters.buildStep.projectOverride}}"=="Absolute" (
+          set project_path = "${{ parameters.buildStep.projectLocation }}"
+        ) else (
+          set project_path = "%cd%\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}"
+        )
+        if not '$(skipBuildStep)'=='True' (
+          $(lvCLICall) ^
+            -OperationName "${{ parameters.buildStep.buildOperation }}" ^
+            -ProjectPath "%project_path%" ^
+            $(targetArgument) ^
+            $(buildSpecArgument) ^
+            -LogFilePath "%cd%\$(customDeviceRepoName)\lvBuildSpecs.log"
+        )
 
   - task: CmdLine@2
     displayName: Close LabVIEW
