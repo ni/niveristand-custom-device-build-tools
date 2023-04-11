@@ -173,13 +173,13 @@ steps:
         REM if "${{ parameters.buildStep.projectOverride}}"=="Absolute" (
         REM  set project_path = "${{ parameters.buildStep.projectLocation }}"
         REM ) else (
-          set project_path = "%cd%\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}"
+          set custom_project_path = "%cd%\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}"
         REM )
-        echo "using %project_path%"
+        echo "using %custom_project_path%"
         if not '$(skipBuildStep)'=='True' (
           $(lvCLICall) ^
             -OperationName "${{ parameters.buildStep.buildOperation }}" ^
-            -ProjectPath "%project_path%" ^
+            -ProjectPath "%custom_project_path%" ^
             $(targetArgument) ^
             $(buildSpecArgument) ^
             -LogFilePath "%cd%\$(customDeviceRepoName)\lvBuildSpecs.log"
