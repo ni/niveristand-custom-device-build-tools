@@ -170,11 +170,11 @@ steps:
     inputs:
       script: |
         echo on
-        if "${{ parameters.buildStep.projectOverride}}"=="Absolute" (
-          set project_path = "${{ parameters.buildStep.projectLocation }}"
-        ) else (
+        REM if "${{ parameters.buildStep.projectOverride}}"=="Absolute" (
+        REM  set project_path = "${{ parameters.buildStep.projectLocation }}"
+        REM ) else (
           set project_path = "%cd%\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}"
-        )
+        REM )
         echo "using %project_path%"
         if not '$(skipBuildStep)'=='True' (
           $(lvCLICall) ^
