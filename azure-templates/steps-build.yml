@@ -18,10 +18,17 @@ steps:
       targetType: 'inline'
       failOnStdErr: true
       script: |
-        If (-not(Test-Path -Path "$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}.config"))
+        If ("${{ parameters.buildStep.projectOverride }}" -eq "Absolute")
+        {
+          $lvConfigFilePath = "${{ parameters.buildStep.projectLocation }}.config"
+        }
+        Else
+        {
+          $lvConfigFilePath = "$(workspaceDirectory)\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}.config"
+        }
+        If (-not(Test-Path -Path $lvConfigFilePath))
         {
           Write-Output "adding .config file to project..."
-          $lvConfigFilePath = '$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}.config'
           Copy-Item "$(buildTools)\resources\LabVIEW.exe.config" -Destination $lvConfigFilePath
           (Get-Content -Path $lvConfigFilePath) -replace '2016.0.0.0', '$(lvConfigVersion)' | Set-Content -Path $lvConfigFilePath
         }
@@ -137,17 +144,17 @@ steps:
               }
               `
               Write-Output "Copying dependency ${{ dependency.file }}..."
-              If (-not(Test-Path -Path '$(customDeviceRepoName)\${{ dependency.destination }}'))
+              If (-not(Test-Path -Path "$(workspaceDirectory)\$(customDeviceRepoName)\${{ dependency.destination }}"))
               {
                 New-Item `
-                  -Path '$(customDeviceRepoName)\${{ dependency.destination }}' `
+                  -Path "$(workspaceDirectory)\$(customDeviceRepoName)\${{ dependency.destination }}" `
                   -ItemType 'Directory'
               }
               If (Test-Path $dependencyFilePath)
               {
                 Copy-Item `
                   -Path $dependencyFilePath `
-                  -Destination '$(customDeviceRepoName)\${{ dependency.destination }}\' `
+                  -Destination "$(workspaceDirectory)\$(customDeviceRepoName)\${{ dependency.destination }}\" `
                   -Recurse `
                   -Force
               }
@@ -169,13 +176,20 @@ steps:
     displayName: Build ${{ parameters.buildStep.buildSpec }} on ${{ parameters.buildStep.target }} in ${{ parameters.buildStep.projectLocation }}
     inputs:
       script: |
-        echo on
-        if not '$(skipBuildStep)'=='True' $(lvCLICall) ^
-          -OperationName "${{ parameters.buildStep.buildOperation }}" ^
-          -ProjectPath "%cd%\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}" ^
-          $(targetArgument) ^
-          $(buildSpecArgument) ^
-          -LogFilePath "%cd%\$(customDeviceRepoName)\lvBuildSpecs.log"
+        ECHO on
+        IF "${{ parameters.buildStep.projectOverride}}"=="Absolute" (
+          SET project_path="${{ parameters.buildStep.projectLocation }}"
+        ) ELSE (
+          SET project_path="$(workspaceDirectory)\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}"
+        )
+        IF NOT '$(skipBuildStep)'=='True' (
+          $(lvCLICall) ^
+            -OperationName "${{ parameters.buildStep.buildOperation }}" ^
+            -ProjectPath "%project_path%" ^
+            $(targetArgument) ^
+            $(buildSpecArgument) ^
+            -LogFilePath "$(workspaceDirectory)\$(customDeviceRepoName)\lvBuildSpecs.log"
+        )
 
   - task: CmdLine@2
     displayName: Close LabVIEW

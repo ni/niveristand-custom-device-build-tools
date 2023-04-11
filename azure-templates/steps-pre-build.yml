@@ -24,6 +24,7 @@ steps:
       script: |
         Write-Output "Defining repository variables..."
         Write-Host '##vso[task.setvariable variable=buildTools]niveristand-custom-device-build-tools'
+        Write-Host "##vso[task.setvariable variable=workspaceDirectory]$PWD"
         If ('$(Build.Reason)' -eq 'PullRequest')
         {
           Write-Output "Setting variables for Pull Requests..."
@@ -128,8 +129,8 @@ steps:
         echo on
         $(lvCLICall) ^
           -OperationName "SecureRunVI" ^
-          -VIPath "%cd%\$(buildTools)\lv\operations\Utilities\ClearCache.vi" ^
-          -LogFilePath "%cd%\$(customDeviceRepoName)\lvClearCache.log"
+          -VIPath "$(workspaceDirectory)\$(buildTools)\lv\operations\Utilities\ClearCache.vi" ^
+          -LogFilePath "$(workspaceDirectory)\$(customDeviceRepoName)\lvClearCache.log"
 
   - ${{ each codegenVi in parameters.codegenVis }}:
     - ${{ if ne(codegenVi, '' )}}:
@@ -140,5 +141,5 @@ steps:
             echo on
             $(lvCLICall) ^
               -OperationName "SecureRunVI" ^
-              -VIPath "%cd%\$(customDeviceRepoName)\${{ codegenVi }}" ^
-              -LogFilePath "%cd%\$(customDeviceRepoName)\lvCodegen.log"
+              -VIPath "$(workspaceDirectory)\$(customDeviceRepoName)\${{ codegenVi }}" ^
+              -LogFilePath "$(workspaceDirectory)\$(customDeviceRepoName)\lvCodegen.log"
