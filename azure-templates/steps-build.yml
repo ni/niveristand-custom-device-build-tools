@@ -24,7 +24,7 @@ steps:
         }
         Else
         {
-          $lvConfigFilePath = "$PWD\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}.config"
+          $lvConfigFilePath = "$(workspaceDirectory)\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}.config"
         }
         If (-not(Test-Path -Path $lvConfigFilePath))
         {
@@ -144,17 +144,17 @@ steps:
               }
               `
               Write-Output "Copying dependency ${{ dependency.file }}..."
-              If (-not(Test-Path -Path "$PWD\$(customDeviceRepoName)\${{ dependency.destination }}"))
+              If (-not(Test-Path -Path "$(workspaceDirectory)\$(customDeviceRepoName)\${{ dependency.destination }}"))
               {
                 New-Item `
-                  -Path "$PWD\$(customDeviceRepoName)\${{ dependency.destination }}" `
+                  -Path "$(workspaceDirectory)\$(customDeviceRepoName)\${{ dependency.destination }}" `
                   -ItemType 'Directory'
               }
               If (Test-Path $dependencyFilePath)
               {
                 Copy-Item `
                   -Path $dependencyFilePath `
-                  -Destination "$PWD\$(customDeviceRepoName)\${{ dependency.destination }}\" `
+                  -Destination "$(workspaceDirectory)\$(customDeviceRepoName)\${{ dependency.destination }}\" `
                   -Recurse `
                   -Force
               }
@@ -180,7 +180,7 @@ steps:
         IF "${{ parameters.buildStep.projectOverride}}"=="Absolute" (
           SET project_path="${{ parameters.buildStep.projectLocation }}"
         ) ELSE (
-          SET project_path="%cd%\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}"
+          SET project_path="$(workspaceDirectory)\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}"
         )
         IF NOT '$(skipBuildStep)'=='True' (
           $(lvCLICall) ^
@@ -188,7 +188,7 @@ steps:
             -ProjectPath "%project_path%" ^
             $(targetArgument) ^
             $(buildSpecArgument) ^
-            -LogFilePath "%cd%\$(customDeviceRepoName)\lvBuildSpecs.log"
+            -LogFilePath "$(workspaceDirectory)\$(customDeviceRepoName)\lvBuildSpecs.log"
         )
 
   - task: CmdLine@2

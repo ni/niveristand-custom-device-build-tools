@@ -66,7 +66,7 @@ stages:
             - version: '2023'
               bitness: '32bit'
 
-        - projectLocation: '%cd%\niveristand-custom-device-build-tools\test-build\Source\IndividualBuildSpecs.lvproj'
+        - projectLocation: '$(workspaceDirectory)\niveristand-custom-device-build-tools\test-build\Source\IndividualBuildSpecs.lvproj'
           buildOperation: 'ExecuteBuildSpec'
           target: 'Linux x64'
           buildSpec: 'BuildSpecSameName'
