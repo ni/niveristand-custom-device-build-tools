@@ -18,10 +18,17 @@ steps:
       targetType: 'inline'
       failOnStdErr: true
       script: |
-        If (-not(Test-Path -Path "$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}.config"))
+        If ("${{ parameters.buildStep.projectOverride }}" -eq "Absolute")
+        {
+          $lvConfigFilePath = "${{ parameters.buildStep.projectLocation }}.config"
+        }
+        Else
+        {
+          $lvConfigFilePath = "$PWD\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}.config"
+        }
+        If (-not(Test-Path -Path $projectConfigPath))
         {
           Write-Output "adding .config file to project..."
-          $lvConfigFilePath = '$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}.config'
           Copy-Item "$(buildTools)\resources\LabVIEW.exe.config" -Destination $lvConfigFilePath
           (Get-Content -Path $lvConfigFilePath) -replace '2016.0.0.0', '$(lvConfigVersion)' | Set-Content -Path $lvConfigFilePath
         }
@@ -137,17 +144,17 @@ steps:
               }
               `
               Write-Output "Copying dependency ${{ dependency.file }}..."
-              If (-not(Test-Path -Path '$(customDeviceRepoName)\${{ dependency.destination }}'))
+              If (-not(Test-Path -Path '$PWD\$(customDeviceRepoName)\${{ dependency.destination }}'))
               {
                 New-Item `
-                  -Path '$(customDeviceRepoName)\${{ dependency.destination }}' `
+                  -Path '$PWD\$(customDeviceRepoName)\${{ dependency.destination }}' `
                   -ItemType 'Directory'
               }
               If (Test-Path $dependencyFilePath)
               {
                 Copy-Item `
                   -Path $dependencyFilePath `
-                  -Destination '$(customDeviceRepoName)\${{ dependency.destination }}\' `
+                  -Destination '$PWD\$(customDeviceRepoName)\${{ dependency.destination }}\' `
                   -Recurse `
                   -Force
               }
