@@ -37,6 +37,11 @@ steps:
           $sourceBranch = "$(Build.SourceBranch)" -replace 'refs/heads/', ''
           Write-Output "Source branch $(Build.SourceBranch), removed refs/heads/"
         }
+        If (Test-Path -Path "${{ parameters.archiveLocation }}\NI\export\$sourceBranch\norebuild")
+        {
+          Write-Output "norebuild found in this source branch, so skipping this build..."
+          Exit 1
+        }
         Write-Output "Using $sourceBranch in archive path..."
         Write-Host "##vso[task.setvariable variable=sourceBranch]$sourceBranch"
         Write-Host "##vso[task.setvariable variable=archivePath]${{ parameters.archiveLocation }}\NI\export\$sourceBranch\"
