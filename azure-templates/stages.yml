@@ -42,7 +42,6 @@ parameters:
   # strings (releaseVersion, quarterlyReleaseVersion, buildOutputLocation, archiveLocation)
   - name: releaseVersion
     type: string
-    default: 0.0.0
   - name: buildOutputLocation
     type: string
   - name: archiveLocation
