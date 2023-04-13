@@ -185,7 +185,7 @@ steps:
         IF NOT '$(skipBuildStep)'=='True' (
           $(lvCLICall) ^
             -OperationName "${{ parameters.buildStep.buildOperation }}" ^
-            -ProjectPath "%project_path%" ^
+            -ProjectPath %project_path% ^
             $(targetArgument) ^
             $(buildSpecArgument) ^
             -LogFilePath "$(workspaceDirectory)\$(customDeviceRepoName)\lvBuildSpecs.log"
