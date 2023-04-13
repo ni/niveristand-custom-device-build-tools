@@ -127,7 +127,7 @@ stages:
           bitness: '64bit'
 
       buildSteps:
-        - projectLocation: 'test-build\Source\EmptyBuildSpec.lvproj'
+        - projectLocation: 'test-build\Source\Empty Build Spec.lvproj'
           buildOperation: 'ExecuteBuildSpec'
           target: 'My Computer'
           buildSpec: 'EmptySpec'
