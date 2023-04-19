@@ -82,9 +82,9 @@ steps:
     inputs:
       targetType: 'inline'
       script: |
-        If (-not("$(sourceBranch)" -match "release"))
+        If (-not("$(CD.SourceBranch)" -match "release"))
         {
-          $cleanedSourceBranch = "$(sourceBranch)" -replace "\/", "_"
+          $cleanedSourceBranch = "$(CD.SourceBranch)" -replace "\/", "_"
           Write-Output "Not a release branch, so appending branch name $cleanedSourceBranch to nipkg files..."
           $packages = Get-ChildItem `
             -Path "$(CD.ArchivePath)\$(Build.BuildNumber)\$(lvVersion)\installer\*.nipkg"
@@ -114,12 +114,12 @@ steps:
       targetType: 'inline'
       script: |
         $installerPath = '$(CD.ArchivePath)\$(Build.BuildNumber)\$(lvVersion)\installer'
-        If ( ("$(sourceBranch)" -match "release") -and (Test-Path $installerPath) )
+        If ( ("$(CD.SourceBranch)" -match "release") -and (Test-Path $installerPath) )
         {
           Write-Output "Adding manifest file to release branch installer directory"
           $jsonFilePath = Join-Path $installerPath "manifest.json"
           $scmObject = [PSCustomObject]@{
-            GIT_BRANCH = "$(sourceBranch)"
+            GIT_BRANCH = "$(CD.SourceBranch)"
             GIT_COMMIT = "$(Build.SourceVersion)"
             GIT_URL = "$(Build.Repository.Uri).git"
           }

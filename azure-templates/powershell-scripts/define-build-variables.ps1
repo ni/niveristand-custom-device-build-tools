@@ -73,7 +73,7 @@ Else
 If ("$lvBitness" -eq "32bit")
 {
     Write-Output "Setting variables for 32-bit..."
-    $lvPath = "C:\Program Files (x86)\National Instruments\LabVIEW $lvVersion"
+    $lvPath = "C:\Program Files (x86)\National Instruments\LabVIEW $lvVersion\LabVIEW.exe"
     Write-Host "##vso[task.setvariable variable=architecture]x86"
     Write-Host "##vso[task.setvariable variable=nipkgx86suffix]-x86"
     Write-Host "##vso[task.setvariable variable=nipkgx64suffix]"
@@ -81,7 +81,7 @@ If ("$lvBitness" -eq "32bit")
 Elseif ("$lvBitness" -eq '64bit')
 {
     Write-Output "Setting variables for 64-bit..."
-    $lvPath = "C:\Program Files\National Instruments\LabVIEW $lvVersion"
+    $lvPath = "C:\Program Files\National Instruments\LabVIEW $lvVersion\LabVIEW.exe"
     Write-Host "##vso[task.setvariable variable=architecture]x64"
     Write-Host "##vso[task.setvariable variable=nipkgx86suffix]"
     Write-Host "##vso[task.setvariable variable=nipkgx64suffix]64"
@@ -91,4 +91,5 @@ Else
     Write-Error "Invalid Bitness defined in pipeline.  Use either 32bit or 64bit."
 }
 
-Write-Host "##vso[task.setvariable variable=CD.LabVIEWCLI]LabVIEWCLI -PortNumber 3363 -LabVIEWPath `"$lvPath\LabVIEW.exe`" -AdditionalOperationDirectory `"%cd%\$buildTools\lv\operations`" "
+$operations = "%cd%\$buildTools\lv\operations"
+Write-Host "##vso[task.setvariable variable=CD.LabVIEWCLI]LabVIEWCLI -PortNumber 3363 -LabVIEWPath `"$lvPath`" -AdditionalOperationDirectory `"$operations`" "
