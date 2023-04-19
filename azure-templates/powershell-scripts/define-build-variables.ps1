@@ -1,5 +1,14 @@
+param(
+    [string]$lvVersion,
+    [string]$lvBitness,
+    [string]$archiveDir,
+    [string]$outputDir,
+    [string]$releaseVersion,
+    [string]$buildTools
+)
+
 Write-Output "Defining repository variables for this job..."
-Write-Host "##vso[task.setvariable variable=buildTools]niveristand-custom-device-build-tools"
+Write-Host "##vso[task.setvariable variable=buildTools]$buildTools"
 Write-Host "##vso[task.setvariable variable=workspaceDirectory]$PWD"
 If ("$(Build.Reason)" -eq "PullRequest")
 {
@@ -9,25 +18,25 @@ If ("$(Build.Reason)" -eq "PullRequest")
 }
 Else
 {
-    Write-Output "Setting variables for general builds..."
-    $sourceBranch = "$(Build.SourceBranch)" -replace "refs/heads/", ""
+    Write-Output "Setting variables for CI/Manual builds..."
+    $sourceBranch = "$(Build.SourceBranch)" -replace 'refs/heads/', ''
     Write-Output "Source branch $(Build.SourceBranch), removed refs/heads/"
 }
-If (Test-Path -Path "$(${{ parameters.archiveLocation }})\NI\export\$sourceBranch\norebuild")
+If (Test-Path -Path "$archiveDir\NI\export\$sourceBranch\norebuild")
 {
-    Write-Output "norebuild found in this source branch, so skipping this build..."
+    Write-Output "norebuild found in this source branch, so skipping this build... Ending build now..."
     Exit 1
 }
 Write-Output "Using $sourceBranch in archive path..."
 Write-Host "##vso[task.setvariable variable=sourceBranch]$sourceBranch"
-Write-Host "##vso[task.setvariable variable=archivePath]$(${{ parameters.archiveLocation }})\NI\export\$sourceBranch\"
+Write-Host "##vso[task.setvariable variable=archivePath]$archiveDir\NI\export\$sourceBranch\"
 $customDeviceRepoName = "$(Build.Repository.Name)" -replace ".+\/", ""
 Write-Host "##vso[task.setvariable variable=customDeviceRepoName]$customDeviceRepoName"
-Write-Host "##vso[task.setvariable variable=buildOutputPath]$customDeviceRepoName\$(${{ parameters.buildOutputLocation }})"
+Write-Host "##vso[task.setvariable variable=buildOutputPath]$customDeviceRepoName\$outputDir"
 Write-Host "##vso[task.setvariable variable=nipkgPath]$customDeviceRepoName\nipkg"
-`
+
 Write-Output "Determining quarterlyReleaseVersion..."
-$releaseData = "$(${{ parameters.releaseVersion }})" -Split "\."
+$releaseData = "$releaseVersion" -Split "\."
 If ($releaseData[1] -eq "0")
 {
     $derivedQuarterlyReleaseVersion = "20$($releaseData[0]) Q1"
@@ -44,24 +53,22 @@ If ($releaseData[1] -eq "8")
 {
     $derivedQuarterlyReleaseVersion = "20$($releaseData[0]) Q4"
 }
-Write-Output "Configuring release version to $(${{ parameters.releaseVersion }}) and quarterlyReleaseVersion to $($derivedQuarterlyReleaseVersion)..."
-Write-Host "##vso[task.setvariable variable=releaseVersion]$(${{ parameters.releaseVersion }})"
+Write-Output "Configuring release version to $releaseVersion and quarterlyReleaseVersion to $($derivedQuarterlyReleaseVersion)..."
+Write-Host "##vso[task.setvariable variable=releaseVersion]$parameters.releaseVersion"
 Write-Host "##vso[task.setvariable variable=quarterlyReleaseVersion]$derivedQuarterlyReleaseVersion"
-Write-Host "##vso[task.setvariable variable=lvVersion]$(${{ parameters.lvVersionToBuild.version }})"
-If ("$(${{ parameters.lvVersionToBuild.bitness }}" -eq "32bit")
+Write-Host "##vso[task.setvariable variable=lvVersion]$lvVersion"
+If ("$lvBitness" -eq "32bit")
 {
     Write-Output "Setting variables for 32-bit..."
-    $lvPath = "C:\Program Files (x86)\National Instruments\LabVIEW $(${{ parameters.lvVersionToBuild.version }})"
-    Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW $(${{ parameters.lvVersionToBuild.version }})"
+    $lvPath = "C:\Program Files (x86)\National Instruments\LabVIEW $lvVersion"
     Write-Host "##vso[task.setvariable variable=architecture]x86"
     Write-Host "##vso[task.setvariable variable=nipkgx86suffix]-x86"
     Write-Host "##vso[task.setvariable variable=nipkgx64suffix]"
 }
-Elseif ("$(${{ parameters.lvVersionToBuild.bitness }}" -eq "64bit")
+Elseif ("$lvBitness" -eq '64bit')
 {
     Write-Output "Setting variables for 64-bit..."
-    $lvPath = "C:\Program Files\National Instruments\LabVIEW $(${{ parameters.lvVersionToBuild.version }})""
-    Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW $(${{ parameters.lvVersionToBuild.version }})"
+    $lvPath = "C:\Program Files\National Instruments\LabVIEW $lvVersion"
     Write-Host "##vso[task.setvariable variable=architecture]x64"
     Write-Host "##vso[task.setvariable variable=nipkgx86suffix]"
     Write-Host "##vso[task.setvariable variable=nipkgx64suffix]64"
@@ -72,19 +79,19 @@ Else
 }
 Write-Host "##vso[task.setvariable variable=lvPath]$lvPath"
 
-If ("$(${{ parameters.lvVersionToBuild.version }})" -eq "2020")
+If ("$lvVersion" -eq "2020")
 {
     Write-Output "Setting variables for LabVIEW 2020..."
     Write-Host "##vso[task.setvariable variable=lvConfigVersion]8.0.0.0"
     Write-Host "##vso[task.setvariable variable=shortLvVersion]20"
 }
-Elseif ("$(${{ parameters.lvVersionToBuild.version }})" -eq "2021")
+Elseif ("$lvVersion" -eq "2021")
 {
     Write-Output "Setting variables for LabVIEW 2021..."
     Write-Host "##vso[task.setvariable variable=lvConfigVersion]9.0.0.0"
     Write-Host "##vso[task.setvariable variable=shortLvVersion]21"
 }
-Elseif ("$(${{ parameters.lvVersionToBuild.version }})" -eq "2023")
+Elseif ("$lvVersion" -eq "2023")
 {
     Write-Output "Setting variables for LabVIEW 2023..."
     Write-Host "##vso[task.setvariable variable=lvConfigVersion]10.0.0.0"
@@ -95,4 +102,4 @@ Else
     Write-Error "Invalid LabVIEW version defined in pipeline.  Use either 2020, 2021, or 2023."
 }
 
-Write-Host "##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath `"$lvPath\LabVIEW.exe`" -AdditionalOperationDirectory `"%cd%\$(buildTools)\lv\operations`" "
+Write-Host "##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath `"$lvPath\LabVIEW.exe`" -AdditionalOperationDirectory `"%cd%\niveristand-custom-device-build-tools\lv\operations`" "
