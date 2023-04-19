@@ -91,8 +91,4 @@ Else
     Write-Error "Invalid Bitness defined in pipeline.  Use either 32bit or 64bit."
 }
 
-Write-Host "##vso[task.setvariable variable=lvCLICall]`
-    LabVIEWCLI `
-        -PortNumber 3363 `
-        -LabVIEWPath `"$lvPath\LabVIEW.exe`" `
-        -AdditionalOperationDirectory `"%cd%\$buildTools\lv\operations`" "
+Write-Host "##vso[task.setvariable variable=CD.LabVIEWCLI]LabVIEWCLI -PortNumber 3363 -LabVIEWPath `"$lvPath\LabVIEW.exe`" -AdditionalOperationDirectory `"%cd%\$buildTools\lv\operations`" "

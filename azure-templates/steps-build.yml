@@ -9,7 +9,7 @@ parameters:
 
 # Note: the following variables are defined in pre-job-steps.yml:
   # lvVersion, architecture, CD.Repository, lvConfigVersion,
-  # buildTools, lvCLICall
+  # buildTools, CD.LabVIEWCLI
 
 steps:
   - task: PowerShell@2
@@ -182,7 +182,7 @@ steps:
           SET project_path="$(workspaceDirectory)\$(CD.Repository)\${{ parameters.buildStep.projectLocation }}"
         )
         IF NOT '$(skipBuildStep)'=='True' (
-          $(lvCLICall) ^
+          $(CD.LabVIEWCLI) ^
             -OperationName "${{ parameters.buildStep.buildOperation }}" ^
             -ProjectPath %project_path% ^
             $(targetArgument) ^
