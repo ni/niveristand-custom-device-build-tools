@@ -19,9 +19,6 @@ parameters:
     type: boolean
     default: False
 # the following parameters allow skipping portions of this yaml file
-  - name: checkout
-    type: boolean
-    default: True
   - name: clearCache
     type: boolean
     default: True
@@ -31,21 +28,20 @@ parameters:
 
 
 steps:
-  - ${{ if eq(parameters.checkout, True) }}:
-    - checkout: niveristand-custom-device-build-tools
-      displayName: Check out NI VS Custom Device Build Tools repository
+  - checkout: niveristand-custom-device-build-tools
+    displayName: Check out NI VS Custom Device Build Tools repository
 
-      # Checkout Self should be second - the checkout order doesn't matter in most cases, 
-      # but we want the dev branch (self) to be checked out last so that it's used for PR builds in niveristand-custom-device-build-tools
-    - checkout: self
-      displayName: Check out repository to build
-      submodules: ${{ parameters.submodules }}
+    # Checkout Self should be second - the checkout order doesn't matter in most cases, 
+    # but we want the dev branch (self) to be checked out last so that it's used for PR builds in niveristand-custom-device-build-tools
+  - checkout: self
+    displayName: Check out repository to build
+    submodules: ${{ parameters.submodules }}
 
   - task: PowerShell@2
     displayName: Configure Source Branch and Custom Device Repository Name
     inputs:
       targetType: 'filePath'
-      filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/define-source-repo.ps1'
+      filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/define-essentials.ps1'
       failOnStdErr: True
       arguments: -archiveDir "${{ parameters.archiveLocation }}"
 
