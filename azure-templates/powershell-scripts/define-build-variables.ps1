@@ -1,4 +1,4 @@
-Write-Output "Defining repository variables..."
+Write-Output "Defining repository variables for this job..."
 Write-Host '##vso[task.setvariable variable=buildTools]niveristand-custom-device-build-tools'
 Write-Host "##vso[task.setvariable variable=workspaceDirectory]$PWD"
 If ('$(Build.Reason)' -eq 'PullRequest')
@@ -51,6 +51,7 @@ Write-Host "##vso[task.setvariable variable=lvVersion]${{ parameters.lvVersionTo
 If ('${{ parameters.lvVersionToBuild.bitness }}' -eq '32bit')
 {
     Write-Output "Setting variables for 32-bit..."
+    $lvPath = "C:\Program Files (x86)\National Instruments\LabVIEW ${{ parameters.lvVersionToBuild.version }}"
     Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW ${{ parameters.lvVersionToBuild.version }}'
     Write-Host '##vso[task.setvariable variable=architecture]x86'
     Write-Host '##vso[task.setvariable variable=nipkgx86suffix]-x86'
@@ -59,6 +60,7 @@ If ('${{ parameters.lvVersionToBuild.bitness }}' -eq '32bit')
 Elseif ('${{ parameters.lvVersionToBuild.bitness }}' -eq '64bit')
 {
     Write-Output "Setting variables for 64-bit..."
+    $lvPath = "C:\Program Files\National Instruments\LabVIEW ${{ parameters.lvVersionToBuild.version }}'"
     Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW ${{ parameters.lvVersionToBuild.version }}'
     Write-Host '##vso[task.setvariable variable=architecture]x64'
     Write-Host '##vso[task.setvariable variable=nipkgx86suffix]'
@@ -68,7 +70,8 @@ Else
 {
     Write-Error "Invalid Bitness defined in pipeline.  Use either 32bit or 64bit."
 }
-`
+Write-Host "##vso[task.setvariable variable=lvPath]$lvPath"
+
 If ('${{ parameters.lvVersionToBuild.version }}' -eq '2020')
 {
     Write-Output "Setting variables for LabVIEW 2020..."
@@ -91,3 +94,5 @@ Else
 {
     Write-Error "Invalid LabVIEW version defined in pipeline.  Use either 2020, 2021, or 2023."
 }
+
+Write-Host "##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath `"$lvPath\LabVIEW.exe`" -AdditionalOperationDirectory `"%cd%\$(buildTools)\lv\operations`" "

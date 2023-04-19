@@ -13,9 +13,15 @@ parameters:
     type: boolean
 
 steps:
-    # Variables that are set in a powershell script cannot be used within the same script
-    # because the variables are resolved when the script is first loaded, so generate all
-    # variables at the beginning.
+  - checkout: niveristand-custom-device-build-tools
+    displayName: Check out NI VS Custom Device Build Tools repository
+
+    # Checkout Self should be second - the checkout order doesn't matter in most cases, 
+    # but we want the dev branch (self) to be checked out last so that it's used for PR builds in niveristand-custom-device-build-tools
+  - checkout: self
+    displayName: Check out repository to build with submodules
+    submodules: ${{ parameters.submodules }}
+
   - task: PowerShell@2
     displayName: Configure Job-wide Variables for LabVIEW ${{ parameters.lvVersionToBuild.version }} ${{ parameters.lvVersionToBuild.bitness }}
     inputs:
@@ -25,14 +31,6 @@ steps:
 
   - powershell: Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\$(buildTools)\lv\operations"'
     displayName: Set LabVIEWCLI path
-
-  - checkout: niveristand-custom-device-build-tools
-    displayName: Check out NI VS Custom Device Build Tools repository
-
-    # The checkout order doesn't matter in most cases, but we want the dev branch (self) to be checked out last so that it's used for PR builds in niveristand-custom-device-build-tools
-  - checkout: self
-    displayName: Check out repository to build with submodules
-    submodules: ${{ parameters.submodules }}
 
   - task: CmdLine@2
     displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersionToBuild.version }}
