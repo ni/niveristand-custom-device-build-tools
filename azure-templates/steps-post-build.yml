@@ -5,9 +5,9 @@ parameters:
   - name: packages
     type: object
 # Note: the following variables are defined in pre-job-steps.yml:
-  # nipkgPath, customDeviceRepoName, lvVersion, releaseVersion,
+  # nipkgPath, CD.Repository, lvVersion, releaseVersion,
   # quarterlyReleaseVersion shortLvVersion, buildOutputPath,
-  # archivePath, architecture
+  # CD.ArchivePath, architecture
 
 steps:
   - ${{ each package in parameters.packages }}:
@@ -28,7 +28,7 @@ steps:
             New-Item -Path '$(nipkgPath)' -Name 'debian-binary' -ItemType 'File'
             Set-Content '$(nipkgPath)\debian-binary' '2.0\n'
             Copy-Item `
-              -Path '$(customDeviceRepoName)\${{ package.controlFileName }}' `
+              -Path '$(CD.Repository)\${{ package.controlFileName }}' `
               -Destination '$(nipkgPath)\control\control'
             `
             Write-Output "updating nipkg control version parameters..."
@@ -39,8 +39,7 @@ steps:
               -replace "{display_version}", "$(releaseVersion)" `
               -replace "{quarterly_display_version}", "$(quarterlyReleaseVersion)" `
               -replace "{labview_short_version}", "$(shortLvVersion)" `
-              -replace "{pkg_x86_bitness_suffix}", "$(nipkgx86suffix)" `
-              -replace "{nipkgx64suffix}", "$(nipkgx64suffix)"
+              -replace "{pkg_x86_bitness_suffix}", "$(nipkgx86suffix)"
             Write-Output $contents
             Set-Content -Value $contents -Path "$(nipkgPath)\control\control"
 
@@ -52,7 +51,7 @@ steps:
             script: |
               New-Item -Path '$(nipkgPath)\data\${{ payloadMap.installLocation }}' -ItemType 'Directory'
               Copy-Item `
-                -Path '$(customDeviceRepoName)\${{ payloadMap.payloadLocation }}\*' `
+                -Path '$(CD.Repository)\${{ payloadMap.payloadLocation }}\*' `
                 -Destination '$(nipkgPath)\data\${{ payloadMap.installLocation }}' `
                 -Recurse
 
@@ -66,7 +65,7 @@ steps:
         inputs:
           targetType: 'inline'
           script: |
-            $installerPath = '$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\installer'
+            $installerPath = '$(CD.ArchivePath)\$(Build.BuildNumber)\$(lvVersion)\installer'
             If (-not(Test-Path $installerPath))
             {
               New-Item -Path $installerPath -ItemType 'Directory'
@@ -88,7 +87,7 @@ steps:
           $cleanedSourceBranch = "$(sourceBranch)" -replace "\/", "_"
           Write-Output "Not a release branch, so appending branch name $cleanedSourceBranch to nipkg files..."
           $packages = Get-ChildItem `
-            -Path "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\installer\*.nipkg"
+            -Path "$(CD.ArchivePath)\$(Build.BuildNumber)\$(lvVersion)\installer\*.nipkg"
           Foreach ($package in $packages)
           {
             If (-not("$package" -match "$cleanedSourceBranch.nipkg"))
@@ -98,15 +97,15 @@ steps:
           }
         }
 
-        If (-not(Test-Path "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\$(architecture)"))
+        If (-not(Test-Path "$(CD.ArchivePath)\$(Build.BuildNumber)\$(lvVersion)\$(architecture)"))
         {
           New-Item `
-            -Path "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\$(architecture)" `
+            -Path "$(CD.ArchivePath)\$(Build.BuildNumber)\$(lvVersion)\$(architecture)" `
             -ItemType 'Directory'
         }
         Copy-Item `
           -Path "$(buildOutputPath)\*" `
-          -Destination "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\$(architecture)\" `
+          -Destination "$(CD.ArchivePath)\$(Build.BuildNumber)\$(lvVersion)\$(architecture)\" `
           -Recurse
 
   - task: PowerShell@2
@@ -114,7 +113,7 @@ steps:
     inputs:
       targetType: 'inline'
       script: |
-        $installerPath = '$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\installer'
+        $installerPath = '$(CD.ArchivePath)\$(Build.BuildNumber)\$(lvVersion)\installer'
         If ( ("$(sourceBranch)" -match "release") -and (Test-Path $installerPath) )
         {
           Write-Output "Adding manifest file to release branch installer directory"

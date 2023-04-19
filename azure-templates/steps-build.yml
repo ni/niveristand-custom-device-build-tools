@@ -8,7 +8,7 @@ parameters:
     type: object
 
 # Note: the following variables are defined in pre-job-steps.yml:
-  # lvVersion, architecture, customDeviceRepoName, lvConfigVersion,
+  # lvVersion, architecture, CD.Repository, lvConfigVersion,
   # buildTools, lvCLICall
 
 steps:
@@ -24,7 +24,7 @@ steps:
         }
         Else
         {
-          $lvConfigFilePath = "$(workspaceDirectory)\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}.config"
+          $lvConfigFilePath = "$(workspaceDirectory)\$(CD.Repository)\${{ parameters.buildStep.projectLocation }}.config"
         }
         If (-not(Test-Path -Path $lvConfigFilePath))
         {
@@ -96,13 +96,13 @@ steps:
               Write-Output "Setting dependency environment to $target"
               `
               $branchName = 'main'
-              If ('$(sourceBranch)' -ne $branchName )
+              If ('$(CD.SourceBranch)' -ne $branchName )
               {
-                Write-Output "Checking for builds of $(sourceBranch) branch..."
-                If (Test-Path -Path "${{ dependency.source }}\NI\export\$(sourceBranch)\*\$(lvVersion)\$(architecture)")
+                Write-Output "Checking for builds of $(CD.SourceBranch) branch..."
+                If (Test-Path -Path "${{ dependency.source }}\NI\export\$(CD.SourceBranch)\*\$(lvVersion)\$(architecture)")
                 {
-                  Write-Output "branch was found, using $(sourceBranch) instead of $branchName..."
-                  $branchName = '$(sourceBranch)'
+                  Write-Output "branch was found, using $(CD.SourceBranch) instead of $branchName..."
+                  $branchName = '$(CD.SourceBranch)'
                 }
                 Else
                 {
@@ -143,17 +143,17 @@ steps:
               }
               `
               Write-Output "Copying dependency ${{ dependency.file }}..."
-              If (-not(Test-Path -Path "$(workspaceDirectory)\$(customDeviceRepoName)\${{ dependency.destination }}"))
+              If (-not(Test-Path -Path "$(workspaceDirectory)\$(CD.Repository)\${{ dependency.destination }}"))
               {
                 New-Item `
-                  -Path "$(workspaceDirectory)\$(customDeviceRepoName)\${{ dependency.destination }}" `
+                  -Path "$(workspaceDirectory)\$(CD.Repository)\${{ dependency.destination }}" `
                   -ItemType 'Directory'
               }
               If (Test-Path $dependencyFilePath)
               {
                 Copy-Item `
                   -Path $dependencyFilePath `
-                  -Destination "$(workspaceDirectory)\$(customDeviceRepoName)\${{ dependency.destination }}\" `
+                  -Destination "$(workspaceDirectory)\$(CD.Repository)\${{ dependency.destination }}\" `
                   -Recurse `
                   -Force
               }
@@ -179,7 +179,7 @@ steps:
         IF "${{ parameters.buildStep.projectOverride}}"=="Absolute" (
           SET project_path="${{ parameters.buildStep.projectLocation }}"
         ) ELSE (
-          SET project_path="$(workspaceDirectory)\$(customDeviceRepoName)\${{ parameters.buildStep.projectLocation }}"
+          SET project_path="$(workspaceDirectory)\$(CD.Repository)\${{ parameters.buildStep.projectLocation }}"
         )
         IF NOT '$(skipBuildStep)'=='True' (
           $(lvCLICall) ^
@@ -187,7 +187,7 @@ steps:
             -ProjectPath %project_path% ^
             $(targetArgument) ^
             $(buildSpecArgument) ^
-            -LogFilePath "$(workspaceDirectory)\$(customDeviceRepoName)\lvBuildSpecs.log"
+            -LogFilePath "$(workspaceDirectory)\$(CD.Repository)\lvBuildSpecs.log"
         )
 
   - task: CmdLine@2
