@@ -13,6 +13,8 @@ parameters:
     default: 'Not Specified'
   - name: codegenVis
     type: object
+    default:
+      - ''
   - name: submodules
     type: boolean
     default: False
