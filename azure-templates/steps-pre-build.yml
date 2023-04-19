@@ -20,7 +20,7 @@ steps:
     displayName: Configure Job-wide Variables for LabVIEW ${{ parameters.lvVersionToBuild.version }} ${{ parameters.lvVersionToBuild.bitness }}
     inputs:
       targetType: 'filePath'
-      filePath: 'powershell-scripts/define-build-variables.ps1'
+      filePath: 'niveristand-custom-device-build-tools/powershell-scripts/define-build-variables.ps1'
       failOnStdErr: True
 
   - powershell: Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\$(buildTools)\lv\operations"'
