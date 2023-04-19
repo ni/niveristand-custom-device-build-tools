@@ -138,10 +138,10 @@ stages:
         condition: succeeded()
         steps:
         - template: steps-prepare.yml # Configure variables, check out repos, Clear cache
-            parameters:
-              checkout: False
-              build: False
-              clearCache: False
+          parameters:
+            checkout: False
+            build: False
+            clearCache: False
         - powershell: |
             Write-Output "All previous jobs complete.  Storing .finished file..."
             New-Item `
