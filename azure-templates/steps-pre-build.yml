@@ -28,13 +28,13 @@ steps:
       targetType: 'filePath'
       filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/define-build-variables.ps1'
       failOnStdErr: True
-    arguments:
-      lvVersion:      '${{ parameters.lvVersionToBuild.version }}'
-      lvBitness:      '${{ parameters.lvVersionToBuild.bitness }}'
-      archiveDir:     '${{ parameters.archiveLocation }}'
-      outputDir:      '${{ parameters.buildOutputLocation }}'
-      releaseVersion: '${{ parameters.releaseVersion }}'
-      buildTools:     'niveristand-custom-device-build-tools'
+      arguments: >
+        -lvVersion      '${{ parameters.lvVersionToBuild.version }}'
+        -lvBitness      '${{ parameters.lvVersionToBuild.bitness }}'
+        -archiveDir     '${{ parameters.archiveLocation }}'
+        -outputDir      '${{ parameters.buildOutputLocation }}'
+        -releaseVersion '${{ parameters.releaseVersion }}'
+        -buildTools     'niveristand-custom-device-build-tools'
 
 
 
