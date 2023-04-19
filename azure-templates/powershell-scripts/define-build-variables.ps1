@@ -10,17 +10,17 @@ param(
 Write-Output "Defining repository variables for this job..."
 Write-Host "##vso[task.setvariable variable=buildTools]$buildTools"
 Write-Host "##vso[task.setvariable variable=workspaceDirectory]$PWD"
-If ("$(Build.Reason)" -eq "PullRequest")
+If ("$env:BUILD_REASON" -eq "PullRequest")
 {
     Write-Output "Setting variables for Pull Requests..."
-    $sourceBranch = "$(System.PullRequest.SourceBranch)"
-    Write-Output "Source branch $(System.PullRequest.SourceBranch)"
+    $sourceBranch = "$env:SYSTEM_PULLREQUEST_SOURCEBRANCH"
+    Write-Output "Source branch set to $sourceBranch"
 }
 Else
 {
     Write-Output "Setting variables for CI/Manual builds..."
-    $sourceBranch = "$(Build.SourceBranch)" -replace 'refs/heads/', ''
-    Write-Output "Source branch $(Build.SourceBranch), removed refs/heads/"
+    $sourceBranch = "$env:BUILD_SOURCEBRANCH" -replace "refs/heads/", ""
+    Write-Output "Source branch $sourceBranch, removed refs/heads/"
 }
 If (Test-Path -Path "$archiveDir\NI\export\$sourceBranch\norebuild")
 {
@@ -30,7 +30,7 @@ If (Test-Path -Path "$archiveDir\NI\export\$sourceBranch\norebuild")
 Write-Output "Using $sourceBranch in archive path..."
 Write-Host "##vso[task.setvariable variable=sourceBranch]$sourceBranch"
 Write-Host "##vso[task.setvariable variable=archivePath]$archiveDir\NI\export\$sourceBranch\"
-$customDeviceRepoName = "$(Build.Repository.Name)" -replace ".+\/", ""
+$customDeviceRepoName = "$env:BUILD_REPOSITORY_NAME" -replace ".+\/", ""
 Write-Host "##vso[task.setvariable variable=customDeviceRepoName]$customDeviceRepoName"
 Write-Host "##vso[task.setvariable variable=buildOutputPath]$customDeviceRepoName\$outputDir"
 Write-Host "##vso[task.setvariable variable=nipkgPath]$customDeviceRepoName\nipkg"
@@ -39,21 +39,21 @@ Write-Output "Determining quarterlyReleaseVersion..."
 $releaseData = "$releaseVersion" -Split "\."
 If ($releaseData[1] -eq "0")
 {
-    $derivedQuarterlyReleaseVersion = "20$($releaseData[0]) Q1"
+    $derivedQuarterlyReleaseVersion = "20$releaseData[0] Q1"
 }
 If ($releaseData[1] -eq "3")
 {
-$derivedQuarterlyReleaseVersion = "20$($releaseData[0]) Q2"
+$derivedQuarterlyReleaseVersion = "20$releaseData[0] Q2"
 }
 If ($releaseData[1] -eq "5")
 {
-    $derivedQuarterlyReleaseVersion = "20$($releaseData[0]) Q3"
+    $derivedQuarterlyReleaseVersion = "20$releaseData[0] Q3"
 }
 If ($releaseData[1] -eq "8")
 {
-    $derivedQuarterlyReleaseVersion = "20$($releaseData[0]) Q4"
+    $derivedQuarterlyReleaseVersion = "20$releaseData[0] Q4"
 }
-Write-Output "Configuring release version to $releaseVersion and quarterlyReleaseVersion to $($derivedQuarterlyReleaseVersion)..."
+Write-Output "Configuring release version to $releaseVersion and quarterlyReleaseVersion to $derivedQuarterlyReleaseVersion..."
 Write-Host "##vso[task.setvariable variable=releaseVersion]$parameters.releaseVersion"
 Write-Host "##vso[task.setvariable variable=quarterlyReleaseVersion]$derivedQuarterlyReleaseVersion"
 Write-Host "##vso[task.setvariable variable=lvVersion]$lvVersion"
