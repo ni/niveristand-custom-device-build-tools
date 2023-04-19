@@ -20,19 +20,19 @@ Write-Output "Determining quarterlyReleaseVersion..."
 $releaseData = "$releaseVersion" -Split "\."
 If ($releaseData[1] -eq "0")
 {
-    $derivedQuarterlyReleaseVersion = "20$releaseData[0] Q1"
+    $derivedQuarterlyReleaseVersion = "20$($releaseData[0]) Q1"
 }
 If ($releaseData[1] -eq "3")
 {
-$derivedQuarterlyReleaseVersion = "20$releaseData[0] Q2"
+$derivedQuarterlyReleaseVersion = "20$($releaseData[0]) Q2"
 }
 If ($releaseData[1] -eq "5")
 {
-    $derivedQuarterlyReleaseVersion = "20$releaseData[0] Q3"
+    $derivedQuarterlyReleaseVersion = "20$($releaseData[0]) Q3"
 }
 If ($releaseData[1] -eq "8")
 {
-    $derivedQuarterlyReleaseVersion = "20$releaseData[0] Q4"
+    $derivedQuarterlyReleaseVersion = "20$($releaseData[0]) Q4"
 }
 If (-not($derivedQuarterlyReleaseVersion -match "20.*Q.*"))
 {
