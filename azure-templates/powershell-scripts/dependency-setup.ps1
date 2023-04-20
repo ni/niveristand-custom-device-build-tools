@@ -13,13 +13,13 @@ Else
   Write-Output "Configuring target directory environment..."
   If ("$env:CD_BUILDTARGET" -eq "My Computer")
   {
-    $targetName = "Windows"
+    $target = "Windows" # This variable is used in azure-pipelines.yml files
   }
   Elseif ("$env:CD_BUILDTARGET" -eq "Linux x64")
   {
-    $targetName = "Linux_x64"
+    $target = "Linux_x64" # This variable is used in azure-pipelines.yml files
   }
-  Write-Output "Setting dependency environment to $targetName"
+  Write-Output "Setting dependency environment `$target to `"$target`""
   
   $branchName = "main"
   If ("$env:CD_SOURCEBRANCH" -ne "$branchName")
