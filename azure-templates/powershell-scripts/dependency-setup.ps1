@@ -85,7 +85,6 @@ Else
   }
   Else
   {
-    Write-Output "Dependency does not exist at $dependencyFilePath..."
-    Write-Output "SKIPPING DEPENDENCY, END STEP..."
+    Write-Error "Dependency does not exist at $dependencyFilePath."
   }
 }
