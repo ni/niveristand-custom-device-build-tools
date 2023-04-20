@@ -145,7 +145,7 @@ stages:
         - powershell: |
             Write-Output "All previous jobs complete.  Storing .finished file..."
             New-Item `
-              -Path "$(CD.ArchivePath)" `
+              -Path "$(CD.ArchivePath)\$(Build.BuildNumber)" `
               -Name ".finished" `
               -ItemType "File"
             
