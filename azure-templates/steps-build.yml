@@ -20,10 +20,10 @@ steps:
       failOnStdErr: True
       arguments: >
         -projectOverride "${{ parameters.buildStep.projectOverride }}"
-        -projectPath     ${{ parameters.buildStep.projectLocation }}
-        -buildOperation  ${{ parameters.buildStep.buildOperation }}
-        -buildSpec       ${{ parameters.buildStep.buildSpec }}
-        -target          ${{ parameters.buildStep.target }}
+        -projectPath     "${{ parameters.buildStep.projectLocation }}"
+        -buildOperation  "${{ parameters.buildStep.buildOperation }}"
+        -buildSpec       "${{ parameters.buildStep.buildSpec }}"
+        -target          "${{ parameters.buildStep.target }}"
 
   - ${{ each exclusion in parameters.buildStep.exclusions }}:
     - ${{ if and( eq(exclusion.version, parameters.lvVersionToBuild.version), eq(exclusion.bitness, parameters.lvVersionToBuild.bitness)) }}:
@@ -45,9 +45,9 @@ steps:
           filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/dependency-setup.ps1'
           failOnStdErr: true
           arguments: >
-            -source      ${{ dependency.source }}
-            -file        ${{ dependency.file }}
-            -destination ${{ dependency.destination }}
+            -source      "${{ dependency.source }}"
+            -file        "${{ dependency.file }}"
+            -destination "${{ dependency.destination }}"
 
     - ${{ if and( ne( dependency.file, '' ), ne( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
       - task: PowerShell@2
