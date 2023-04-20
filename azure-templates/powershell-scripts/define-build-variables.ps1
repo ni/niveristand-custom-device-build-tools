@@ -12,8 +12,8 @@ Write-Host "##vso[task.setvariable variable=buildTools]$buildTools"
 Write-Output "Using `"$PWD`" as the workspace directory..."
 Write-Host "##vso[task.setvariable variable=workspaceDirectory]$PWD"
 Write-Output "Using `"$outputDir`" as the build output directory..."
-Write-Host "##vso[task.setvariable variable=buildOutputPath]$env:CD_REPONAME\$outputDir"
-Write-Host "##vso[task.setvariable variable=nipkgPath]$env:CD_REPONAME\nipkg"
+Write-Host "##vso[task.setvariable variable=buildOutputPath]$(CD.Repository)\$outputDir"
+Write-Host "##vso[task.setvariable variable=nipkgPath]$(CD.Repository)\nipkg"
 
 # Set release information
 Write-Output "Determining quarterlyReleaseVersion..."
