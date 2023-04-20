@@ -79,7 +79,7 @@ Else
   {
     Copy-Item `
       -Path $dependencyFilePath `
-      -Destination "$env:CD_WORKSPACE\$env:CD_REPOSITORY\$destination\" `
+      -Destination "$env:CD_WORKSPACE\$env:CD_REPOSITORY\$destination" `
       -Recurse `
       -Force
   }
