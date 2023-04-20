@@ -63,9 +63,9 @@ steps:
       script: |
         ECHO ON
         IF '$(CD.AbsolutePath)'=='True' (
-          SET project_path="$(CD.Workspace)\$(CD.Repository)\$(CD.ProjectPath)"
-        ) ELSE (
           SET project_path="$(CD.ProjectPath)"
+        ) ELSE (
+          SET project_path="$(CD.Workspace)\$(CD.Repository)\$(CD.ProjectPath)"
         )
         IF '$(CD.SkipThisStep)'=='False' (
           $(CD.LabVIEWCLI) ^
