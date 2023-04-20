@@ -44,9 +44,9 @@ steps:
           targetType: 'filePath'
           filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/dependency-setup.ps1'
           failOnStdErr: true
-          arguments: >
+          arguments: > # -file has single quotes to pass in a variable
             -source      "${{ dependency.source }}"
-            -file        "${{ dependency.file }}"
+            -file        '${{ dependency.file }}'
             -destination "${{ dependency.destination }}"
 
     - ${{ if and( ne( dependency.file, '' ), ne( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
