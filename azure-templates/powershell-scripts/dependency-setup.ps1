@@ -14,12 +14,12 @@ Else
   If ("$env:CD_BUILDTARGET" -eq "My Computer")
   {
     $file = $file -replace '$target', "Windows"
-    Write-Output "Setting dependency environment `$target to `"Windows`""
+    Write-Output "Setting dependency environment `$target to `"Windows`" - new dependency path is $file..."
   }
   Elseif ("$env:CD_BUILDTARGET" -eq "Linux x64")
   {
     $file = $file -replace '$target', "Linux_x64"
-    Write-Output "Setting dependency environment `$target to `"Linux_x64`""
+    Write-Output "Setting dependency environment `$target to `"Linux_x64`" - new dependency path is $file..."
   }
   
   $branchName = "main"
