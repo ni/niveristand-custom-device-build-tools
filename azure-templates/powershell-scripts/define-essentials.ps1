@@ -1,8 +1,8 @@
 param([string]$archiveDir)
 
-$customDeviceRepoName = "$env:BUILD_REPOSITORY_NAME" -replace ".+\/", ""
-Write-Output "Defining custom device repo name as $customDeviceRepoName..."
-Write-Host "##vso[task.setvariable variable=CD.Repository]$customDeviceRepoName"
+$repoName = "$env:BUILD_REPOSITORY_NAME" -replace ".+\/", ""
+Write-Output "Defining custom device repo name as $repoName..."
+Write-Host "##vso[task.setvariable variable=CD.Repository]$repoName"
 
 If ("$env:BUILD_REASON" -eq "PullRequest")
 {
