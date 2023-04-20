@@ -1,5 +1,5 @@
 param(
-    [string]$projectOverride,
+    [string]$projectOverride = "No Overrides",
     [string]$projectPath,
     [string]$buildOperation,
     [string]$buildSpec,
