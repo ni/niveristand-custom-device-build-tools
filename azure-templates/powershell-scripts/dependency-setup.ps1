@@ -13,13 +13,14 @@ Else
   Write-Output "Configuring target directory environment..."
   If ("$env:CD_BUILDTARGET" -eq "My Computer")
   {
-    $target = "Windows" # This variable is used in azure-pipelines.yml files
+    $file = $file -replace '$target', "Windows"
+    Write-Output "Setting dependency environment `$target to `"Windows`""
   }
   Elseif ("$env:CD_BUILDTARGET" -eq "Linux x64")
   {
-    $target = "Linux_x64" # This variable is used in azure-pipelines.yml files
+    $file = $file -replace '$target', "Linux_x64"
+    Write-Output "Setting dependency environment `$target to `"Linux_x64`""
   }
-  Write-Output "Setting dependency environment `$target to `"$target`""
   
   $branchName = "main"
   If ("$env:CD_SOURCEBRANCH" -ne "$branchName")
@@ -39,7 +40,6 @@ Else
   {
     Write-Output "Using `"$branchName`" branch..."
   }
-  `
   Write-Output "Finding latest successful build of dependency `"$file`"..."
   $allDependencyBuilds = Get-ChildItem `
     -Path "$source\NI\export\$branchName\*" `
