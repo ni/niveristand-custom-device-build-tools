@@ -68,8 +68,8 @@ steps:
           echo on
           $(CD.LabVIEWCLI) ^
             -OperationName "SecureRunVI" ^
-            -VIPath "$(workspaceDirectory)\$(buildTools)\lv\operations\Utilities\ClearCache.vi" ^
-            -LogFilePath "$(workspaceDirectory)\$(CD.Repository)\lvClearCache.log"
+            -VIPath "$(CD.Workspace)\$(CD.BuildTools)\lv\operations\Utilities\ClearCache.vi" ^
+            -LogFilePath "$(CD.Workspace)\$(CD.Repository)\lvClearCache.log"
 
   - ${{ each codegenVi in parameters.codegenVis }}:
     - ${{ if ne(codegenVi, '' )}}:
@@ -80,5 +80,5 @@ steps:
             echo on
             $(CD.LabVIEWCLI) ^
               -OperationName "SecureRunVI" ^
-              -VIPath "$(workspaceDirectory)\$(CD.Repository)\${{ codegenVi }}" ^
-              -LogFilePath "$(workspaceDirectory)\$(CD.Repository)\lvCodegen.log"
+              -VIPath "$(CD.Workspace)\$(CD.Repository)\${{ codegenVi }}" ^
+              -LogFilePath "$(CD.Workspace)\$(CD.Repository)\lvCodegen.log"

@@ -88,7 +88,7 @@ stages:
               clearCache: False
           - template: steps-diff.yml
             parameters:
-              lvVersionToDiff:         $(diffVersion)
+              lvVersionToDiff: $(diffVersion)
 
   - stage: ${{ parameters.stageName }}
     dependsOn: []
@@ -139,6 +139,7 @@ stages:
         steps:
         - template: steps-prepare.yml # Configure variables, check out repos, Clear cache
           parameters:
+            archiveLocation: ${{ parameters.archiveLocation }}
             build: False
             clearCache: False
         - powershell: |

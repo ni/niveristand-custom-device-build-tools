@@ -8,8 +8,8 @@ parameters:
     type: object
 
 # Note: the following variables are defined in pre-job-steps.yml:
-  # lvVersion, architecture, CD.Repository, lvConfigVersion,
-  # buildTools, CD.LabVIEWCLI
+  # CD.LabVIEW.Version, CD.Architecture, CD.Repository, CD.LabVIEW.Config,
+  # CD.BuildTools, CD.LabVIEWCLI
 
 steps:
   - task: PowerShell@2
@@ -24,13 +24,13 @@ steps:
         }
         Else
         {
-          $lvConfigFilePath = "$(workspaceDirectory)\$(CD.Repository)\${{ parameters.buildStep.projectLocation }}.config"
+          $lvConfigFilePath = "$(CD.Workspace)\$(CD.Repository)\${{ parameters.buildStep.projectLocation }}.config"
         }
         If (-not(Test-Path -Path $lvConfigFilePath))
         {
           Write-Output "adding .config file to project..."
-          Copy-Item "$(buildTools)\resources\LabVIEW.exe.config" -Destination $lvConfigFilePath
-          (Get-Content -Path $lvConfigFilePath) -replace '2016.0.0.0', '$(lvConfigVersion)' | Set-Content -Path $lvConfigFilePath
+          Copy-Item "$(CD.BuildTools)\resources\LabVIEW.exe.config" -Destination $lvConfigFilePath
+          (Get-Content -Path $lvConfigFilePath) -replace '2016.0.0.0', '$(CD.LabVIEW.Config)' | Set-Content -Path $lvConfigFilePath
         }
         `
         If ('${{ parameters.buildStep.buildOperation }}' -eq 'ExecuteAllBuildSpecs')
@@ -99,7 +99,7 @@ steps:
               If ('$(CD.SourceBranch)' -ne $branchName )
               {
                 Write-Output "Checking for builds of $(CD.SourceBranch) branch..."
-                If (Test-Path -Path "${{ dependency.source }}\NI\export\$(CD.SourceBranch)\*\$(lvVersion)\$(architecture)")
+                If (Test-Path -Path "${{ dependency.source }}\NI\export\$(CD.SourceBranch)\*\$(CD.LabVIEW.Version)\$(CD.Architecture)")
                 {
                   Write-Output "branch was found, using $(CD.SourceBranch) instead of $branchName..."
                   $branchName = '$(CD.SourceBranch)'
@@ -121,13 +121,13 @@ steps:
               Foreach ($build in $allDependencyBuilds)
               {
                 Write-Output "Checking $build..."
-                If (Test-Path -Path "$build\$(lvVersion)\$(architecture)\")
+                If (Test-Path -Path "$build\$(CD.LabVIEW.Version)\$(CD.Architecture)\")
                 {
                   Write-Output "Checking for .finished file..."
                   If (Test-Path -Path "$build\.finished")
                   {
                     Write-Output "latest successful build: $build"
-                    $dependencyFilePath = "$build\$(lvVersion)\$(architecture)\${{ dependency.file }}"
+                    $dependencyFilePath = "$build\$(CD.LabVIEW.Version)\$(CD.Architecture)\${{ dependency.file }}"
                     Break
                   }
                   Else
@@ -143,17 +143,17 @@ steps:
               }
               `
               Write-Output "Copying dependency ${{ dependency.file }}..."
-              If (-not(Test-Path -Path "$(workspaceDirectory)\$(CD.Repository)\${{ dependency.destination }}"))
+              If (-not(Test-Path -Path "$(CD.Workspace)\$(CD.Repository)\${{ dependency.destination }}"))
               {
                 New-Item `
-                  -Path "$(workspaceDirectory)\$(CD.Repository)\${{ dependency.destination }}" `
+                  -Path "$(CD.Workspace)\$(CD.Repository)\${{ dependency.destination }}" `
                   -ItemType 'Directory'
               }
               If (Test-Path $dependencyFilePath)
               {
                 Copy-Item `
                   -Path $dependencyFilePath `
-                  -Destination "$(workspaceDirectory)\$(CD.Repository)\${{ dependency.destination }}\" `
+                  -Destination "$(CD.Workspace)\$(CD.Repository)\${{ dependency.destination }}\" `
                   -Recurse `
                   -Force
               }
@@ -179,7 +179,7 @@ steps:
         IF "${{ parameters.buildStep.projectOverride}}"=="Absolute" (
           SET project_path="${{ parameters.buildStep.projectLocation }}"
         ) ELSE (
-          SET project_path="$(workspaceDirectory)\$(CD.Repository)\${{ parameters.buildStep.projectLocation }}"
+          SET project_path="$(CD.Workspace)\$(CD.Repository)\${{ parameters.buildStep.projectLocation }}"
         )
         IF NOT '$(skipBuildStep)'=='True' (
           $(CD.LabVIEWCLI) ^
@@ -187,7 +187,7 @@ steps:
             -ProjectPath %project_path% ^
             $(targetArgument) ^
             $(buildSpecArgument) ^
-            -LogFilePath "$(workspaceDirectory)\$(CD.Repository)\lvBuildSpecs.log"
+            -LogFilePath "$(CD.Workspace)\$(CD.Repository)\lvBuildSpecs.log"
         )
 
   - task: CmdLine@2
