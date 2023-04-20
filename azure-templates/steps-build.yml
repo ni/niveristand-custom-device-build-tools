@@ -7,7 +7,7 @@ parameters:
   - name: lvVersionToBuild
     type: object
 
-# Note: the following variables are defined in pre-job-steps.yml:
+# Note: the following variables are defined in steps-prepare.yml:
   # CD.LabVIEW.Version, CD.Architecture, CD.Repository, CD.LabVIEW.Config,
   # CD.BuildTools, CD.LabVIEWCLI
 
@@ -15,49 +15,15 @@ steps:
   - task: PowerShell@2
     displayName: Prepare to build ${{ parameters.buildStep.buildSpec }} on ${{ parameters.buildStep.target }} in ${{ parameters.buildStep.projectLocation }}
     inputs:
-      targetType: 'inline'
-      failOnStdErr: true
-      script: |
-        If ("${{ parameters.buildStep.projectOverride }}" -eq "Absolute")
-        {
-          $lvConfigFilePath = "${{ parameters.buildStep.projectLocation }}.config"
-        }
-        Else
-        {
-          $lvConfigFilePath = "$(CD.Workspace)\$(CD.Repository)\${{ parameters.buildStep.projectLocation }}.config"
-        }
-        If (-not(Test-Path -Path $lvConfigFilePath))
-        {
-          Write-Output "adding .config file to project..."
-          Copy-Item "$(CD.BuildTools)\resources\LabVIEW.exe.config" -Destination $lvConfigFilePath
-          (Get-Content -Path $lvConfigFilePath) -replace '2016.0.0.0', '$(CD.LabVIEW.Config)' | Set-Content -Path $lvConfigFilePath
-        }
-        `
-        If ('${{ parameters.buildStep.buildOperation }}' -eq 'ExecuteAllBuildSpecs')
-        {
-          Write-Output "Configuring build operation for all targets and build specs..."
-          Write-Host '##vso[task.setvariable variable=targetArgument]'
-          Write-Host '##vso[task.setvariable variable=buildSpecArgument]'
-        }
-        Elseif ('${{ parameters.buildStep.buildOperation }}' -eq 'ExecuteBuildSpecAllTargets')
-        {
-          Write-Output "Configuring build operation for all targets and single build spec..."
-          Write-Host '##vso[task.setvariable variable=targetArgument]'
-          Write-Host '##vso[task.setvariable variable=buildSpecArgument]-BuildSpecName "${{ parameters.buildStep.buildSpec }}" '
-        }
-        Elseif ('${{ parameters.buildStep.buildOperation }}' -eq 'ExecuteBuildSpec')
-        {
-          Write-Output "Configuring build operation for specific target and build spec..."
-          Write-Host '##vso[task.setvariable variable=targetArgument]-TargetName "${{ parameters.buildStep.target }}" '
-          Write-Host '##vso[task.setvariable variable=buildSpecArgument]-BuildSpecName "${{ parameters.buildStep.buildSpec }}" '
-        }
-        Else
-        {
-          Write-Error "invalid buildStep.buildOperation provided.  Valid options are ExecuteBuildSpec, ExecuteBuildSpecAllTargets, and ExecuteAllBuildSpecs."
-        }
-        `
-        Write-Output "resetting build exclusion skip variable..."
-        Write-Host "##vso[task.setvariable variable=skipBuildStep]False"
+      targetType: 'filePath'
+      filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/build-step-setup.ps1'
+      failOnStdErr: True
+      arguments: >
+        -projectOverride ${{ parameters.projectOverride }}
+        -projectPath     ${{ parameters.buildStep.projectLocation }}
+        -buildOperation  ${{ parameters.buildStep.buildOperation }}
+        -buildSpec       ${{ parameters.buildStep.buildSpec }}
+        -target          ${{ parameters.buildStep.target }}
 
   - ${{ each exclusion in parameters.buildStep.exclusions }}:
     - ${{ if and( eq(exclusion.version, parameters.lvVersionToBuild.version), eq(exclusion.bitness, parameters.lvVersionToBuild.bitness)) }}:
@@ -67,7 +33,7 @@ steps:
           targetType: 'inline'
           failOnStdErr: true
           script: |
-            Write-Host "##vso[task.setvariable variable=skipBuildStep]True"
+            Write-Host "##vso[task.setvariable variable=CD.SkipThisStep]True"
 
   - ${{ each dependency in parameters.dependencies }}:
     - ${{ if and( ne( dependency.file, '' ), eq( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
@@ -75,94 +41,14 @@ steps:
       - task: PowerShell@2
         displayName: Copy dependency ${{ dependency.file }} to ${{ dependency.destination }}
         inputs:
-          targetType: 'inline'
+          targetType: 'filePath'
+          filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/dependency-setup.ps1'
           failOnStdErr: true
-          script: |
-            If ('$(skipBuildStep)' -eq 'True')
-            {
-                Write-Output "dependency copying was skipped because a matching exclusion was found for this build step."
-            }
-            Else
-            {
-              Write-Output "Configuring target directory environment..."
-              If ('${{ parameters.buildStep.target }}' -eq 'My Computer')
-              {
-                $target = "Windows"
-              }
-              Elseif ('${{ parameters.buildStep.target }}' -eq 'Linux x64')
-              {
-                $target = "Linux_x64"
-              }
-              Write-Output "Setting dependency environment to $target"
-              `
-              $branchName = 'main'
-              If ('$(CD.SourceBranch)' -ne $branchName )
-              {
-                Write-Output "Checking for builds of $(CD.SourceBranch) branch..."
-                If (Test-Path -Path "${{ dependency.source }}\NI\export\$(CD.SourceBranch)\*\$(CD.LabVIEW.Version)\$(CD.Architecture)")
-                {
-                  Write-Output "branch was found, using $(CD.SourceBranch) instead of $branchName..."
-                  $branchName = '$(CD.SourceBranch)'
-                }
-                Else
-                {
-                  Write-Output "branch not found, using a build of $branchName..."
-                }
-              }
-              Else
-              {
-                Write-Output "Using $branchName branch..."
-              }
-              `
-              Write-Output "Finding latest successful build of dependency ${{ dependency.file }}..."
-              $allDependencyBuilds = Get-ChildItem `
-                -Path "${{ dependency.source }}\NI\export\$branchName\*" `
-                | Sort {$_.Name} -Descending
-              Foreach ($build in $allDependencyBuilds)
-              {
-                Write-Output "Checking $build..."
-                If (Test-Path -Path "$build\$(CD.LabVIEW.Version)\$(CD.Architecture)\")
-                {
-                  Write-Output "Checking for .finished file..."
-                  If (Test-Path -Path "$build\.finished")
-                  {
-                    Write-Output "latest successful build: $build"
-                    $dependencyFilePath = "$build\$(CD.LabVIEW.Version)\$(CD.Architecture)\${{ dependency.file }}"
-                    Break
-                  }
-                  Else
-                  {
-                    Write-Output ".finished file not found at $build"
-                  }
-                }
-              }
-              If (-not $dependencyFilePath)
-              {
-                Write-Error "no successful build of dependency ${{ dependency.file }} was found at ${{ dependency.source }}."
-                break
-              }
-              `
-              Write-Output "Copying dependency ${{ dependency.file }}..."
-              If (-not(Test-Path -Path "$(CD.Workspace)\$(CD.Repository)\${{ dependency.destination }}"))
-              {
-                New-Item `
-                  -Path "$(CD.Workspace)\$(CD.Repository)\${{ dependency.destination }}" `
-                  -ItemType 'Directory'
-              }
-              If (Test-Path $dependencyFilePath)
-              {
-                Copy-Item `
-                  -Path $dependencyFilePath `
-                  -Destination "$(CD.Workspace)\$(CD.Repository)\${{ dependency.destination }}\" `
-                  -Recurse `
-                  -Force
-              }
-              Else
-              {
-                Write-Output "Dependency does not exist at $dependencyFilePath..."
-                Write-Output "SKIPPING DEPENDENCY, END STEP..."
-              }
-            }
+          arguments: >
+            -source      ${{ dependency.source }}
+            -file        ${{ dependency.file }}
+            -destination ${{ dependency.destination }}
+
     - ${{ if and( ne( dependency.file, '' ), ne( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
       - task: PowerShell@2
         displayName: dependency not used because buildOperation not supported for this buildStep
@@ -175,18 +61,18 @@ steps:
     displayName: Build ${{ parameters.buildStep.buildSpec }} on ${{ parameters.buildStep.target }} in ${{ parameters.buildStep.projectLocation }}
     inputs:
       script: |
-        ECHO on
-        IF "${{ parameters.buildStep.projectOverride}}"=="Absolute" (
-          SET project_path="${{ parameters.buildStep.projectLocation }}"
+        ECHO ON
+        IF $(CD.AbsolutePath) (
+          SET project_path="$(CD.ProjectPath)"
         ) ELSE (
-          SET project_path="$(CD.Workspace)\$(CD.Repository)\${{ parameters.buildStep.projectLocation }}"
+          SET project_path="$(CD.Workspace)\$(CD.Repository)\$(CD.ProjectPath)"
         )
-        IF NOT '$(skipBuildStep)'=='True' (
+        IF NOT $(CD.SkipThisStep) (
           $(CD.LabVIEWCLI) ^
-            -OperationName "${{ parameters.buildStep.buildOperation }}" ^
+            -OperationName "$(CD.BuildOperation)" ^
             -ProjectPath %project_path% ^
-            $(targetArgument) ^
-            $(buildSpecArgument) ^
+            $(CD.TargetArg) ^
+            $(CD.BuildSpecArg) ^
             -LogFilePath "$(CD.Workspace)\$(CD.Repository)\lvBuildSpecs.log"
         )
 
@@ -194,4 +80,4 @@ steps:
     displayName: Close LabVIEW
     condition: always() # close LabVIEW even if previous steps failed
     inputs:
-      script: if not '$(skipBuildStep)'=='True' taskkill /im labview.exe /f
+      script: IF NOT $(CD.SkipThisStep) (taskkill /im labview.exe /f)

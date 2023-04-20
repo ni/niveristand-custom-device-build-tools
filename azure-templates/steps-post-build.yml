@@ -4,7 +4,7 @@
 parameters:
   - name: packages
     type: object
-# Note: the following variables are defined in pre-job-steps.yml:
+# Note: the following variables are defined in steps-prepare.yml:
   # CD.Nipkg.Path, CD.Repository, CD.LabVIEW.Version, CD.Release.Version,
   # CD.Release.Quarterly, CD.LabVIEW.ShortVersion, CD.BuildOutputPath,
   # CD.ArchivePath, CD.Architecture
