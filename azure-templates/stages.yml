@@ -82,19 +82,13 @@ stages:
           - name: diffVersion
             value: $[ dependencies.Find64bitVersion.outputs['FindLast64bitVersion.version'] ]
         steps:
-          - template: steps-pre-build.yml # Configure variables, check out repos, Clear cache
+          - template: steps-prepare.yml # Configure variables, check out repos, Clear cache
             parameters:
-              lvVersionToBuild:
-                version:               $(diffVersion)
-                bitness:               $(diffBitness)
-              releaseVersion:          ${{ parameters.releaseVersion }}
-              archiveLocation:         ${{ parameters.archiveLocation }}
-              buildOutputLocation:     ${{ parameters.buildOutputLocation }}
-              codegenVis:              ${{ parameters.codegenVis }}
-              submodules:              ${{ parameters.submodules }}
+              build: False
+              clearCache: False
           - template: steps-diff.yml
             parameters:
-              lvVersionToDiff:         $(diffVersion)
+              lvVersionToDiff: $(diffVersion)
 
   - stage: ${{ parameters.stageName }}
     dependsOn: []
@@ -114,7 +108,7 @@ stages:
           displayName: LabVIEW ${{ lvVersionToBuild.version }} ${{ parameters.lvVersionsToBuild.bitness }}
           timeoutInMinutes: 120
           steps:
-            - template: steps-pre-build.yml # Configure variables, check out repos, Clear cache
+            - template: steps-prepare.yml # Configure variables, check out repos, Clear cache
               parameters:
                 lvVersionToBuild:        ${{ lvVersionToBuild }}
                 releaseVersion:          ${{ parameters.releaseVersion }}
@@ -143,23 +137,15 @@ stages:
             - Job${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
         condition: succeeded()
         steps:
-          # archivePath defined in pre-job-steps.yml
+        - template: steps-prepare.yml # Configure variables, check out repos, Clear cache
+          parameters:
+            archiveLocation: ${{ parameters.archiveLocation }}
+            build: False
+            clearCache: False
         - powershell: |
-            If ('$(Build.Reason)' -eq 'PullRequest')
-            {
-              Write-Output "Setting variables for Pull Requests..."
-              $sourceBranch = "$(System.PullRequest.SourceBranch)"
-              Write-Output "Source branch $(System.PullRequest.SourceBranch)"
-            }
-            Else
-            {
-              Write-Output "Setting variables for general builds..."
-              $sourceBranch = "$(Build.SourceBranch)" -replace 'refs/heads/', ''
-              Write-Output "Source branch $(Build.SourceBranch), removed refs/heads/"
-            }
-            Write-Output "Using $sourceBranch in final validation path..."
             Write-Output "All previous jobs complete.  Storing .finished file..."
             New-Item `
-              -Path "${{ parameters.archiveLocation }}\NI\export\$sourceBranch\$(Build.BuildNumber)" `
+              -Path "$(CD.ArchivePath)\$(Build.BuildNumber)" `
               -Name ".finished" `
               -ItemType "File"
+            

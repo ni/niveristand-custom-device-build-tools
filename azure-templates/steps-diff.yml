@@ -3,7 +3,7 @@ parameters:
     type: string
 
 # Note: the following variables are defined in pre-job-steps.yml:
-  # customDeviceRepoName
+  # CD.Repository
 
 steps:
   - task: PowerShell@2
@@ -24,14 +24,14 @@ steps:
       targetType: 'inline'
       script: |
         git clone https://github.com/ni/niveristand-custom-device-build-tools.git `
-          $(customDeviceRepoName)\niveristand-custom-device-build-tools
+          $(CD.Repository)\niveristand-custom-device-build-tools
   - task: PowerShell@2
     displayName: Diff VIs and publish
     inputs:
       targetType: 'inline'
       script: |
         .\env\Scripts\activate
-        cd $(customDeviceRepoName)
+        cd $(CD.Repository)
         $currentDir = Get-Location
         If (Test-Path $currentDir/diff_dir)
         {
@@ -44,7 +44,7 @@ steps:
           "$currentDir" "$currentDir/diff_dir" "${{parameters.lvVersionToDiff}}" `
           --target "origin/$targetBranch"
         $pullRequestID = "$(System.PullRequest.PullRequestNumber)"
-        $jobName = "ni/$(customDeviceRepoName)/PR-$pullRequestID"
+        $jobName = "ni/$(CD.Repository)/PR-$pullRequestID"
         python -u "$resourcesDir/github_commenter.py" --token "$(diffbot-token)" `
           --pic-dir "$currentDir/diff_dir" --pull-req "$pullRequestID" --info "$jobName" `
           --pic-repo "niveristand-diff-bot/diff-images"
@@ -55,6 +55,6 @@ steps:
       targetType: 'inline'
       script: |
         Remove-Item env -Recurse
-        cd $(customDeviceRepoName)
+        cd $(CD.Repository)
         $currentDir = Get-Location
         Remove-Item $currentDir/diff_dir -Recurse

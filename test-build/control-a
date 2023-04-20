@@ -1,4 +1,4 @@
-Package: ni-veristand-{veristand_version}-test-package{nipkgx64suffix}
+Package: ni-veristand-{veristand_version}-test-package{pkg_x86_bitness_suffix}
 Version: {nipkg_version}
 Architecture: windows_x64
 Maintainer: National Instruments <support@ni.com>

@@ -5,9 +5,9 @@ parameters:
   - name: packages
     type: object
 # Note: the following variables are defined in pre-job-steps.yml:
-  # nipkgPath, customDeviceRepoName, lvVersion, releaseVersion,
-  # quarterlyReleaseVersion shortLvVersion, buildOutputPath,
-  # archivePath, architecture
+  # CD.Nipkg.Path, CD.Repository, CD.LabVIEW.Version, CD.Release.Version,
+  # CD.Release.Quarterly, CD.LabVIEW.ShortVersion, CD.BuildOutputPath,
+  # CD.ArchivePath, CD.Architecture
 
 steps:
   - ${{ each package in parameters.packages }}:
@@ -18,31 +18,30 @@ steps:
           targetType: 'inline'
           script: |
             Write-Output "setting up nipkg directory..."
-            If (Test-Path '$(nipkgPath)')
+            If (Test-Path '$(CD.Nipkg.Path)')
             {
-              Remove-Item -Path '$(nipkgPath)' -Recurse -Force
+              Remove-Item -Path '$(CD.Nipkg.Path)' -Recurse -Force
             }
-            New-Item -Path '$(nipkgPath)' -ItemType 'Directory'
-            New-Item -Path '$(nipkgPath)' -Name 'control' -ItemType 'Directory'
-            New-Item -Path '$(nipkgPath)' -Name 'data' -ItemType 'Directory'
-            New-Item -Path '$(nipkgPath)' -Name 'debian-binary' -ItemType 'File'
-            Set-Content '$(nipkgPath)\debian-binary' '2.0\n'
+            New-Item -Path '$(CD.Nipkg.Path)' -ItemType 'Directory'
+            New-Item -Path '$(CD.Nipkg.Path)' -Name 'control' -ItemType 'Directory'
+            New-Item -Path '$(CD.Nipkg.Path)' -Name 'data' -ItemType 'Directory'
+            New-Item -Path '$(CD.Nipkg.Path)' -Name 'debian-binary' -ItemType 'File'
+            Set-Content '$(CD.Nipkg.Path)\debian-binary' '2.0\n'
             Copy-Item `
-              -Path '$(customDeviceRepoName)\${{ package.controlFileName }}' `
-              -Destination '$(nipkgPath)\control\control'
+              -Path '$(CD.Repository)\${{ package.controlFileName }}' `
+              -Destination '$(CD.Nipkg.Path)\control\control'
             `
             Write-Output "updating nipkg control version parameters..."
-            $contents = (Get-Content -Path "$(nipkgPath)\control\control") `
-              -replace "{veristand_version}", "$(lvVersion)" `
-              -replace "{labview_version}", "$(lvVersion)" `
-              -replace "{nipkg_version}", "$(releaseVersion).$env:BUILDCOUNTER" `
-              -replace "{display_version}", "$(releaseVersion)" `
-              -replace "{quarterly_display_version}", "$(quarterlyReleaseVersion)" `
-              -replace "{labview_short_version}", "$(shortLvVersion)" `
-              -replace "{pkg_x86_bitness_suffix}", "$(nipkgx86suffix)" `
-              -replace "{nipkgx64suffix}", "$(nipkgx64suffix)"
+            $contents = (Get-Content -Path "$(CD.Nipkg.Path)\control\control") `
+              -replace "{veristand_version}", "$(CD.LabVIEW.Version)" `
+              -replace "{labview_version}", "$(CD.LabVIEW.Version)" `
+              -replace "{nipkg_version}", "$(CD.Release.Version).$env:BUILDCOUNTER" `
+              -replace "{display_version}", "$(CD.Release.Version)" `
+              -replace "{quarterly_display_version}", "$(CD.Release.Quarterly)" `
+              -replace "{labview_short_version}", "$(CD.LabVIEW.ShortVersion)" `
+              -replace "{pkg_x86_bitness_suffix}", "$(CD.Nipkg.X86Suffix)"
             Write-Output $contents
-            Set-Content -Value $contents -Path "$(nipkgPath)\control\control"
+            Set-Content -Value $contents -Path "$(CD.Nipkg.Path)\control\control"
 
       - ${{ each payloadMap in package.payloadMaps }}:
         - task: PowerShell@2
@@ -50,29 +49,29 @@ steps:
           inputs:
             targetType: 'inline'
             script: |
-              New-Item -Path '$(nipkgPath)\data\${{ payloadMap.installLocation }}' -ItemType 'Directory'
+              New-Item -Path '$(CD.Nipkg.Path)\data\${{ payloadMap.installLocation }}' -ItemType 'Directory'
               Copy-Item `
-                -Path '$(customDeviceRepoName)\${{ payloadMap.payloadLocation }}\*' `
-                -Destination '$(nipkgPath)\data\${{ payloadMap.installLocation }}' `
+                -Path '$(CD.Repository)\${{ payloadMap.payloadLocation }}\*' `
+                -Destination '$(CD.Nipkg.Path)\data\${{ payloadMap.installLocation }}' `
                 -Recurse
 
       - task: CmdLine@2
         displayName: Pack nipkg
         inputs:
-          script: '"%PROGRAMFILES%\National Instruments\NI Package Manager\nipkg.exe" pack "$(nipkgPath)" "$(nipkgPath)"'
+          script: '"%PROGRAMFILES%\National Instruments\NI Package Manager\nipkg.exe" pack "$(CD.Nipkg.Path)" "$(CD.Nipkg.Path)"'
 
       - task: PowerShell@2
         displayName: Copy installer to build output location
         inputs:
           targetType: 'inline'
           script: |
-            $installerPath = '$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\installer'
+            $installerPath = '$(CD.ArchivePath)\$(Build.BuildNumber)\$(CD.LabVIEW.Version)\installer'
             If (-not(Test-Path $installerPath))
             {
               New-Item -Path $installerPath -ItemType 'Directory'
             }
             Copy-Item `
-              -Path '$(nipkgPath)\*' `
+              -Path '$(CD.Nipkg.Path)\*' `
               -Destination $installerPath `
               -Include *.nipkg `
               -Recurse
@@ -83,12 +82,12 @@ steps:
     inputs:
       targetType: 'inline'
       script: |
-        If (-not("$(sourceBranch)" -match "release"))
+        If (-not("$(CD.SourceBranch)" -match "release"))
         {
-          $cleanedSourceBranch = "$(sourceBranch)" -replace "\/", "_"
+          $cleanedSourceBranch = "$(CD.SourceBranch)" -replace "\/", "_"
           Write-Output "Not a release branch, so appending branch name $cleanedSourceBranch to nipkg files..."
           $packages = Get-ChildItem `
-            -Path "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\installer\*.nipkg"
+            -Path "$(CD.ArchivePath)\$(Build.BuildNumber)\$(CD.LabVIEW.Version)\installer\*.nipkg"
           Foreach ($package in $packages)
           {
             If (-not("$package" -match "$cleanedSourceBranch.nipkg"))
@@ -98,15 +97,15 @@ steps:
           }
         }
 
-        If (-not(Test-Path "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\$(architecture)"))
+        If (-not(Test-Path "$(CD.ArchivePath)\$(Build.BuildNumber)\$(CD.LabVIEW.Version)\$(CD.Architecture)"))
         {
           New-Item `
-            -Path "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\$(architecture)" `
+            -Path "$(CD.ArchivePath)\$(Build.BuildNumber)\$(CD.LabVIEW.Version)\$(CD.Architecture)" `
             -ItemType 'Directory'
         }
         Copy-Item `
-          -Path "$(buildOutputPath)\*" `
-          -Destination "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\$(architecture)\" `
+          -Path "$(CD.BuildOutputPath)\*" `
+          -Destination "$(CD.ArchivePath)\$(Build.BuildNumber)\$(CD.LabVIEW.Version)\$(CD.Architecture)\" `
           -Recurse
 
   - task: PowerShell@2
@@ -114,13 +113,13 @@ steps:
     inputs:
       targetType: 'inline'
       script: |
-        $installerPath = '$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\installer'
-        If ( ("$(sourceBranch)" -match "release") -and (Test-Path $installerPath) )
+        $installerPath = '$(CD.ArchivePath)\$(Build.BuildNumber)\$(CD.LabVIEW.Version)\installer'
+        If ( ("$(CD.SourceBranch)" -match "release") -and (Test-Path $installerPath) )
         {
           Write-Output "Adding manifest file to release branch installer directory"
           $jsonFilePath = Join-Path $installerPath "manifest.json"
           $scmObject = [PSCustomObject]@{
-            GIT_BRANCH = "$(sourceBranch)"
+            GIT_BRANCH = "$(CD.SourceBranch)"
             GIT_COMMIT = "$(Build.SourceVersion)"
             GIT_URL = "$(Build.Repository.Uri).git"
           }
