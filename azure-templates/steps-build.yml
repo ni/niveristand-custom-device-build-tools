@@ -62,12 +62,12 @@ steps:
     inputs:
       script: |
         ECHO ON
-        IF '$(CD.AbsolutePath)' (
-          SET project_path="$(CD.ProjectPath)"
-        ) ELSE (
+        IF '$(CD.AbsolutePath)'=='True' (
           SET project_path="$(CD.Workspace)\$(CD.Repository)\$(CD.ProjectPath)"
+        ) ELSE (
+          SET project_path="$(CD.ProjectPath)"
         )
-        IF NOT '$(CD.SkipThisStep)' (
+        IF '$(CD.SkipThisStep)'=='False' (
           $(CD.LabVIEWCLI) ^
             -OperationName "$(CD.BuildOperation)" ^
             -ProjectPath %project_path% ^
@@ -80,4 +80,4 @@ steps:
     displayName: Close LabVIEW
     condition: always() # close LabVIEW even if previous steps failed
     inputs:
-      script: IF NOT '$(CD.SkipThisStep)' (taskkill /im labview.exe /f)
+      script: IF '$(CD.SkipThisStep)'=='False' (taskkill /im labview.exe /f)
