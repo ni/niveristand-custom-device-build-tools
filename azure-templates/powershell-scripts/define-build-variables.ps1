@@ -1,7 +1,7 @@
 param(
     [string]$lvVersion,
     [string]$lvBitness,
-     [string]$outputDir,
+    [string]$outputDir,
     [string]$releaseVersion,
     [string]$buildTools
 )
