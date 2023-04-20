@@ -19,7 +19,7 @@ steps:
       filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/build-step-setup.ps1'
       failOnStdErr: True
       arguments: >
-        -projectOverride ${{ parameters.buildStep.projectOverride }}
+        -projectOverride "${{ parameters.buildStep.projectOverride }}"
         -projectPath     ${{ parameters.buildStep.projectLocation }}
         -buildOperation  ${{ parameters.buildStep.buildOperation }}
         -buildSpec       ${{ parameters.buildStep.buildSpec }}
