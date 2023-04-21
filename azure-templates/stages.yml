@@ -97,7 +97,10 @@ stages:
   - stage: ${{ parameters.stageName }}
     dependsOn: []
     variables:
-      CD.LastPackage.Version: "None"
+      ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
+        ${{ each compareList in parameters.lvVersionsToBuild}}:
+          ${{ if and(eq(compareList.version, lvVersionToBuild.version), ne(compareList.bitness,lvVersionToBuild.bitness) }}:
+            CD.DuplicateVersion.${{ lvVersionToBuild.version }}: True
       ${{ if ne(variables['Build.Reason'], 'PullRequest')}}:
         CD.BuildCounter: $[counter(format('custom {0}', variables['Build.SourceBranch']), 1)]
       ${{ if eq(variables['Build.Reason'], 'PullRequest')}}:
@@ -146,7 +149,7 @@ stages:
             - ${{ each dependsLvVersionToBuild in parameters.lvVersionsToBuild }}:
               - Job_Build_${{ dependsLvVersionToBuild.version }}_${{ dependsLvVersionToBuild.bitness }}
           displayName: Package LabVIEW ${{ lvVersionToBuild.version }} ${{ lvVersionToBuild.bitness }}
-          condition: ne(variables['CD.LastPackage.Version'], '${{ lvVersionToBuild.version }}')
+          condition: and(eq(variables['CD.DuplicateVersion.${{ lvVersionToBuild.version }}'], True),eq('${{ lvVersionToBuild.version }}', '32bit')
           steps:
             - template: steps-prepare.yml
               parameters:
