@@ -174,4 +174,5 @@ stages:
                 clearCache:          False
           - template: steps-packaging.yml
             parameters:
+              lvVersionsToBuild: ${{ parameters.lvVersionsToBuild }}
               packages: ${{ parameters.packages }}
