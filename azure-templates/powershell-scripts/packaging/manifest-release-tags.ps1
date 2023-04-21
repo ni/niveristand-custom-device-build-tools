@@ -23,7 +23,7 @@ If (-not("$env:CD_SOURCEBRANCH" -match "release"))
   $cleanedSourceBranch = "$env:CD_SOURCEBRANCH" -replace "\/", "_"
   Write-Output "Not a release branch, so appending branch name $cleanedSourceBranch to nipkg files..."
   $packages = Get-ChildItem `
-    -Path "$env:CD_ARCHIVEPATH\$env:BUILD_BUILDNUMBER\*\installer\*.nipkg"
+    -Path "$env:CD_INSTALLERPATH\*.nipkg"
   Foreach ($package in $packages)
   {
     If (-not("$packageFile" -match "$cleanedSourceBranch.nipkg"))
@@ -32,5 +32,3 @@ If (-not("$env:CD_SOURCEBRANCH" -match "release"))
     }
   }
 }
-# store this version to avoid packaging duplicate labview versions
-Write-Host "##vso[task.setvariable variable=CD.LastPackage.Version]$env:CD_LABVIEW_VERSION"
