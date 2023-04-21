@@ -143,8 +143,8 @@ stages:
       - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
         - job: Job_Package_${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
           dependsOn:
-            - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
-              - Job_Build_${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
+            - ${{ each dependsLvVersionToBuild in parameters.lvVersionsToBuild }}:
+              - Job_Build_${{ dependsLvVersionToBuild.version }}_${{ dependsLvVersionToBuild.bitness }}
           displayName: Package LabVIEW ${{ lvVersionToBuild.version }} ${{ lvVersionToBuild.bitness }}
           condition: ne(variables['CD.LastPackage.Version'], '${{ lvVersionToBuild.version }}')
           steps:
