@@ -17,7 +17,7 @@ New-Item -Path "$(CD.Nipkg.Path)" -Name "data" -ItemType "Directory"
 New-Item -Path "$(CD.Nipkg.Path)" -Name "debian-binary" -ItemType "File"
 Set-Content "$(CD.Nipkg.Path)\debian-binary" "2.0\n"
 Copy-Item `
-  -Path "$(CD.Repository)\${{ package.controlFileName }}" `
+  -Path "$(CD.Repository)\$controlFileName" `
   -Destination "$(CD.Nipkg.Path)\control\control"
 
 Write-Output "updating nipkg control version parameters..."

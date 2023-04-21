@@ -5,48 +5,42 @@ parameters:
     type: object
 
 steps:
-  - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
-    - ${{ each package in parameters.packages }}:
-      - ${{ if ne(package.controlFileName, '') }}:
+  - ${{ each package in parameters.packages }}:
+    - ${{ if ne(package.controlFileName, '') }}:
+      - task: PowerShell@2
+        displayName: Stage nipkg directory
+        inputs:
+          targetType: 'filePath'
+          filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/packaging/stage-directories.ps1'
+          failOnStdErr: True
+          arguments: >
+            -controlFileName "${{ package.controlFileName }}"
+            -lvVersion       "${{ lvVersionToBuild.version }}"
+
+      - ${{ each payloadMap in package.payloadMaps }}:
         - task: PowerShell@2
-          condition: ne(variables['CD.LastPackage.Version'], '${{ lvVersionToBuild.version }}')
-          displayName: Stage nipkg directory
+          displayName: Copying payload ${{ payloadMap.payloadLocation }} to install location
           inputs:
             targetType: 'filePath'
-            filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/packaging/stage-directories.ps1'
+            filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/packaging/copy-payload.ps1'
             failOnStdErr: True
             arguments: >
               -controlFileName "${{ package.controlFileName }}"
-              -lvVersion       "${{ lvVersionToBuild.version }}"
 
-        - ${{ each payloadMap in package.payloadMaps }}:
-          - task: PowerShell@2
-            condition: ne(variables['CD.LastPackage.Version'], '${{ lvVersionToBuild.version }}')
-            displayName: Copying payload ${{ payloadMap.payloadLocation }} to install location
-            inputs:
-              targetType: 'filePath'
-              filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/packaging/copy-payload.ps1'
-              failOnStdErr: True
-              arguments: >
-                -controlFileName "${{ package.controlFileName }}"
+      - task: CmdLine@2
+        displayName: Pack nipkg
+        inputs:
+          script: '"%PROGRAMFILES%\National Instruments\NI Package Manager\nipkg.exe" pack "nipkg" "nipkg"'
 
-        - task: CmdLine@2
-          condition: ne(variables['CD.LastPackage.Version'], '${{ lvVersionToBuild.version }}')
-          displayName: Pack nipkg
-          inputs:
-            script: '"%PROGRAMFILES%\National Instruments\NI Package Manager\nipkg.exe" pack "nipkg" "nipkg"'
+      - task: PowerShell@2
+        displayName: Copy installer to build output location
+        inputs:
+          filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/packaging/copy-installer.ps1'
+          failOnStdErr: True
 
-        - task: PowerShell@2
-          condition: ne(variables['CD.LastPackage.Version'], '${{ lvVersionToBuild.version }}')
-          displayName: Copy installer to build output location
-          inputs:
-            filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/packaging/copy-installer.ps1'
-            failOnStdErr: True
-
-    - task: PowerShell@2
-      condition: ne(variables['CD.LastPackage.Version'], '${{ lvVersionToBuild.version }}')
-      displayName: Create manifest file
-      inputs:
-        targetType: 'filePath'
-        filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/packaging/manifest-release-tags.ps1'
-        failOnStdErr: True
+  - task: PowerShell@2
+    displayName: Create manifest file
+    inputs:
+      targetType: 'filePath'
+      filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/packaging/manifest-release-tags.ps1'
+      failOnStdErr: True
