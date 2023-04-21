@@ -152,7 +152,8 @@ stages:
         - job: Job_Package_${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
           dependsOn:
             - ${{ each dependsLvVersionToBuild in parameters.lvVersionsToBuild }}:
-              - Job_Build_${{ dependsLvVersionToBuild.version }}_${{ dependsLvVersionToBuild.bitness }}
+              - ${{ if eq(dependsLvVersionToBuild.version, lvVersionToBuild.version) }}:
+                - Job_Build_${{ dependsLvVersionToBuild.version }}_${{ dependsLvVersionToBuild.bitness }}
           displayName: Package LabVIEW ${{ lvVersionToBuild.version }} ${{ lvVersionToBuild.bitness }}
           condition: not(and(eq(variables['CD.DuplicateVersion.${{ lvVersionToBuild.version }}'], True),eq('${{ lvVersionToBuild.bitness }}', '32bit')))
           steps:
