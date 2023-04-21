@@ -32,3 +32,5 @@ If (-not("$env:CD_SOURCEBRANCH" -match "release"))
     }
   }
 }
+# store this version to avoid packaging duplicate labview versions
+Write-Host "##vso[task.setvariable variable=CD.LastPackage.Version]$env:CD_LABVIEW_VERSION"
