@@ -29,4 +29,4 @@ $contents = (Get-Content -Path "$env:CD_NIPKG_PATH\control\control") `
   -replace "{pkg_x86_bitness_suffix}", "$env:CD_NIPKG_X86SUFFIX"
 Write-Output $contents
 Set-Content -Value $contents -Path "$env:CD_NIPKG_PATH\control\control"
-Write-Host "##vso[task.setvariable variable=CD.InstallerPath]$env:CD_ARCHIVEPATH\$env:BUILD_BUILDNUMBER\$lvVersion\installer"
+Write-Host "##vso[task.setvariable variable=CD.InstallerPath]$env:CD_ARCHIVEPATH\$env:BUILD_BUILDNUMBER\$env:CD_LABVIEW_VERSION\installer"
