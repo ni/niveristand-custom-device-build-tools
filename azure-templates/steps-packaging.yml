@@ -6,10 +6,10 @@ parameters:
 
 steps:
   - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
-    condition: eq(variables['CD.LastPackage.Version'], '${{ lvVersionToBuild.version }}')
     - ${{ each package in parameters.packages }}:
       - ${{ if ne(package.controlFileName, '') }}:
         - task: PowerShell@2
+          condition: ne(variables['CD.LastPackage.Version'], '${{ lvVersionToBuild.version }}')
           displayName: Stage nipkg directory
           inputs:
             targetType: 'filePath'
@@ -21,6 +21,7 @@ steps:
 
         - ${{ each payloadMap in package.payloadMaps }}:
           - task: PowerShell@2
+            condition: ne(variables['CD.LastPackage.Version'], '${{ lvVersionToBuild.version }}')
             displayName: Copying payload ${{ payloadMap.payloadLocation }} to install location
             inputs:
               targetType: 'filePath'
@@ -30,17 +31,20 @@ steps:
                 -controlFileName "${{ package.controlFileName }}"
 
         - task: CmdLine@2
+          condition: ne(variables['CD.LastPackage.Version'], '${{ lvVersionToBuild.version }}')
           displayName: Pack nipkg
           inputs:
             script: '"%PROGRAMFILES%\National Instruments\NI Package Manager\nipkg.exe" pack "nipkg" "nipkg"'
 
         - task: PowerShell@2
+          condition: ne(variables['CD.LastPackage.Version'], '${{ lvVersionToBuild.version }}')
           displayName: Copy installer to build output location
           inputs:
             filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/packaging/copy-installer.ps1'
             failOnStdErr: True
 
     - task: PowerShell@2
+      condition: ne(variables['CD.LastPackage.Version'], '${{ lvVersionToBuild.version }}')
       displayName: Create manifest file
       inputs:
         targetType: 'filePath'
