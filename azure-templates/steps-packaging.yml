@@ -1,6 +1,4 @@
 parameters:
-  - name: lvVersionsToBuild
-    type: object
   - name: packages
     type: object
 
@@ -15,7 +13,6 @@ steps:
           failOnStdErr: True
           arguments: >
             -controlFileName "${{ package.controlFileName }}"
-            -lvVersion       "${{ lvVersionToBuild.version }}"
 
       - ${{ each payloadMap in package.payloadMaps }}:
         - task: PowerShell@2

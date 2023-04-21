@@ -154,7 +154,6 @@ stages:
 
             - template: steps-packaging.yml
               parameters:
-                lvVersion: ${{ lvVersionsToBuild.version }}
                 packages:  ${{ parameters.packages }}
 
         # Finalization: if all jobs have passed, place .finished file in top level archive location
