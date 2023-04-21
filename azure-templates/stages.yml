@@ -53,7 +53,7 @@ parameters:
 
 # Note: If custom build steps are needed for a particular custom device, copy this entire template into the azure-pipeline and add steps before/after as needed
 stages:
-  - stage: DiffVIs${{ parameters.stageName }}
+  - stage: ${{ parameters.stageName }}_DiffVIs
     dependsOn: []
     condition: and(eq(variables['Build.Reason'], 'PullRequest'), eq('${{ parameters.disableDiff }}', false))
     pool:
@@ -148,8 +148,7 @@ stages:
               -Name ".finished" `
               -ItemType "File"
 
-  - stage: Package
-    displayName: Package
+  - stage: ${{ parameters.stageName }}_Package
     dependsOn: ${{ parameters.stageName }}
     pool:
       name: DevCentral-VeriStand-CustomDevices
@@ -175,4 +174,4 @@ stages:
           - template: steps-packaging.yml
             parameters:
               lvVersionsToBuild: ${{ parameters.lvVersionsToBuild }}
-              packages: ${{ parameters.packages }}
+              packages:          ${{ parameters.packages }}
