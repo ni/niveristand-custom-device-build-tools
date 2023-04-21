@@ -152,21 +152,21 @@ stages:
         - agent.os -equals Windows_NT
     variables:
       ${{ if ne(variables['Build.Reason'], 'PullRequest')}}:
-        buildCounter: $[counter(format('custom {0}', variables['Build.SourceBranch']), 1)]
+        CD.BuildCounter: $[counter(format('custom {0}', variables['Build.SourceBranch']), 1)]
       ${{ if eq(variables['Build.Reason'], 'PullRequest')}}:
-        buildCounter: "9999"
+        CD.BuildCounter: "9999"
     jobs:
-      - ${{ each lvVersionToBuild in unique(parameters.lvVersionsToBuild) }}:
-        - job: PackageJob
-          displayName: PackageJob
-          steps:
-            - template: steps-pre-build.yml
-              parameters:
-                  lvVersion:           ${{ lvVersionToBuild.version }}
-                  releaseVersion:      ${{ parameters.releaseVersion }}
-                  archiveLocation:     ${{ parameters.archiveLocation }}
-                  buildOutputLocation: ${{ parameters.buildOutputLocation }}
-                  clearCache:          False
-            - template: steps-packaging.yml
-              parameters:
-                packages: ${{ parameters.packages }}
+      - job: PackageJob
+        displayName: PackageJob
+        variables:
+          CD.LastPackage.Version: "None"
+        steps:
+          - template: steps-pre-build.yml
+            parameters:
+                releaseVersion:      ${{ parameters.releaseVersion }}
+                archiveLocation:     ${{ parameters.archiveLocation }}
+                buildOutputLocation: ${{ parameters.buildOutputLocation }}
+                clearCache:          False
+          - template: steps-packaging.yml
+            parameters:
+              packages: ${{ parameters.packages }}

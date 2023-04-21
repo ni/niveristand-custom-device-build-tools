@@ -3,7 +3,7 @@ param(
     [string]$lvVersion
 )
 # LabVIEW Version needs to be overwritten in packaging since it is not specified during pre-build
-Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Version]$($env:CD_COMPLETEPACKAGES + $lvVersion)"
+Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Version]$lvVersion)"
 Write-Output "Starting package for $env:CD_LABVIEW_VERSION..."
 
 Write-Output "setting up nipkg directory..."
@@ -24,7 +24,7 @@ Write-Output "updating nipkg control version parameters..."
 $contents = (Get-Content -Path "$(CD.Nipkg.Path)\control\control") `
   -replace "{veristand_version}", "$(CD.LabVIEW.Version)" `
   -replace "{labview_version}", "$(CD.LabVIEW.Version)" `
-  -replace "{nipkg_version}", "$(CD.Release.Version).$env:BUILDCOUNTER" `
+  -replace "{nipkg_version}", "$(CD.Release.Version).$env:CD_BUILDCOUNTER" `
   -replace "{display_version}", "$(CD.Release.Version)" `
   -replace "{quarterly_display_version}", "$(CD.Release.Quarterly)" `
   -replace "{labview_short_version}", "$(CD.LabVIEW.ShortVersion)" `
