@@ -97,15 +97,6 @@ stages:
   - stage: ${{ parameters.stageName }}
     dependsOn: []
     variables:
-      # Determine if any LabVIEW versions show up twice in the parameters list to avoid duplicate packaging
-      ${{ each item in parameters.lvVersionsToBuild }}:
-        ${{ each compareItem in parameters.lvVersionsToBuild}}:
-          ${{ if eq(compareItem.version, item.version) }}: 
-            ${{ if ne(compareItem.bitness, item.bitness) }}:
-              ${{ if eq(item.bitness, '32bit') }}:
-                # if versions match, but bitnesses do not, mark as duplicate
-                CD.DuplicateVersion.${{ item.version }}: True
-
       ${{ if ne(variables['Build.Reason'], 'PullRequest')}}:
         CD.BuildCounter: $[counter(format('custom {0}', variables['Build.SourceBranch']), 1)]
       ${{ if eq(variables['Build.Reason'], 'PullRequest')}}:
@@ -154,15 +145,14 @@ stages:
                 failOnStdErr: True
 
         # Packaging Jobs
-      - ${{ each item in parameters.lvVersionsToBuild }}:
-        - job: Job_Package_${{ item.version }}_${{ item.bitness }}
-          dependsOn:
-            - ${{ each dependsItem in parameters.lvVersionsToBuild }}:
-              - ${{ if eq(dependsItem.version, item.version) }}:
-                - Job_Build_${{ dependsItem.version }}_${{ dependsItem.bitness }}
-          displayName: Package LabVIEW ${{ item.version }} ${{ item.bitness }}
-          condition: not(and(eq(variables['CD.DuplicateVersion.${{ item.version }}'], True),eq('${{ item.bitness }}', '32bit')))
-          steps:
+      - job: Job_Package_All
+          - ${{ each item in parameters.lvVersionsToBuild }}:
+        dependsOn:
+          - ${{ each item in parameters.lvVersionsToBuild }}:
+            - Job_Build_${{ item.version }}_${{ item.bitness }}
+        displayName: Package All Installers
+        steps:
+          - ${{ each item in parameters.lvVersionsToBuild }}:
             - template: steps-prepare.yml
               parameters:
                   lvVersion:           ${{ item.version }}
@@ -182,12 +172,10 @@ stages:
         dependsOn:
           - ${{ each item in parameters.lvVersionsToBuild }}:
             - Job_Build_${{ item.version }}_${{ item.bitness }}
-            # only include packages that passed their job condition
-            - ${{ if not(and(eq(variables['CD.DuplicateVersion.${{ item.version }}'], True),eq('${{ item.bitness }}', '32bit'))) }}:
-              - Job_Package_${{ item.version }}_${{ item.bitness }}
+          - Job_Package_All
         condition: succeeded()
         steps:
-        - template: steps-prepare.yml # Configure variables, check out repos, Clear cache
+        - template: steps-prepare.yml
           parameters:
             archiveLocation: ${{ parameters.archiveLocation }}
             build: False
