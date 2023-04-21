@@ -135,10 +135,16 @@ stages:
               - ${{ each buildStep in parameters.buildSteps }}:
                   - template: steps-build.yml
                     parameters:
+<<<<<<< HEAD
                       buildStep:                 ${{ buildStep }}
                       dependencies:              ${{ parameters.dependencies }}
                       lvVersionToBuild:          ${{ item }}
                       silenceDependencyFailures: ${{ parameters.silenceDependencyFailures }}
+=======
+                      buildStep:        ${{ buildStep }}
+                      dependencies:     ${{ parameters.dependencies }}
+                      lvVersionToBuild: ${{ item }}
+>>>>>>> 109c617 (replace variable name)
 
             - task: PowerShell@2
               displayName: Copy built files to Archive location
