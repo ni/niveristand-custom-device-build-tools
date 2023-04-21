@@ -133,7 +133,7 @@ stages:
                     parameters:
                       buildStep:        ${{ buildStep }}
                       dependencies:     ${{ parameters.dependencies }}
-                      item: ${{ item }}
+                      lvVersionToBuild: ${{ item }}
 
             - task: PowerShell@2
               displayName: Copy built files to Archive location
