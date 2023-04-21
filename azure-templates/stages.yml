@@ -135,7 +135,6 @@ stages:
 
         # Packaging Jobs
       - job: Job_Package_All
-          - ${{ each item in parameters.lvVersionsToBuild }}:
         dependsOn:
           - ${{ each item in parameters.lvVersionsToBuild }}:
             - Job_Build_${{ item.version }}_${{ item.bitness }}
@@ -159,8 +158,6 @@ stages:
       - job: Finalize
         displayName: Final Validation
         dependsOn:
-          - ${{ each item in parameters.lvVersionsToBuild }}:
-            - Job_Build_${{ item.version }}_${{ item.bitness }}
           - Job_Package_All
         condition: succeeded()
         steps:
