@@ -3,7 +3,10 @@ param(
     [string]$payloadDir
 )
 
-New-Item -Path "nipkg\data\$payloadDir" -ItemType "Directory"
+If (-not(Test-Path "nipkg\data\$payloadDir"))
+{
+  New-Item -Path "nipkg\data\$payloadDir" -ItemType "Directory"
+}
 
 $bitnessSpecificPaths = @(
   "$env:CD_ARCHIVEPATH\$env:BUILD_BUILDNUMBER\$env:CD_LABVIEW_VERSION\x86\$payloadDir",

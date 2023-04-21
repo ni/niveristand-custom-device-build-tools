@@ -99,7 +99,7 @@ stages:
     variables:
       ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
         ${{ each compareList in parameters.lvVersionsToBuild}}:
-          ${{ if and(eq(compareList.version, lvVersionToBuild.version), ne(compareList.bitness,lvVersionToBuild.bitness) }}:
+          ${{ if and(eq(compareList.version, lvVersionToBuild.version), ne(compareList.bitness,lvVersionToBuild.bitness)) }}:
             CD.DuplicateVersion.${{ lvVersionToBuild.version }}: True
       ${{ if ne(variables['Build.Reason'], 'PullRequest')}}:
         CD.BuildCounter: $[counter(format('custom {0}', variables['Build.SourceBranch']), 1)]
