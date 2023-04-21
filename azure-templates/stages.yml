@@ -100,12 +100,6 @@ stages:
       name: DevCentral-VeriStand-CustomDevices
       demands:
         - agent.os -equals Windows_NT
-    # build counter is used to label nipkg output - it cannot be defined inside of the templates below due to restrictions with the "counter" function
-    variables:
-      ${{ if ne(variables['Build.Reason'], 'PullRequest')}}:
-        buildCounter: $[counter(variables['Build.SourceBranch'], 1)]
-      ${{ if eq(variables['Build.Reason'], 'PullRequest')}}:
-        buildCounter: "9999"
     jobs:
       - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
         - job: Job${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
@@ -114,12 +108,13 @@ stages:
           steps:
             - template: steps-prepare.yml # Configure variables, check out repos, Clear cache
               parameters:
-                lvVersionToBuild:          ${{ lvVersionToBuild }}
-                releaseVersion:            ${{ parameters.releaseVersion }}
-                archiveLocation:           ${{ parameters.archiveLocation }}
-                buildOutputLocation:       ${{ parameters.buildOutputLocation }}
-                codegenVis:                ${{ parameters.codegenVis }}
-                submodules:                ${{ parameters.submodules }}
+                lvVersion:           ${{ lvVersionToBuild.version }}
+                bitness:             ${{ lvVersionToBuild.bitness }}
+                releaseVersion:      ${{ parameters.releaseVersion }}
+                archiveLocation:     ${{ parameters.archiveLocation }}
+                buildOutputLocation: ${{ parameters.buildOutputLocation }}
+                codegenVis:          ${{ parameters.codegenVis }}
+                submodules:          ${{ parameters.submodules }}
 
             - ${{ if ne( parameters.buildSteps, '' )}}:
               - ${{ each buildStep in parameters.buildSteps }}:
@@ -130,10 +125,9 @@ stages:
                       lvVersionToBuild:          ${{ lvVersionToBuild }}
                       silenceDependencyFailures: ${{ parameters.silenceDependencyFailures }}
 
-            - template: steps-post-build.yml # nipkg and archive
+            - template: steps-archive.yml
               parameters:
                 packages: ${{ parameters.packages }}
-
         # if all jobs have passed, place .finished file in top level archive location
       - job: Finalize
         displayName: Final Validation
@@ -153,4 +147,31 @@ stages:
               -Path "$(CD.ArchivePath)\$(Build.BuildNumber)" `
               -Name ".finished" `
               -ItemType "File"
-            
+
+  - stage: Package
+    displayName: Package
+    dependsOn: ${{ parameters.stageName }}
+    pool:
+      name: DevCentral-VeriStand-CustomDevices
+      demands:
+        - agent.os -equals Windows_NT
+    variables:
+      ${{ if ne(variables['Build.Reason'], 'PullRequest')}}:
+        buildCounter: $[counter(format('custom {0}', variables['Build.SourceBranch']), 1)]
+      ${{ if eq(variables['Build.Reason'], 'PullRequest')}}:
+        buildCounter: "9999"
+    jobs:
+      - ${{ each lvVersionToBuild in unique(parameters.lvVersionsToBuild) }}:
+        - job: PackageJob
+          displayName: PackageJob
+          steps:
+            - template: steps-pre-build.yml
+              parameters:
+                  lvVersion:           ${{ lvVersionToBuild.version }}
+                  releaseVersion:      ${{ parameters.releaseVersion }}
+                  archiveLocation:     ${{ parameters.archiveLocation }}
+                  buildOutputLocation: ${{ parameters.buildOutputLocation }}
+                  clearCache:          False
+            - template: steps-packaging.yml
+              parameters:
+                packages: ${{ parameters.packages }}

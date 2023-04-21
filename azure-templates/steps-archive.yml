@@ -1,0 +1,11 @@
+parameters:
+  - name: packages
+    type: object
+
+steps:
+  - task: PowerShell@2
+    displayName: Copy built files to Archive location
+    inputs:
+      targetType: 'filePath'
+      filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/archive-build.ps1'
+      failOnStdErr: True
