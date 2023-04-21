@@ -22,7 +22,8 @@ steps:
             filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/packaging/copy-payload.ps1'
             failOnStdErr: True
             arguments: >
-              -controlFileName "${{ package.controlFileName }}"
+              -installDir "${{ payloadMap.installLocation }}"
+              -payloadDir "${{ payloadMap.payloadLocation }}"
 
       - task: CmdLine@2
         displayName: Pack nipkg
