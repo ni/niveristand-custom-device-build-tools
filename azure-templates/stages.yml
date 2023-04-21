@@ -154,7 +154,7 @@ stages:
             - ${{ each dependsLvVersionToBuild in parameters.lvVersionsToBuild }}:
               - Job_Build_${{ dependsLvVersionToBuild.version }}_${{ dependsLvVersionToBuild.bitness }}
           displayName: Package LabVIEW ${{ lvVersionToBuild.version }} ${{ lvVersionToBuild.bitness }}
-          condition: and(eq(variables['CD.DuplicateVersion.${{ lvVersionToBuild.version }}'], True),eq('${{ lvVersionToBuild.version }}', '32bit')
+          condition: and(eq(variables['CD.DuplicateVersion.${{ lvVersionToBuild.version }}'], True),eq('${{ lvVersionToBuild.bitness }}', '32bit'))
           steps:
             - template: steps-prepare.yml
               parameters:
