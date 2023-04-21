@@ -144,26 +144,26 @@ stages:
 
         # Packaging Jobs
       - ${{ each item in parameters.lvVersionsToBuild }}:
-        - ${{ if not(and(eq(variables['CD.DuplicateVersion.${{ item.version }}'], True),eq('${{ item.bitness }}', '32bit'))) }}:
-          - job: Job_Package_${{ item.version }}_${{ item.bitness }}
-            dependsOn:
-              - ${{ each dependsItem in parameters.lvVersionsToBuild }}:
-                - ${{ if eq(dependsItem.version, item.version) }}:
-                  - Job_Build_${{ dependsItem.version }}_${{ dependsItem.bitness }}
-            displayName: Package LabVIEW ${{ item.version }} ${{ item.bitness }}
-            steps:
-              - template: steps-prepare.yml
-                parameters:
-                    lvVersion:           ${{ item.version }}
-                    bitness:             ${{ item.bitness }}
-                    releaseVersion:      ${{ parameters.releaseVersion }}
-                    archiveLocation:     ${{ parameters.archiveLocation }}
-                    buildOutputLocation: ${{ parameters.buildOutputLocation }}
-                    clearCache:          False
+        - job: Job_Package_${{ item.version }}_${{ item.bitness }}
+          dependsOn:
+            - ${{ each dependsItem in parameters.lvVersionsToBuild }}:
+              - ${{ if eq(dependsItem.version, item.version) }}:
+                - Job_Build_${{ dependsItem.version }}_${{ dependsItem.bitness }}
+          displayName: Package LabVIEW ${{ item.version }} ${{ item.bitness }}
+          condition: not(and(eq(variables['CD.DuplicateVersion.${{ item.version }}'], True),eq('${{ item.bitness }}', '32bit')))
+          steps:
+            - template: steps-prepare.yml
+              parameters:
+                  lvVersion:           ${{ item.version }}
+                  bitness:             ${{ item.bitness }}
+                  releaseVersion:      ${{ parameters.releaseVersion }}
+                  archiveLocation:     ${{ parameters.archiveLocation }}
+                  buildOutputLocation: ${{ parameters.buildOutputLocation }}
+                  clearCache:          False
 
-              - template: steps-packaging.yml
-                parameters:
-                  packages:  ${{ parameters.packages }}
+            - template: steps-packaging.yml
+              parameters:
+                packages:  ${{ parameters.packages }}
 
         # Finalization: if all jobs have passed, place .finished file in top level archive location
       - job: Finalize
