@@ -166,7 +166,7 @@ stages:
         variables:
           CD.LastPackage.Version: "None"
         steps:
-          - template: steps-pre-build.yml
+          - template: steps-prepare.yml
             parameters:
                 releaseVersion:      ${{ parameters.releaseVersion }}
                 archiveLocation:     ${{ parameters.archiveLocation }}
