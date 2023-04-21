@@ -100,9 +100,10 @@ stages:
       # Determine if any LabVIEW versions show up twice in the parameters list to avoid duplicate packaging
       ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
         ${{ each compareList in parameters.lvVersionsToBuild}}:
-          ${{ if eq(compareList.version, lvVersionToBuild.version) }}:
-            ${{ ne(compareList.bitness, lvVersionToBuild.bitness) }}:
-              ${{ eq(lvVersionToBuild.version, '32bit') }}:
+          ${{ if eq(compareList.version, lvVersionToBuild.version) }}: 
+            ${{ if ne(compareList.bitness, lvVersionToBuild.bitness) }}:
+              ${{ if eq(lvVersionToBuild.bitness, '32bit') }}:
+                # if versions match, but bitnesses do not, mark as duplicate
                 CD.DuplicateVersion.${{ lvVersionToBuild.version }}: True
 
       ${{ if ne(variables['Build.Reason'], 'PullRequest')}}:
