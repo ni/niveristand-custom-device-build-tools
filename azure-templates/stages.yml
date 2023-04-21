@@ -171,7 +171,9 @@ stages:
         dependsOn:
           - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
             - Job_Build_${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
-            - Job_Package_${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
+            # only include packages that passed their job condition
+            - ${{ if not(and(eq(variables['CD.DuplicateVersion.${{ lvVersionToBuild.version }}'], True),eq('${{ lvVersionToBuild.bitness }}', '32bit'))) }}:
+              - Job_Package_${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
         condition: succeeded()
         steps:
         - template: steps-prepare.yml # Configure variables, check out repos, Clear cache
