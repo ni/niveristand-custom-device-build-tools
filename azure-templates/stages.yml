@@ -65,12 +65,12 @@ stages:
         steps:
           - powershell: |
               $lvVersionsToBuild = '${{ convertToJson(parameters.lvVersionsToBuild) }}' | ConvertFrom-Json
-              ForEach ($lvVersionToBuild in $lvVersionsToBuild)
+              ForEach ($item in $lvVersionsToBuild)
               {
-                if ($lvVersionToBuild.bitness -eq "64bit")
+                if ($item.bitness -eq "64bit")
                 {
-                  $bitness = $lvVersionToBuild.bitness
-                  $version = $lvVersionToBuild.version
+                  $bitness = $item.bitness
+                  $version = $item.version
                   Write-Host "##vso[task.setvariable variable=bitness;isOutput=true;]$bitness"
                   Write-Host "##vso[task.setvariable variable=version;isOutput=true;]$version"
                 }
@@ -98,13 +98,13 @@ stages:
     dependsOn: []
     variables:
       # Determine if any LabVIEW versions show up twice in the parameters list to avoid duplicate packaging
-      ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
-        ${{ each compareList in parameters.lvVersionsToBuild}}:
-          ${{ if eq(compareList.version, lvVersionToBuild.version) }}: 
-            ${{ if ne(compareList.bitness, lvVersionToBuild.bitness) }}:
-              ${{ if eq(lvVersionToBuild.bitness, '32bit') }}:
+      ${{ each item in parameters.lvVersionsToBuild }}:
+        ${{ each compareItem in parameters.lvVersionsToBuild}}:
+          ${{ if eq(compareItem.version, item.version) }}: 
+            ${{ if ne(compareItem.bitness, item.bitness) }}:
+              ${{ if eq(item.bitness, '32bit') }}:
                 # if versions match, but bitnesses do not, mark as duplicate
-                CD.DuplicateVersion.${{ lvVersionToBuild.version }}: True
+                CD.DuplicateVersion.${{ item.version }}: True
 
       ${{ if ne(variables['Build.Reason'], 'PullRequest')}}:
         CD.BuildCounter: $[counter(format('custom {0}', variables['Build.SourceBranch']), 1)]
@@ -116,15 +116,15 @@ stages:
         - agent.os -equals Windows_NT
     jobs:
         # Build Jobs
-      - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
-        - job: Job_Build_${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
-          displayName: Build LabVIEW ${{ lvVersionToBuild.version }} ${{ lvVersionToBuild.bitness }}
+      - ${{ each item in parameters.lvVersionsToBuild }}:
+        - job: Job_Build_${{ item.version }}_${{ item.bitness }}
+          displayName: Build LabVIEW ${{ item.version }} ${{ item.bitness }}
           timeoutInMinutes: 120
           steps:
             - template: steps-prepare.yml
               parameters:
-                lvVersion:           ${{ lvVersionToBuild.version }}
-                bitness:             ${{ lvVersionToBuild.bitness }}
+                lvVersion:           ${{ item.version }}
+                bitness:             ${{ item.bitness }}
                 releaseVersion:      ${{ parameters.releaseVersion }}
                 archiveLocation:     ${{ parameters.archiveLocation }}
                 buildOutputLocation: ${{ parameters.buildOutputLocation }}
@@ -137,7 +137,7 @@ stages:
                     parameters:
                       buildStep:                 ${{ buildStep }}
                       dependencies:              ${{ parameters.dependencies }}
-                      lvVersionToBuild:          ${{ lvVersionToBuild }}
+                      lvVersionToBuild:          ${{ item }}
                       silenceDependencyFailures: ${{ parameters.silenceDependencyFailures }}
 
             - task: PowerShell@2
@@ -148,19 +148,19 @@ stages:
                 failOnStdErr: True
 
         # Packaging Jobs
-      - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
-        - job: Job_Package_${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
+      - ${{ each item in parameters.lvVersionsToBuild }}:
+        - job: Job_Package_${{ item.version }}_${{ item.bitness }}
           dependsOn:
-            - ${{ each dependsLvVersionToBuild in parameters.lvVersionsToBuild }}:
-              - ${{ if eq(dependsLvVersionToBuild.version, lvVersionToBuild.version) }}:
-                - Job_Build_${{ dependsLvVersionToBuild.version }}_${{ dependsLvVersionToBuild.bitness }}
-          displayName: Package LabVIEW ${{ lvVersionToBuild.version }} ${{ lvVersionToBuild.bitness }}
-          condition: not(and(eq(variables['CD.DuplicateVersion.${{ lvVersionToBuild.version }}'], True),eq('${{ lvVersionToBuild.bitness }}', '32bit')))
+            - ${{ each dependsItem in parameters.lvVersionsToBuild }}:
+              - ${{ if eq(dependsItem.version, item.version) }}:
+                - Job_Build_${{ dependsItem.version }}_${{ dependsItem.bitness }}
+          displayName: Package LabVIEW ${{ item.version }} ${{ item.bitness }}
+          condition: not(and(eq(variables['CD.DuplicateVersion.${{ item.version }}'], True),eq('${{ item.bitness }}', '32bit')))
           steps:
             - template: steps-prepare.yml
               parameters:
-                  lvVersion:           ${{ lvVersionToBuild.version }}
-                  bitness:             ${{ lvVersionToBuild.bitness }}
+                  lvVersion:           ${{ item.version }}
+                  bitness:             ${{ item.bitness }}
                   releaseVersion:      ${{ parameters.releaseVersion }}
                   archiveLocation:     ${{ parameters.archiveLocation }}
                   buildOutputLocation: ${{ parameters.buildOutputLocation }}
@@ -174,11 +174,11 @@ stages:
       - job: Finalize
         displayName: Final Validation
         dependsOn:
-          - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
-            - Job_Build_${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
+          - ${{ each item in parameters.lvVersionsToBuild }}:
+            - Job_Build_${{ item.version }}_${{ item.bitness }}
             # only include packages that passed their job condition
-            - ${{ if not(and(eq(variables['CD.DuplicateVersion.${{ lvVersionToBuild.version }}'], True),eq('${{ lvVersionToBuild.bitness }}', '32bit'))) }}:
-              - Job_Package_${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
+            - ${{ if not(and(eq(variables['CD.DuplicateVersion.${{ item.version }}'], True),eq('${{ item.bitness }}', '32bit'))) }}:
+              - Job_Package_${{ item.version }}_${{ item.bitness }}
         condition: succeeded()
         steps:
         - template: steps-prepare.yml # Configure variables, check out repos, Clear cache
