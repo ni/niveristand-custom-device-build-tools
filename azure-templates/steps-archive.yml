@@ -1,7 +1,3 @@
-parameters:
-  - name: packages
-    type: object
-
 steps:
   - task: PowerShell@2
     displayName: Copy built files to Archive location
