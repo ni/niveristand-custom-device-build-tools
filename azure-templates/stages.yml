@@ -149,7 +149,7 @@ stages:
         dependsOn:
           - ${{ each item in parameters.lvVersionsToBuild }}:
             - Job_Build_${{ item.version }}_${{ item.bitness }}
-        displayName: Package All Installers
+        displayName: Package Installers
         steps:
           - ${{ each item in parameters.lvVersionsToBuild }}:
             - template: steps-prepare.yml
@@ -163,6 +163,7 @@ stages:
 
             - template: steps-packaging.yml
               parameters:
+                lvVersion: ${{ item.version }}
                 packages:  ${{ parameters.packages }}
 
         # Finalization: if all jobs have passed, place .finished file in top level archive location
