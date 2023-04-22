@@ -1,6 +1,7 @@
 param(
     [string]$controlFileName
 )
+Set-PSDebug -Trace 1
 If ("$(Get-Variable env:CD_PACKAGEBUILT_$env:CD_LABVIEW_VERSION -ValueOnly -ErrorAction SilentlyContinue)" -ne "True")
 {
   # LabVIEW Version needs to be overwritten in packaging since it is not specified during pre-build

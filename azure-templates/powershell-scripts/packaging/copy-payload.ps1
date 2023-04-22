@@ -2,6 +2,7 @@ param(
     [string]$installDir,
     [string]$payloadDir
 )
+Set-PSDebug -Trace 1
 If ("$(Get-Variable env:CD_PACKAGEBUILT_$env:CD_LABVIEW_VERSION -ValueOnly -ErrorAction SilentlyContinue)" -ne "True")
 {
   If (-not(Test-Path "nipkg\data\$payloadDir"))

@@ -8,7 +8,7 @@ steps:
   - ${{ each package in parameters.packages }}:
     - ${{ if ne(package.controlFileName, '') }}:
       - task: PowerShell@2
-        displayName: Stage nipkg directory
+        displayName: Stage nipkg directory for ${{ package.controlFileName }}
         inputs:
           targetType: 'filePath'
           filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/packaging/stage-directories.ps1'
@@ -32,7 +32,7 @@ steps:
         inputs:
           script: |
             ECHO ON
-            IF NOT '$(CD.PackageBuilt${{ parameters.lvVersion }})'=='True' (
+            IF NOT '$(CD.PackageBuilt.${{ parameters.lvVersion }})'=='True' (
               "%PROGRAMFILES%\National Instruments\NI Package Manager\nipkg.exe" pack "$(CD.Nipkg.Path)" "$(CD.Nipkg.Path)"
             )
 
@@ -43,7 +43,7 @@ steps:
           failOnStdErr: True
 
   - task: PowerShell@2
-    displayName: Create manifest file
+    displayName: ${{ parameters.lvVersion }} Manifest, nipkg labels, and mark package built
     inputs:
       targetType: 'filePath'
       filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/packaging/manifest-release-tags.ps1'
