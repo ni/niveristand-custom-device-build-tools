@@ -65,7 +65,7 @@ Else
   }
   If (-not $dependencyFilePath)
   {
-    If ($silence -eq "true")
+    If ($silence -ne "true")
     {
       Write-Error "no successful build of dependency $file was found at $source."
     }
@@ -89,7 +89,7 @@ Else
   }
   Else
   {
-    If ($silence -eq "true")
+    If ($silence -ne "true")
     {
       Write-Error "Dependency does not exist at $dependencyFilePath."
     }
