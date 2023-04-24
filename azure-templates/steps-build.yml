@@ -6,6 +6,8 @@ parameters:
     type: object
   - name: lvVersionToBuild
     type: object
+  - name: silenceDependencyFailures
+    type: boolean
 
 # Note: the following variables are defined in steps-prepare.yml:
   # CD.LabVIEW.Version, CD.Architecture, CD.Repository, CD.LabVIEW.Config,
@@ -48,6 +50,7 @@ steps:
             -source      "${{ dependency.source }}"
             -file        '${{ dependency.file }}'
             -destination "${{ dependency.destination }}"
+            -silence     "${{ parameters.silenceDependencyFailures }}"
 
     - ${{ if and( ne( dependency.file, '' ), ne( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
       - task: PowerShell@2

@@ -1,7 +1,8 @@
 param(
     [string]$source,
     [string]$file,
-    [string]$destination
+    [string]$destination,
+    [string]$silence
 )
 
 If ("$env:CD_SKIPTHISSTEP" -eq "True")
@@ -62,12 +63,7 @@ Else
       }
     }
   }
-  If (-not $dependencyFilePath)
-  {
-    Write-Error "no successful build of dependency $file was found at $source."
-    break
-  }
-  `
+
   Write-Output "Copying dependency $file..."
   If (-not(Test-Path -Path "$env:CD_WORKSPACE\$env:CD_REPOSITORY\$destination"))
   {
@@ -85,6 +81,13 @@ Else
   }
   Else
   {
-    Write-Error "Dependency does not exist at $dependencyFilePath."
+    If ($silence -eq "true")
+    {
+      Write-Output "Dependency does not exist at $dependencyFilePath. Dependency error silenced, moving on..."
+    }
+    Else 
+    {
+      Write-Error "Dependency does not exist at $dependencyFilePath."
+    }
   }
 }
