@@ -32,6 +32,8 @@ stages:
         - version: '2023'
           bitness: '64bit'
 
+      silenceDependencyFailures: true
+
 # Test Dependencies - multiple dependencies that are expected in the build steps below this
       dependencies:
         - source: '\\nirvana\Measurements\VeriStandAddons\prototype\dependency-test-1'
