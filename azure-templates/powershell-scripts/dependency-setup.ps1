@@ -1,7 +1,8 @@
 param(
     [string]$source,
     [string]$file,
-    [string]$destination
+    [string]$destination,
+    [string]$silence
 )
 
 If ("$env:CD_SKIPTHISSTEP" -eq "True")
@@ -64,7 +65,10 @@ Else
   }
   If (-not $dependencyFilePath)
   {
-    Write-Error "no successful build of dependency $file was found at $source."
+    If ($silence -eq "true")
+    {
+      Write-Error "no successful build of dependency $file was found at $source."
+    }
     break
   }
   `
@@ -85,6 +89,9 @@ Else
   }
   Else
   {
-    Write-Error "Dependency does not exist at $dependencyFilePath."
+    If ($silence -eq "true")
+    {
+      Write-Error "Dependency does not exist at $dependencyFilePath."
+    }
   }
 }

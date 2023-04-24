@@ -7,6 +7,10 @@ parameters:
     type: boolean
     default: false
 
+  - name: silenceDependencyFailures
+    type: boolean
+    default: false
+
   # lvVersionsToBuild: list of {version, bitness}
   - name: lvVersionsToBuild
     type: object
@@ -110,12 +114,13 @@ stages:
           steps:
             - template: steps-prepare.yml # Configure variables, check out repos, Clear cache
               parameters:
-                lvVersionToBuild:        ${{ lvVersionToBuild }}
-                releaseVersion:          ${{ parameters.releaseVersion }}
-                archiveLocation:         ${{ parameters.archiveLocation }}
-                buildOutputLocation:     ${{ parameters.buildOutputLocation }}
-                codegenVis:              ${{ parameters.codegenVis }}
-                submodules:              ${{ parameters.submodules }}
+                lvVersionToBuild:          ${{ lvVersionToBuild }}
+                releaseVersion:            ${{ parameters.releaseVersion }}
+                archiveLocation:           ${{ parameters.archiveLocation }}
+                buildOutputLocation:       ${{ parameters.buildOutputLocation }}
+                codegenVis:                ${{ parameters.codegenVis }}
+                submodules:                ${{ parameters.submodules }}
+                silenceDependencyFailures: ${{ parameters.silenceDependencyFailures }}
 
             - ${{ if ne( parameters.buildSteps, '' )}}:
               - ${{ each buildStep in parameters.buildSteps }}:
