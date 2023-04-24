@@ -63,15 +63,7 @@ Else
       }
     }
   }
-  If (-not $dependencyFilePath)
-  {
-    If ($silence -ne "true")
-    {
-      Write-Error "no successful build of dependency $file was found at $source."
-    }
-    break
-  }
-  `
+
   Write-Output "Copying dependency $file..."
   If (-not(Test-Path -Path "$env:CD_WORKSPACE\$env:CD_REPOSITORY\$destination"))
   {
@@ -89,7 +81,11 @@ Else
   }
   Else
   {
-    If ($silence -ne "true")
+    If ($silence -eq "true")
+    {
+      Write-Output "Dependency does not exist at $dependencyFilePath. Dependency error silenced, moving on..."
+    }
+    Else 
     {
       Write-Error "Dependency does not exist at $dependencyFilePath."
     }
