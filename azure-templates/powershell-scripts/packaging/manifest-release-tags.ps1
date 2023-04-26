@@ -1,15 +1,22 @@
-Write-Output "Adding manifest file to release branch installer directory"
-$jsonFilePath = Join-Path "$env:CD_INSTALLERPATH" "manifest.json"
-$scmObject = [PSCustomObject]@{
-  GIT_BRANCH = "$env:CD_SOURCEBRANCH"
-  GIT_COMMIT = "$env:BUILD_SOURCEVERSION"
-  GIT_URL = "$env:BUILD_REPOSITORY_URI.git"
+If ( ("$env:CD_SOURCEBRANCH" -match "release") -and (Test-Path $env:CD_INSTALLERPATH) )
+{
+  Write-Output "Adding manifest file to release branch installer directory"
+  $jsonFilePath = Join-Path "$env:CD_INSTALLERPATH" "manifest.json"
+  $scmObject = [PSCustomObject]@{
+    GIT_BRANCH = "$env:CD_SOURCEBRANCH"
+    GIT_COMMIT = "$env:BUILD_SOURCEVERSION"
+    GIT_URL = "$env:BUILD_REPOSITORY_URI.git"
+  }
+  $outputObject = [PSCustomObject]@{
+    scm = $scmObject
+  }
+  $jsonString = $outputObject | ConvertTo-Json
+  Set-Content -Path $jsonFilePath -Value $jsonString
 }
-$outputObject = [PSCustomObject]@{
-  scm = $scmObject
+Else
+{
+  Write-Output "No release branch packages built; skipping manifest file"
 }
-$jsonString = $outputObject | ConvertTo-Json
-Set-Content -Path $jsonFilePath -Value $jsonString
 
 If (-not("$env:CD_SOURCEBRANCH" -match "release"))
 {
