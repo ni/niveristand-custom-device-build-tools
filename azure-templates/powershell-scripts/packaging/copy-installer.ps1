@@ -1,12 +1,7 @@
-If ("$(Get-Variable "env:CD_PACKAGEBUILT_$env:CD_LABVIEW_VERSION" -ValueOnly -ErrorAction SilentlyContinue)" -ne "True")
+If (-not(Test-Path "$env:CD_INSTALLERPATH"))
 {
-  If (-not(Test-Path $env:CD_INSTALLERPATH))
-  {
-    New-Item -Path $env:CD_INSTALLERPATH -ItemType "Directory"
-  }
-  Copy-Item -Path 'nipkg\*' -Destination $env:CD_INSTALLERPATH -Include *.nipkg -Recurse
+  Write-Output "Installer location does not exist... Adding location."
+  New-Item -Path "$env:CD_INSTALLERPATH" -ItemType "Directory"
 }
-Else
-{
-  Write-Output "This package was already built, so this step can be skipped."
-}
+Write-Output "Copying from NIPKG to installer location..."
+Copy-Item -Path "nipkg\*" -Destination "$env:CD_INSTALLERPATH" -Include "*.nipkg" -Recurse
