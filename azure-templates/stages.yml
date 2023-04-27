@@ -144,6 +144,8 @@ stages:
           - ${{ each item in parameters.lvVersionsToBuild }}:
             - Job_Build_${{ item.version }}_${{ item.bitness }}
         displayName: Package Installers
+        variables: 
+          CD.Package.Finished: ""
         steps:
           - ${{ each item in parameters.lvVersionsToBuild }}:
             - template: steps-prepare.yml
