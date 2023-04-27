@@ -32,7 +32,7 @@ steps:
         inputs:
           script: |
             ECHO ON
-            IF NOT '$(CD.PackageBuilt.${{ parameters.lvVersion }})'=='True' (
+            IF NOT '$(CD.SkipPacking)'=='True' (
               "%PROGRAMFILES%\National Instruments\NI Package Manager\nipkg.exe" pack "$(CD.Nipkg.Path)" "$(CD.Nipkg.Path)"
             )
 

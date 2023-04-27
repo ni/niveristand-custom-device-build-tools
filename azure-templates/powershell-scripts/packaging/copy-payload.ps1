@@ -6,6 +6,7 @@ param(
 If ("$env:CD_PACKAGE_FINISHED" -match "$env:CD_LABVIEW_VERSION")
 {
   Write-Output "Package already built for this version of LabVIEW... skipping this step."
+  Write-Host "##vso[task.setvariable variable=CD.SkipPacking]True"
 }
 Else
 {
@@ -31,4 +32,5 @@ Else
       -Recurse
     }
   }
+  Write-Host "##vso[task.setvariable variable=CD.SkipPacking]False"
 }
