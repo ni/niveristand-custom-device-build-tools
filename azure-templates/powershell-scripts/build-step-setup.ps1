@@ -21,7 +21,7 @@ If (-not(Test-Path -Path $lvConfigFilePath))
 {
     Write-Output "adding .config file to project..."
     Copy-Item "$env:CD_BUILDTOOLS\resources\LabVIEW.exe.config" -Destination $lvConfigFilePath
-    (Get-Content -Path $lvConfigFilePath) -replace "2016.0.0.0", "$env:CD_LABVIEW_CONFIG)" | Set-Content -Path $lvConfigFilePath
+    (Get-Content -Path $lvConfigFilePath) -replace "2016.0.0.0", "$env:CD_LABVIEW_CONFIG" | Set-Content -Path $lvConfigFilePath
 }
 `
 If ("$buildOperation" -eq "ExecuteAllBuildSpecs")
