@@ -22,9 +22,9 @@ If (-not("$env:CD_SOURCEBRANCH" -match "release"))
 {
   $cleanedSourceBranch = "$env:CD_SOURCEBRANCH" -replace "\/", "_"
   Write-Output "Not a release branch, so appending branch name $cleanedSourceBranch to nipkg files..."
-  $packages = Get-ChildItem `
+  $packageFiles = Get-ChildItem `
     -Path "$env:CD_INSTALLERPATH\*.nipkg"
-  Foreach ($package in $packages)
+  Foreach ($packageFile in $packageFiles)
   {
     If (-not("$packageFile" -match "$cleanedSourceBranch.nipkg"))
     {
