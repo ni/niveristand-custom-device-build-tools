@@ -4,4 +4,4 @@ If (-not(Test-Path "$env:CD_INSTALLERPATH"))
   New-Item -Path "$env:CD_INSTALLERPATH" -ItemType "Directory"
 }
 Write-Output "Copying from NIPKG to installer location..."
-Copy-Item -Path "nipkg\*" -Destination "$env:CD_INSTALLERPATH" -Include "*.nipkg" -Recurse
+Copy-Item -Path "$env:CD_NIPKG_PATH\*" -Destination "$env:CD_INSTALLERPATH" -Include "*.nipkg" -Recurse
