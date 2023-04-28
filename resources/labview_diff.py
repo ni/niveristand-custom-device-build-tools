@@ -118,33 +118,31 @@ def diff_repo(workspace, output_dir, target_branch, lv_version):
         print("More than 60 VIs were modified so the diff pipeline will time out.")
         return
 
-    # DEBUG
-    print(len(diffs))
-    # with export_repo(target_branch) as directory:
-    #     for status, filename in diffs:
-    #         if status == "A":
-    #             print("Diffing added file: " + filename)
-    #             diff_vi(
-    #                 None, path.abspath(filename), path.abspath(output_dir), workspace, lv_version
-    #             )
-    #         elif status == "M":
-    #             print("Diffing modified file: " + filename)
-    #             # LabVIEW won't let us load two files with the same name into memory,
-    #             # so we copy the old file to have a new name. This isn't perfect - the VIs
-    #             # it references will still pull in the new versions of dependencies - but it
-    #             # is better than nothing.
-    #             old_file = path.join(directory.name, filename)
-    #             copied_file = path.join(path.dirname(old_file), "_COPY_" + path.basename(filename))
-    #             shutil.copy(old_file, copied_file)
-    #             diff_vi(
-    #                 copied_file,
-    #                 path.abspath(filename),
-    #                 path.abspath(output_dir),
-    #                 workspace,
-    #                 lv_version,
-    #             )
-    #         else:
-    #             print("Unknown file status: " + filename)
+    with export_repo(target_branch) as directory:
+        for status, filename in diffs:
+            if status == "A":
+                print("Diffing added file: " + filename)
+                diff_vi(
+                    None, path.abspath(filename), path.abspath(output_dir), workspace, lv_version
+                )
+            elif status == "M":
+                print("Diffing modified file: " + filename)
+                # LabVIEW won't let us load two files with the same name into memory,
+                # so we copy the old file to have a new name. This isn't perfect - the VIs
+                # it references will still pull in the new versions of dependencies - but it
+                # is better than nothing.
+                old_file = path.join(directory.name, filename)
+                copied_file = path.join(path.dirname(old_file), "_COPY_" + path.basename(filename))
+                shutil.copy(old_file, copied_file)
+                diff_vi(
+                    copied_file,
+                    path.abspath(filename),
+                    path.abspath(output_dir),
+                    workspace,
+                    lv_version,
+                )
+            else:
+                print("Unknown file status: " + filename)
 
 
 if __name__ == "__main__":
