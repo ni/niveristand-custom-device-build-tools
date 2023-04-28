@@ -27,7 +27,7 @@ steps:
           $(CD.Repository)\niveristand-custom-device-build-tools
         If ("$(CD.Repository)" -eq "niveristand-custom-device-build-tools")
         {
-          cd "niveristand-custom-device-build-tools"
+          cd "$(CD.Repository)\niveristand-custom-device-build-tools"
           git checkout "$(System.PullRequest.SourceBranch)"
         }
   - task: PowerShell@2
