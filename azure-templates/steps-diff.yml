@@ -28,7 +28,7 @@ steps:
         If ("$(CD.Repository)" -eq "niveristand-custom-device-build-tools")
         {
           cd "niveristand-custom-device-build-tools"
-          git checkout "$(System.PullRequest.TargetBranch)"
+          git checkout "$(System.PullRequest.SourceBranch)"
         }
   - task: PowerShell@2
     displayName: Diff VIs and publish
