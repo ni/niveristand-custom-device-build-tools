@@ -23,13 +23,17 @@ Else
   # some of the payloads may be in x86, and some in x64, so copy from both
   ForEach ($bitnessSpecificPath in $bitnessSpecificPaths)
   {
-    If (-not(Test-Path "$bitnessSpecificPath"))
+    If (Test-Path "$bitnessSpecificPath")
     {
       Write-Output "copying payload from `"$bitnessSpecificPath`" into nipkg/data install directory..."
       Copy-Item `
       -Path "$bitnessSpecificPath\*" `
       -Destination "$env:CD_NIPKG_PATH\data\$installDir" `
       -Recurse
+    }
+    Else
+    {
+      Write-Output "no payload at `"$bitnessSpecificPath`" so skipping that location."
     }
   }
   Write-Host "##vso[task.setvariable variable=CD.SkipPacking]False"
