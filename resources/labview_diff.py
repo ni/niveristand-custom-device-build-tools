@@ -114,7 +114,7 @@ def diff_repo(workspace, output_dir, target_branch, lv_version):
 
     # Diffing VIs takes ~1 minute per VI and the stage has a one hour timeout.
     # Limit diff lengths to 60 VIs to avoid hogging a build node for step that will fail.
-    if len(diffs) > 60:
+    if sum(1 for _ in diffs) > 60:
         print("More than 60 VIs were modified so the diff pipeline will time out.")
         return
 
