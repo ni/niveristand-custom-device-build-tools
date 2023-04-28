@@ -10,10 +10,10 @@ If ("$env:CD_PACKAGE_FINISHED" -match "$env:CD_LABVIEW_VERSION")
 }
 Else
 {
-  If (-not(Test-Path "$env:CD_NIPKG_PATH\data\$payloadDir"))
+  If (-not(Test-Path "$env:CD_NIPKG_PATH\data\$installDir"))
   {
-    Write-Output "payload location does not exist in nipkg/data directory... Adding location."
-    New-Item -Path "$env:CD_NIPKG_PATH\data\$payloadDir" -ItemType "Directory"
+    Write-Output "install location does not exist in nipkg/data directory... Adding location."
+    New-Item -Path "$env:CD_NIPKG_PATH\data\$installDir" -ItemType "Directory"
   }
 
   $bitnessSpecificPaths = @(
