@@ -113,9 +113,12 @@ def diff_repo(workspace, output_dir, target_branch, lv_version):
     diffs = get_changed_labview_files(target_branch)
 
     # Diffing VIs takes ~1 minute per VI and the stage has a one hour timeout.
-    # Limit diff lengths to 60 VIs to avoid hogging a build node for step that will fail.
+    # Limit diff lengths to 60 VIs to avoid using a build node for step that will fail.
     if sum(1 for _ in diffs) > 60:
-        print("More than 60 VIs were modified so the diff pipeline will time out.")
+        timeout_message = "More than 60 VIs were modified. Skipping diff pipeline to avoid timeout."
+        print(timeout_message)
+        with open(output_dir + "\\diff_failures.txt", 'w') as file:
+            file.write(timeout_message)
         return
 
     with export_repo(target_branch) as directory:
