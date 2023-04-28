@@ -25,7 +25,7 @@ steps:
       script: |
         git clone https://github.com/ni/niveristand-custom-device-build-tools.git `
           $(CD.Repository)\niveristand-custom-device-build-tools
-        If ($(CD.Repository) -eq "niveristand-custom-device-build-tools")
+        If ("$(CD.Repository)"" -eq "niveristand-custom-device-build-tools")
         {
           cd "niveristand-custom-device-build-tools"
           git checkout "$(System.PullRequest.TargetBranch)"
