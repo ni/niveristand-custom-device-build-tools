@@ -53,7 +53,7 @@ parameters:
 
 # Note: If custom build steps are needed for a particular custom device, copy this entire template into the azure-pipeline and add steps before/after as needed
 stages:
-  - stage: DiffVIs${{ parameters.stageName }}
+  - stage: ${{ parameters.stageName }}_DiffVIs
     dependsOn: []
     condition: and(eq(variables['Build.Reason'], 'PullRequest'), eq('${{ parameters.disableDiff }}', false))
     pool:
@@ -65,12 +65,12 @@ stages:
         steps:
           - powershell: |
               $lvVersionsToBuild = '${{ convertToJson(parameters.lvVersionsToBuild) }}' | ConvertFrom-Json
-              ForEach ($lvVersionToBuild in $lvVersionsToBuild)
+              ForEach ($item in $lvVersionsToBuild)
               {
-                if ($lvVersionToBuild.bitness -eq "64bit")
+                if ($item.bitness -eq "64bit")
                 {
-                  $bitness = $lvVersionToBuild.bitness
-                  $version = $lvVersionToBuild.version
+                  $bitness = $item.bitness
+                  $version = $item.version
                   Write-Host "##vso[task.setvariable variable=bitness;isOutput=true;]$bitness"
                   Write-Host "##vso[task.setvariable variable=version;isOutput=true;]$version"
                 }
@@ -86,7 +86,7 @@ stages:
           - name: diffVersion
             value: $[ dependencies.Find64bitVersion.outputs['FindLast64bitVersion.version'] ]
         steps:
-          - template: steps-prepare.yml # Configure variables, check out repos, Clear cache
+          - template: steps-prepare.yml
             parameters:
               build: False
               clearCache: False
@@ -96,61 +96,88 @@ stages:
 
   - stage: ${{ parameters.stageName }}
     dependsOn: []
+    variables:
+      ${{ if ne(variables['Build.Reason'], 'PullRequest')}}:
+        CD.BuildCounter: $[counter(format('custom {0}', variables['Build.SourceBranch']), 1)]
+      ${{ if eq(variables['Build.Reason'], 'PullRequest')}}:
+        CD.BuildCounter: "9999"
     pool:
       name: DevCentral-VeriStand-CustomDevices
       demands:
         - agent.os -equals Windows_NT
-    # build counter is used to label nipkg output - it cannot be defined inside of the templates below due to restrictions with the "counter" function
-    variables:
-      ${{ if ne(variables['Build.Reason'], 'PullRequest')}}:
-        buildCounter: $[counter(variables['Build.SourceBranch'], 1)]
-      ${{ if eq(variables['Build.Reason'], 'PullRequest')}}:
-        buildCounter: "9999"
     jobs:
-      - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
-        - job: Job${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
-          displayName: LabVIEW ${{ lvVersionToBuild.version }} ${{ parameters.lvVersionsToBuild.bitness }}
+        # Build Jobs
+      - ${{ each item in parameters.lvVersionsToBuild }}:
+        - job: Job_Build_${{ item.version }}_${{ item.bitness }}
+          displayName: Build LabVIEW ${{ item.version }} ${{ item.bitness }}
           timeoutInMinutes: 120
           steps:
-            - template: steps-prepare.yml # Configure variables, check out repos, Clear cache
+            - template: steps-prepare.yml
               parameters:
-                lvVersionToBuild:          ${{ lvVersionToBuild }}
-                releaseVersion:            ${{ parameters.releaseVersion }}
-                archiveLocation:           ${{ parameters.archiveLocation }}
-                buildOutputLocation:       ${{ parameters.buildOutputLocation }}
-                codegenVis:                ${{ parameters.codegenVis }}
-                submodules:                ${{ parameters.submodules }}
+                lvVersion:           ${{ item.version }}
+                bitness:             ${{ item.bitness }}
+                releaseVersion:      ${{ parameters.releaseVersion }}
+                archiveLocation:     ${{ parameters.archiveLocation }}
+                buildOutputLocation: ${{ parameters.buildOutputLocation }}
+                codegenVis:          ${{ parameters.codegenVis }}
+                submodules:          ${{ parameters.submodules }}
 
             - ${{ if ne( parameters.buildSteps, '' )}}:
               - ${{ each buildStep in parameters.buildSteps }}:
-                  - template: steps-build.yml # config file and build specs
+                  - template: steps-build.yml
                     parameters:
                       buildStep:                 ${{ buildStep }}
                       dependencies:              ${{ parameters.dependencies }}
-                      lvVersionToBuild:          ${{ lvVersionToBuild }}
+                      lvVersionToBuild:          ${{ item }}
                       silenceDependencyFailures: ${{ parameters.silenceDependencyFailures }}
 
-            - template: steps-post-build.yml # nipkg and archive
-              parameters:
-                packages: ${{ parameters.packages }}
+            - task: PowerShell@2
+              displayName: Copy built files to Archive location
+              inputs:
+                targetType: 'filePath'
+                filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/archive-build.ps1'
+                failOnStdErr: True
 
-        # if all jobs have passed, place .finished file in top level archive location
+        # Packaging Jobs
+      - job: Job_Package_All
+        dependsOn:
+          - ${{ each item in parameters.lvVersionsToBuild }}:
+            - Job_Build_${{ item.version }}_${{ item.bitness }}
+        displayName: Package Installers
+        variables: 
+          CD.Package.Finished: ""
+        steps:
+          - ${{ each item in parameters.lvVersionsToBuild }}:
+            - template: steps-prepare.yml
+              parameters:
+                  lvVersion:           ${{ item.version }}
+                  bitness:             ${{ item.bitness }}
+                  releaseVersion:      ${{ parameters.releaseVersion }}
+                  archiveLocation:     ${{ parameters.archiveLocation }}
+                  buildOutputLocation: ${{ parameters.buildOutputLocation }}
+                  clearCache:          False
+
+            - template: steps-packaging.yml
+              parameters:
+                lvVersion: ${{ item.version }}
+                packages:  ${{ parameters.packages }}
+
+        # Finalization: if all jobs have passed, place .finished file in top level archive location
       - job: Finalize
         displayName: Final Validation
         dependsOn:
-          - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
-            - Job${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
+          - Job_Package_All
         condition: succeeded()
         steps:
-        - template: steps-prepare.yml # Configure variables, check out repos, Clear cache
+        - template: steps-prepare.yml
           parameters:
             archiveLocation: ${{ parameters.archiveLocation }}
             build: False
             clearCache: False
-        - powershell: |
-            Write-Output "All previous jobs complete.  Storing .finished file..."
-            New-Item `
-              -Path "$(CD.ArchivePath)\$(Build.BuildNumber)" `
-              -Name ".finished" `
-              -ItemType "File"
-            
+
+        - task: PowerShell@2
+          displayName: Add .finished to directory
+          inputs:
+            targetType: 'filePath'
+            filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/finalization.ps1'
+            failOnStdErr: True
