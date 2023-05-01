@@ -176,6 +176,15 @@ stages:
             clearCache: False
 
         - task: PowerShell@2
+          displayName: Compare package contents to last successful build in main
+          inputs:
+            targetType: 'filePath'
+            filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/check-count-size.ps1'
+            failOnStdErr: True
+            arguments: >
+              -archiveDir "${{ paramters.archiveLocation }}"
+
+        - task: PowerShell@2
           displayName: Add .finished to directory
           inputs:
             targetType: 'filePath'
