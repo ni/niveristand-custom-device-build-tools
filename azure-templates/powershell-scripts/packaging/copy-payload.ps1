@@ -26,10 +26,11 @@ Else
     If (Test-Path "$bitnessSpecificPath")
     {
       Write-Output "copying payload from `"$bitnessSpecificPath`" into nipkg/data install directory..."
-      Copy-Item `
-      -Path "$bitnessSpecificPath\*" `
-      -Destination "$env:CD_NIPKG_PATH\data\$installDir" `
-      -Recurse
+      $existingItems = Get-ChildItem -Recurse "$env:CD_NIPKG_PATH\data\$installDir"
+      Copy-Item -Recurse `
+        -Path "$bitnessSpecificPath\*" `
+        -Destination "$env:CD_NIPKG_PATH\data\$installDir" `
+        -Exclude $existingItems
     }
     Else
     {
