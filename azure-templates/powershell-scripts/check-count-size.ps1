@@ -47,7 +47,7 @@ Else
 
     ForEach ($package in $allPackagesThisBuild)
     {
-      $matchingPackage = $allPackagesMain | Where-Object {$_.Name -match ($package.Name.Split("_")[0])}
+      $matchingPackage = $allPackagesMain | Where-Object {$_.Name -match "$($package.Name.Split("_")[0])_"}
       Write-Output "Unpacking $($package.FullName) and comparing to $($matchingPackage.FullName) from `"main`"..."
 
       $validateDirectory = "$PWD\Validate"
