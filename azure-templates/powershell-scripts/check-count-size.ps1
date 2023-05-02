@@ -43,8 +43,15 @@ ForEach ($package in $allPackagesThisBuild)
   tar -xf "$package" -C "$validateDirectory"
   tar -xf "$validateDirectory\data.tar.gz" -C "$validateOutputs"
   $filesInValidatePackage = Get-ChildItem -Recurse -Path "$validateOutputs" -File
-  $validateFileCount = $filesInValidatePackage.Count
-  $validateFileSize = ($filesInValidatePackage | Measure-Object -Property "Length" -Sum).Sum
+  If ($filesInValidatePackage)
+  {
+    $validateFileCount = $filesInValidatePackage.Count
+    $validateFileSize = ($filesInValidatePackage | Measure-Object -Property "Length" -Sum).Sum  
+  }
+  Else 
+  {
+    $validateFileCount = $validateFileSize = 0
+  }
 
   $compareDirectory = "$PWD\Compare-$index"
   $compareOutputs = "$compareDirectory\Outputs"
@@ -52,15 +59,19 @@ ForEach ($package in $allPackagesThisBuild)
   tar -xf "$matchingPackage" -C "$compareDirectory"
   tar -xf "$compareDirectory\data.tar.gz" -C "$compareOutputs"
   $filesInComparePackage = Get-ChildItem -Recurse -Path "$compareOutputs" -File
-  $compareFileCount = $filesInComparePackage.Count
-  $compareFileSize = ($filesInComparePackage | Measure-Object -Property "Length" -Sum).Sum
-
-  If (-and($compareFileCount, $validateFileCount, $compareFileSize, $validateFileSize))
+  If ($filesInComparePackage)
   {
+    $compareFileCount = $filesInComparePackage.Count
+    $compareFileSize = ($filesInComparePackage | Measure-Object -Property "Length" -Sum).Sum  
+  }
+  Else 
+  {
+    $compareFileCount = $compareFileSize = 0
+  }
+
     Write-Output "            ________________________________"
     Write-Output "            | FILE COUNT | FILE SIZE (SUM) |"
     Write-Output "  main      | $($compareFileCount.ToString().PadLeft(10, " ")) | $($compareFileSize.ToString().PadLeft(15, " ")) |"
     Write-Output "  thisBuild | $($validateFileCount.ToString().PadLeft(10, " ")) | $($validateFileSize.ToString().PadLeft(15, " ")) |"
     Write-Output "            ________________________________"
-  }
 }
