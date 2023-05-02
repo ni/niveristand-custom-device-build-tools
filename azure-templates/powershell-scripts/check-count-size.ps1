@@ -23,8 +23,8 @@ ForEach ($build in $allBuildsOfMain)
     }
   }
 }
-Write-Output "Getting packages in `"$env:CD_ARCHIVEPATH`"..."
-$allPackagesThisBuild = Get-ChildItem -Recurse -Path "$env:CD_ARCHIVEPATH\*\installer\*.nipkg"
+Write-Output "Getting packages in `"$env:CD_ARCHIVEPATH\$env:BUILD_BUILDNUMBER`"..."
+$allPackagesThisBuild = Get-ChildItem -Recurse -Path "$env:CD_ARCHIVEPATH\$env:BUILD_BUILDNUMBER\*\installer\*.nipkg"
 Write-Output "Total packages in this build: $($allPackagesThisBuild.Count)"
 
 Write-Output "Getting packages in `"$mainPath`"..."
