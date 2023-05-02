@@ -55,9 +55,12 @@ ForEach ($package in $allPackagesThisBuild)
   $compareFileCount = $filesInComparePackage.Count
   $compareFileSize = ($filesInComparePackage | Measure-Object -Property "Length" -Sum).Sum
 
-  Write-Output "            ________________________________"
-  Write-Output "            | FILE COUNT | FILE SIZE (SUM) |"
-  Write-Output "  main      | $($compareFileCount.ToString().PadLeft(10, " ")) | $($compareFileSize.ToString().PadLeft(15, " ")) |"
-  Write-Output "  thisBuild | $($validateFileCount.ToString().PadLeft(10, " ")) | $($validateFileSize.ToString().PadLeft(15, " ")) |"
-  Write-Output "            ________________________________"
+  If (-and($compareFileCount, $validateFileCount, $compareFileSize, $validateFileSize))
+  {
+    Write-Output "            ________________________________"
+    Write-Output "            | FILE COUNT | FILE SIZE (SUM) |"
+    Write-Output "  main      | $($compareFileCount.ToString().PadLeft(10, " ")) | $($compareFileSize.ToString().PadLeft(15, " ")) |"
+    Write-Output "  thisBuild | $($validateFileCount.ToString().PadLeft(10, " ")) | $($validateFileSize.ToString().PadLeft(15, " ")) |"
+    Write-Output "            ________________________________"
+  }
 }
