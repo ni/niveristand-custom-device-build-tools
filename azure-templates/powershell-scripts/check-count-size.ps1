@@ -14,6 +14,7 @@ ForEach ($build in $allBuildsOfMain)
     If (Test-Path -Path "$build\.finished")
     {
       Write-Output "latest successful build: $build"
+      $mainPath = $build
       Break
     }
     Else
@@ -22,10 +23,14 @@ ForEach ($build in $allBuildsOfMain)
     }
   }
 }
-$allPackagesMain = Get-ChildItem -Recurse -Path "$build\*\installer\*.nipkg"
+Write-Output "Getting packages in `"$env:ARCHIVE_PATH`"..."
 $allPackagesThisBuild = Get-ChildItem -Recurse -Path "$env:ARCHIVE_PATH\*\installer\*.nipkg"
 Write-Output "Total packages in this build: $($allPackagesThisBuild.Count)"
+
+Write-Output "Getting packages in `"$mainPath`"..."
+$allPackagesMain = Get-ChildItem -Recurse -Path "$mainPath\*\installer\*.nipkg"
 Write-Output "Total packages in main: $($allPackagesMain.Count)"
+
 ForEach ($package in $allPackagesThisBuild)
 {
   $matchingPackage = $allPackagesMain | Where-Object {$_.Name -match ($package.Name.Split("_")[0])}
