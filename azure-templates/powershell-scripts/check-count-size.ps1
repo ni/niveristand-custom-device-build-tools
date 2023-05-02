@@ -4,7 +4,7 @@ param(
 
 If (-not(Test-Path -Path "$archiveDir\NI\export\main"))
 {
-  Write-Output "Main has not been built yet, skipping this step..."
+  Write-Output "`"main`" has not been built yet, skipping this step..."
 }
 Else
 {
@@ -12,6 +12,7 @@ Else
   $allBuildsOfMain = Get-ChildItem `
     -Path "$archiveDir\NI\export\main\*" `
     | Sort-Object {$_.Name} -Descending
+  $mainPath = "Undefined"
   ForEach ($build in $allBuildsOfMain)
   {
     Write-Output "Checking $build..."
@@ -27,11 +28,10 @@ Else
       Else
       {
         Write-Output ".finished file not found at $build, checking next build..."
-        $mainPath = "Not Found"
       }
     }
   }
-  If ($mainPath -eq "Not Found")
+  If ($mainPath -eq "Undefined")
   {
     Write-Output "No builds were found in main to compare, so skipping the rest of this step..."
   }
