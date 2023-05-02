@@ -24,6 +24,6 @@ If (Test-Path -Path "$archiveDir\NI\export\$sourceBranch\norebuild")
     Exit 1
 }
 
-$archiveFullPath = "$archiveDir\NI\export\$sourceBranch\"
+$archiveFullPath = "$archiveDir\NI\export\$sourceBranch"
 Write-Output "Using `"$archiveFullPath`" as archive path..."
 Write-Host "##vso[task.setvariable variable=CD.ArchivePath]$archiveFullPath"
