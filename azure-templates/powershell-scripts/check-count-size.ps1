@@ -34,10 +34,9 @@ Write-Output "Total packages in main: $($allPackagesMain.Count)"
 ForEach ($package in $allPackagesThisBuild)
 {
   $matchingPackage = $allPackagesMain | Where-Object {$_.Name -match ($package.Name.Split("_")[0])}
-  $index = [array]::IndexOf($allPackagesThisBuild, $package)
   Write-Output "Unpacking $($package.FullName) and comparing to $($matchingPackage.FullName) from `"main`"..."
 
-  $validateDirectory = "$PWD\Validate-$index"
+  $validateDirectory = "$PWD\Validate"
   $validateOutputs = "$validateDirectory\Outputs"
   New-Item -Path "$validateOutputs" -ItemType "Directory" | Out-Null
   tar -xf "$package" -C "$validateDirectory"
@@ -53,7 +52,7 @@ ForEach ($package in $allPackagesThisBuild)
     $validateFileCount = $validateFileSize = 0
   }
 
-  $compareDirectory = "$PWD\Compare-$index"
+  $compareDirectory = "$PWD\Compare"
   $compareOutputs = "$compareDirectory\Outputs"
   New-Item -Path "$compareOutputs" -ItemType "Directory" | Out-Null
   tar -xf "$matchingPackage" -C "$compareDirectory"
@@ -69,9 +68,12 @@ ForEach ($package in $allPackagesThisBuild)
     $compareFileCount = $compareFileSize = 0
   }
 
-    Write-Output "            ________________________________"
-    Write-Output "            | FILE COUNT | FILE SIZE (SUM) |"
-    Write-Output "  main      | $($compareFileCount.ToString().PadLeft(10, " ")) | $($compareFileSize.ToString().PadLeft(15, " ")) |"
-    Write-Output "  thisBuild | $($validateFileCount.ToString().PadLeft(10, " ")) | $($validateFileSize.ToString().PadLeft(15, " ")) |"
-    Write-Output "            ________________________________"
+  Write-Output "            ________________________________"
+  Write-Output "            | FILE COUNT | FILE SIZE (SUM) |"
+  Write-Output "  main      | $($compareFileCount.ToString().PadLeft(10, " ")) | $($compareFileSize.ToString().PadLeft(15, " ")) |"
+  Write-Output "  thisBuild | $($validateFileCount.ToString().PadLeft(10, " ")) | $($validateFileSize.ToString().PadLeft(15, " ")) |"
+  Write-Output "            ________________________________"
+  
+  Remove-Item -Recurse -Path "$validateDirectory"
+  Remove-Item -Recurse -Path "$compareDirectory"
 }
