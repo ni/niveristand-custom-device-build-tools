@@ -84,14 +84,19 @@ Else
           $compareFileCount = $compareFileSize = 0
         }
 
-        Write-Output "            ________________________________"
-        Write-Output "            | FILE COUNT | FILE SIZE (SUM) |"
-        Write-Output "  main      | $($compareFileCount.ToString().PadLeft(10, " ")) | $($compareFileSize.ToString().PadLeft(15, " ")) |"
-        Write-Output "  thisBuild | $($validateFileCount.ToString().PadLeft(10, " ")) | $($validateFileSize.ToString().PadLeft(15, " ")) |"
-        Write-Output "            ________________________________"
+        Write-Output "             ________________________________"
+        Write-Output "             | FILE COUNT | FILE SIZE (SUM) |"
+        Write-Output "        main | $($compareFileCount.ToString().PadLeft(10, " ")) | $($compareFileSize.ToString().PadLeft(15, " ")) |"
+        Write-Output "  this build | $($validateFileCount.ToString().PadLeft(10, " ")) | $($validateFileSize.ToString().PadLeft(15, " ")) |"
+        Write-Output "             ________________________________"
         
         Remove-Item -Recurse -Path "$validateDirectory"
         Remove-Item -Recurse -Path "$compareDirectory"
+        If ($validateFileCount -eq 0)
+        {
+          Write-Output "this build's package file `"$($package.Name)`" has no files in it, so validation has failed.  Exiting..."
+          Exit 1
+        }
       }
       Else
       {
