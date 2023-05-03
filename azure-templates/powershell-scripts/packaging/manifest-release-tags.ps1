@@ -33,7 +33,7 @@ Else
     {
       If (-not("$packageFile" -match "$cleanedSourceBranch.nipkg"))
       {
-        Rename-Item -Path "$packageFile" -NewName ("$packageFile" -replace ".nipkg", "_$cleanedSourceBranch.nipkg")
+        Rename-Item -Path "$packageFile" -NewName ("$packageFile" -replace "\.nipkg", "_$cleanedSourceBranch.nipkg")
       }
     }
   }
