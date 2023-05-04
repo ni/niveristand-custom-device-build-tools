@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='UTF-8'?>
-<Project Type="Project" LVVersion="17008000">
+<Project Type="Project" LVVersion="20008000">
 	<Property Name="CCSymbols" Type="Str"></Property>
 	<Property Name="NI.LV.All.SourceOnly" Type="Bool">true</Property>
 	<Property Name="NI.Project.Description" Type="Str"></Property>
@@ -278,7 +278,7 @@
 				<Property Name="INST_productName" Type="Str">LabVIEW CLI Additional Build Operations</Property>
 				<Property Name="INST_productVersion" Type="Str">1.0.1</Property>
 				<Property Name="InstSpecBitness" Type="Str">32-bit</Property>
-				<Property Name="InstSpecVersion" Type="Str">17018012</Property>
+				<Property Name="InstSpecVersion" Type="Str">20008014</Property>
 				<Property Name="MSI_distID" Type="Str">{2EB41DC8-7032-4901-B756-C9D34A60199E}</Property>
 				<Property Name="MSI_osCheck" Type="Int">0</Property>
 				<Property Name="MSI_upgradeCode" Type="Str">{1E8CD0BA-4105-4ABB-B1EE-55542BEC3EBF}</Property>
@@ -323,7 +323,7 @@
 				<Property Name="INST_productName" Type="Str">LabVIEW CLI Additional Build Operations (debug)</Property>
 				<Property Name="INST_productVersion" Type="Str">1.0.1</Property>
 				<Property Name="InstSpecBitness" Type="Str">32-bit</Property>
-				<Property Name="InstSpecVersion" Type="Str">17018012</Property>
+				<Property Name="InstSpecVersion" Type="Str">20008014</Property>
 				<Property Name="MSI_distID" Type="Str">{B070454E-075B-44F1-A548-47F6787909B7}</Property>
 				<Property Name="MSI_osCheck" Type="Int">0</Property>
 				<Property Name="MSI_upgradeCode" Type="Str">{7A5521DA-F6E6-45DC-90A3-BF92B5DC94C3}</Property>
