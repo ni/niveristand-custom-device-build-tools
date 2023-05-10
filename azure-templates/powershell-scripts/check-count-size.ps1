@@ -48,48 +48,55 @@ Else
     ForEach ($package in $allPackagesThisBuild)
     {
       $matchingPackage = $allPackagesMain | Where-Object {$_.Name -match "$($package.Name.Split("_")[0])_"}
-      Write-Output "Unpacking $($package.FullName) and comparing to $($matchingPackage.FullName) from `"main`"..."
+      If (Test-Path -Path "$matchingPackage")
+      {
+        Write-Output "Unpacking $($package.FullName) and comparing to $($matchingPackage.FullName) from `"main`"..."
 
-      $validateDirectory = "$PWD\Validate"
-      $validateOutputs = "$validateDirectory\Outputs"
-      New-Item -Path "$validateOutputs" -ItemType "Directory" | Out-Null
-      tar -xf "$package" -C "$validateDirectory"
-      tar -xf "$validateDirectory\data.tar.gz" -C "$validateOutputs"
-      $filesInValidatePackage = Get-ChildItem -Recurse -Path "$validateOutputs" -File
-      If ($filesInValidatePackage)
-      {
-        $validateFileCount = $filesInValidatePackage.Count
-        $validateFileSize = ($filesInValidatePackage | Measure-Object -Property "Length" -Sum).Sum  
-      }
-      Else 
-      {
-        $validateFileCount = $validateFileSize = 0
-      }
+        $validateDirectory = "$PWD\Validate"
+        $validateOutputs = "$validateDirectory\Outputs"
+        New-Item -Path "$validateOutputs" -ItemType "Directory" | Out-Null
+        tar -xf "$package" -C "$validateDirectory"
+        tar -xf "$validateDirectory\data.tar.gz" -C "$validateOutputs"
+        $filesInValidatePackage = Get-ChildItem -Recurse -Path "$validateOutputs" -File
+        If ($filesInValidatePackage)
+        {
+          $validateFileCount = $filesInValidatePackage.Count
+          $validateFileSize = ($filesInValidatePackage | Measure-Object -Property "Length" -Sum).Sum  
+        }
+        Else 
+        {
+          $validateFileCount = $validateFileSize = 0
+        }
 
-      $compareDirectory = "$PWD\Compare"
-      $compareOutputs = "$compareDirectory\Outputs"
-      New-Item -Path "$compareOutputs" -ItemType "Directory" | Out-Null
-      tar -xf "$matchingPackage" -C "$compareDirectory"
-      tar -xf "$compareDirectory\data.tar.gz" -C "$compareOutputs"
-      $filesInComparePackage = Get-ChildItem -Recurse -Path "$compareOutputs" -File
-      If ($filesInComparePackage)
-      {
-        $compareFileCount = $filesInComparePackage.Count
-        $compareFileSize = ($filesInComparePackage | Measure-Object -Property "Length" -Sum).Sum  
-      }
-      Else 
-      {
-        $compareFileCount = $compareFileSize = 0
-      }
+        $compareDirectory = "$PWD\Compare"
+        $compareOutputs = "$compareDirectory\Outputs"
+        New-Item -Path "$compareOutputs" -ItemType "Directory" | Out-Null
+        tar -xf "$matchingPackage" -C "$compareDirectory"
+        tar -xf "$compareDirectory\data.tar.gz" -C "$compareOutputs"
+        $filesInComparePackage = Get-ChildItem -Recurse -Path "$compareOutputs" -File
+        If ($filesInComparePackage)
+        {
+          $compareFileCount = $filesInComparePackage.Count
+          $compareFileSize = ($filesInComparePackage | Measure-Object -Property "Length" -Sum).Sum  
+        }
+        Else 
+        {
+          $compareFileCount = $compareFileSize = 0
+        }
 
-      Write-Output "            ________________________________"
-      Write-Output "            | FILE COUNT | FILE SIZE (SUM) |"
-      Write-Output "  main      | $($compareFileCount.ToString().PadLeft(10, " ")) | $($compareFileSize.ToString().PadLeft(15, " ")) |"
-      Write-Output "  thisBuild | $($validateFileCount.ToString().PadLeft(10, " ")) | $($validateFileSize.ToString().PadLeft(15, " ")) |"
-      Write-Output "            ________________________________"
-      
-      Remove-Item -Recurse -Path "$validateDirectory"
-      Remove-Item -Recurse -Path "$compareDirectory"
+        Write-Output "            ________________________________"
+        Write-Output "            | FILE COUNT | FILE SIZE (SUM) |"
+        Write-Output "  main      | $($compareFileCount.ToString().PadLeft(10, " ")) | $($compareFileSize.ToString().PadLeft(15, " ")) |"
+        Write-Output "  thisBuild | $($validateFileCount.ToString().PadLeft(10, " ")) | $($validateFileSize.ToString().PadLeft(15, " ")) |"
+        Write-Output "            ________________________________"
+        
+        Remove-Item -Recurse -Path "$validateDirectory"
+        Remove-Item -Recurse -Path "$compareDirectory"
+      }
+      Else
+      {
+        Write-Output "Skipping `"$($package.FullName)`" because could not find a matching package at `"$($matchingPackage.FullName)`""
+      }
     }
   }
 }
