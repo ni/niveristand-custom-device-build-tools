@@ -48,7 +48,7 @@ Else
     ForEach ($package in $allPackagesThisBuild)
     {
       $matchingPackage = $allPackagesMain | Where-Object {$_.Name -match "$($package.Name.Split("_")[0])_"}
-      If (Test-Path -Path "$matchingPackage")
+      If ("$matchingPackage" -ne "")
       {
         Write-Output "Unpacking $($package.FullName) and comparing to $($matchingPackage.FullName) from `"main`"..."
 
