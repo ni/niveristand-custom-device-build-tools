@@ -7,6 +7,10 @@ parameters:
     type: boolean
     default: false
 
+  - name: enableVirtualPackages
+    type: boolean
+    default: false
+
   - name: silenceDependencyFailures
     type: boolean
     default: false
@@ -181,8 +185,9 @@ stages:
             targetType: 'filePath'
             filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/check-count-size.ps1'
             failOnStdErr: True
-            arguments: >
+            arguments: > # $$ is used in an argument to pass in a boolean, which requires a $ at the beginning
               -archiveDir "${{ parameters.archiveLocation }}"
+              -virtualPackages $${{ parameters.enableVirtualPackages }}
 
         - task: PowerShell@2
           displayName: Add .finished to directory
