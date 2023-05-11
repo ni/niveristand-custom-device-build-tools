@@ -1,5 +1,6 @@
 param(
-  [string]$archiveDir
+  [string]$archiveDir,
+  [boolean]$virtualPackages
 )
 
 If (-not(Test-Path -Path "$archiveDir\NI\export\main"))
@@ -48,7 +49,7 @@ Else
     ForEach ($package in $allPackagesThisBuild)
     {
       $matchingPackage = $allPackagesMain | Where-Object {$_.Name -match "$($package.Name.Split("_")[0])_"}
-      If ("$matchingPackage" -ne "")
+      If (("$matchingPackage" -ne "") -or ($virtualPackages))
       {
         Write-Output "Unpacking $($package.FullName) and comparing to $($matchingPackage.FullName) from `"main`"..."
 

@@ -6,6 +6,10 @@ parameters:
   - name: disableDiff
     type: boolean
     default: false
+  
+  - name: enableVirtualPackages
+    type: boolean
+    default: false
 
   - name: silenceDependencyFailures
     type: boolean
@@ -183,6 +187,7 @@ stages:
             failOnStdErr: True
             arguments: >
               -archiveDir "${{ parameters.archiveLocation }}"
+              -virtualPackages ${{ parameters.enableVirtualPackages }}
 
         - task: PowerShell@2
           displayName: Add .finished to directory
