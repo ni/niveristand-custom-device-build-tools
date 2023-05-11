@@ -95,7 +95,7 @@ Else
       }
       Else
       {
-        Write-Output "Skipping `"$($package.FullName)`" because could not find a matching package at `"$($matchingPackage.FullName)`""
+        Write-Output "Skipping `"$($package.FullName)`" because could not find a matching package."
       }
     }
   }
