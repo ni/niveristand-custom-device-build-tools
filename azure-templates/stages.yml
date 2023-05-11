@@ -185,9 +185,9 @@ stages:
             targetType: 'filePath'
             filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/check-count-size.ps1'
             failOnStdErr: True
-            arguments: >
+            arguments: > # use single quotes to avoid 
               -archiveDir "${{ parameters.archiveLocation }}"
-              -virtualPackages ${{ parameters.enableVirtualPackages }}
+              -virtualPackages $${{ parameters.enableVirtualPackages }}
 
         - task: PowerShell@2
           displayName: Add .finished to directory
