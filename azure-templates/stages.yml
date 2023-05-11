@@ -185,7 +185,7 @@ stages:
             targetType: 'filePath'
             filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/check-count-size.ps1'
             failOnStdErr: True
-            arguments: > # use single quotes to avoid 
+            arguments: > # $$ is used to pass in a boolean, which requires a $ at the beginning
               -archiveDir "${{ parameters.archiveLocation }}"
               -virtualPackages $${{ parameters.enableVirtualPackages }}
 
