@@ -44,6 +44,7 @@ steps:
 
   - task: PowerShell@2
     displayName: ${{ parameters.lvVersion }} Manifest, nipkg labels, and mark package built
+    condition: ne('${{ parameters.packages.controlFileName }}', '')
     inputs:
       targetType: 'filePath'
       filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/packaging/manifest-release-tags.ps1'
