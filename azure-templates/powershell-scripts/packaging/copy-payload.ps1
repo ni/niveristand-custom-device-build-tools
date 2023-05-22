@@ -28,8 +28,9 @@ Else
       Write-Output "copying payload from `"$bitnessSpecificPath`" into nipkg/data install directory..."
       Copy-Item -Recurse `
         -Path "$bitnessSpecificPath\*" `
-        -Destination "$env:CD_NIPKG_PATH\data\$installDir"
-    }
+        -Destination "$env:CD_NIPKG_PATH\data\$installDir" `
+        -Force
+      }
     Else
     {
       Write-Output "no payload at `"$bitnessSpecificPath`" so skipping that location."
