@@ -2,6 +2,10 @@ If ("$env:CD_PACKAGE_FINISHED" -match "$env:CD_LABVIEW_VERSION")
 {
   Write-Output "Package already built for this version of LabVIEW... skipping this step."
 }
+ElseIf ($null -eq $env:CD_INSTALLERPATH)
+{
+  Write-Output "No packages were built as part of this build... skipping this step."
+}
 Else
 {
   If ( ("$env:CD_SOURCEBRANCH" -match "release") -and (Test-Path $env:CD_INSTALLERPATH) )
