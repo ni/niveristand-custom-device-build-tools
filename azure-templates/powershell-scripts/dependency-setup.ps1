@@ -71,6 +71,10 @@ Else
       -Path "$env:CD_WORKSPACE\$env:CD_REPOSITORY\$destination" `
       -ItemType 'Directory'
   }
+  If ($dependencyFilePath -eq "")
+  {
+    Write-Error "None of the build outputs in `"$branchName`" have a valid build with .finished tag."
+  }
   If (Test-Path $dependencyFilePath)
   {
     Copy-Item `
