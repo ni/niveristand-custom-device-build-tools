@@ -73,7 +73,7 @@ Else
   }
   If ($dependencyFilePath -eq "")
   {
-    Write-Error "None of the build outputs in `"$branchName`" have a valid build with .finished tag."
+    Write-Error "None of the build outputs in `"$branchName`" have a valid build with .finished tag.  Dependency could not be found."
   }
   If (Test-Path $dependencyFilePath)
   {
