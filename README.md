@@ -1,6 +1,9 @@
 # NI VeriStand Custom Device Build Tools
 The **niveristand-custom-device-build-tools** repository provides a common set of tools to automate building NI VeriStand custom devices using the [Jenkins automation server](https://jenkins.io/). The intended audience includes custom device developers and integrators.
 
+## Jenkins Branch Archive
+The [main branch](https://github.com/ni/niveristand-custom-device-build-tools/tree/main) of this repository has been updated to support Azure Pipelines. This branch contains the build pipeline steps for Jenkins automation, and will no longer be actively updated for new versions of VeriStand.
+
 ## Usage
 Two files are required in order to use this pipeline for a given repository, a `Jenkinsfile` and a `build.toml` file. Additionally, the pipeline assumes each executor node on the Jenkins server is tagged with certain labels.
 
