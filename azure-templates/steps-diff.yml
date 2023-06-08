@@ -10,6 +10,7 @@ steps:
     displayName: Prepare diff environment
     inputs:
       targetType: 'inline'
+      failOnStdErr: True
       script: |
         pip install virtualenv
         virtualenv env
@@ -22,6 +23,7 @@ steps:
     displayName: Check out NI VS Custom Device Build Tools repository
     inputs:
       targetType: 'inline'
+      failOnStdErr: True
       script: |
         git clone https://github.com/ni/niveristand-custom-device-build-tools.git `
           $(CD.Repository)\niveristand-custom-device-build-tools
@@ -34,6 +36,7 @@ steps:
     displayName: Diff VIs and publish
     inputs:
       targetType: 'inline'
+      failOnStdErr: True
       script: |
         .\env\Scripts\activate
         cd $(CD.Repository)
