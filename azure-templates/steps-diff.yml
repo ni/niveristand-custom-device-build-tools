@@ -10,7 +10,6 @@ steps:
     displayName: Prepare diff environment
     inputs:
       targetType: 'inline'
-      failOnStdErr: True
       script: |
         pip install virtualenv
         virtualenv env
