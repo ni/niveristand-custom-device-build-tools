@@ -11,10 +11,10 @@ steps:
     inputs:
       targetType: 'inline'
       script: |
-        pip install virtualenv
-        virtualenv env
+        py -m pip install virtualenv
+        py -m virtualenv env
         .\env\Scripts\activate
-        pip install requests
+        py -m pip install requests
   - checkout: self
     fetchDepth: 0
     displayName: Fetch full repo
@@ -45,12 +45,12 @@ steps:
         New-Item -Path $currentDir -Name "diff_dir" -ItemType "directory"
         $targetBranch = "$(System.PullRequest.TargetBranch)"
         $resourcesDir = "niveristand-custom-device-build-tools/resources"
-        python -u $resourcesDir/labview_diff.py `
+        py -u $resourcesDir/labview_diff.py `
           "$currentDir" "$currentDir/diff_dir" "${{parameters.lvVersionToDiff}}" `
           --target "origin/$targetBranch"
         $pullRequestID = "$(System.PullRequest.PullRequestNumber)"
         $jobName = "ni/$(CD.Repository)/PR-$pullRequestID"
-        python -u "$resourcesDir/github_commenter.py" --token "$(diffbot-token)" `
+        py -u "$resourcesDir/github_commenter.py" --token "$(diffbot-token)" `
           --pic-dir "$currentDir/diff_dir" --pull-req "$pullRequestID" --info "$jobName" `
           --pic-repo "niveristand-diff-bot/diff-images"
   - task: PowerShell@2
