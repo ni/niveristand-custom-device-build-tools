@@ -12,7 +12,7 @@ steps:
       targetType: 'inline'
       script: |
         py -m pip install virtualenv
-        virtualenv env
+        py -m virtualenv env
         .\env\Scripts\activate
         py -m pip install requests
   - checkout: self
