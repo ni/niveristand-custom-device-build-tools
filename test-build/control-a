@@ -12,5 +12,5 @@ XB-UserVisible: yes
 Section: Add-Ons
 XB-DisplayVersion: {quarterly_display_version}
 XB-DisplayName: Test Package for VeriStand {veristand_version}
-Depends: ni-veristand-{labview_version} (>= {labview_short_version}.0.0), ni-switch (>= 20.0.0)
+Depends: ni-veristand-{labview_version} (>= {labview_short_version}.0.0), ni-switch (>= {major_version}.0.0)
 Recommends: ni-switch-veristand-{veristand_version}-labview-support (>= {display_version}), ni-switch-veristand-{veristand_version}-labview-examples (>= {display_version})
