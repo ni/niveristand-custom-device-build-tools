@@ -33,7 +33,7 @@ Else
     -replace "{display_version}", "$env:CD_RELEASE_VERSION" `
     -replace "{quarterly_display_version}", "$env:CD_RELEASE_QUARTERLY" `
     -replace "{labview_short_version}", "$env:CD_LABVIEW_SHORTVERSION" `
-    -replace "{major_version}", "$env:CD_LABVEW_SHORTVERSION" `
+    -replace "{major_version}", "$env:CD_LABVIEW_SHORTVERSION" `
     -replace "{pkg_x86_bitness_suffix}", "$env:CD_NIPKG_X86SUFFIX"
   Write-Output $contents
   Set-Content -Value $contents -Path "$env:CD_NIPKG_PATH\control\control"
