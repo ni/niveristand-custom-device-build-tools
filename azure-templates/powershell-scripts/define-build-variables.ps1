@@ -18,6 +18,7 @@ Write-Host "##vso[task.setvariable variable=CD.Nipkg.Path]$env:CD_REPOSITORY\nip
 # Set release information
 Write-Output "Determining quarterly release version..."
 $releaseData = "$releaseVersion" -Split "\."
+$majorVersion = $releaseData[0]
 If ($releaseData[1] -eq "0")
 {
     $derivedQuarterlyReleaseVersion = "20$($releaseData[0]) Q1"
@@ -41,6 +42,7 @@ If (-not($derivedQuarterlyReleaseVersion -match "20.*Q.*"))
 Write-Output "Configuring release version to `"$releaseVersion`" and quarterly release version to `"$derivedQuarterlyReleaseVersion`"..."
 Write-Host "##vso[task.setvariable variable=CD.Release.Version]$releaseVersion"
 Write-Host "##vso[task.setvariable variable=CD.Release.Quarterly]$derivedQuarterlyReleaseVersion"
+Write-Host "##vso[task.setvariable variable=CD.Release.MajorVersion]$majorVersion"
 
 # Set LabVIEW version information
 Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Version]$lvVersion"
