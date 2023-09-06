@@ -90,6 +90,9 @@ stages:
               }
             name: FindLast64bitVersion
       - job: DiffVIsforPR
+        pool:
+          name: ${{ parameters.pool }}
+          demands: VeriStand$[ dependencies.Find64bitVersion.outputs['FindLast64bitVersion.version'] ]
         displayName: Diff VIs for PR
         dependsOn: ['Find64bitVersion']
         variables:
@@ -120,6 +123,9 @@ stages:
         # Build Jobs
       - ${{ each item in parameters.lvVersionsToBuild }}:
         - job: Job_Build_${{ item.version }}_${{ item.bitness }}
+          pool:
+            name: ${{ parameters.pool }}
+            demands: VeriStand${{ item.version }}
           displayName: Build LabVIEW ${{ item.version }} ${{ item.bitness }}
           timeoutInMinutes: 120
           steps:
