@@ -118,13 +118,6 @@ stages:
   - template: azure-templates/stages.yml
     parameters:
       stageName: 'BuildMinimalCase'
-      lvVersionsToBuild:
-        - version: '2020'
-          bitness: '32bit'
-        - version: '2021'
-          bitness: '64bit'
-        - version: '2023'
-          bitness: '64bit'
 
       buildSteps:
         - projectLocation: 'test-build\Source\Empty Build Spec.lvproj'

@@ -15,9 +15,20 @@ parameters:
     type: boolean
     default: false
 
-  # lvVersionsToBuild: list of {version, bitness}
+  - name: pool
+    type: string
+    default: DevCentral-VeriStand-CustomDevices
+
+  # lvVersionsToBuild (optional): list of {version, bitness}
   - name: lvVersionsToBuild
     type: object
+    default:
+      - version: '2020'
+        bitness: '32bit'
+      - version: '2021'
+        bitness: '64bit'
+      - version: '2023'
+        bitness: '64bit'
 
   # codegenVis (optional): string array of codegen VI paths
   - name: codegenVis
@@ -61,9 +72,7 @@ stages:
     dependsOn: []
     condition: and(eq(variables['Build.Reason'], 'PullRequest'), eq('${{ parameters.disableDiff }}', false))
     pool:
-      name: DevCentral-VeriStand-CustomDevices
-      demands:
-        - agent.os -equals Windows_NT
+      name: ${{ parameters.pool }}
     jobs:
       - job: Find64bitVersion
         steps:
@@ -106,9 +115,7 @@ stages:
       ${{ if eq(variables['Build.Reason'], 'PullRequest')}}:
         CD.BuildCounter: "9999"
     pool:
-      name: DevCentral-VeriStand-CustomDevices
-      demands:
-        - agent.os -equals Windows_NT
+      name: ${{ parameters.pool }}
     jobs:
         # Build Jobs
       - ${{ each item in parameters.lvVersionsToBuild }}:
