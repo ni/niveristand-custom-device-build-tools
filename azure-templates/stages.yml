@@ -70,7 +70,7 @@ parameters:
 stages:
   - stage: ${{ parameters.stageName }}_DiffVIs
     dependsOn: []
-    condition: and(eq(variables['Build.Reason'], 'PullRequest'), eq('${{ parameters.disableDiff }}', false))
+    condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq('${{ parameters.disableDiff }}', false))
     pool:
       name: ${{ parameters.pool }}
     jobs:
@@ -90,9 +90,6 @@ stages:
               }
             name: FindLast64bitVersion
       - job: DiffVIsforPR
-        pool:
-          name: ${{ parameters.pool }}
-          demands: VeriStand$(diffVersion)
         displayName: Diff VIs for PR
         dependsOn: ['Find64bitVersion']
         variables:
@@ -101,6 +98,9 @@ stages:
             value: $[ dependencies.Find64bitVersion.outputs['FindLast64bitVersion.bitness'] ]
           - name: diffVersion
             value: $[ dependencies.Find64bitVersion.outputs['FindLast64bitVersion.version'] ]
+        pool:
+          name: ${{ parameters.pool }}
+          demands: VeriStand$(diffVersion)
         steps:
           - template: steps-prepare.yml
             parameters:
