@@ -92,7 +92,7 @@ stages:
       - job: DiffVIsforPR
         pool:
           name: ${{ parameters.pool }}
-          # demands: VeriStand$[ dependencies.Find64bitVersion.outputs['FindLast64bitVersion.version'] ]
+          demands: VeriStand$(diffVersion)
         displayName: Diff VIs for PR
         dependsOn: ['Find64bitVersion']
         variables:
