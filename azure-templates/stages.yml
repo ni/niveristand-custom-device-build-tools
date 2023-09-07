@@ -15,9 +15,25 @@ parameters:
     type: boolean
     default: false
 
-  # lvVersionsToBuild: list of {version, bitness}
+  - name: pool
+    type: string
+    default: DevCentral-VeriStand-CustomDevices
+
+  # lvVersiontoDiff (optional): 64-bit LabVIEW version for VI diff
+  - name: lvVersionToDiff
+    type: string
+    default: '2023'
+
+  # lvVersionsToBuild (optional): list of {version, bitness}
   - name: lvVersionsToBuild
     type: object
+    default:
+      - version: '2020'
+        bitness: '32bit'
+      - version: '2021'
+        bitness: '64bit'
+      - version: '2023'
+        bitness: '64bit'
 
   # codegenVis (optional): string array of codegen VI paths
   - name: codegenVis
@@ -61,34 +77,13 @@ stages:
     dependsOn: []
     condition: and(eq(variables['Build.Reason'], 'PullRequest'), eq('${{ parameters.disableDiff }}', false))
     pool:
-      name: DevCentral-VeriStand-CustomDevices
-      demands:
-        - agent.os -equals Windows_NT
+      name: ${{ parameters.pool }}
+      demands: VeriStand${{ parameters.lvVersionToDiff }}
     jobs:
-      - job: Find64bitVersion
-        steps:
-          - powershell: |
-              $lvVersionsToBuild = '${{ convertToJson(parameters.lvVersionsToBuild) }}' | ConvertFrom-Json
-              ForEach ($item in $lvVersionsToBuild)
-              {
-                if ($item.bitness -eq "64bit")
-                {
-                  $bitness = $item.bitness
-                  $version = $item.version
-                  Write-Host "##vso[task.setvariable variable=bitness;isOutput=true;]$bitness"
-                  Write-Host "##vso[task.setvariable variable=version;isOutput=true;]$version"
-                }
-              }
-            name: FindLast64bitVersion
       - job: DiffVIsforPR
         displayName: Diff VIs for PR
-        dependsOn: ['Find64bitVersion']
         variables:
           - group: niveristand-custom-devices
-          - name: diffBitness
-            value: $[ dependencies.Find64bitVersion.outputs['FindLast64bitVersion.bitness'] ]
-          - name: diffVersion
-            value: $[ dependencies.Find64bitVersion.outputs['FindLast64bitVersion.version'] ]
         steps:
           - template: steps-prepare.yml
             parameters:
@@ -96,7 +91,7 @@ stages:
               clearCache: False
           - template: steps-diff.yml
             parameters:
-              lvVersionToDiff: $(diffVersion)
+              lvVersionToDiff: ${{ parameters.lvVersionToDiff }}
 
   - stage: ${{ parameters.stageName }}
     dependsOn: []
@@ -106,13 +101,14 @@ stages:
       ${{ if eq(variables['Build.Reason'], 'PullRequest')}}:
         CD.BuildCounter: "9999"
     pool:
-      name: DevCentral-VeriStand-CustomDevices
-      demands:
-        - agent.os -equals Windows_NT
+      name: ${{ parameters.pool }}
     jobs:
         # Build Jobs
       - ${{ each item in parameters.lvVersionsToBuild }}:
         - job: Job_Build_${{ item.version }}_${{ item.bitness }}
+          pool:
+            name: ${{ parameters.pool }}
+            demands: VeriStand${{ item.version }}
           displayName: Build LabVIEW ${{ item.version }} ${{ item.bitness }}
           timeoutInMinutes: 120
           steps:
