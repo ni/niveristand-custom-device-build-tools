@@ -19,6 +19,7 @@ parameters:
     type: string
     default: DevCentral-VeriStand-CustomDevices
 
+  # lvVersiontoDiff (optional): 64-bit LabVIEW version for VI diff
   - name: lvVersionToDiff
     type: string
     default: '2023'
