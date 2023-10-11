@@ -54,18 +54,21 @@ If ("$lvVersion" -eq "2020")
     Write-Output "Setting variables for LabVIEW 2020..."
     Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Config]8.0.0.0"
     Write-Host "##vso[task.setvariable variable=CD.LabVIEW.ShortVersion]20"
+    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.SupportPackageSuffix]labview-2020-support{pkg_x86_bitness_suffix}"
 }
 Elseif ("$lvVersion" -eq "2021")
 {
     Write-Output "Setting variables for LabVIEW 2021..."
     Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Config]9.0.0.0"
-    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.ShortVersion]21"
+    Write-Host "##vso[task.setvariable variable=CD.LabVIEWPackageSuffix]9.0.0.0"
+    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.SupportPackageSuffix]labview-2021-support{pkg_x86_bitness_suffix}"
 }
 Elseif ("$lvVersion" -eq "2023")
 {
     Write-Output "Setting variables for LabVIEW 2023..."
     Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Config]10.0.0.0"
     Write-Host "##vso[task.setvariable variable=CD.LabVIEW.ShortVersion]23"
+    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.SupportPackageSuffix]labview-support"
 }
 Else
 {
