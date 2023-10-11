@@ -29,7 +29,7 @@ Else
   $contents = (Get-Content -Path "$env:CD_NIPKG_PATH\control\control") `
     -replace "{veristand_version}", "$env:CD_LABVIEW_VERSION" `
     -replace "{labview_version}", "$env:CD_LABVIEW_VERSION" `
-    -replace "{labview_support_package_suffix}", "$env:CD_LABVIEWPACKAGESUFFIX" `
+    -replace "{labview_support_package_suffix}", "$env:CD_LABVIEW_SUPPORTPACKAGESUFFIX" `
     -replace "{nipkg_version}", "$env:CD_RELEASE_VERSION.$env:CD_BUILDCOUNTER" `
     -replace "{display_version}", "$env:CD_RELEASE_VERSION" `
     -replace "{quarterly_display_version}", "$env:CD_RELEASE_QUARTERLY" `

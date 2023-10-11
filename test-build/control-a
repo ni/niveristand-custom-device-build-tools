@@ -3,7 +3,7 @@ Version: {nipkg_version}
 Architecture: windows_x64
 Maintainer: National Instruments <support@ni.com>
 XB-Plugin: file
-Description: Test packaging for NI VeriStand {veristand_version}.  Test all substitutions in the description... veristand_version={veristand_version}, labview_version={labview_version}, labview_suppport_package_suffix={labview_support_package_suffix}, nipkg_version={nipkg_version}, display_version={display_version}, quarterly_display_version={quarterly_display_version}, labview_short_version={labview_short_version}, major_version={major_version}, pkg_x86_bitness_suffix={pkg_x86_bitness_suffix}
+Description: Test packaging for NI VeriStand {veristand_version}.  Test all substitutions in the description... veristand_version={veristand_version}, labview_version={labview_version}, labview_support_package_suffix={labview_support_package_suffix}, nipkg_version={nipkg_version}, display_version={display_version}, quarterly_display_version={quarterly_display_version}, labview_short_version={labview_short_version}, major_version={major_version}, pkg_x86_bitness_suffix={pkg_x86_bitness_suffix}
 XB-Eula: eula-ni-standard
 Priority: standard
 Homepage: http://www.ni.com
