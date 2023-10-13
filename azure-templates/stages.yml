@@ -34,6 +34,8 @@ parameters:
         bitness: '64bit'
       - version: '2023'
         bitness: '64bit'
+      - version: '2024'
+        bitness: '64bit'
 
   # codegenVis (optional): string array of codegen VI paths
   - name: codegenVis

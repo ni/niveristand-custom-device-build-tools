@@ -31,6 +31,10 @@ stages:
           bitness: '32bit'
         - version: '2023'
           bitness: '64bit'
+        - version: '2024'
+          bitness: '32bit'
+        - version: '2024'
+          bitness: '64bit'
 
 # Test Dependencies - multiple dependencies that are expected in the build steps below this
       dependencies:
