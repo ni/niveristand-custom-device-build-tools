@@ -25,7 +25,7 @@ If ($releaseData[1] -eq "0")
 }
 If ($releaseData[1] -eq "3")
 {
-$derivedQuarterlyReleaseVersion = "20$($releaseData[0]) Q2"
+    $derivedQuarterlyReleaseVersion = "20$($releaseData[0]) Q2"
 }
 If ($releaseData[1] -eq "5")
 {
@@ -34,6 +34,10 @@ If ($releaseData[1] -eq "5")
 If ($releaseData[1] -eq "8")
 {
     $derivedQuarterlyReleaseVersion = "20$($releaseData[0]) Q4"
+}
+If ($releaseData[2] -ne "0")
+{
+    $derivedQuarterlyReleaseVersion = "$($derivedQuarterlyReleaseVersion) Patch $($releaseData[2])"
 }
 If (-not($derivedQuarterlyReleaseVersion -match "20.*Q.*"))
 {
