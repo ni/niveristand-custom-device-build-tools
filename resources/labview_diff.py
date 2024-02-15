@@ -101,8 +101,8 @@ def get_changed_labview_files(target_ref):
     """
     changed_files = git_utilities.get_changed_files(target_ref)
 
-    # https://regex101.com/r/W3riqw/1
-    diff_regex = re.compile(r"^(.*\.vi[tm]?)$", re.MULTILINE)
+    # https://regex101.com/r/ZiBEXa/1
+    diff_regex = re.compile(r"^(.*\.(?:vi|vim|vit|ctl))$", re.MULTILINE)
 
     for status, filename in changed_files:
         if re.match(diff_regex, filename):
