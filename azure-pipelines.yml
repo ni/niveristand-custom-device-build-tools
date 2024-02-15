@@ -96,7 +96,7 @@ stages:
           target: 'This value does not matter'
           buildSpec: 'This value does not matter'
 
-      releaseVersion: '23.5.0'
+      releaseVersion: '24.0.0'
       buildOutputLocation: 'test-build\Built'
       archiveLocation: '\\nirvana\Measurements\VeriStandAddons\prototype\niveristand-custom-device-build-tools\complexCase'
 
@@ -127,6 +127,6 @@ stages:
           target: 'My Computer'
           buildSpec: 'EmptySpec'
 
-      releaseVersion: '23.5.0'
+      releaseVersion: '24.0.0'
       buildOutputLocation: 'test-build\Built'
       archiveLocation: '\\nirvana\Measurements\VeriStandAddons\prototype\niveristand-custom-device-build-tools\emptyCase'
