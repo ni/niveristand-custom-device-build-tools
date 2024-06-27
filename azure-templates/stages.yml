@@ -140,6 +140,9 @@ stages:
 
         # Packaging Jobs
       - job: Job_Package_All
+        pool:
+          name: ${{ parameters.pool }}
+          demands: VeriStand${{ parameters.lvVersionToDiff }} -equals True
         dependsOn:
           - ${{ each item in parameters.lvVersionsToBuild }}:
             - Job_Build_${{ item.version }}_${{ item.bitness }}
