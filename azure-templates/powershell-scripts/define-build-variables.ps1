@@ -90,7 +90,7 @@ Elseif ("$lvVersion" -eq "2025")
 }
 Else
 {
-    Write-Error "Invalid LabVIEW version defined in pipeline.  Use either 2020, 2021, 2023, or 2024."
+    Write-Error "Invalid LabVIEW version defined in pipeline.  Use either 2020, 2021, 2023, 2024 or 2025"
 }
 
 # Set LabVIEW Bitness information
