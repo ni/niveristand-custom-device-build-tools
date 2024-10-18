@@ -36,7 +36,7 @@ The currently available parameters are listed in the table below.  Examples of u
 | Parameter Name | Required? | Type | Supported Values |
 | --- | --- | --- | --- |
 | `lvVersionsToBuild` | Yes | Nested Sequence | 1 or more Named Sequences containing elements `version` and `bitness` |
-| →`version` | Yes | String | '2021', '2023', '2024' or '2025' |
+| →`version` | Yes | String | '2023', '2024' or '2025' |
 | →`bitness` | Yes | String | '32bit', '64bit' |
 | `codegenVis` | No | Sequence | 1 or more relative paths to VIs that need to be run before any `buildSteps` are performed |
 | `dependencies` | No | Nested Sequence | 1 or more Named Sequences containing elements `source`, `file`, and `destination` defining dependencies that need to be copied to the specified destination before each `buildStep` |
