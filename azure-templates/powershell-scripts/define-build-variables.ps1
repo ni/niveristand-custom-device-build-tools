@@ -53,21 +53,7 @@ Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Version]$lvVersion"
 Write-Host "##vso[task.setvariable variable=lvVersion]$lvVersion" # Keep legacy version for variables used in packaging
 # When adding a new version of LabVIEW as an option in custom device pipelines, 
 # a new If statement is needed below with relevant variables
-If ("$lvVersion" -eq "2020")
-{
-    Write-Output "Setting variables for LabVIEW 2020..."
-    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Config]8.0.0.0"
-    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.ShortVersion]20"
-    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.SupportPackageSuffix]labview-2020-support{pkg_x86_bitness_suffix}"
-}
-Elseif ("$lvVersion" -eq "2021")
-{
-    Write-Output "Setting variables for LabVIEW 2021..."
-    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Config]9.0.0.0"
-    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.ShortVersion]21"
-    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.SupportPackageSuffix]labview-2021-support{pkg_x86_bitness_suffix}"
-}
-Elseif ("$lvVersion" -eq "2023")
+if ("$lvVersion" -eq "2023")
 {
     Write-Output "Setting variables for LabVIEW 2023..."
     Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Config]10.0.0.0"
@@ -90,7 +76,7 @@ Elseif ("$lvVersion" -eq "2025")
 }
 Else
 {
-    Write-Error "Invalid LabVIEW version defined in pipeline.  Use either 2020, 2021, 2023, 2024 or 2025"
+    Write-Error "Invalid LabVIEW version defined in pipeline.  Use either 2023, 2024 or 2025"
 }
 
 # Set LabVIEW Bitness information
