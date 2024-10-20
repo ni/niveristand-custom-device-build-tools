@@ -53,21 +53,7 @@ Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Version]$lvVersion"
 Write-Host "##vso[task.setvariable variable=lvVersion]$lvVersion" # Keep legacy version for variables used in packaging
 # When adding a new version of LabVIEW as an option in custom device pipelines, 
 # a new If statement is needed below with relevant variables
-If ("$lvVersion" -eq "2020")
-{
-    Write-Output "Setting variables for LabVIEW 2020..."
-    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Config]8.0.0.0"
-    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.ShortVersion]20"
-    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.SupportPackageSuffix]labview-2020-support{pkg_x86_bitness_suffix}"
-}
-Elseif ("$lvVersion" -eq "2021")
-{
-    Write-Output "Setting variables for LabVIEW 2021..."
-    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Config]9.0.0.0"
-    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.ShortVersion]21"
-    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.SupportPackageSuffix]labview-2021-support{pkg_x86_bitness_suffix}"
-}
-Elseif ("$lvVersion" -eq "2023")
+if ("$lvVersion" -eq "2023")
 {
     Write-Output "Setting variables for LabVIEW 2023..."
     Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Config]10.0.0.0"
@@ -81,9 +67,16 @@ Elseif ("$lvVersion" -eq "2024")
     Write-Host "##vso[task.setvariable variable=CD.LabVIEW.ShortVersion]24"
     Write-Host "##vso[task.setvariable variable=CD.LabVIEW.SupportPackageSuffix]labview-support"
 }
+Elseif ("$lvVersion" -eq "2025")
+{
+    Write-Output "Setting variables for LabVIEW 2025..."
+    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Config]12.0.0.0"
+    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.ShortVersion]25"
+    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.SupportPackageSuffix]labview-support"
+}
 Else
 {
-    Write-Error "Invalid LabVIEW version defined in pipeline.  Use either 2020, 2021, 2023, or 2024."
+    Write-Error "Invalid LabVIEW version defined in pipeline.  Use either 2023, 2024 or 2025"
 }
 
 # Set LabVIEW Bitness information
