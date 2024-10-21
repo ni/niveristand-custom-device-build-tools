@@ -61,7 +61,7 @@ stages:
         - projectLocation: 'test-build\Source\Individual Build Specs.lvproj'
           buildOperation: 'ExecuteBuildSpec'
           target: 'My Computer'
-          buildSpec: 'BuildSpecUnique32bitOnly'
+          buildSpec: 'BuildSpecUnique64bitOnly'
           exclusions:
             - version: '2023'
               bitness: '32bit'
@@ -77,7 +77,7 @@ stages:
         - projectLocation: 'test-build\Source\Individual Build Specs.lvproj'
           buildOperation: 'ExecuteBuildSpec'
           target: 'Linux x64'
-          buildSpec: 'BuildSpecUnique64bitOnly'
+          buildSpec: 'BuildSpecUnique32bitOnly'
           exclusions:
             - version: '2023'
               bitness: '64bit'
