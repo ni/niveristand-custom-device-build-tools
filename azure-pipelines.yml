@@ -61,11 +61,11 @@ stages:
         - projectLocation: 'test-build\Source\Individual Build Specs.lvproj'
           buildOperation: 'ExecuteBuildSpec'
           target: 'My Computer'
-          buildSpec: 'BuildSpecUnique64bitOnly'
+          buildSpec: 'BuildSpecUnique32bitOnly'
           exclusions:
-            - version: '2021'
-              bitness: '32bit'
             - version: '2023'
+              bitness: '32bit'
+            - version: '2024'
               bitness: '32bit'
 
         - projectLocation: '$(CD.Workspace)\niveristand-custom-device-build-tools\test-build\Source\Individual Build Specs.lvproj'
@@ -77,11 +77,11 @@ stages:
         - projectLocation: 'test-build\Source\Individual Build Specs.lvproj'
           buildOperation: 'ExecuteBuildSpec'
           target: 'Linux x64'
-          buildSpec: 'BuildSpecUnique32bitOnly'
+          buildSpec: 'BuildSpecUnique64bitOnly'
           exclusions:
-            - version: '2021'
-              bitness: '64bit'
             - version: '2023'
+              bitness: '64bit'
+            - version: '2024'
               bitness: '64bit'
 
 # Test BuildAllTargets special build operation in LabVIEW, override bitness with other operations before and after
