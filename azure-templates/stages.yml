@@ -73,8 +73,10 @@ parameters:
 
   # preBuildScript (optional): inline script to run before build
   - name: preBuildScript
-    type: string
-    default: ''
+    type: object
+    default:
+      script: ''
+      displayName: 'Run Custom Script Before Build'
 
 # Note: If custom build steps are needed for a particular custom device, copy this entire template into the azure-pipeline and add steps before/after as needed
 stages:
@@ -127,12 +129,12 @@ stages:
                 codegenVis:          ${{ parameters.codegenVis }}
                 submodules:          ${{ parameters.submodules }}
 
-            - ${{ if ne(parameters.preBuildScript, '') }}:
+            - ${{ if ne(parameters.preBuildScript.script, '') }}:
               - task: PowerShell@2
-                displayName: Run Custom Script Before Build
+                displayName: ${{ parameters.preBuildScript.displayName }}
                 inputs:
                   targetType: 'inline'
-                  script: ${{ parameters.preBuildScript }}
+                  script: ${{ parameters.preBuildScript.script }}
                   failOnStdErr: True
 
             - ${{ if ne( parameters.buildSteps, '' )}}:

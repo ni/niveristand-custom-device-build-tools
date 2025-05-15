@@ -52,9 +52,11 @@ stages:
         - 'test-build\Source\codegenTest\codegen2.vi'
 
 # Test Pre Build Script Steps
-      preBuildScript: |
-        Write-Host "Running custom PowerShell logic..."
-        Get-ChildItem -Path "$(Build.SourcesDirectory)"
+      preBuildScript:
+        script: |
+          Write-Host "Running custom PowerShell logic..."
+          Get-ChildItem -Path "$(Build.SourcesDirectory)"
+        displayName: "Testing Custom Pre Build Step"
 
 # Test Individual Build Specs using standard build operations in LabVIEW, and exclusion rules
       buildSteps:
