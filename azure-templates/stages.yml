@@ -133,6 +133,7 @@ stages:
                 inputs:
                   targetType: 'inline'
                   script: ${{ parameters.preBuildScript }}
+                  failOnStdErr: True
 
             - ${{ if ne( parameters.buildSteps, '' )}}:
               - ${{ each buildStep in parameters.buildSteps }}:
