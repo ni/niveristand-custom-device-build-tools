@@ -70,12 +70,11 @@ parameters:
     type: string
   - name: archiveLocation
     type: string
-    
-  # preBuildScript (optional): inline script to run before build
-  - name: preBuildScript
-    type: string
-    default: ''
 
+  # preBuildScript (optional): inline script to run before build
+  - name: preBuildScript
+    type: string
+    default: ''
 
 # Note: If custom build steps are needed for a particular custom device, copy this entire template into the azure-pipeline and add steps before/after as needed
 stages:
@@ -127,13 +126,13 @@ stages:
                 buildOutputLocation: ${{ parameters.buildOutputLocation }}
                 codegenVis:          ${{ parameters.codegenVis }}
                 submodules:          ${{ parameters.submodules }}
-                
+
             - ${{ if ne(parameters.preBuildScript, '') }}:
-              - task: PowerShell@2
-                displayName: Run Custom Script Before Build
-                inputs:
-                  targetType: 'inline'
-                  script: ${{ parameters.preBuildScript }}
+              - task: PowerShell@2
+                displayName: Run Custom Script Before Build
+                inputs:
+                  targetType: 'inline'
+                  script: ${{ parameters.preBuildScript }}
 
             - ${{ if ne( parameters.buildSteps, '' )}}:
               - ${{ each buildStep in parameters.buildSteps }}:
