@@ -44,10 +44,10 @@ steps:
     submodules: ${{ parameters.submodules }}
     persistCredentials: ${{ parameters.persistCredentials }}
   
-  - script: |
-      echo "Listing all Build.* variables:"
-      printenv | grep ^BUILD_
-    displayName: 'Show Build.* variables (Bash)'
+  - powershell: |
+     Write-Host "Listing all Build.* variables:"
+     Get-ChildItem Env: | Where-Object { $_.Name -like "BUILD_*" }
+    displayName: 'Show Build.* variables (PowerShell)'
 
   - script: |
       echo on
