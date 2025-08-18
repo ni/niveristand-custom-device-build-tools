@@ -40,7 +40,7 @@ steps:
     # Checkout Self should be second - the checkout order doesn't matter in most cases, 
     # but we want the dev branch (self) to be checked out last so that it's used for PR builds in niveristand-custom-device-build-tools
   - checkout: self
-    displayName: Check out repository to build
+    displayName: Check out repository to build (options - submodules = ${{ parameters.submodules }}, persistCredentials = ${{ parameters.persistCredentials }})
     submodules: ${{ parameters.submodules }}
     persistCredentials: ${{ parameters.persistCredentials }}
 
