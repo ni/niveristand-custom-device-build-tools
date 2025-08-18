@@ -47,11 +47,13 @@ steps:
   - powershell: |
      Write-Host "Listing all Build.* variables:"
      Get-ChildItem Env: | Where-Object { $_.Name -like "BUILD_*" }
+     Write-Host "Listing all CD.* variables:"
+     Get-ChildItem Env: | Where-Object { $_.Name -like "CD*" }    
     displayName: 'Show Build.* variables (PowerShell)'
 
   - script: |
       echo on
-      cd $(Build.SourcesDirectory)/$(CD.Repository)
+      cd $(Build.SourcesDirectory)\\$(CD.Repository)
       dir
       cd $(CD.Repository)
       dir
