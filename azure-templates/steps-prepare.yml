@@ -51,21 +51,14 @@ steps:
      Get-ChildItem Env: | Where-Object { $_.Name -like "CD*" }    
     displayName: 'Show Build.* variables (PowerShell)'
 
-  - script: |
-      echo on
-      cd $(Build.SourcesDirectory)\\$(CD.Repository)
-      dir
-      cd $(CD.Repository)
-      dir
-      echo off
-      git config --global credential.helper store
-      git submodule update --init --recursive
-    env:
-      GIT_ASKPASS: echo
-      GIT_USERNAME: $(System.AccessToken)
-      GIT_PASSWORD: $(System.AccessToken)
-    displayName: 'Manual Submodule Clone'
-
+  - powershell: |
+     $repo_name = "$env:BUILD_REPOSITORY_NAME" -replace ".+\/", ""
+     Set-Location $env:BUILD_SOURCESDIRECTORY\$repo_name
+     Write-Host "Configuring Git credentials..."
+     git config --global credential.helper store
+     Write-Host "Updating submodules..."
+     git submodule update --init --recursive
+    displayName: 'Manual Submodule Clone (PowerShell)'
 
   - task: PowerShell@2
     displayName: Configure Source Branch and Custom Device Repository Name
