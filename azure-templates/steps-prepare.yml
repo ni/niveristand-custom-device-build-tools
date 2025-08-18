@@ -43,7 +43,7 @@ steps:
     # Checkout Self should be second - the checkout order doesn't matter in most cases, 
     # but we want the dev branch (self) to be checked out last so that it's used for PR builds in niveristand-custom-device-build-tools
   - checkout: self
-    displayName: Check out repository to build (options - submodules = ${{ parameters.submodules }}, persistCredentials = ${{ parameters.persistCredentials }})
+    displayName: Check out repository to build (options - submodules = ${{ parameters.submodules }}, persistCredentials = ${{ parameters.persistCredentials }}, privateSubmodules)
     submodules: ${{ parameters.submodules }}
     persistCredentials: ${{ parameters.persistCredentials }}
   
@@ -55,7 +55,7 @@ steps:
         git config --global credential.helper store
         Write-Host "Updating submodules..."
         git submodule update --init --recursive
-      displayName: 'Manual Submodule Clone (PowerShell)'
+      displayName: 'Private Submodule Clone (PowerShell)'
 
   - task: PowerShell@2
     displayName: Configure Source Branch and Custom Device Repository Name
