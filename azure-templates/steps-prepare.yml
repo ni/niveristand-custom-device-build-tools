@@ -52,13 +52,21 @@ steps:
         Write-Host "Configuring Git credentials..."
         git config --global credential.helper store
       displayName: 'Configure Credentials for private submodule update (PowerShell)'
-      
+
   - ${{ if eq(parameters.privateSubmodules, True) }}:
     - powershell: |
         $repo_name = "$env:BUILD_REPOSITORY_NAME" -replace ".+\/", ""
         Set-Location $env:BUILD_SOURCESDIRECTORY\$repo_name
-        Write-Host "Updating submodules..."
-        git submodule update --init --recursive
+        status = git submodule status
+        Write-Host "Submodule status:"
+        Write-Host $status
+        if ($status -match "^[ ]")  {
+          Write-Host "No submodules to update."
+          exit 0
+        } else {
+          Write-Host "Updating submodules..."
+          git submodule update --init --recursive
+        }
       displayName: 'Private Submodule Clone (PowerShell)'
 
   - task: PowerShell@2
