@@ -65,6 +65,9 @@ parameters:
   - name: persistCredentials
     type: boolean
     default: false
+  - name: privateSubmodules
+    type: boolean
+    default: false
 
   # strings (releaseVersion, quarterlyReleaseVersion, buildOutputLocation, archiveLocation)
   - name: releaseVersion
@@ -125,6 +128,7 @@ stages:
                 codegenVis:          ${{ parameters.codegenVis }}
                 submodules:          ${{ parameters.submodules }}
                 persistCredentials:  ${{ parameters.persistCredentials }}
+                privateSubmodules:   ${{ parameters.privateSubmodules }}
 
             - ${{ if ne( parameters.buildSteps, '' )}}:
               - ${{ each buildStep in parameters.buildSteps }}:
