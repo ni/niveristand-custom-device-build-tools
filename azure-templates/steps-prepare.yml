@@ -57,7 +57,7 @@ steps:
     - powershell: |
         $repo_name = "$env:BUILD_REPOSITORY_NAME" -replace ".+\/", ""
         Set-Location $env:BUILD_SOURCESDIRECTORY\$repo_name
-        status = git submodule status
+        $status = git submodule status
         Write-Host "Submodule status:"
         Write-Host $status
         if ($status -match "^[ ]")  {
