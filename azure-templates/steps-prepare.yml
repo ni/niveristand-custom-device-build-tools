@@ -45,8 +45,13 @@ steps:
     persistCredentials: ${{ parameters.persistCredentials }}
   
   - script: |
+      echo "Listing all Build.* variables:"
+      printenv | grep ^BUILD_
+    displayName: 'Show Build.* variables (Bash)'
+
+  - script: |
       echo on
-      cd $(Build.SourcesDirectory)
+      cd $(Build.SourcesDirectory)/$(CD.Repository)
       dir
       cd $(CD.Repository)
       dir
