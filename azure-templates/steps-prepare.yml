@@ -64,6 +64,8 @@ steps:
           Write-Host "No submodules to update."
           exit 0
         } else {
+          Write-Host "Cleaning submodules..."
+          git submodule deinit -f .
           Write-Host "Updating submodules..."
           git submodule update --init --recursive
         }
