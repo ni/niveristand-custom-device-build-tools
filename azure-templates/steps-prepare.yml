@@ -47,6 +47,7 @@ steps:
   - script: |
       echo on
       cd $(Build.SourcesDirectory)
+      dir
       echo off
       git config --global credential.helper store
       git submodule update --init --recursive
