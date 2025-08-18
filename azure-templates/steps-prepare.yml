@@ -45,9 +45,14 @@ steps:
     persistCredentials: ${{ parameters.persistCredentials }}
   
   - script: |
-      git config --list
+      git config --global credential.helper store
       git submodule update --init --recursive
-    displayName: 'Debug Git and Submodule'
+    env:
+      GIT_ASKPASS: echo
+      GIT_USERNAME: $(System.AccessToken)
+      GIT_PASSWORD: $(System.AccessToken)
+    displayName: 'Manual Submodule Clone'
+
 
   - task: PowerShell@2
     displayName: Configure Source Branch and Custom Device Repository Name
