@@ -45,8 +45,9 @@ steps:
     persistCredentials: ${{ parameters.persistCredentials }}
   
   - script: |
-      cd "$(CD.Workspace)\$(CD.Repository)"
       echo on
+      cd $(Build.SourcesDirectory)
+      echo off
       git config --global credential.helper store
       git submodule update --init --recursive
     env:
