@@ -42,11 +42,10 @@ steps:
   - checkout: self
     displayName: Check out repository to build (options - submodules = ${{ parameters.submodules }}, persistCredentials = ${{ parameters.persistCredentials }})
     submodules: False
-    persistCredentials: False
+    persistCredentials: ${{ parameters.persistCredentials }}
   
   - script: |
       git config --list
-      cat .gitmodules
       git submodule update --init --recursive
     displayName: 'Debug Git and Submodule'
 
