@@ -46,13 +46,17 @@ steps:
     displayName: Check out repository to build (options - submodules = ${{ parameters.submodules }}, persistCredentials = ${{ parameters.persistCredentials }}, privateSubmodules)
     submodules: ${{ parameters.submodules }}
     persistCredentials: ${{ parameters.persistCredentials }}
-  
+
+  - ${{ if eq(parameters.privateSubmodules, True) }}:
+    - powershell: |
+        Write-Host "Configuring Git credentials..."
+        git config --global credential.helper store
+      displayName: 'Configure Credentials for private submodule update (PowerShell)'
+      
   - ${{ if eq(parameters.privateSubmodules, True) }}:
     - powershell: |
         $repo_name = "$env:BUILD_REPOSITORY_NAME" -replace ".+\/", ""
         Set-Location $env:BUILD_SOURCESDIRECTORY\$repo_name
-        Write-Host "Configuring Git credentials..."
-        git config --global credential.helper store
         Write-Host "Updating submodules..."
         git submodule update --init --recursive
       displayName: 'Private Submodule Clone (PowerShell)'
