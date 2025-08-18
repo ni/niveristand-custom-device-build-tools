@@ -21,6 +21,9 @@ parameters:
   - name: submodules
     type: boolean
     default: False
+  - name: persistCredentials
+    type: boolean
+    default: False
 # the following parameters allow skipping portions of this yaml file
   - name: clearCache
     type: boolean
@@ -39,6 +42,7 @@ steps:
   - checkout: self
     displayName: Check out repository to build
     submodules: ${{ parameters.submodules }}
+    persistCredentials: ${{ parameters.persistCredentials }}
 
   - task: PowerShell@2
     displayName: Configure Source Branch and Custom Device Repository Name
