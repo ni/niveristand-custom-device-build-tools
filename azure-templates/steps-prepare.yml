@@ -41,8 +41,14 @@ steps:
     # but we want the dev branch (self) to be checked out last so that it's used for PR builds in niveristand-custom-device-build-tools
   - checkout: self
     displayName: Check out repository to build (options - submodules = ${{ parameters.submodules }}, persistCredentials = ${{ parameters.persistCredentials }})
-    submodules: ${{ parameters.submodules }}
-    persistCredentials: ${{ parameters.persistCredentials }}
+    submodules: False
+    persistCredentials: False
+  
+  - script: |
+      git config --list
+      cat .gitmodules
+      git submodule update --init --recursive
+    displayName: 'Debug Git and Submodule'
 
   - task: PowerShell@2
     displayName: Configure Source Branch and Custom Device Repository Name
