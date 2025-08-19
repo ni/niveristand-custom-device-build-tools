@@ -27,6 +27,9 @@ parameters:
   - name: submodulesToUse
     type: object
     default: []
+  - name: manualPAT
+    type: string
+    default: '' 
 
 # the following parameters allow skipping portions of this yaml file
   - name: clearCache
@@ -57,14 +60,14 @@ steps:
   - ${{ if eq(parameters.submodules, False) }}:
     - powershell: |
         # Check if PAT variable is configured
-        $secretValue = $env:MY_GITHUB_PAT
+        $secretValue = ${{ parameters.manualPAT }}
         if ($secretValue) {
             Write-Host "Secret variable is set."
         } else {
             Write-Host "Secret variable is not set."
         }
         # Configure Git to use the PAT for authentication
-        $pat = $env:MY_GITHUB_PAT
+        $pat = $env:${{ parameters.manualPAT }}
         $authString = "pat:$pat"
         $repo_name = "$env:BUILD_REPOSITORY_NAME" -replace ".+\/", ""
         Set-Location $env:BUILD_SOURCESDIRECTORY\$repo_name
