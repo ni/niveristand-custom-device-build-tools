@@ -41,6 +41,8 @@ parameters:
 
 
 steps:
+  env:
+    MY_GITHUB_PAT: ${{ parameters.manualPAT }}
   - checkout: niveristand-custom-device-build-tools
     displayName: Check out NI VS Custom Device Build Tools repository
 
@@ -60,14 +62,14 @@ steps:
   - ${{ if eq(parameters.submodules, False) }}:
     - powershell: |
         # Check if PAT variable is configured
-        $secretValue = ${{ parameters.manualPAT }}
+        $secretValue = $env:MY_GITHUB_PAT
         if ($secretValue) {
             Write-Host "Secret variable is set."
         } else {
             Write-Host "Secret variable is not set."
         }
         # Configure Git to use the PAT for authentication
-        $pat = $env:${{ parameters.manualPAT }}
+        $pat = $env:MY_GITHUB_PAT
         $authString = "pat:$pat"
         $repo_name = "$env:BUILD_REPOSITORY_NAME" -replace ".+\/", ""
         Set-Location $env:BUILD_SOURCESDIRECTORY\$repo_name
