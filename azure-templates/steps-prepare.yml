@@ -70,7 +70,7 @@ steps:
         }
         foreach ($submodule in $submodules) {
           # Get the URL of the submodule
-          git submodule deinit -f ./"$submodule"
+          # git submodule deinit -f ./"$submodule"
           # git rm --cached ./"$submodule"
 
           $url = git config --file .gitmodules --get "submodule.$submodule.url"
