@@ -70,7 +70,7 @@ steps:
         }
         foreach ($submodule in $submodules) {
           # Get the URL of the submodule
-          # git submodule deinit -f ./"$submodule"
+          git submodule deinit -f ./"$submodule"
           # git rm --cached ./"$submodule"
 
           $url = git config --file .gitmodules --get "submodule.$submodule.url"
@@ -81,7 +81,7 @@ steps:
           # Encode PAT for Basic Auth
           $base64Auth = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$authString"))
           # Update submodule with authentication
-          git -c "http.$url.extraheader=AUTHORIZATION: Basic $base64Auth" submodule update --init --recursive $submodule
+          git -c "http.$url.extraheader=AUTHORIZATION: Basic $base64Auth" submodule update --init --recursive --verbose
         }
       displayName: 'Private Submodule Clone (PowerShell)'
 
