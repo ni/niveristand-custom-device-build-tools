@@ -130,6 +130,7 @@ stages:
                 codegenVis:          ${{ parameters.codegenVis }}
                 submodules:          ${{ parameters.submodules }}
                 persistCredentials:  ${{ parameters.persistCredentials }}
+                submodulesToUse:     ${{ parameters.submodulesToUse }}
 
             - ${{ if ne( parameters.buildSteps, '' )}}:
               - ${{ each buildStep in parameters.buildSteps }}:
