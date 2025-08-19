@@ -57,7 +57,8 @@ steps:
   - ${{ if eq(parameters.submodules, False) }}:
     - powershell: |
         # Configure Git to use the PAT for authentication
-        $pat = pat:$env:MY_GITHUB_PAT
+        $pat = $env:MY_GITHUB_PAT
+        $authString = "pat:$pat"
         $repo_name = "$env:BUILD_REPOSITORY_NAME" -replace ".+\/", ""
         Set-Location $env:BUILD_SOURCESDIRECTORY\$repo_name
         $status = git submodule status
@@ -75,7 +76,7 @@ steps:
           Write-Host "URL: $url"
           
           # Encode PAT for Basic Auth
-          $base64Auth = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$pat"))
+          $base64Auth = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$authString"))
           # Update submodule with authentication
           git -c "http.$url.extraheader=AUTHORIZATION: Basic $base64Auth" submodule update --init --recursive -- "$submodule"
         }
