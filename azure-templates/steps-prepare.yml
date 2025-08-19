@@ -24,6 +24,10 @@ parameters:
   - name: persistCredentials
     type: boolean
     default: False
+  - name: submodulesToUse
+    type: object
+    default: []
+
 # the following parameters allow skipping portions of this yaml file
   - name: clearCache
     type: boolean
@@ -36,6 +40,11 @@ parameters:
 steps:
   - checkout: niveristand-custom-device-build-tools
     displayName: Check out NI VS Custom Device Build Tools repository
+
+    # checkout submodules to test their accessibility
+  - ${{ each repo in parameters.submodulesToUse }}:
+        - checkout: ${{ repo }}
+        displayName: Check out ${{ repo }}
 
     # Checkout Self should be second - the checkout order doesn't matter in most cases, 
     # but we want the dev branch (self) to be checked out last so that it's used for PR builds in niveristand-custom-device-build-tools
