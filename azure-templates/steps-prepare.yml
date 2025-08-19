@@ -56,21 +56,23 @@ steps:
 
   - ${{ if eq(parameters.submodules, False) }}:
     - powershell: |
-        Write-Host "Configuring Git credentials..."
-        git config --global credential.helper store
-        $repo_name = "$env:BUILD_REPOSITORY_NAME" -replace ".+\/", ""
-        Set-Location $env:BUILD_SOURCESDIRECTORY\$repo_name
-        $status = git submodule status
-        Write-Host "Submodule status:"
-        Write-Host $status
-        if ($status -match "^[ ]")  {
-          Write-Host "No submodules to update."
-          exit 0
-        } else {
-          Write-Host "Cleaning submodules..."
-          git submodule deinit -f .
-          Write-Host "Updating submodules..."
-          git submodule update --init --recursive
+        # Configure Git to use the PAT for authentication
+        $pat = $env:MY_GITHUB_PAT
+        # Get all submodule paths
+        $submodules = git config --file .gitmodules --get-regexp path | ForEach-Object {
+        $_ -replace 'submodule\..*\.path ', ''
+        }
+        foreach ($submodule in $submodules) {
+          # Get the URL of the submodule
+          $url = git config --file .gitmodules --get "submodule.$submodule.url"
+          
+          Write-Host "Submodule: $submodule"
+          Write-Host "URL: $url"
+          
+          # Encode PAT for Basic Auth
+          $base64Auth = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$pat"))
+          # Update submodule with authentication
+          git -c "http.$url.extraheader=AUTHORIZATION: Basic $base64Auth" submodule update --init --recursive -- "$submodule"
         }
       displayName: 'Private Submodule Clone (PowerShell)'
 
