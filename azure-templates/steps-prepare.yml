@@ -24,9 +24,9 @@ parameters:
   - name: persistCredentials
     type: boolean
     default: False
-  - name: submodulesToUse
-    type: object
-    default: []
+  - name: privateSubmodules
+    type: boolean
+    default: False
   - name: manualPAT
     type: string
     default: '' 
@@ -45,59 +45,34 @@ steps:
   - checkout: niveristand-custom-device-build-tools
     displayName: Check out NI VS Custom Device Build Tools repository
 
-    # checkout submodules to test their accessibility
-  - ${{ each repo in parameters.submodulesToUse }}:
-    - checkout: ${{ repo }}
-      displayName: Check out ${{ repo }}
-      persistCredentials: ${{ parameters.persistCredentials }}
-
     # Checkout Self should be second - the checkout order doesn't matter in most cases, 
     # but we want the dev branch (self) to be checked out last so that it's used for PR builds in niveristand-custom-device-build-tools
+    # Perform default submodule update if selected
   - checkout: self
     displayName: Check out repository to build (options - submodules = ${{ parameters.submodules }}, persistCredentials = ${{ parameters.persistCredentials }}, privateSubmodules)
     submodules: ${{ parameters.submodules }}
     persistCredentials: ${{ parameters.persistCredentials }}
 
-  - ${{ if eq(parameters.submodules, False) }}:
+    # if private submodules are enabled, we must update them manually using the provided PAT
+  - ${{ if eq(parameters.submodules, False) and eq(parameters.privateSubmodules, True) }}:
     - powershell: |
         # Check if PAT variable is configured
-        $secretValue = $env:MY_GITHUB_PAT
-        if ($secretValue) {
-            Write-Host "Secret variable is set."
+        $pat = $env:MY_GITHUB_PAT
+        if ($pat) {
+            Write-Host "PAT is set."
         } else {
-            Write-Host "Secret variable is not set."
+            Write-Host "PAT is not set."
         }
         # Configure Git to use the PAT for authentication
-        $pat = $env:MY_GITHUB_PAT
-        $authString = "pat:$pat"
         $repo_name = "$env:BUILD_REPOSITORY_NAME" -replace ".+\/", ""
         Set-Location $env:BUILD_SOURCESDIRECTORY\$repo_name
         $status = git submodule status
         Write-Host "Submodule status:"
         Write-Host $status
-        # Get all submodule paths
-        $submodules = git config --file .gitmodules --get-regexp path | ForEach-Object {
-        $_ -replace 'submodule\..*\.path ', ''
-        }
-        foreach ($submodule in $submodules) {
-          # Get the URL of the submodule
-          # git submodule deinit -f ./"$submodule"
-          # git rm --cached ./"$submodule"
-
-          $url = git config --file .gitmodules --get "submodule.$submodule.url"
-          
-          Write-Host "Submodule: $submodule"
-          Write-Host "URL: $url"
-          
-          # Encode PAT for Basic Auth
-          # $base64Auth = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$authString"))
-          Write-Host "Base64 Auth: $base64Auth"
-          # Update submodule with authentication
-          # git -c "http.$url.extraheader=AUTHORIZATION: Basic $base64Auth" submodule update --init --recursive --verbose
-          git config --global url."https://$env:MY_GITHUB_PAT@github.com".insteadOf "https://github.com"
-          git submodule update --init --recursive --verbose
-        }
-      displayName: 'Private Submodule Clone (PowerShell)'
+        # Apply PAT to submodules
+        git config --global url."https://$env:MY_GITHUB_PAT@github.com".insteadOf "https://github.com"
+        git submodule update --init --recursive --verbose
+      displayName: 'Update private submodules'
       env:
         MY_GITHUB_PAT: ${{ parameters.manualPAT }}
 
