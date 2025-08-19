@@ -80,6 +80,7 @@ steps:
           
           # Encode PAT for Basic Auth
           $base64Auth = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$authString"))
+          Write-Host "Base64 Auth: $base64Auth"
           # Update submodule with authentication
           git -c "http.$url.extraheader=AUTHORIZATION: Basic $base64Auth" submodule update --init --recursive --verbose
         }
