@@ -65,9 +65,9 @@ parameters:
   - name: persistCredentials
     type: boolean
     default: false
-  - name: submodulesToUse
-    type: object
-    default: []
+  - name: privateSubmodules
+    type: boolean
+    default: false
   - name: manualPAT
     type: string
     default: ''
@@ -133,7 +133,7 @@ stages:
                 codegenVis:          ${{ parameters.codegenVis }}
                 submodules:          ${{ parameters.submodules }}
                 persistCredentials:  ${{ parameters.persistCredentials }}
-                submodulesToUse:     ${{ parameters.submodulesToUse }}
+                privateSubmodules:   ${{ parameters.privateSubmodules }}
                 manualPAT:           ${{ parameters.manualPAT }}
 
             - ${{ if ne( parameters.buildSteps, '' )}}:
