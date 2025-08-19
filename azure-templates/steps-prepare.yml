@@ -57,7 +57,7 @@ steps:
   - ${{ if eq(parameters.submodules, False) }}:
     - powershell: |
         # Configure Git to use the PAT for authentication
-        $pat = $env:MY_GITHUB_PAT
+        $pat = pat:$env:MY_GITHUB_PAT
         $repo_name = "$env:BUILD_REPOSITORY_NAME" -replace ".+\/", ""
         Set-Location $env:BUILD_SOURCESDIRECTORY\$repo_name
         $status = git submodule status
