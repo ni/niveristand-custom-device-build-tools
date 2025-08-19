@@ -47,14 +47,10 @@ steps:
     submodules: ${{ parameters.submodules }}
     persistCredentials: ${{ parameters.persistCredentials }}
 
-  - ${{ if eq(parameters.privateSubmodules, True) }}:
+  - ${{ if eq(parameters.submodules, False) }}:
     - powershell: |
         Write-Host "Configuring Git credentials..."
         git config --global credential.helper store
-      displayName: 'Configure Credentials for private submodule update (PowerShell)'
-
-  - ${{ if eq(parameters.privateSubmodules, True) }}:
-    - powershell: |
         $repo_name = "$env:BUILD_REPOSITORY_NAME" -replace ".+\/", ""
         Set-Location $env:BUILD_SOURCESDIRECTORY\$repo_name
         $status = git submodule status
