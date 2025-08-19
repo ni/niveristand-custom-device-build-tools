@@ -114,7 +114,8 @@ stages:
         - job: Job_Build_${{ item.version }}_${{ item.bitness }}
           uses: 
             repositories: 
-            ${{ parameters.submodulesToUse }}
+              ${{ each repo in parameters.submodulesToUse }}:
+              - ${{ repo }}
           pool:
             name: ${{ parameters.pool }}
             demands: VeriStand${{ item.version }} -equals True
