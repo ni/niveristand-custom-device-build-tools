@@ -41,8 +41,7 @@ parameters:
 
 
 steps:
-  env:
-    MY_GITHUB_PAT: ${{ parameters.manualPAT }}
+  
   - checkout: niveristand-custom-device-build-tools
     displayName: Check out NI VS Custom Device Build Tools repository
 
@@ -97,6 +96,8 @@ steps:
           git -c "http.$url.extraheader=AUTHORIZATION: Basic $base64Auth" submodule update --init --recursive --verbose
         }
       displayName: 'Private Submodule Clone (PowerShell)'
+      env:
+        MY_GITHUB_PAT: ${{ parameters.manualPAT }}
 
   - task: PowerShell@2
     displayName: Configure Source Branch and Custom Device Repository Name
