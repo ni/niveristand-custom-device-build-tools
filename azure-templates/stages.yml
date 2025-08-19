@@ -68,6 +68,9 @@ parameters:
   - name: submodulesToUse
     type: object
     default: []
+  - name: manualPAT
+    type: string
+    default: ''
 
   # strings (releaseVersion, quarterlyReleaseVersion, buildOutputLocation, archiveLocation)
   - name: releaseVersion
@@ -131,6 +134,7 @@ stages:
                 submodules:          ${{ parameters.submodules }}
                 persistCredentials:  ${{ parameters.persistCredentials }}
                 submodulesToUse:     ${{ parameters.submodulesToUse }}
+                manualPAT:           ${{ parameters.manualPAT }}
 
             - ${{ if ne( parameters.buildSteps, '' )}}:
               - ${{ each buildStep in parameters.buildSteps }}:
