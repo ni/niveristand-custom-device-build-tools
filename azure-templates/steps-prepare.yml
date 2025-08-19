@@ -24,9 +24,6 @@ parameters:
   - name: persistCredentials
     type: boolean
     default: False
-  - name: privateSubmodules
-    type: boolean
-    default: False
 # the following parameters allow skipping portions of this yaml file
   - name: clearCache
     type: boolean
