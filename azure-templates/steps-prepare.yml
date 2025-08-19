@@ -90,10 +90,12 @@ steps:
           Write-Host "URL: $url"
           
           # Encode PAT for Basic Auth
-          $base64Auth = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$authString"))
+          # $base64Auth = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$authString"))
           Write-Host "Base64 Auth: $base64Auth"
           # Update submodule with authentication
-          git -c "http.$url.extraheader=AUTHORIZATION: Basic $base64Auth" submodule update --init --recursive --verbose
+          # git -c "http.$url.extraheader=AUTHORIZATION: Basic $base64Auth" submodule update --init --recursive --verbose
+          git config --global url."https://$env:MY_GITHUB_PAT@github.com".insteadOf "https://github.com"
+          git submodule update --init --recursive --verbose
         }
       displayName: 'Private Submodule Clone (PowerShell)'
       env:
