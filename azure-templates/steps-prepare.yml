@@ -54,7 +54,7 @@ steps:
     persistCredentials: ${{ parameters.persistCredentials }}
 
     # if private submodules are enabled, we must update them manually using the provided PAT
-  - ${{ if eq(parameters.submodules, False) and eq(parameters.privateSubmodules, True) }}:
+  - ${{ if and(eq(parameters.submodules, False), eq(parameters.privateSubmodules, True)) }}:
     - powershell: |
         # Check if PAT variable is configured
         $pat = $env:MY_GITHUB_PAT
