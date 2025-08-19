@@ -56,6 +56,13 @@ steps:
 
   - ${{ if eq(parameters.submodules, False) }}:
     - powershell: |
+        # Check if PAT variable is configured
+        $secretValue = $env:MY_GITHUB_PAT
+        if ($secretValue) {
+            Write-Host "Secret variable is set."
+        } else {
+            Write-Host "Secret variable is not set."
+        }
         # Configure Git to use the PAT for authentication
         $pat = $env:MY_GITHUB_PAT
         $authString = "pat:$pat"
