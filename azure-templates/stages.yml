@@ -22,17 +22,17 @@ parameters:
   # lvVersiontoDiff (optional): 64-bit LabVIEW version for VI diff
   - name: lvVersionToDiff
     type: string
-    default: '2023'
+    default: '2024'
 
   # lvVersionsToBuild (optional): list of {version, bitness}
   - name: lvVersionsToBuild
     type: object
     default:
-      - version: '2023'
-        bitness: '64bit'
       - version: '2024'
         bitness: '64bit'
       - version: '2025'
+        bitness: '64bit'
+      - version: '2026'
         bitness: '64bit'
 
   # codegenVis (optional): string array of codegen VI paths

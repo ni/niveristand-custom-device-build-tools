@@ -53,30 +53,30 @@ Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Version]$lvVersion"
 Write-Host "##vso[task.setvariable variable=lvVersion]$lvVersion" # Keep legacy version for variables used in packaging
 # When adding a new version of LabVIEW as an option in custom device pipelines, 
 # a new If statement is needed below with relevant variables
-if ("$lvVersion" -eq "2023")
-{
-    Write-Output "Setting variables for LabVIEW 2023..."
-    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Config]10.0.0.0"
-    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.ShortVersion]23"
-    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.SupportPackageSuffix]labview-support"
-}
-Elseif ("$lvVersion" -eq "2024")
+if ("$lvVersion" -eq "2024")
 {
     Write-Output "Setting variables for LabVIEW 2024..."
-    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Config]11.0.0.0"
+    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Config]10.0.0.0"
     Write-Host "##vso[task.setvariable variable=CD.LabVIEW.ShortVersion]24"
     Write-Host "##vso[task.setvariable variable=CD.LabVIEW.SupportPackageSuffix]labview-support"
 }
 Elseif ("$lvVersion" -eq "2025")
 {
     Write-Output "Setting variables for LabVIEW 2025..."
-    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Config]12.0.0.0"
+    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Config]11.0.0.0"
     Write-Host "##vso[task.setvariable variable=CD.LabVIEW.ShortVersion]25"
+    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.SupportPackageSuffix]labview-support"
+}
+Elseif ("$lvVersion" -eq "2026")
+{
+    Write-Output "Setting variables for LabVIEW 2026..."
+    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Config]12.0.0.0"
+    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.ShortVersion]26"
     Write-Host "##vso[task.setvariable variable=CD.LabVIEW.SupportPackageSuffix]labview-support"
 }
 Else
 {
-    Write-Error "Invalid LabVIEW version defined in pipeline.  Use either 2023, 2024 or 2025"
+    Write-Error "Invalid LabVIEW version defined in pipeline.  Use either 2024, 2025 or 2026"
 }
 
 # Set LabVIEW Bitness information
