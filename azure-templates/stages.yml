@@ -136,12 +136,21 @@ stages:
 
             - ${{ if ne( parameters.buildSteps, '' )}}:
               - ${{ each buildStep in parameters.buildSteps }}:
+                  ${{ if eq(buildStep.buildOperation, 'ExecuteDotNetBuild') }}:
+                    - template: steps-build-dotnet.yml
+                      parameters:
+                        buildStep:                 ${{ buildStep }}
+                        dependencies:              ${{ parameters.dependencies }}
+                        lvVersionToBuild:          ${{ item }}
+                        silenceDependencyFailures: ${{ parameters.silenceDependencyFailures }}
+
+                  ${{ if ne(buildStep.buildOperation, 'ExecuteDotNetBuild') }}:
                   - template: steps-build.yml
-                    parameters:
-                      buildStep:                 ${{ buildStep }}
-                      dependencies:              ${{ parameters.dependencies }}
-                      lvVersionToBuild:          ${{ item }}
-                      silenceDependencyFailures: ${{ parameters.silenceDependencyFailures }}
+                      parameters:
+                        buildStep:                 ${{ buildStep }}
+                        dependencies:              ${{ parameters.dependencies }}
+                        lvVersionToBuild:          ${{ item }}
+                        silenceDependencyFailures: ${{ parameters.silenceDependencyFailures }}
 
             - task: PowerShell@2
               displayName: Copy built files to Archive location
