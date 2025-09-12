@@ -52,7 +52,7 @@ steps:
   - task: MSBuild@1
     displayName: Build ${{ parameters.buildStep.buildSpec }} in ${{ parameters.buildStep.projectLocation }}
     inputs:
-      solution: '${{ parameters.buildStep.projectLocation }}'
+      solution: '$(CD.Repository)\${{ parameters.buildStep.projectLocation }}'
       msbuildArchitecture: 'x64'
       configuration: 'Release'
       platform : 'Any CPU'
