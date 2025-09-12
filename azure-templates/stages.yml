@@ -145,7 +145,7 @@ stages:
                         silenceDependencyFailures: ${{ parameters.silenceDependencyFailures }}
 
                   ${{ if ne(buildStep.buildOperation, 'ExecuteDotNetBuild') }}:
-                  - template: steps-build.yml
+                    - template: steps-build.yml
                       parameters:
                         buildStep:                 ${{ buildStep }}
                         dependencies:              ${{ parameters.dependencies }}
