@@ -136,7 +136,7 @@ stages:
 
             - ${{ if ne( parameters.buildSteps, '' )}}:
               - ${{ each buildStep in parameters.buildSteps }}:
-                  ${{ if eq(buildStep.buildOperation, 'ExecuteDotNetBuild') }}:
+                - ${{ if eq(buildStep.buildOperation, 'ExecuteDotNetBuild') }}:
                     - template: steps-build-dotnet.yml
                       parameters:
                         buildStep:                 ${{ buildStep }}
@@ -144,7 +144,7 @@ stages:
                         lvVersionToBuild:          ${{ item }}
                         silenceDependencyFailures: ${{ parameters.silenceDependencyFailures }}
 
-                  ${{ if ne(buildStep.buildOperation, 'ExecuteDotNetBuild') }}:
+                - ${{ if ne(buildStep.buildOperation, 'ExecuteDotNetBuild') }}:
                     - template: steps-build.yml
                       parameters:
                         buildStep:                 ${{ buildStep }}
