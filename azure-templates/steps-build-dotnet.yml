@@ -50,7 +50,7 @@ steps:
 
     # Build Visual studio solution using MSBuild
   - task: MSBuild@1
-    displayName: Build ${{ parameters.buildStep.buildSpec }} ${{ parameters.buildStep.projectLocation }}
+    displayName: Build ${{ parameters.buildStep.buildSpec }} in ${{ parameters.buildStep.projectLocation }}
     inputs:
       solution: '$(CD.Repository)\${{ parameters.buildStep.projectLocation }}'
       msbuildArchitecture: 'x64'
