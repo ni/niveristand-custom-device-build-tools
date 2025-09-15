@@ -54,5 +54,5 @@ steps:
     inputs:
       solution: '$(CD.Repository)\${{ parameters.buildStep.projectLocation }}'
       msbuildArchitecture: 'x64'
-      configuration: 'Release'
+      configuration: '${{ parameters.buildStep.target }}'
       platform : 'Any CPU'
