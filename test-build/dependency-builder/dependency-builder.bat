@@ -59,7 +59,7 @@ mkdir "%cd%\dependency-test-1\ni\export\main\12345678.1\2024\x64\Linux_x64"
 mkdir "%cd%\dependency-test-1\ni\export\main\12345678.2\2024\x64\Windows"
 mkdir "%cd%\dependency-test-1\ni\export\main\12345678.2\2024\x64\Linux_x64"
 mkdir "%cd%\dependency-test-1\ni\export\main\12345678.3\2024\x64\Windows"
-mkdir "%cd%\dependency-test00\ni\export\main\12345678.3\2024\x64\Linux_x64"
+mkdir "%cd%\dependency-test-1\ni\export\main\12345678.3\2024\x64\Linux_x64"
 copy "output\Windows\DependencyLibrary1.lvlibp" "%cd%\dependency-test-1\ni\export\main\12345678.2\2024\x64\Windows"
 copy "output\Linux_x64\DependencyLibrary1.lvlibp" "%cd%\dependency-test-1\ni\export\main\12345678.2\2024\x64\Linux_x64"
 
