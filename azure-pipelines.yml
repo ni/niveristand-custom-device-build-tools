@@ -33,6 +33,10 @@ stages:
           bitness: '32bit'
         - version: '2025'
           bitness: '64bit'
+        - version: '2026'
+          bitness: '32bit'
+        - version: '2026'
+          bitness: '64bit'
 
 # Test Dependencies - multiple dependencies that are expected in the build steps below this
       dependencies:
@@ -67,6 +71,8 @@ stages:
               bitness: '32bit'
             - version: '2024'
               bitness: '32bit'
+            - version: '2025'
+              bitness: '32bit'
 
         - projectLocation: '$(CD.Workspace)\niveristand-custom-device-build-tools\test-build\Source\Individual Build Specs.lvproj'
           buildOperation: 'ExecuteBuildSpec'
@@ -83,6 +89,8 @@ stages:
               bitness: '64bit'
             - version: '2024'
               bitness: '64bit'
+            - version: '2025'
+              bitness: '64bit'
 
 # Test BuildAllTargets special build operation in LabVIEW, override bitness with other operations before and after
         - projectLocation: 'test-build\Source\All Target Build Specs.lvproj'
@@ -96,7 +104,7 @@ stages:
           target: 'This value does not matter'
           buildSpec: 'This value does not matter'
 
-      releaseVersion: '25.0.0'
+      releaseVersion: '26.0.0'
       buildOutputLocation: 'test-build\Built'
       archiveLocation: '\\nirvana\Measurements\VeriStandAddons\prototype\niveristand-custom-device-build-tools\complexCase'
 
@@ -127,6 +135,6 @@ stages:
           target: 'My Computer'
           buildSpec: 'EmptySpec'
 
-      releaseVersion: '25.0.0'
+      releaseVersion: '26.0.0'
       buildOutputLocation: 'test-build\Built'
       archiveLocation: '\\nirvana\Measurements\VeriStandAddons\prototype\niveristand-custom-device-build-tools\emptyCase'
