@@ -9,7 +9,7 @@ resources:
   repositories:
     - repository: niveristand-custom-device-build-tools
       type:       github
-      ref:        users/ppathak/Add_LV-2026
+      ref:        main
       endpoint:   nivs-custom-devices
       name:       ni/niveristand-custom-device-build-tools
 
