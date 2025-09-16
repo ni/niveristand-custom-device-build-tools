@@ -74,6 +74,13 @@ Elseif ("$lvVersion" -eq "2025")
     Write-Host "##vso[task.setvariable variable=CD.LabVIEW.ShortVersion]25"
     Write-Host "##vso[task.setvariable variable=CD.LabVIEW.SupportPackageSuffix]labview-support"
 }
+Elseif ("$lvVersion" -eq "2026")
+{
+    Write-Output "Setting variables for LabVIEW 2026..."
+    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.Config]13.0.0.0"
+    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.ShortVersion]26"
+    Write-Host "##vso[task.setvariable variable=CD.LabVIEW.SupportPackageSuffix]labview-support"
+}
 Else
 {
     Write-Error "Invalid LabVIEW version defined in pipeline.  Use either 2023, 2024 or 2025"
