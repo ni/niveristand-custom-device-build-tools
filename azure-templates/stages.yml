@@ -64,6 +64,15 @@ parameters:
   - name: submodules
     type: boolean
     default: false
+  - name: persistCredentials
+    type: boolean
+    default: false
+  - name: privateSubmodules
+    type: boolean
+    default: false
+  - name: manualPAT
+    type: string
+    default: ''
 
   # strings (releaseVersion, quarterlyReleaseVersion, buildOutputLocation, archiveLocation)
   - name: releaseVersion
@@ -123,15 +132,27 @@ stages:
                 buildOutputLocation: ${{ parameters.buildOutputLocation }}
                 codegenVis:          ${{ parameters.codegenVis }}
                 submodules:          ${{ parameters.submodules }}
+                persistCredentials:  ${{ parameters.persistCredentials }}
+                privateSubmodules:   ${{ parameters.privateSubmodules }}
+                manualPAT:           ${{ parameters.manualPAT }}
 
             - ${{ if ne( parameters.buildSteps, '' )}}:
               - ${{ each buildStep in parameters.buildSteps }}:
-                  - template: steps-build.yml
-                    parameters:
-                      buildStep:                 ${{ buildStep }}
-                      dependencies:              ${{ parameters.dependencies }}
-                      lvVersionToBuild:          ${{ item }}
-                      silenceDependencyFailures: ${{ parameters.silenceDependencyFailures }}
+                - ${{ if eq(buildStep.buildOperation, 'ExecuteDotNetBuild') }}:
+                    - template: steps-build-dotnet.yml
+                      parameters:
+                        buildStep:                 ${{ buildStep }}
+                        dependencies:              ${{ parameters.dependencies }}
+                        lvVersionToBuild:          ${{ item }}
+                        silenceDependencyFailures: ${{ parameters.silenceDependencyFailures }}
+
+                - ${{ if ne(buildStep.buildOperation, 'ExecuteDotNetBuild') }}:
+                    - template: steps-build.yml
+                      parameters:
+                        buildStep:                 ${{ buildStep }}
+                        dependencies:              ${{ parameters.dependencies }}
+                        lvVersionToBuild:          ${{ item }}
+                        silenceDependencyFailures: ${{ parameters.silenceDependencyFailures }}
 
             - task: PowerShell@2
               displayName: Copy built files to Archive location

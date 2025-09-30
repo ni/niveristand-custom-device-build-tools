@@ -1,0 +1,58 @@
+parameters:
+    # build step parameters are broken out as part of parameters to allow defaults to be set for individual items
+  - name: buildStep
+    type: object
+  - name: dependencies
+    type: object
+  - name: lvVersionToBuild
+    type: object
+  - name: silenceDependencyFailures
+    type: boolean
+
+# Note: the following variables are defined in steps-prepare.yml:
+  # CD.LabVIEW.Version, CD.Architecture, CD.Repository, CD.LabVIEW.Config,
+  # CD.BuildTools, CD.LabVIEWCLI
+
+steps:
+
+  - ${{ each exclusion in parameters.buildStep.exclusions }}:
+    - ${{ if and( eq(exclusion.version, parameters.lvVersionToBuild.version), eq(exclusion.bitness, parameters.lvVersionToBuild.bitness)) }}:
+      - task: PowerShell@2
+        displayName: exclusion found, build step will be skipped
+        inputs:
+          targetType: 'inline'
+          failOnStdErr: true
+          script: |
+            Write-Host "##vso[task.setvariable variable=CD.SkipThisStep]True"
+
+  - ${{ each dependency in parameters.dependencies }}:
+    - ${{ if and( ne( dependency.file, '' ), eq( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
+        # only use dependencies for ExecuteBuildSpec build operation.  Other build operations do not support dependencies
+      - task: PowerShell@2
+        displayName: Copy dependency ${{ dependency.file }} to ${{ dependency.destination }}
+        inputs:
+          targetType: 'filePath'
+          filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/dependency-setup.ps1'
+          failOnStdErr: true
+          arguments: > # -file argument has single quotes because it needs to be able to pass in a variable
+            -source      "${{ dependency.source }}"
+            -file        '${{ dependency.file }}'
+            -destination "${{ dependency.destination }}"
+            -silence     "${{ parameters.silenceDependencyFailures }}"
+
+    - ${{ if and( ne( dependency.file, '' ), ne( parameters.buildStep.buildOperation, 'ExecuteBuildSpec' ))}}:
+      - task: PowerShell@2
+        displayName: dependency not used because buildOperation not supported for this buildStep
+        inputs:
+          targetType: 'inline'
+          failOnStdErr: true
+          script: Write-Output "only use dependencies for ExecuteBuildSpec build operation.  Other build operations do not support dependencies."
+
+    # Build Visual studio solution using MSBuild
+  - task: MSBuild@1
+    displayName: Build ${{ parameters.buildStep.buildSpec }} in ${{ parameters.buildStep.projectLocation }}
+    inputs:
+      solution: '$(CD.Repository)\${{ parameters.buildStep.projectLocation }}'
+      msbuildArchitecture: 'x64'
+      configuration: '${{ parameters.buildStep.target }}'
+      platform : 'Any CPU'
