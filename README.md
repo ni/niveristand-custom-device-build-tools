@@ -8,7 +8,7 @@ The main branch of this repository has been updated to support Azure Pipelines. 
 The azure-pipelines.yaml file contains the configuration for builds using the stages defined in this repo. See the [documentation](https://github.com/ni/niveristand-custom-device-build-tools/blob/main/add-docs/docs/Azure%20Pipeline%20YAML.md) for supported properties.
 
 ## LabVIEW Version
-The LabVIEW source for this repository is saved for LabVIEW 2020, but is forward compatible to newer versions.
+The LabVIEW source for this repository is saved for LabVIEW 2024, but is forward compatible to newer versions.
 
 ## Dependencies
 The following top-level dependencies are required on the build machine to use the repository:
