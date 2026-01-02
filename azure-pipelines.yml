@@ -21,10 +21,6 @@ stages:
 
 # Test Versions - At least 1 of each supported LabVIEW version and 1 of each bitness
       lvVersionsToBuild:
-        - version: '2023'
-          bitness: '32bit'
-        - version: '2023'
-          bitness: '64bit'
         - version: '2024'
           bitness: '32bit'
         - version: '2024'
@@ -67,8 +63,6 @@ stages:
           target: 'My Computer'
           buildSpec: 'BuildSpecUnique64bitOnly'
           exclusions:
-            - version: '2023'
-              bitness: '32bit'
             - version: '2024'
               bitness: '32bit'
             - version: '2025'
@@ -85,8 +79,6 @@ stages:
           target: 'Linux x64'
           buildSpec: 'BuildSpecUnique32bitOnly'
           exclusions:
-            - version: '2023'
-              bitness: '64bit'
             - version: '2024'
               bitness: '64bit'
             - version: '2025'
