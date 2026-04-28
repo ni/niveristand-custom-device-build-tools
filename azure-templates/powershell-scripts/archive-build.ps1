@@ -1,5 +1,5 @@
 # Sign files before archiving
-$niSignToolPath = 'C:\nisigntool.exe'
+$niSignToolPath = 'C:\NISignTool\nisigntool.exe'
 if (-not (Test-Path "$niSignToolPath")) {
   Write-Error "nisigntool not found at: $niSignToolPath"
   exit 1
