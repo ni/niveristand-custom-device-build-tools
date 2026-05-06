@@ -78,7 +78,9 @@ stages:
     condition: and(eq(variables['Build.Reason'], 'PullRequest'), eq('${{ parameters.disableDiff }}', false))
     pool:
       name: ${{ parameters.pool }}
-      demands: VeriStand${{ parameters.lvVersionToDiff }} -equals True
+      demands: 
+        - VeriStand${{ parameters.lvVersionToDiff }} -equals True
+        - agent.os -equals Windows_NT
     jobs:
       - job: DiffVIsforPR
         displayName: Diff VIs for PR
@@ -108,7 +110,9 @@ stages:
         - job: Job_Build_${{ item.version }}_${{ item.bitness }}
           pool:
             name: ${{ parameters.pool }}
-            demands: VeriStand${{ item.version }} -equals True
+            demands: 
+              - VeriStand${{ item.version }} -equals True
+              - agent.os -equals Windows_NT
           displayName: Build LabVIEW ${{ item.version }} ${{ item.bitness }}
           timeoutInMinutes: 120
           steps:
@@ -142,7 +146,9 @@ stages:
       - job: Job_Package_All
         pool:
           name: ${{ parameters.pool }}
-          demands: VeriStand${{ parameters.lvVersionToDiff }} -equals True
+          demands: 
+            - VeriStand${{ parameters.lvVersionToDiff }} -equals True
+            - agent.os -equals Windows_NT
         dependsOn:
           - ${{ each item in parameters.lvVersionsToBuild }}:
             - Job_Build_${{ item.version }}_${{ item.bitness }}
