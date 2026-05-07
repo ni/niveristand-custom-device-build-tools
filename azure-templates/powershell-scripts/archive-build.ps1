@@ -15,6 +15,9 @@ foreach ($file in $filesToSign) {
     Write-Error "Failed to sign file: $($file.FullName)"
     exit 1
   }
+  else {
+    Write-Host "Successfully signed file: $($file.FullName)"
+  }
 }
 
 $bitnessSpecificPath = "$env:CD_ARCHIVEPATH\$env:BUILD_BUILDNUMBER\$env:CD_LABVIEW_VERSION\$env:CD_ARCHITECTURE"
