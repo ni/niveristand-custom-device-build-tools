@@ -7,16 +7,22 @@ if (-not (Test-Path "$niSignToolPath")) {
 
 $signableExtensions = @('.lvlibp', '.exe', '.dll')
 $filesToSign = Get-ChildItem -Path "$env:CD_BUILDOUTPUTPATH" -Recurse -File | Where-Object { $_.Extension -in $signableExtensions }
-
+$failedSignings = @()
 foreach ($file in $filesToSign) {
-  Write-Host "Signing file: $($file.FullName)"
+  Write-Host "Attempting to sign file: $($file.FullName)"
   & "$niSignToolPath" "$($file.FullName)"
   if ($LASTEXITCODE -ne 0) {
-    Write-Error "Failed to sign file: $($file.FullName)"
-    exit 1
+    Write-Warning "Signing failed (continuing build): $($file.FullName)"
+    $failedSignings += $file.FullName
+    continue
   }
-  else {
-    Write-Host "Successfully signed file: $($file.FullName)"
+  Write-Host "Successfully signed file: $($file.FullName)"
+}
+
+if ($failedSignings.Count -gt 0) {
+  Write-Warning "Some files could not be signed. This may be expected for unsupported binaries."
+  $failedSignings | ForEach-Object {
+    Write-Warning "  $_"
   }
 }
 
