@@ -6,11 +6,7 @@ if (-not (Test-Path "$niSignToolPath")) {
 }
 
 $signableExtensions = @('.lvlibp', '.exe', '.dll')
-$filesToSign = Get-ChildItem -Path "$env:CD_BUILDOUTPUTPATH" -Recurse -File |
-  Where-Object {
-    $_.Extension -in $signableExtensions -and
-    $_.FullName -notmatch '(?i)\\linux'
-  }
+$filesToSign = Get-ChildItem -Path "$env:CD_BUILDOUTPUTPATH" -Recurse -File | Where-Object { $_.Extension -in $signableExtensions }
 $failedSignings = @()
 foreach ($file in $filesToSign) {
   Write-Host "Attempting to sign file: $($file.FullName)"
