@@ -1,7 +1,7 @@
 parameters:
   - name: stageName
     type: string
-    default: Linux-Build
+    default: Linux_Build
 
   - name: pool
     type: string
