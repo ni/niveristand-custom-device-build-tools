@@ -41,7 +41,18 @@ stages:
       - ${{ each item in parameters.lvVersionsToBuild }}:
         - ${{ each buildStep in parameters.buildSteps }}:
 
-          - job: Job_Build_${{ item.version }}_${{ item.bitness }}_${{ replace(replace(replace(replace(replace(buildStep.projectLocation, '/', '_'), '\\', '_'), '-', '_'), '.', '_'), ' ', '_') }}
+          - job: Job_Build_${{ item.version }}_${{ item.bitness }}_${{
+              replace(
+                replace(
+                  replace(
+                    replace(
+                      replace(buildStep.projectLocation, '/', '_'),
+                    '\', '_'),
+                  '-', '_'),
+                '.', '_'),
+              ' ', '_')
+            }}
+
             pool:
               name: ${{ parameters.pool }}
               demands:
