@@ -7,54 +7,66 @@ parameters:
     type: string
     default: DevCentral-VeriStand-CustomDevices
 
-  # lvVersionsToBuild (optional): list of {version, bitness}
   - name: lvVersionsToBuild
     type: object
     default:
       - version: '2026'
         bitness: '64bit'
 
-  # buildSteps (optional): list of {projectLocation, buildOperation, target, buildSpec}
   - name: buildSteps
     type: object
-    default: ''
+    default: []
 
-  # strings (releaseVersion, quarterlyReleaseVersion, buildOutputLocation, archiveLocation)
   - name: releaseVersion
     type: string
+
   - name: buildOutputLocation
     type: string
+
   - name: archiveLocation
     type: string
 
 stages:
   - stage: ${{ parameters.stageName }}
     dependsOn: []
+
     variables:
-        CD.BuildCounter: "9999"
+      CD.BuildCounter: "9999"
+
     pool:
       name: ${{ parameters.pool }}
+
     jobs:
-        # Build Jobs
+
       - ${{ each item in parameters.lvVersionsToBuild }}:
-        - job: Job_Build_${{ item.version }}_${{ item.bitness }}
-          pool:
-            name: ${{ parameters.pool }}
-            demands: 
-              - agent.os -equals Linux
-          displayName: Linux - Build LabVIEW ${{ item.version }} ${{ item.bitness }}
-          timeoutInMinutes: 120
-          steps:
-            - task: PowerShell@2
-              displayName: Linux Build - Debug Info
-              inputs:
-                targetType: inline
-                script: |
-                  Write-Host "Build.SourcesDirectory = $(Build.SourcesDirectory)"
-                  Write-Host "System.DefaultWorkingDirectory = $(System.DefaultWorkingDirectory)"
+        - ${{ each buildStep in parameters.buildSteps }}:
 
-                  Write-Host "Current directory:"
-                  pwd
+          - job: Job_Build_${{ item.version }}_${{ item.bitness }}_${{ buildStep.projectLocation }}
+            pool:
+              name: ${{ parameters.pool }}
+              demands:
+                - agent.os -equals Linux
 
-                  Write-Host "Listing contents:"
-                  ls -la
+            displayName: >
+              Linux - Build ${{ buildStep.projectLocation }}
+              (LV ${{ item.version }} ${{ item.bitness }})
+
+            timeoutInMinutes: 120
+
+            steps:
+              - task: PowerShell@2
+                displayName: Build ${{ buildStep.projectLocation }}
+                inputs:
+                  targetType: inline
+                  pwsh: true
+                  script: |
+                    $projectPath = "$(Build.SourcesDirectory)/${{ buildStep.projectLocation }}"
+
+                    Write-Host "Project Path: $projectPath"
+
+                    LabVIEWCLI `
+                      -LabVIEWPath "/usr/local/natinst/LabVIEW-${{ item.version }}-64/labview" `
+                      -OperationName "${{ buildStep.buildOperation }}" `
+                      -ProjectPath "$projectPath" `
+                      -TargetName "${{ buildStep.target }}" `
+                      -BuildSpecName "${{ buildStep.buildSpec }}"
