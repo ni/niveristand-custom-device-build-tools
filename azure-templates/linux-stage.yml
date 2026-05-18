@@ -46,9 +46,15 @@ stages:
           timeoutInMinutes: 120
           steps:
             - task: PowerShell@2
-              displayName: Temporary Linux Script
+              displayName: Linux Build - Debug Info
               inputs:
                 targetType: inline
                 script: |
-                  Write-Host "Hello from Linux"
-                  uname -a
+                  Write-Host "Build.SourcesDirectory = $(Build.SourcesDirectory)"
+                  Write-Host "System.DefaultWorkingDirectory = $(System.DefaultWorkingDirectory)"
+
+                  Write-Host "Current directory:"
+                  pwd
+
+                  Write-Host "Listing contents:"
+                  ls -la
