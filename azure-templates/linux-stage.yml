@@ -25,6 +25,12 @@ parameters:
 
   - name: archiveLocation
     type: string
+  
+  - name: branch
+    type: string
+
+  - name: debugBuild
+    type: string
 
 stages:
   - stage: ${{ parameters.stageName }}
@@ -41,17 +47,7 @@ stages:
       - ${{ each item in parameters.lvVersionsToBuild }}:
         - ${{ each buildStep in parameters.buildSteps }}:
 
-          - job: Job_Build_${{ item.version }}_${{ item.bitness }}_${{
-              replace(
-                replace(
-                  replace(
-                    replace(
-                      replace(buildStep.projectLocation, '/', '_'),
-                    '\', '_'),
-                  '-', '_'),
-                '.', '_'),
-              ' ', '_')
-            }}
+          - job: Job_Build_${{ item.version }}_${{ item.bitness }}_${{ buildStep.id }}
 
             pool:
               name: ${{ parameters.pool }}
