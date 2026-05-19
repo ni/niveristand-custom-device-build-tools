@@ -73,7 +73,7 @@ stages:
 
                     Write-Host "Project Path: $projectPath"
 
-                    LabVIEWCLI `
+                    xvfb-run --auto-servernum LabVIEWCLI `
                       -LabVIEWPath "/usr/local/natinst/LabVIEW-${{ item.version }}-64/labview" `
                       -OperationName "${{ buildStep.buildOperation }}" `
                       -ProjectPath "$projectPath" `
