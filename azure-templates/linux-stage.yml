@@ -28,9 +28,11 @@ parameters:
   
   - name: branch
     type: string
+    default: main
 
   - name: debugBuild
     type: string
+    default: no
 
 stages:
   - stage: ${{ parameters.stageName }}
