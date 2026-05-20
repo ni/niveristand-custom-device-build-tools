@@ -63,23 +63,22 @@ stages:
             timeoutInMinutes: 120
 
             steps:
-              - task: PowerShell@2
+              - task: Bash@3
                 displayName: Build ${{ buildStep.projectLocation }}
                 inputs:
                   targetType: inline
-                  pwsh: true
                   script: |
-                    $projectPath = "$(Build.SourcesDirectory)/${{ buildStep.projectLocation }}"
+                    projectPath="$(Build.SourcesDirectory)/${{ buildStep.projectLocation }}"
 
-                    Write-Host "Project Path: $projectPath"
+                    echo "Project Path: $projectPath"
 
                     # Give LabVIEW enough time to initialize VI Server
-                    Start-Sleep -Seconds 30
+                    sleep 30
 
-                    xvfb-run --auto-servernum LabVIEWCLI `
-                      -LabVIEWPath "/usr/local/natinst/LabVIEW-${{ item.version }}-64/labview" `
-                      -PortNumber 3363 `
-                      -OperationName "${{ buildStep.buildOperation }}" `
-                      -ProjectPath "$projectPath" `
-                      -TargetName "${{ buildStep.target }}" `
+                    xvfb-run --auto-servernum LabVIEWCLI \
+                      -LabVIEWPath "/usr/local/natinst/LabVIEW-${{ item.version }}-64/labview" \
+                      -PortNumber 3363 \
+                      -OperationName "${{ buildStep.buildOperation }}" \
+                      -ProjectPath "$projectPath" \
+                      -TargetName "${{ buildStep.target }}" \
                       -BuildSpecName "${{ buildStep.buildSpec }}"
