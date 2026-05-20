@@ -73,8 +73,12 @@ stages:
 
                     Write-Host "Project Path: $projectPath"
 
+                    # Give LabVIEW enough time to initialize VI Server
+                    Start-Sleep -Seconds 30
+
                     xvfb-run --auto-servernum LabVIEWCLI `
                       -LabVIEWPath "/usr/local/natinst/LabVIEW-${{ item.version }}-64/labview" `
+                      -PortNumber 3363 `
                       -OperationName "${{ buildStep.buildOperation }}" `
                       -ProjectPath "$projectPath" `
                       -TargetName "${{ buildStep.target }}" `
