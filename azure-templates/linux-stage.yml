@@ -25,7 +25,7 @@ parameters:
 
   - name: archiveLocation
     type: string
-  
+
   - name: branch
     type: string
     default: main
@@ -45,10 +45,8 @@ stages:
       name: ${{ parameters.pool }}
 
     jobs:
-
       - ${{ each item in parameters.lvVersionsToBuild }}:
         - ${{ each buildStep in parameters.buildSteps }}:
-
           - job: Job_Build_${{ item.version }}_${{ item.bitness }}_${{ buildStep.id }}
 
             pool:
@@ -65,20 +63,96 @@ stages:
             steps:
               - task: Bash@3
                 displayName: Build ${{ buildStep.projectLocation }}
+
                 inputs:
                   targetType: inline
+
                   script: |
+                    set -e
+
                     projectPath="$(Build.SourcesDirectory)/${{ buildStep.projectLocation }}"
 
                     echo "Project Path: $projectPath"
 
+                    # ------------------------------------------------------------------
+                    # Update LabVIEW configuration
+                    # ------------------------------------------------------------------
+
+                    labviewConfig="/home/nitest/natinst/.config/LabVIEW-${{ item.version }}/labview.conf"
+
+                    echo "Updating LabVIEW config: $labviewConfig"
+
+                    # Ensure config directory exists
+                    mkdir -p "$(dirname "$labviewConfig")"
+
+                    # Ensure file exists
+                    touch "$labviewConfig"
+
+                    # Append required settings
+                    cat <<'EOF' >> "$labviewConfig"
+
+                    DWarnDialog: False
+                    autoerr: 3
+
+                    server.tcp.port: 3363
+                    server.tcp.enabled=True
+                    server.tcp.access="+*"
+                    server.vi.access="+*"
+
+                    NIERAutoSendAndSuppressAllDialogs: True
+                    unattended: True
+
+                    EOF
+
+                    echo "LabVIEW config updated successfully."
+
+                    # ------------------------------------------------------------------
+                    # Install zip utility if missing
+                    # ------------------------------------------------------------------
+
+                    if ! command -v zip &> /dev/null; then
+                      echo "zip not found. Installing..."
+                      sudo apt-get update
+                      sudo apt-get install -y zip
+                    fi
+
                     # Give LabVIEW enough time to initialize VI Server
                     sleep 30
 
-                    xvfb-run --auto-servernum LabVIEWCLI \
+                    echo "Starting LabVIEW build..."
+
+                    if xvfb-run --auto-servernum LabVIEWCLI \
                       -LabVIEWPath "/usr/local/natinst/LabVIEW-${{ item.version }}-64/labview" \
                       -PortNumber 3363 \
                       -OperationName "${{ buildStep.buildOperation }}" \
                       -ProjectPath "$projectPath" \
                       -TargetName "${{ buildStep.target }}" \
                       -BuildSpecName "${{ buildStep.buildSpec }}"
+                    then
+                      echo "LabVIEW build completed successfully."
+
+                      builtFolder="$projectPath/Built"
+
+                      echo "Checking Built folder at: $builtFolder"
+
+                      if [ -d "$builtFolder" ]; then
+                        cd "$builtFolder"
+
+                        zipFileName="${{ buildStep.id }}_${{ item.version }}.zip"
+
+                        echo "Creating zip: $zipFileName"
+
+                        # Zip only contents inside Built folder
+                        zip -r "$zipFileName" ./*
+
+                        echo "Zip created successfully:"
+                        ls -lh "$zipFileName"
+                      else
+                        echo "Built folder does not exist: $builtFolder"
+                        exit 1
+                      fi
+
+                    else
+                      echo "LabVIEW build failed. Skipping zip creation."
+                      exit 1
+                    fi
