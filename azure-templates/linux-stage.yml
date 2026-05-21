@@ -93,12 +93,10 @@ stages:
 
                     DWarnDialog: False
                     autoerr: 3
-
                     server.tcp.port: 3363
                     server.tcp.enabled=True
                     server.tcp.access="+*"
                     server.vi.access="+*"
-
                     NIERAutoSendAndSuppressAllDialogs: True
                     unattended: True
 
