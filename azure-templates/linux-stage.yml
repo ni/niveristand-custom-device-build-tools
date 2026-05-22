@@ -160,9 +160,6 @@ stages:
                         exit 1
                       fi
 
-                      mkdir -p "$safeCopy"
-                      cp -r "$builtFolder"/* "$safeCopy/" || true
-
                       cd "$safeCopy"
 
                       zipFileName="${{ buildStep.id }}_${{ item.version }}.zip"
