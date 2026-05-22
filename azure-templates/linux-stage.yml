@@ -119,7 +119,7 @@ stages:
 
                     echo "Starting LabVIEW build..."
 
-                    if xvfb-run --auto-servernum LabVIEWCLI \
+                    if LabVIEWCLI \
                       -LabVIEWPath "/usr/local/natinst/LabVIEW-${{ item.version }}-64/labview" \
                       -PortNumber 3363 \
                       -OperationName "${{ buildStep.buildOperation }}" \
@@ -129,7 +129,7 @@ stages:
                     then
                       echo "LabVIEW build completed successfully."
 
-                      builtFolder="$projectPath/Built"
+                      builtFolder="$(Build.SourcesDirectory)/Built"
 
                       echo "Checking Built folder at: $builtFolder"
 
