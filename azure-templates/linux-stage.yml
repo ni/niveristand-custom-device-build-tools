@@ -41,28 +41,27 @@ stages:
     variables:
       CD.BuildCounter: "9999"
 
-    pool:
-      name: ${{ parameters.pool }}
-
     jobs:
-      - ${{ each item in parameters.lvVersionsToBuild }}:
-        - ${{ each buildStep in parameters.buildSteps }}:
-          - job: Job_Build_${{ item.version }}_${{ item.bitness }}_${{ buildStep.id }}
+      - job: Job_Build_Linux
 
-            pool:
-              name: ${{ parameters.pool }}
-              demands:
-                - agent.os -equals Linux
+        pool:
+          name: ${{ parameters.pool }}
+          demands:
+            - agent.os -equals Linux
 
-            displayName: >
-              Linux - Build ${{ buildStep.projectLocation }}
-              (LV ${{ item.version }} ${{ item.bitness }})
+        displayName: >
+          Linux - Build Verstand CD Projects
 
-            timeoutInMinutes: 120
+        timeoutInMinutes: 120
 
-            steps:
+        steps:
+          - ${{ each item in parameters.lvVersionsToBuild }}:
+            - ${{ each buildStep in parameters.buildSteps }}:
+
               - task: Bash@3
-                displayName: Build ${{ buildStep.projectLocation }}
+                displayName: >
+                  Build ${{ buildStep.projectLocation }}
+                  (LV ${{ item.version }} ${{ item.bitness }})
 
                 inputs:
                   targetType: inline
@@ -73,10 +72,7 @@ stages:
 
                     echo "Project Path: $projectPath"
 
-                    # ------------------------------------------------------------------
-                    # Update LabVIEW configuration
-                    # ------------------------------------------------------------------
-
+                    # ---------------- LabVIEW config ----------------
                     labviewConfig="/home/nitest/natinst/.config/LabVIEW-${{ item.version }}/labview.conf"
 
                     echo "Updating LabVIEW config: $labviewConfig"
@@ -99,10 +95,7 @@ stages:
 
                     echo "LabVIEW config updated successfully."
 
-                    # ------------------------------------------------------------------
-                    # Install zip utility if missing
-                    # ------------------------------------------------------------------
-
+                    # ---------------- Install zip if needed ----------------
                     if ! command -v zip &> /dev/null; then
                       echo "zip not found. Installing..."
                       sudo apt-get update
@@ -125,40 +118,34 @@ stages:
 
                       projectDir="$(dirname "$projectPath")"
                       builtFolder="$projectDir/Built"
-                      safeCopy="$(Build.ArtifactStagingDirectory)/BuiltBackup"
+                      safeCopy="$(Build.ArtifactStagingDirectory)/BuiltBackup/${{ buildStep.id }}_${{ item.version }}"
 
                       echo "projectDir  = $projectDir"
                       echo "builtFolder = $builtFolder"
 
-                      echo "Trying immediate copy from: $builtFolder"
-
                       if [ -d "$builtFolder" ]; then
-                        echo "Built folder FOUND. Copying immediately..."
+                        echo "Built folder FOUND. Copying..."
 
                         mkdir -p "$safeCopy"
                         cp -r "$builtFolder"/* "$safeCopy/" || true
 
-                        echo "Copied Built folder to: $safeCopy"
+                        echo "Copied to: $safeCopy"
                         ls -l "$safeCopy"
                       else
-                        echo "WARNING: Built folder not found immediately after build!"
-                      fi
-
-                      if [ -d "$safeCopy" ]; then
-                        cd "$safeCopy"
-
-                        zipFileName="${{ buildStep.id }}_${{ item.version }}.zip"
-
-                        echo "Creating zip from safe copy: $zipFileName"
-                        zip -r "$zipFileName" ./*
-
-                        ls -lh "$zipFileName"
-                      else
-                        echo "ERROR: Built folder Safe copy not available"
+                        echo "WARNING: Built folder not found!"
                         exit 1
                       fi
 
+                      cd "$safeCopy"
+
+                      zipFileName="${{ buildStep.id }}_${{ item.version }}.zip"
+
+                      echo "Creating zip: $zipFileName"
+                      zip -r "$zipFileName" ./*
+
+                      ls -lh "$zipFileName"
+
                     else
-                      echo "LabVIEW build failed. Skipping zip creation."
+                      echo "LabVIEW build failed."
                       exit 1
                     fi
