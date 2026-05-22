@@ -144,8 +144,19 @@ stages:
                       builtFolder="$projectRoot/Built"
                       safeCopy="$(Build.ArtifactStagingDirectory)/BuiltBackup/${{ buildStep.id }}_${{ item.version }}"
 
-                      if [ ! -d "$builtFolder" ]; then
-                        echo "Built folder not found!"
+                      echo "projectRoot  = $projectRoot"
+                      echo "builtFolder = $builtFolder"
+
+                      if [ -d "$builtFolder" ]; then
+                        echo "Built folder FOUND. Copying..."
+
+                        mkdir -p "$safeCopy"
+                        cp -r "$builtFolder"/* "$safeCopy/" || true
+
+                        echo "Copied to: $safeCopy"
+                        ls -l "$safeCopy"
+                      else
+                        echo "WARNING: Built folder not found!"
                         exit 1
                       fi
 
