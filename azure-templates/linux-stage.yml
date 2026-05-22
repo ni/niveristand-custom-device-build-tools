@@ -119,7 +119,7 @@ stages:
 
                     echo "Starting LabVIEW build..."
 
-                    if LabVIEWCLI \
+                    if xvfb-run --auto-servernum LabVIEWCLI \
                       -LabVIEWPath "/usr/local/natinst/LabVIEW-${{ item.version }}-64/labview" \
                       -PortNumber 3363 \
                       -OperationName "${{ buildStep.buildOperation }}" \
@@ -129,28 +129,34 @@ stages:
                     then
                       echo "LabVIEW build completed successfully."
 
-                      builtFolder="$(Build.SourcesDirectory)/Built"
+                      projectDir="$(dirname "$projectPath")"
+                      builtFolder="$projectDir/Built"
+                      safeCopy="$(Build.ArtifactStagingDirectory)/BuiltBackup"
 
-                      echo "Checking Built folder at: $builtFolder"
+                      echo "Trying immediate copy from: $builtFolder"
 
                       if [ -d "$builtFolder" ]; then
-                        cd "$builtFolder"
+                        echo "Built folder FOUND. Copying immediately..."
+
+                        mkdir -p "$safeCopy"
+                        cp -r "$builtFolder"/* "$safeCopy/" || true
+
+                        echo "Copied Built folder to: $safeCopy"
+                        ls -l "$safeCopy"
+                      else
+                        echo "WARNING: Built folder not found immediately after build!"
+                      fi
+
+                      if [ -d "$safeCopy" ]; then
+                        cd "$safeCopy"
 
                         zipFileName="${{ buildStep.id }}_${{ item.version }}.zip"
 
-                        echo "Creating zip: $zipFileName"
-
-                        # Zip only contents inside Built folder
+                        echo "Creating zip from safe copy: $zipFileName"
                         zip -r "$zipFileName" ./*
 
-                        echo "Zip created successfully:"
                         ls -lh "$zipFileName"
                       else
-                        echo "Built folder does not exist: $builtFolder"
+                        echo "ERROR: Built folder Safe copy not available"
                         exit 1
                       fi
-
-                    else
-                      echo "LabVIEW build failed. Skipping zip creation."
-                      exit 1
-                    fi
