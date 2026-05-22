@@ -116,11 +116,11 @@ stages:
                     then
                       echo "LabVIEW build completed successfully."
 
-                      projectDir="$(dirname "$projectPath")"
-                      builtFolder="$projectDir/Built"
+                      projectRoot="$(echo "${{ buildStep.projectLocation }}" | cut -d'/' -f1)"
+                      builtFolder="$projectRoot/Built"
                       safeCopy="$(Build.ArtifactStagingDirectory)/BuiltBackup/${{ buildStep.id }}_${{ item.version }}"
 
-                      echo "projectDir  = $projectDir"
+                      echo "projectRoot  = $projectRoot"
                       echo "builtFolder = $builtFolder"
 
                       if [ -d "$builtFolder" ]; then
