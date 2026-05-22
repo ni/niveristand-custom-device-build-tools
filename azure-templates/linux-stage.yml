@@ -66,7 +66,6 @@ stages:
 
                 inputs:
                   targetType: inline
-
                   script: |
                     set -e
 
@@ -82,13 +81,9 @@ stages:
 
                     echo "Updating LabVIEW config: $labviewConfig"
 
-                    # Ensure config directory exists
                     mkdir -p "$(dirname "$labviewConfig")"
-
-                    # Ensure file exists
                     touch "$labviewConfig"
 
-                    # Append required settings
                     cat <<'EOF' >> "$labviewConfig"
 
                     DWarnDialog: False
@@ -114,7 +109,6 @@ stages:
                       sudo apt-get install -y zip
                     fi
 
-                    # Give LabVIEW enough time to initialize VI Server
                     sleep 30
 
                     echo "Starting LabVIEW build..."
@@ -132,6 +126,9 @@ stages:
                       projectDir="$(dirname "$projectPath")"
                       builtFolder="$projectDir/Built"
                       safeCopy="$(Build.ArtifactStagingDirectory)/BuiltBackup"
+
+                      echo "projectDir  = $projectDir"
+                      echo "builtFolder = $builtFolder"
 
                       echo "Trying immediate copy from: $builtFolder"
 
@@ -160,3 +157,8 @@ stages:
                         echo "ERROR: Built folder Safe copy not available"
                         exit 1
                       fi
+
+                    else
+                      echo "LabVIEW build failed. Skipping zip creation."
+                      exit 1
+                    fi
