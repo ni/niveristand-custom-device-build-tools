@@ -55,6 +55,53 @@ stages:
         timeoutInMinutes: 120
 
         steps:
+          - task: Bash@3
+            displayName: Mount Nirvana Share
+            inputs:
+              targetType: inline
+              script: |
+                set -e
+
+                echo "Installing cifs-utils..."
+                if ! command -v mount.cifs &> /dev/null; then
+                  sudo apt-get update
+                  sudo apt-get install -y cifs-utils
+                fi
+
+                sudo mkdir -p /mnt/nirvana
+
+                cat <<EOF > /tmp/smb_creds
+                username=nitestsuite
+                password=n1testsuite
+                domain=amer
+                EOF
+
+                sudo chmod 600 /tmp/smb_creds
+
+                echo "Mounting Nirvana share..."
+                sudo mount -t cifs //nirvana/Measurements/VeriStandAddons /mnt/nirvana \
+                  -o credentials=/tmp/smb_creds,vers=3.0,serverino,noperm
+
+                echo "Verifying mount..."
+                mount | grep nirvana || (echo "Mount failed!" && exit 1)
+
+                echo "[INFO] Temp step - Fixing VeriStand case mismatch"
+                    
+                VI_LIB_DIR="/usr/local/natinst/LabVIEW-${{ item.version }}-64/vi.lib"
+                    
+                # Verify correct folder exists
+                if [ ! -d "$VI_LIB_DIR/NI VeriStand" ]; then
+                  echo "[ERROR] NI VeriStand folder missing!"
+                  exit 1
+                fi
+                    
+                # Create/overwrite symlink safely
+                sudo ln -sfn "$VI_LIB_DIR/NI VeriStand" "$VI_LIB_DIR/NI Veristand"
+                    
+                # Verify
+                echo "[INFO] Symlink verification:"
+                ls -l "$VI_LIB_DIR"
+
           - ${{ each item in parameters.lvVersionsToBuild }}:
             - ${{ each buildStep in parameters.buildSteps }}:
 
@@ -62,26 +109,22 @@ stages:
                 displayName: >
                   Build ${{ buildStep.projectLocation }}
                   (LV ${{ item.version }} ${{ item.bitness }})
-
                 inputs:
                   targetType: inline
                   script: |
                     set -e
+                    echo "##vso[task.setvariable variable=buildTimestamp]$(date +%Y%m%d%H%M%S)"
 
                     projectPath="$(Build.SourcesDirectory)/${{ buildStep.projectLocation }}"
-
                     echo "Project Path: $projectPath"
 
                     # ---------------- LabVIEW config ----------------
                     labviewConfig="/home/nitest/natinst/.config/LabVIEW-${{ item.version }}/labview.conf"
 
-                    echo "Updating LabVIEW config: $labviewConfig"
-
                     mkdir -p "$(dirname "$labviewConfig")"
                     touch "$labviewConfig"
 
                     cat <<'EOF' >> "$labviewConfig"
-
                     DWarnDialog: False
                     autoerr: 3
                     server.tcp.port: 3363
@@ -90,14 +133,10 @@ stages:
                     server.vi.access="+*"
                     NIERAutoSendAndSuppressAllDialogs: True
                     unattended: True
-
                     EOF
-
-                    echo "LabVIEW config updated successfully."
 
                     # ---------------- Install zip if needed ----------------
                     if ! command -v zip &> /dev/null; then
-                      echo "zip not found. Installing..."
                       sudo apt-get update
                       sudo apt-get install -y zip
                     fi
@@ -114,7 +153,7 @@ stages:
                       -TargetName "${{ buildStep.target }}" \
                       -BuildSpecName "${{ buildStep.buildSpec }}"
                     then
-                      echo "LabVIEW build completed successfully."
+                      echo "Build succeeded."
 
                       projectRoot="$(echo "${{ buildStep.projectLocation }}" | cut -d'/' -f1)"
                       builtFolder="$projectRoot/Built"
@@ -145,7 +184,30 @@ stages:
 
                       ls -lh "$zipFileName"
 
+                      # ---------------- COPY TO NIRVANA ----------------
+                      targetDir="/mnt/nirvana/Linux/$buildTimestamp/$projectRoot"
+
+                      echo "Creating target directory if needed: $targetDir"
+                      sudo mkdir -p "$targetDir"
+
+                      echo "Copying zip to Nirvana..."
+                      sudo cp "$zipFileName" "$targetDir/"
+
+                      echo "Verifying copy..."
+                      ls -lh "$targetDir/" | grep "$zipFileName" || true
+
                     else
-                      echo "LabVIEW build failed."
+                      echo "Build failed."
                       exit 1
                     fi
+
+          # ---------------- CLEANUP ----------------
+          - task: Bash@3
+            displayName: Unmount Nirvana Share
+            condition: always()
+            inputs:
+              targetType: inline
+              script: |
+                echo "Unmounting Nirvana share..."
+                sudo umount /mnt/nirvana || true
+                rm -f /tmp/smb_creds
