@@ -103,7 +103,25 @@ stages:
                     fi
 
                     sleep 30
-
+                    
+                    # ---------------- SYMLINK FIX ----------------
+                    echo "[INFO] Fixing VeriStand case mismatch"
+                    
+                    VI_LIB_DIR="/usr/local/natinst/LabVIEW-${{ item.version }}-64/vi.lib"
+                    
+                    # Verify correct folder exists
+                    if [ ! -d "$VI_LIB_DIR/NI VeriStand" ]; then
+                      echo "[ERROR] NI VeriStand folder missing!"
+                      exit 1
+                    fi
+                    
+                    # Create/overwrite symlink safely
+                    sudo ln -sfn "$VI_LIB_DIR/NI VeriStand" "$VI_LIB_DIR/NI Veristand"
+                    
+                    # Verify
+                    echo "[INFO] Symlink verification:"
+                    ls -l "$VI_LIB_DIR"
+                  
                     echo "Starting LabVIEW build..."
 
                     if xvfb-run --auto-servernum LabVIEWCLI \
