@@ -55,8 +55,6 @@ stages:
         timeoutInMinutes: 120
 
         steps:
-
-          # ---------------- SMB SETUP ----------------
           - task: Bash@3
             displayName: Mount Nirvana Share
             inputs:
@@ -86,6 +84,23 @@ stages:
 
                 echo "Verifying mount..."
                 mount | grep nirvana || (echo "Mount failed!" && exit 1)
+
+                echo "[INFO] Temp step - Fixing VeriStand case mismatch"
+                    
+                VI_LIB_DIR="/usr/local/natinst/LabVIEW-${{ item.version }}-64/vi.lib"
+                    
+                # Verify correct folder exists
+                if [ ! -d "$VI_LIB_DIR/NI VeriStand" ]; then
+                  echo "[ERROR] NI VeriStand folder missing!"
+                  exit 1
+                fi
+                    
+                # Create/overwrite symlink safely
+                sudo ln -sfn "$VI_LIB_DIR/NI VeriStand" "$VI_LIB_DIR/NI Veristand"
+                    
+                # Verify
+                echo "[INFO] Symlink verification:"
+                ls -l "$VI_LIB_DIR"
 
           - ${{ each item in parameters.lvVersionsToBuild }}:
             - ${{ each buildStep in parameters.buildSteps }}:
