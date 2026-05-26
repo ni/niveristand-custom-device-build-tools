@@ -85,6 +85,18 @@ stages:
                 echo "Verifying mount..."
                 mount | grep nirvana || (echo "Mount failed!" && exit 1)
 
+                # ---------------- CLEAN OLD BUILT FOLDER ----------------
+                builtFolder="$(Build.SourcesDirectory)/Built"
+
+                if [ -d "$builtFolder" ]; then
+                  echo "Existing Built folder found. Deleting..."
+                  rm -rf "$builtFolder"
+
+                  echo "Built folder deleted."
+                else
+                  echo "No existing Built folder found."
+                fi
+
           - ${{ each item in parameters.lvVersionsToBuild }}:
             - task: Bash@3
               displayName: Fix VeriStand Case (LV ${{ item.version }})
@@ -116,7 +128,10 @@ stages:
                   targetType: inline
                   script: |
                     set -e
-                    echo "##vso[task.setvariable variable=buildTimestamp]$(date +%Y%m%d%H%M%S)"
+                    buildTimestamp=$(date +%Y%m%d%H%M%S)
+                    echo "Build Timestamp: $buildTimestamp"
+
+                    echo "##vso[task.setvariable variable=buildTimestamp]$buildTimestamp"
 
                     projectPath="$(Build.SourcesDirectory)/${{ buildStep.projectLocation }}"
                     echo "Project Path: $projectPath"
@@ -125,9 +140,8 @@ stages:
                     labviewConfig="/home/nitest/natinst/.config/LabVIEW-${{ item.version }}/labview.conf"
 
                     mkdir -p "$(dirname "$labviewConfig")"
-                    touch "$labviewConfig"
 
-                    cat <<'EOF' >> "$labviewConfig"
+                    cat <<'EOF' > "$labviewConfig"
                     DWarnDialog: False
                     autoerr: 3
                     server.tcp.port: 3363
@@ -159,7 +173,7 @@ stages:
                       echo "Build succeeded."
 
                       projectRoot="$(echo "${{ buildStep.projectLocation }}" | cut -d'/' -f1)"
-                      builtFolder="$projectRoot/Built"
+                      builtFolder="$(Build.SourcesDirectory)/Built"
                       safeCopy="$(Build.ArtifactStagingDirectory)/BuiltBackup/${{ buildStep.id }}_${{ item.version }}"
 
                       echo "projectRoot  = $projectRoot"
@@ -168,6 +182,7 @@ stages:
                       if [ -d "$builtFolder" ]; then
                         echo "Built folder FOUND. Copying..."
 
+                        rm -rf "$safeCopy"
                         mkdir -p "$safeCopy"
                         cp -r "$builtFolder"/* "$safeCopy/" || true
 
@@ -188,7 +203,15 @@ stages:
                       ls -lh "$zipFileName"
 
                       # ---------------- COPY TO NIRVANA ----------------
-                      targetDir="/mnt/nirvana/Linux/$buildTimestamp/$projectRoot"
+                      if [ "${{ parameters.debugBuild }}" = "yes" ]; then
+                        buildType="Debug"
+                      else
+                        buildType="Release"
+                      fi
+
+                      echo "Build Type: $buildType"
+
+                      targetDir="/mnt/nirvana/Linux/$buildType/$buildTimestamp/$projectRoot"
 
                       echo "Creating target directory if needed: $targetDir"
                       sudo mkdir -p "$targetDir"
