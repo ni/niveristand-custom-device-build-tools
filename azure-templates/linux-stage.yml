@@ -45,7 +45,7 @@ stages:
 
     variables:
       CD.BuildCounter: "9999"
-      buildTimestamp: $[format('{0:yyyyMMddHHmmss}', pipeline.startTime)]
+      buildTimestampRaw: $[format('{0:yyyy-MM-dd HH:mm:ss}', pipeline.startTime)]
 
     jobs:
       - job: Job_Build_Linux
@@ -135,8 +135,6 @@ stages:
                   script: |
                     set -e
 
-                    echo "Build Timestamp (global): $(buildTimestamp)"
-
                     projectPath="$(Build.SourcesDirectory)/${{ buildStep.projectLocation }}"
                     echo "Project Path: $projectPath"
 
@@ -209,8 +207,13 @@ stages:
                   buildType="Release"
                 fi
 
+                rawTime="$(buildTimestampRaw)"
+
+                # Convert to required format: YYMMDD.HHMM
+                buildTimestamp=$(date -d "$rawTime" +"%y%m%d.%H%M")
+
                 sourceDir="$(Build.ArtifactStagingDirectory)/BuiltBackup"
-                targetDir="/mnt/nirvana/Linux/$buildType/${{ parameters.repoName }}/$(buildTimestamp)"
+                targetDir="/mnt/nirvana/Linux/$buildType/${{ parameters.repoName }}/$buildTimestamp"
 
                 echo "Publishing builds..."
                 echo "FROM: $sourceDir"
