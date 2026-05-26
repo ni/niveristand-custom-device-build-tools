@@ -34,12 +34,18 @@ parameters:
     type: string
     default: no
 
+  - name: repoName
+    type: string
+    default: none
+
+
 stages:
   - stage: ${{ parameters.stageName }}
     dependsOn: []
 
     variables:
       CD.BuildCounter: "9999"
+      buildTimestampRaw: $[format('{0:yyyy-MM-dd HH:mm:ss}', pipeline.startTime)]
 
     jobs:
       - job: Job_Build_Linux
@@ -49,12 +55,12 @@ stages:
           demands:
             - agent.os -equals Linux
 
-        displayName: >
-          Linux - Build Verstand CD Projects
-
+        displayName: Linux - Build Veristand CD Projects
         timeoutInMinutes: 120
 
         steps:
+
+          # ---------------- MOUNT SHARE ----------------
           - task: Bash@3
             displayName: Mount Nirvana Share
             inputs:
@@ -85,18 +91,17 @@ stages:
                 echo "Verifying mount..."
                 mount | grep nirvana || (echo "Mount failed!" && exit 1)
 
-                # ---------------- CLEAN OLD BUILT FOLDER ----------------
+                # ---------------- CLEAN OLD WORKSPACE ----------------
                 builtFolder="$(Build.SourcesDirectory)/Built"
+                safeCopyFolder="$(Build.ArtifactStagingDirectory)/BuiltBackup"
 
-                if [ -d "$builtFolder" ]; then
-                  echo "Existing Built folder found. Deleting..."
-                  rm -rf "$builtFolder"
+                rm -rf "$builtFolder"
+                rm -rf "$safeCopyFolder"
 
-                  echo "Built folder deleted."
-                else
-                  echo "No existing Built folder found."
-                fi
+                mkdir -p "$safeCopyFolder"
 
+
+          # ---------------- FIX VERISTAND CASE ----------------
           - ${{ each item in parameters.lvVersionsToBuild }}:
             - task: Bash@3
               displayName: Fix VeriStand Case (LV ${{ item.version }})
@@ -114,9 +119,10 @@ stages:
 
                   sudo ln -sfn "$VI_LIB_DIR/NI VeriStand" "$VI_LIB_DIR/NI Veristand"
 
-                  echo "[INFO] Symlink verification:"
                   ls -l "$VI_LIB_DIR"
 
+
+          # ---------------- BUILD LOOP ----------------
           - ${{ each item in parameters.lvVersionsToBuild }}:
             - ${{ each buildStep in parameters.buildSteps }}:
 
@@ -128,15 +134,10 @@ stages:
                   targetType: inline
                   script: |
                     set -e
-                    buildTimestamp=$(date +%Y%m%d%H%M%S)
-                    echo "Build Timestamp: $buildTimestamp"
-
-                    echo "##vso[task.setvariable variable=buildTimestamp]$buildTimestamp"
 
                     projectPath="$(Build.SourcesDirectory)/${{ buildStep.projectLocation }}"
                     echo "Project Path: $projectPath"
 
-                    # ---------------- LabVIEW config ----------------
                     labviewConfig="/home/nitest/natinst/.config/LabVIEW-${{ item.version }}/labview.conf"
 
                     mkdir -p "$(dirname "$labviewConfig")"
@@ -152,12 +153,6 @@ stages:
                     unattended: True
                     EOF
 
-                    # ---------------- Install zip if needed ----------------
-                    if ! command -v zip &> /dev/null; then
-                      sudo apt-get update
-                      sudo apt-get install -y zip
-                    fi
-
                     sleep 30
 
                     echo "Starting LabVIEW build..."
@@ -172,60 +167,64 @@ stages:
                     then
                       echo "Build succeeded."
 
-                      projectRoot="$(echo "${{ buildStep.projectLocation }}" | cut -d'/' -f1)"
                       builtFolder="$(Build.SourcesDirectory)/Built"
-                      safeCopy="$(Build.ArtifactStagingDirectory)/BuiltBackup/${{ buildStep.id }}_${{ item.version }}"
 
-                      echo "projectRoot  = $projectRoot"
-                      echo "builtFolder = $builtFolder"
-
-                      if [ -d "$builtFolder" ]; then
-                        echo "Built folder FOUND. Copying..."
-
-                        rm -rf "$safeCopy"
-                        mkdir -p "$safeCopy"
-                        cp -r "$builtFolder"/* "$safeCopy/" || true
-
-                        echo "Copied to: $safeCopy"
-                        ls -l "$safeCopy"
-                      else
-                        echo "WARNING: Built folder not found!"
+                      if [ ! -d "$builtFolder" ]; then
+                        echo "ERROR: Built folder not found"
                         exit 1
                       fi
 
-                      cd "$safeCopy"
+                      # ---------------- STAGING ----------------
+                      safeCopyFolder="$(Build.ArtifactStagingDirectory)/BuiltBackup"
+                      safeCopy="$safeCopyFolder/${{ item.version }}"
 
-                      zipFileName="${{ buildStep.id }}_${{ item.version }}.zip"
+                      echo "Staging output -> $safeCopy"
 
-                      echo "Creating zip: $zipFileName"
-                      zip -r "$zipFileName" ./*
+                      mkdir -p "$safeCopy"
+                      cp -r "$builtFolder"/* "$safeCopy/" || true
 
-                      ls -lh "$zipFileName"
-
-                      # ---------------- COPY TO NIRVANA ----------------
-                      if [ "${{ parameters.debugBuild }}" = "yes" ]; then
-                        buildType="Debug"
-                      else
-                        buildType="Release"
-                      fi
-
-                      echo "Build Type: $buildType"
-
-                      targetDir="/mnt/nirvana/Linux/$buildType/$buildTimestamp/$projectRoot"
-
-                      echo "Creating target directory if needed: $targetDir"
-                      sudo mkdir -p "$targetDir"
-
-                      echo "Copying zip to Nirvana..."
-                      sudo cp "$zipFileName" "$targetDir/"
-
-                      echo "Verifying copy..."
-                      ls -lh "$targetDir/" | grep "$zipFileName" || true
+                      echo "Staged files:"
+                      ls -l "$safeCopy"
 
                     else
                       echo "Build failed."
                       exit 1
                     fi
+
+
+          # ---------------- FINAL COPY TO NIRVANA ----------------
+          - task: Bash@3
+            displayName: Publish All Builds to Nirvana
+            condition: always()
+            inputs:
+              targetType: inline
+              script: |
+                set -e
+
+                if [ "${{ parameters.debugBuild }}" = "yes" ]; then
+                  buildType="Debug"
+                else
+                  buildType="Release"
+                fi
+
+                rawTime="$(buildTimestampRaw)"
+
+                # Convert to required format: YYMMDD.HHMM
+                buildTimestamp=$(date -d "$rawTime" +"%y%m%d.%H%M")
+
+                sourceDir="$(Build.ArtifactStagingDirectory)/BuiltBackup"
+                targetDir="/mnt/nirvana/Linux/$buildType/${{ parameters.repoName }}/$buildTimestamp"
+
+                echo "Publishing builds..."
+                echo "FROM: $sourceDir"
+                echo "TO:   $targetDir"
+
+                sudo mkdir -p "$targetDir"
+                sudo cp -r "$sourceDir/"* "$targetDir/"
+
+                echo "Final Nirvana contents:"
+                ls -R "$targetDir"
+
 
           # ---------------- CLEANUP ----------------
           - task: Bash@3
