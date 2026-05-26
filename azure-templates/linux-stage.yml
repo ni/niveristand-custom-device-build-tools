@@ -45,7 +45,6 @@ stages:
 
     variables:
       CD.BuildCounter: "9999"
-      buildTimestampRaw: $[format('{0:yyyy-MM-dd HH:mm:ss}', pipeline.startTime)]
 
     jobs:
       - job: Job_Build_Linux
@@ -207,10 +206,11 @@ stages:
                   buildType="Release"
                 fi
 
-                rawTime="$(buildTimestampRaw)"
+                buildTimestamp=$(date +%Y%m%d%H%M%S)
+                echo "Build Timestamp: $buildTimestamp"
 
-                # Convert to required format: YYMMDD.HHMM
-                buildTimestamp=$(date -d "$rawTime" +"%y%m%d.%H%M")
+                # Set Azure DevOps pipeline variable
+                echo "##vso[task.setvariable variable=buildTimestamp]$buildTimestamp"
 
                 sourceDir="$(Build.ArtifactStagingDirectory)/BuiltBackup"
                 targetDir="/mnt/nirvana/Linux/$buildType/${{ parameters.repoName }}/$buildTimestamp"
