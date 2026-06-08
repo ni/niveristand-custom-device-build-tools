@@ -100,10 +100,10 @@ stages:
                 mkdir -p "$safeCopyFolder"
 
 
-          # ---------------- FIX VERISTAND CASE ----------------
+          # ---------------- TEMPORARY STEPS ----------------
           - ${{ each item in parameters.lvVersionsToBuild }}:
             - task: Bash@3
-              displayName: Fix VeriStand Case (LV ${{ item.version }})
+              displayName: Temporary steps for (LV ${{ item.version }})
               inputs:
                 targetType: inline
                 script: |
@@ -116,9 +116,15 @@ stages:
                     exit 1
                   fi
 
+                  echo "Creating symbolic link..."
+
                   sudo ln -sfn "$VI_LIB_DIR/NI VeriStand" "$VI_LIB_DIR/NI Veristand"
 
                   ls -l "$VI_LIB_DIR"
+
+                  echo "Copying dev tool binaries to LabVIEW library directory..."
+
+                  sudo cp -rv /mnt/nirvana/Linux-Temp/dev-tool-binaries/. "$VI_LIB_DIR/NI/"
 
 
           # ---------------- BUILD LOOP ----------------
