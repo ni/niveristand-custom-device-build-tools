@@ -173,6 +173,10 @@ stages:
 
         # Finalization: if all jobs have passed, place .finished file in top level archive location
       - job: Finalize
+        pool:
+            name: ${{ parameters.pool }}
+            demands:
+              - agent.os -equals Windows_NT
         displayName: Final Validation
         dependsOn:
           - Job_Package_All
