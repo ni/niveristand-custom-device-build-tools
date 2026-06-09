@@ -71,8 +71,8 @@ parameters:
   - name: archiveLocation
     type: string
 
-  # buildNetCoreRepo (optional): boolean of whether to build the .NET Core repository
-  - name: buildNetCoreRepo
+  # createNetCoreRepo (optional): boolean of whether to create the .NET Core repository
+  - name: createNetCoreRepo
     type: boolean
     default: false
 
@@ -227,7 +227,7 @@ stages:
           condition: succeeded()
           steps:
             - task: PowerShell@2
-              displayName: Clone ${{ parameters.repoName }} repository and build NetCore repo
+              displayName: Clone ${{ parameters.repoName }} repository and create NetCore repo
               inputs:
                 targetType: inline
                 failOnStdErr: true
