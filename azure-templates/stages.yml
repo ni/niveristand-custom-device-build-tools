@@ -71,6 +71,16 @@ parameters:
   - name: archiveLocation
     type: string
 
+  # createNetCoreRepo (optional): boolean of whether to create the .NET Core repository
+  - name: createNetCoreRepo
+    type: boolean
+    default: false
+
+  # repoName (optional): string of the repository name
+  - name: repoName
+    type: string
+    default: ''
+
 # Note: If custom build steps are needed for a particular custom device, copy this entire template into the azure-pipeline and add steps before/after as needed
 stages:
   - stage: ${{ parameters.stageName }}_DiffVIs
@@ -204,3 +214,51 @@ stages:
             targetType: 'filePath'
             filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/finalization.ps1'
             failOnStdErr: True
+
+      - ${{ if and(parameters.buildNetCoreRepo, ne(parameters.repoName, '')) }}:
+        - job: Run_DNF_to_DNC_Tool_Create_NetCore_Repo
+          pool:
+            name: ${{ parameters.pool }}
+            demands:
+              - agent.os -equals Windows_NT
+          displayName: Create DNC repo in nirvana
+          dependsOn:
+            - Finalize
+          condition: succeeded()
+          steps:
+            - task: PowerShell@2
+              displayName: Clone ${{ parameters.repoName }} repository and create NetCore repo
+              inputs:
+                targetType: inline
+                failOnStdErr: true
+                script: |
+                  $netCoreDir = Join-Path "$(Build.SourcesDirectory)" "NetCore"
+                  $repoDir = Join-Path $netCoreDir "${{ parameters.repoName }}"
+
+                  Write-Host "NetCore directory: $netCoreDir"
+                  Write-Host "Repository directory: $repoDir"
+
+                  if (-not (Test-Path $netCoreDir))
+                  {
+                      New-Item -ItemType Directory -Path $netCoreDir -Force | Out-Null
+                  }
+
+                  if (Test-Path $repoDir)
+                  {
+                      Write-Host "Removing existing repository..."
+                      Remove-Item -Path $repoDir -Recurse -Force
+                  }
+
+                  git clone "https://github.com/ni/${{ parameters.repoName }}.git" "$repoDir"
+
+                  if ($LASTEXITCODE -ne 0)
+                  {
+                      throw "git clone failed."
+                  }
+
+                  if (-not (Test-Path (Join-Path $repoDir ".git")))
+                  {
+                      throw "Repository was not cloned successfully."
+                  }
+
+                  Write-Host "Repository cloned successfully."
