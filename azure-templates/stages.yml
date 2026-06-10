@@ -230,7 +230,7 @@ stages:
               displayName: Clone ${{ parameters.repoName }} repository and create NetCore repo
               inputs:
                 targetType: inline
-                failOnStdErr: true
+                failOnStdErr: false
                 script: |
                   $netCoreDir = Join-Path "$(Build.SourcesDirectory)" "NetCore"
                   $repoDir = Join-Path $netCoreDir "${{ parameters.repoName }}"
