@@ -270,8 +270,10 @@ stages:
 
                   Write-Host "Running DNC conversion..."
 
-                  & "$(CD.LabVIEWCLI)" `
+                  & LabVIEWCLI `
                     -OperationName RunVI `
+                    -LabVIEWPath "$lvPath" `
+                    -PortNumber 3363 `
                     -VIPath "C:\DNF2DNC\Convert to DNC.vi" `
                     "True" `
                     "$netCoreDir" `
