@@ -215,7 +215,7 @@ stages:
             filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/finalization.ps1'
             failOnStdErr: True
 
-      - ${{ if and(parameters.buildNetCoreRepo, ne(parameters.repoName, '')) }}:
+      - ${{ if and(parameters.createNetCoreRepo, ne(parameters.repoName, '')) }}:
         - job: Run_DNF_to_DNC_Tool_Create_NetCore_Repo
           pool:
             name: ${{ parameters.pool }}
