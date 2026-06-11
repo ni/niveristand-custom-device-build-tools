@@ -263,11 +263,6 @@ stages:
 
                   Write-Host "Repository cloned successfully."
 
-                  
-                  if (-not (Test-Path "$(CD.LabVIEWCLI)")) {
-                      throw "LabVIEW CLI not found."
-                  }
-
                   Write-Host "Running DNC conversion..."
 
                   $lvPath = "C:\Program Files\National Instruments\LabVIEW 2024\LabVIEW.exe"
