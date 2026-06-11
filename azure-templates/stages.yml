@@ -265,7 +265,7 @@ stages:
 
                   Write-Host "Running DNC conversion..."
 
-                  $lvPath = "C:\Program Files\National Instruments\LabVIEW 2024\LabVIEW.exe"
+                  $lvPath = "C:\Program Files\National Instruments\LabVIEW 2026\LabVIEW.exe"
 
                   & LabVIEWCLI `
                     -OperationName RunVI `
