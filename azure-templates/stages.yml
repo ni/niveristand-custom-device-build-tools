@@ -263,6 +263,23 @@ stages:
 
                   Write-Host "Repository cloned successfully."
 
+                  Start-Sleep -Seconds 20
+
+                  Write-Host "Remove hidden/system attributes (just in case)"
+                  attrib -H -S "$repoDir" /S /D
+
+                  Write-Host "Setting full permissions on repoDir..."
+                  icacls "$repoDir" /grant "*S-1-1-0:(OI)(CI)F" /T /C
+                  icacls "$repoDir" /grant "SYSTEM:(OI)(CI)F" /T /C
+                  icacls "$repoDir" /grant "$env:USERNAME:(OI)(CI)F" /T /C
+
+                  Write-Host "Verifying access..."
+                  if (Test-Path $repoDir) {
+                      Write-Host "repoDir is accessible"
+                  } else {
+                      Write-Host "repoDir NOT accessible"
+                  }
+
                   Write-Host "Running DNC conversion..."
 
                   $lvPath = "C:\Program Files\National Instruments\LabVIEW 2026\LabVIEW.exe"
