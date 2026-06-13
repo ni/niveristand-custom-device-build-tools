@@ -232,7 +232,8 @@ stages:
                 targetType: inline
                 failOnStdErr: false
                 script: |
-                  $netCoreDir = Join-Path "$(Build.SourcesDirectory)" "NetCore"
+
+                  $netCoreDir = "C:\NetCore"
                   $repoDir = Join-Path $netCoreDir "${{ parameters.repoName }}"
 
                   Write-Host "NetCore directory: $netCoreDir"
@@ -280,10 +281,17 @@ stages:
                       Write-Host "repoDir NOT accessible"
                   }
 
-                  Write-Host "Running DNC conversion..."
-
                   $lvPath = "C:\Program Files\National Instruments\LabVIEW 2026\LabVIEW.exe"
                   $viPath = "C:\DNF2DNC\Convert to DNC.vi"
+                  
+                  Write-Host "Launching LabVIEW 2026..."
+                  Start-Process -FilePath "$lvPath"
+
+                  # Give it time to initialize
+                  Start-Sleep -Seconds 15
+
+
+                  Write-Host "Running DNC conversion..."
 
                   LabVIEWCLI -OperationName RunVI -LabVIEWPath "$lvPath" -PortNumber 3363 -VIPath "$viPath" "True" "$netCoreDir" "" "${{ parameters.repoName }}" "C:\NetCoreDLL"
 
