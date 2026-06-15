@@ -232,6 +232,8 @@ stages:
                 targetType: inline
                 failOnStdErr: false
                 script: |
+                  Write-Host "Closing LabVIEW if running..."
+                  Get-Process LabVIEW -ErrorAction SilentlyContinue | Stop-Process -Force
 
                   $netCoreDir = "C:\NetCore"
                   $repoDir = Join-Path $netCoreDir "${{ parameters.repoName }}"
@@ -274,22 +276,24 @@ stages:
                   icacls "$repoDir" /grant "SYSTEM:(OI)(CI)F" /T /C
                   icacls "$repoDir" /grant "$env:USERNAME:(OI)(CI)F" /T /C
 
-                  Write-Host "Verifying access..."
-                  if (Test-Path $repoDir) {
-                      Write-Host "repoDir is accessible"
-                  } else {
-                      Write-Host "repoDir NOT accessible"
+                  $maxRetries = 10
+                  for ($i=0; $i -lt $maxRetries; $i++) {
+                      if ((Test-Path $repoDir) -and (Get-ChildItem $repoDir | Measure-Object).Count -gt 5) {
+                          Write-Host "Repo fully available"
+                          break
+                      }
+                      Start-Sleep -Seconds 5
                   }
+
 
                   $lvPath = "C:\Program Files\National Instruments\LabVIEW 2026\LabVIEW.exe"
                   $viPath = "C:\DNF2DNC\Convert to DNC.vi"
                   
                   Write-Host "Launching LabVIEW 2026..."
-                  Start-Process -FilePath "$lvPath"
-
-                  # Give it time to initialize
-                  Start-Sleep -Seconds 15
-
+                  
+                  $lv = Start-Process -FilePath "$lvPath" -PassThru
+                  $lv.WaitForInputIdle()
+                  Start-Sleep -Seconds 10
 
                   Write-Host "Running DNC conversion..."
 
