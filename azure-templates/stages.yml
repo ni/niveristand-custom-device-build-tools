@@ -3,6 +3,12 @@ parameters:
     type: string
     default: Build
 
+  # dependsOn (optional): list of stage names this stage must wait for.
+  # Default [] preserves the existing behavior of starting immediately.
+  - name: dependsOn
+    type: object
+    default: []
+
   - name: disableDiff
     type: boolean
     default: false
@@ -106,7 +112,7 @@ stages:
               lvVersionToDiff: ${{ parameters.lvVersionToDiff }}
 
   - stage: ${{ parameters.stageName }}
-    dependsOn: []
+    dependsOn: ${{ parameters.dependsOn }}
     variables:
       ${{ if ne(variables['Build.Reason'], 'PullRequest')}}:
         CD.BuildCounter: $[counter(format('custom {0}', variables['Build.SourceBranch']), 1)]
