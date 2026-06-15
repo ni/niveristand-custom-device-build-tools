@@ -304,6 +304,36 @@ stages:
                       throw "Convert to DNC VI failed."
                   }
 
+                  # ---------------- COPY TO NIRVANA ----------------
+
+                  $nirvanaTarget = "\\nirvana\Measurements\VeriStandAddons\Linux-Temp\NetCoreRepos\${{ parameters.repoName }}"
+
+                  Write-Host "Publishing NetCore repo to Nirvana..."
+                  Write-Host "Source: $repoDir"
+                  Write-Host "Target: $nirvanaTarget"
+
+                  # Ensure target directory exists
+                  if (-not (Test-Path $nirvanaTarget))
+                  {
+                      Write-Host "Creating Nirvana target directory..."
+                      New-Item -ItemType Directory -Path $nirvanaTarget -Force | Out-Null
+                  }
+
+                  # Copy everything from repoDir → Nirvana
+                  robocopy $repoDir $nirvanaTarget /E /COPY:DAT /XD ".git" /R:3 /W:5
+
+                  # Robocopy exit codes: 0 to 3 are success
+                  if ($LASTEXITCODE -gt 3)
+                  {
+                      Write-Host "Robocopy to Nirvana failed with exit code $LASTEXITCODE"
+                  }
+
+                  Write-Host "Successfully published to Nirvana."
+
+                  # Optional: quick verification
+                  Write-Host "Sample files in Nirvana target:"
+                  Get-ChildItem $nirvanaTarget | Select-Object -First 5
+
             - task: PowerShell@2
               displayName: Close LabVIEW
               condition: always()
