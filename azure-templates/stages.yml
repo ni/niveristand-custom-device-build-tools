@@ -265,7 +265,6 @@ stages:
                   }
 
                   Write-Host "Repository cloned successfully."
-
                   Start-Sleep -Seconds 20
 
                   Write-Host "Remove hidden/system attributes (just in case)"
@@ -275,16 +274,6 @@ stages:
                   icacls "$repoDir" /grant "*S-1-1-0:(OI)(CI)F" /T /C
                   icacls "$repoDir" /grant "SYSTEM:(OI)(CI)F" /T /C
                   icacls "$repoDir" /grant "$env:USERNAME:(OI)(CI)F" /T /C
-
-                  $maxRetries = 10
-                  for ($i=0; $i -lt $maxRetries; $i++) {
-                      if ((Test-Path $repoDir) -and (Get-ChildItem $repoDir | Measure-Object).Count -gt 5) {
-                          Write-Host "Repo fully available"
-                          break
-                      }
-                      Start-Sleep -Seconds 5
-                  }
-
 
                   $lvPath = "C:\Program Files\National Instruments\LabVIEW 2026\LabVIEW.exe"
                   $viPath = "C:\DNF2DNC\Convert to DNC.vi"
@@ -309,8 +298,6 @@ stages:
                   $nirvanaTarget = "\\nirvana\Measurements\VeriStandAddons\Linux-Temp\NetCoreRepos\${{ parameters.repoName }}"
 
                   Write-Host "Publishing NetCore repo to Nirvana..."
-                  Write-Host "Source: $repoDir"
-                  Write-Host "Target: $nirvanaTarget"
 
                   # Ensure target directory exists
                   if (-not (Test-Path $nirvanaTarget))
@@ -322,16 +309,20 @@ stages:
                   # Copy everything from repoDir → Nirvana
                   robocopy $repoDir $nirvanaTarget /E /COPY:DAT /XD ".git" /R:3 /W:5
 
-                  # Robocopy exit codes: 0 to 3 are success
-                  if ($LASTEXITCODE -gt 3)
+                  $rc = $LASTEXITCODE
+
+                  if ($rc -ge 8)
                   {
-                      Write-Host "Robocopy to Nirvana failed with exit code $LASTEXITCODE"
+                      throw "Robocopy failed with exit code $rc"
                   }
+
+                  Write-Host "Robocopy completed with exit code $rc"
+                  $global:LASTEXITCODE = 0
 
                   Write-Host "Successfully published to Nirvana."
 
                   # Optional: quick verification
-                  Write-Host "Sample files in Nirvana target:"
+                  Write-Host "VERIFICATION: Sample files in Nirvana target:"
                   Get-ChildItem $nirvanaTarget | Select-Object -First 5
 
             - task: PowerShell@2
