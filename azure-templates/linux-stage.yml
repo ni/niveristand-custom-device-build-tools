@@ -134,6 +134,7 @@ stages:
                   sudo rm -rf "$(Build.SourcesDirectory)"/*
                   sudo chmod -R 777 "$(Build.SourcesDirectory)"
                   sudo cp -rv /mnt/nirvana/Linux-Temp/NetCoreRepos/${{ parameters.repoName }}/. "$(Build.SourcesDirectory)/"
+                  sudo chmod -R 777 "$(Build.SourcesDirectory)"
 
 
           # ---------------- BUILD LOOP ----------------
