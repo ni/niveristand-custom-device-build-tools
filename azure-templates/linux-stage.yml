@@ -104,6 +104,7 @@ stages:
           - ${{ each item in parameters.lvVersionsToBuild }}:
             - task: Bash@3
               displayName: Temporary steps for (LV ${{ item.version }})
+              condition: succeeded()
               inputs:
                 targetType: inline
                 script: |
@@ -122,13 +123,13 @@ stages:
 
                   ls -l "$VI_LIB_DIR"
 
-                  sudo chmod -R 777 /usr/local/natinst/LabVIEW-${{ item.version }}-64/vi.lib/
+                  sudo chmod -R 777 /usr/local/natinst/LabVIEW-${{ item.version }}-64/
 
                   echo "Copying dev tool binaries to LabVIEW library directory..."
 
                   sudo cp -rv /mnt/nirvana/Linux-Temp/dev-tool-binaries/. "$VI_LIB_DIR/NI/"
 
-                  sudo chmod -R 777 /usr/local/natinst/LabVIEW-${{ item.version }}-64/vi.lib/
+                  sudo chmod -R 777 /usr/local/natinst/LabVIEW-${{ item.version }}-64/
 
                   echo "Removing old copy of SourcesDirectory and Copying netcore version from nirvana..."
                   sudo rm -rf "$(Build.SourcesDirectory)"/*
@@ -145,6 +146,7 @@ stages:
                 displayName: >
                   Build ${{ buildStep.projectLocation }}
                   (LV ${{ item.version }} ${{ item.bitness }})
+                condition: succeeded()
                 inputs:
                   targetType: inline
                   script: |
@@ -210,7 +212,7 @@ stages:
           # ---------------- FINAL COPY TO NIRVANA ----------------
           - task: Bash@3
             displayName: Publish All Builds to Nirvana
-            condition: always()
+            condition: succeeded()
             inputs:
               targetType: inline
               script: |
