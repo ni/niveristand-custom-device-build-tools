@@ -122,9 +122,18 @@ stages:
 
                   ls -l "$VI_LIB_DIR"
 
+                  sudo chmod -R 777 /usr/local/natinst/LabVIEW-${{ item.version }}-64/vi.lib/
+
                   echo "Copying dev tool binaries to LabVIEW library directory..."
 
                   sudo cp -rv /mnt/nirvana/Linux-Temp/dev-tool-binaries/. "$VI_LIB_DIR/NI/"
+
+                  sudo chmod -R 777 /usr/local/natinst/LabVIEW-${{ item.version }}-64/vi.lib/
+
+                  echo "Removing old copy of SourcesDirectory and Copying netcore version from nirvana..."
+                  sudo rm -rf "$(Build.SourcesDirectory)"/*
+                  sudo chmod -R 777 "$(Build.SourcesDirectory)"
+                  sudo cp -rv /mnt/nirvana/Linux-Temp/NetCoreRepos/${{ parameters.repoName }}/. "$(Build.SourcesDirectory)/"
 
 
           # ---------------- BUILD LOOP ----------------
