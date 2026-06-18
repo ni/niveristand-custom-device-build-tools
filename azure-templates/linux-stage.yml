@@ -161,8 +161,18 @@ stages:
                       exit 1
                     fi
 
-                    sourceDir="/mnt/nirvana/Linux/${{ parameters.binariesPath }}"
+                    if [ "${{ parameters.debugBuild }}" = "yes" ]; then
+                      buildType="Debug"
+                    else
+                      buildType="Release"
+                    fi
+
+                    baseDir="/mnt/nirvana/Linux/${{ parameters.releaseVersion }}/$buildType"
+                    
+                    # Pick latest subdirectory
+                    latestDir=$(find "$baseDir" -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | sort | tail -n 1)
                     destDir="$(Build.SourcesDirectory)/${{ parameters.destinationPath }}"
+                    sourceDir="$baseDir/$latestDir/${{ parameters.lvVersionsToBuild }}/${{ parameters.binariesPath }}"
 
                     if [ ! -d "$sourceDir" ]; then
                       echo "ERROR: Source directory does not exist: $sourceDir"
