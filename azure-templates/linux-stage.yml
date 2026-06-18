@@ -38,6 +38,21 @@ parameters:
     type: string
     default: none
 
+  # copyDependencies (optional): boolean of whether to copy any dependencies from nirvana
+  - name: copyDependencies
+    type: boolean
+    default: false
+
+  # binariesPath (optional): string of the binaries path
+  - name: binariesPath
+    type: string
+    default: ''
+
+  # destinationPath (optional): string of the destination path for the copied binaries on the build agent
+  - name: destinationPath
+    type: string
+    default: ''
+
 
 stages:
   - stage: ${{ parameters.stageName }}
@@ -136,6 +151,47 @@ stages:
                   sudo chmod -R 777 "$(Build.SourcesDirectory)"
                   sudo cp -rv /mnt/nirvana/Linux-Temp/NetCoreRepos/${{ parameters.repoName }}/. "$(Build.SourcesDirectory)/"
                   sudo chmod -R 777 "$(Build.SourcesDirectory)"
+
+                  # -------- COPY DEPENDENCIES (Conditional) --------
+                  if [ "${{ parameters.copyDependencies }}" = "true" ]; then
+                    echo "Copying dependencies from Nirvana..."
+
+                    if [ -z "${{ parameters.binariesPath }}" ] || [ -z "${{ parameters.destinationPath }}" ]; then
+                      echo "ERROR: binariesPath and destinationPath must be provided when copyDependencies is true."
+                      exit 1
+                    fi
+
+                    if [ "${{ parameters.debugBuild }}" = "yes" ]; then
+                      buildType="Debug"
+                    else
+                      buildType="Release"
+                    fi
+
+                    baseDir="/mnt/nirvana/Linux/${{ parameters.releaseVersion }}/$buildType"
+                    
+                    # Pick latest subdirectory
+                    latestDir=$(find "$baseDir" -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | sort | tail -n 1)
+                    destDir="$(Build.SourcesDirectory)/${{ parameters.destinationPath }}"
+                    sourceDir="$baseDir/$latestDir/${{ parameters.lvVersionsToBuild }}/${{ parameters.binariesPath }}"
+
+                    if [ ! -d "$sourceDir" ]; then
+                      echo "ERROR: Source directory does not exist: $sourceDir"
+                      exit 1
+                    fi
+
+                    echo "Copying from $sourceDir to $destDir"
+
+                    sudo rm -rf "$destDir"/*
+                    sudo mkdir -p "$destDir"
+                    sudo cp -rv "$sourceDir"/. "$destDir/"
+
+                    echo "Copied dependencies:"
+                    ls -l "$destDir"
+                    sudo chmod -R 777 "$destDir"
+                  else
+                    echo "copyDependencies disabled - skipping"
+                  fi
+
 
 
           # ---------------- BUILD LOOP ----------------
