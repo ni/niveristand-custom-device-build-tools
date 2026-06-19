@@ -249,8 +249,13 @@ stages:
                       builtFolder="$(Build.SourcesDirectory)/Built"
 
                       if [ ! -d "$builtFolder" ]; then
-                        echo "ERROR: Built folder not found"
-                        exit 1
+                        echo "ERROR: Built folder not found. builtFolder=$builtFolder"
+                        echo "Trying for one level down"
+                        builtFolder="$(Build.SourcesDirectory)/Source/Built"
+                        if [ ! -d "$builtFolder" ]; then
+                          echo "ERROR: Built folder still not found. builtFolder=$builtFolder"
+                          exit 1
+                        fi
                       fi
 
                       # ---------------- STAGING ----------------
