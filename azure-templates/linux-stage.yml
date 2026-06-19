@@ -43,6 +43,11 @@ parameters:
     type: string
     default: 'no'
 
+  # binaryExportCdName (optional): string of the CDname to export binaries for if copying dependencies from nirvana
+  - name: binaryExportCdName
+    type: string
+    default: ''
+
   # binariesPath (optional): string of the binaries path
   - name: binariesPath
     type: string
@@ -156,8 +161,8 @@ stages:
                   if [ "${{ parameters.copyDependencies }}" = "yes" ]; then
                     echo "Copying dependencies from Nirvana..."
 
-                    if [ -z "${{ parameters.binariesPath }}" ] || [ -z "${{ parameters.destinationPath }}" ]; then
-                      echo "ERROR: binariesPath and destinationPath must be provided when copyDependencies is yes."
+                    if [ -z "${{ parameters.binariesPath }}" ] || [ -z "${{ parameters.destinationPath }}" ] || [ -z "${{ parameters.binaryExportCdName }}" ]; then
+                      echo "ERROR: binariesPath, destinationPath, and binaryExportCdName must be provided when copyDependencies is yes."
                       exit 1
                     fi
 
@@ -167,7 +172,7 @@ stages:
                       buildType="Release"
                     fi
 
-                    baseDir="/mnt/nirvana/Linux/${{ parameters.releaseVersion }}/$buildType"
+                    baseDir="/mnt/nirvana/Linux/${{ parameters.binaryExportCdName }}/${{ parameters.releaseVersion }}/$buildType"
                     
                     # Pick latest subdirectory
                     latestDir=$(find "$baseDir" -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | sort | tail -n 1)
