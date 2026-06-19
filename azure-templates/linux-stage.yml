@@ -186,8 +186,9 @@ stages:
 
                     echo "Copying from $sourceDir to $destDir"
 
-                    sudo rm -rf "$destDir"/*
                     sudo mkdir -p "$destDir"
+
+                    # Copy and overwrite only matching files, keep rest intact
                     sudo cp -rv "$sourceDir"/. "$destDir/"
 
                     echo "Copied dependencies:"
