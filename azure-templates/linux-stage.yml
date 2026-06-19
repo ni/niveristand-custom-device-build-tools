@@ -38,10 +38,10 @@ parameters:
     type: string
     default: none
 
-  # copyDependencies (optional): boolean of whether to copy any dependencies from nirvana
+  # copyDependencies (optional): string of whether to copy any dependencies from nirvana
   - name: copyDependencies
-    type: boolean
-    default: false
+    type: string
+    default: 'no'
 
   # binariesPath (optional): string of the binaries path
   - name: binariesPath
@@ -153,11 +153,11 @@ stages:
                   sudo chmod -R 777 "$(Build.SourcesDirectory)"
 
                   # -------- COPY DEPENDENCIES (Conditional) --------
-                  if [ "${{ parameters.copyDependencies }}" = "true" ]; then
+                  if [ "${{ parameters.copyDependencies }}" = "yes" ]; then
                     echo "Copying dependencies from Nirvana..."
 
                     if [ -z "${{ parameters.binariesPath }}" ] || [ -z "${{ parameters.destinationPath }}" ]; then
-                      echo "ERROR: binariesPath and destinationPath must be provided when copyDependencies is true."
+                      echo "ERROR: binariesPath and destinationPath must be provided when copyDependencies is yes."
                       exit 1
                     fi
 
