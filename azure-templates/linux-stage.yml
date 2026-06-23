@@ -230,6 +230,7 @@ stages:
                     server.vi.access="+*"
                     NIERAutoSendAndSuppressAllDialogs: True
                     unattended: True
+                    viSearchPath="/<topvi>/*:/<foundvi>:/<vilib>/*:/<userlib>/*:/<instrlib>/*:/<resource>/*:/usr/local/niveristand2026"
                     EOF
 
                     sleep 30
