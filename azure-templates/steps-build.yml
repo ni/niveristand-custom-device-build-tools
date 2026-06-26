@@ -79,6 +79,15 @@ steps:
             -LogFilePath "$(CD.Workspace)\$(CD.Repository)\lvBuildSpecs.log"
         )
 
+  - ${{ if ne(parameters.buildStep.postBuildScript, '') }}:
+    - task: PowerShell@2
+      displayName: Post-build script - ${{ parameters.buildStep.buildSpec }}
+      condition: and(succeeded(), ne(variables['CD.SkipThisStep'], 'True'))
+      inputs:
+        targetType: 'inline'
+        script: |
+          ${{ parameters.buildStep.postBuildScript }}
+
   - task: CmdLine@2
     displayName: Close LabVIEW
     condition: always() # close LabVIEW even if previous steps failed
