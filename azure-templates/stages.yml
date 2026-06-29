@@ -151,7 +151,7 @@ stages:
                       lvVersionToBuild:          ${{ item }}
                       silenceDependencyFailures: ${{ parameters.silenceDependencyFailures }}
 
-            - ${{ if and(parameters.createNetCoreRepo, ne(parameters.repoName, ''),eq(parameters.lvVersionToBuild.version, '2026')) }}:
+            - ${{ if and(parameters.createNetCoreRepo, ne(parameters.repoName, ''),eq(item.version, '2026')) }}:
               - task: PowerShell@2
                 displayName: Prepare NetCore repository
                 condition: succeeded()
@@ -193,88 +193,7 @@ stages:
                     $global:LASTEXITCODE = 0
 
                     Write-Host "Repository copied successfully."
-
-            - task: PowerShell@2
-              displayName: Copy built files to Archive location
-              inputs:
-                targetType: 'filePath'
-                filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/archive-build.ps1'
-                failOnStdErr: True
-
-        # Packaging Jobs
-      - job: Job_Package_All
-        pool:
-          name: ${{ parameters.pool }}
-          demands: 
-            - VeriStand${{ parameters.lvVersionToDiff }} -equals True
-            - agent.os -equals Windows_NT
-        dependsOn:
-          - ${{ each item in parameters.lvVersionsToBuild }}:
-            - Job_Build_${{ item.version }}_${{ item.bitness }}
-        displayName: Package Installers
-        variables: 
-          CD.Package.Finished: ""
-        steps:
-          - ${{ each item in parameters.lvVersionsToBuild }}:
-            - template: steps-prepare.yml
-              parameters:
-                  lvVersion:           ${{ item.version }}
-                  bitness:             ${{ item.bitness }}
-                  releaseVersion:      ${{ parameters.releaseVersion }}
-                  archiveLocation:     ${{ parameters.archiveLocation }}
-                  buildOutputLocation: ${{ parameters.buildOutputLocation }}
-                  clearCache:          False
-
-            - template: steps-packaging.yml
-              parameters:
-                lvVersion: ${{ item.version }}
-                packages:  ${{ parameters.packages }}
-
-        # Finalization: if all jobs have passed, place .finished file in top level archive location
-      - job: Finalize
-        pool:
-            name: ${{ parameters.pool }}
-            demands:
-              - agent.os -equals Windows_NT
-        displayName: Final Validation
-        dependsOn:
-          - Job_Package_All
-        condition: succeeded()
-        steps:
-        - template: steps-prepare.yml
-          parameters:
-            archiveLocation: ${{ parameters.archiveLocation }}
-            build: False
-            clearCache: False
-
-        - task: PowerShell@2
-          displayName: Compare package contents to last successful build in main
-          inputs:
-            targetType: 'filePath'
-            filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/check-count-size.ps1'
-            failOnStdErr: True
-            arguments: > # $$ is used in an argument to pass in a boolean, which requires a $ at the beginning
-              -archiveDir "${{ parameters.archiveLocation }}"
-              -virtualPackages $${{ parameters.enableVirtualPackages }}
-
-        - task: PowerShell@2
-          displayName: Add .finished to directory
-          inputs:
-            targetType: 'filePath'
-            filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/finalization.ps1'
-            failOnStdErr: True
-
-      - ${{ if and(parameters.createNetCoreRepo, ne(parameters.repoName, '')) }}:
-        - job: Run_DNF_to_DNC_Tool_Create_NetCore_Repo
-          pool:
-            name: ${{ parameters.pool }}
-            demands:
-              - agent.os -equals Windows_NT
-          displayName: Create DNC repo in nirvana
-          dependsOn:
-            - Finalize
-          condition: succeeded()
-          steps:
+                  
             - task: PowerShell@2
               displayName: create NetCore repo
               inputs:
@@ -357,3 +276,73 @@ stages:
                 targetType: inline
                 script: |
                   Get-Process LabVIEW -ErrorAction SilentlyContinue | Stop-Process -Force
+
+            - task: PowerShell@2
+              displayName: Copy built files to Archive location
+              inputs:
+                targetType: 'filePath'
+                filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/archive-build.ps1'
+                failOnStdErr: True
+
+        # Packaging Jobs
+      - job: Job_Package_All
+        pool:
+          name: ${{ parameters.pool }}
+          demands: 
+            - VeriStand${{ parameters.lvVersionToDiff }} -equals True
+            - agent.os -equals Windows_NT
+        dependsOn:
+          - ${{ each item in parameters.lvVersionsToBuild }}:
+            - Job_Build_${{ item.version }}_${{ item.bitness }}
+        displayName: Package Installers
+        variables: 
+          CD.Package.Finished: ""
+        steps:
+          - ${{ each item in parameters.lvVersionsToBuild }}:
+            - template: steps-prepare.yml
+              parameters:
+                  lvVersion:           ${{ item.version }}
+                  bitness:             ${{ item.bitness }}
+                  releaseVersion:      ${{ parameters.releaseVersion }}
+                  archiveLocation:     ${{ parameters.archiveLocation }}
+                  buildOutputLocation: ${{ parameters.buildOutputLocation }}
+                  clearCache:          False
+
+            - template: steps-packaging.yml
+              parameters:
+                lvVersion: ${{ item.version }}
+                packages:  ${{ parameters.packages }}
+
+        # Finalization: if all jobs have passed, place .finished file in top level archive location
+      - job: Finalize
+        pool:
+            name: ${{ parameters.pool }}
+            demands:
+              - agent.os -equals Windows_NT
+        displayName: Final Validation
+        dependsOn:
+          - Job_Package_All
+        condition: succeeded()
+        steps:
+        - template: steps-prepare.yml
+          parameters:
+            archiveLocation: ${{ parameters.archiveLocation }}
+            build: False
+            clearCache: False
+
+        - task: PowerShell@2
+          displayName: Compare package contents to last successful build in main
+          inputs:
+            targetType: 'filePath'
+            filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/check-count-size.ps1'
+            failOnStdErr: True
+            arguments: > # $$ is used in an argument to pass in a boolean, which requires a $ at the beginning
+              -archiveDir "${{ parameters.archiveLocation }}"
+              -virtualPackages $${{ parameters.enableVirtualPackages }}
+
+        - task: PowerShell@2
+          displayName: Add .finished to directory
+          inputs:
+            targetType: 'filePath'
+            filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/finalization.ps1'
+            failOnStdErr: True
