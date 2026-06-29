@@ -8,13 +8,7 @@ parameters:
     type: object
   - name: silenceDependencyFailures
     type: boolean
-  - name: copyToNetCoreRepo
-    type: boolean
-    default: false
-  - name: repoName
-    type: string
-    default: ''
-
+    
 # Note: the following variables are defined in steps-prepare.yml:
   # CD.LabVIEW.Version, CD.Architecture, CD.Repository, CD.LabVIEW.Config,
   # CD.BuildTools, CD.LabVIEWCLI
@@ -99,43 +93,3 @@ steps:
     condition: always() # close LabVIEW even if previous steps failed
     inputs:
       script: IF '$(CD.SkipThisStep)'=='False' (taskkill /im labview.exe /f)
-
-  - ${{ if and(parameters.copyToNetCoreRepo, eq(parameters.lvVersionToBuild.version, '2026')) }}:
-    - task: PowerShell@2
-      displayName: Prepare NetCore repository
-      condition: succeeded()
-      inputs:
-        targetType: inline
-        script: |
-          $netCoreDir = "C:\NetCore"
-          $repoDir = Join-Path $netCoreDir "${{ parameters.repoName }}"
-
-          Write-Host "NetCore directory: $netCoreDir"
-          Write-Host "Repository directory: $repoDir"
-          Write-Host "Source directory: $(Build.SourcesDirectory)"
-
-          # Create C:\NetCore if it doesn't exist
-          if (-not (Test-Path $netCoreDir))
-          {
-              New-Item -ItemType Directory -Path $netCoreDir -Force | Out-Null
-          }
-
-          # Remove existing repository
-          if (Test-Path $repoDir)
-          {
-              Write-Host "Removing existing repository..."
-              Remove-Item -Path $repoDir -Recurse -Force
-          }
-
-          # Mirror the repository
-          Write-Host "Copying repository..."
-          robocopy "$(Build.SourcesDirectory)" "$repoDir" /E /COPY:DAT /XD ".git" /R:3 /W:5
-
-          $rc = $LASTEXITCODE
-
-          if ($rc -ge 8)
-          {
-              throw "Robocopy failed with exit code $rc"
-          }
-
-          Write-Host "Repository copied successfully."
