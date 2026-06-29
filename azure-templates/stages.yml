@@ -150,6 +150,8 @@ stages:
                       dependencies:              ${{ parameters.dependencies }}
                       lvVersionToBuild:          ${{ item }}
                       silenceDependencyFailures: ${{ parameters.silenceDependencyFailures }}
+                      copyToNetCoreRepo: ${{ parameters.createNetCoreRepo }}
+                      repoName: ${{ parameters.repoName }}
 
             - task: PowerShell@2
               displayName: Copy built files to Archive location
@@ -233,7 +235,7 @@ stages:
           condition: succeeded()
           steps:
             - task: PowerShell@2
-              displayName: Clone ${{ parameters.repoName }} repository and create NetCore repo
+              displayName: create NetCore repo
               inputs:
                 targetType: inline
                 failOnStdErr: false
@@ -247,30 +249,6 @@ stages:
                   Write-Host "NetCore directory: $netCoreDir"
                   Write-Host "Repository directory: $repoDir"
 
-                  if (-not (Test-Path $netCoreDir))
-                  {
-                      New-Item -ItemType Directory -Path $netCoreDir -Force | Out-Null
-                  }
-
-                  if (Test-Path $repoDir)
-                  {
-                      Write-Host "Removing existing repository..."
-                      Remove-Item -Path $repoDir -Recurse -Force
-                  }
-
-                  git clone "https://github.com/ni/${{ parameters.repoName }}.git" "$repoDir"
-
-                  if ($LASTEXITCODE -ne 0)
-                  {
-                      throw "git clone failed."
-                  }
-
-                  if (-not (Test-Path (Join-Path $repoDir ".git")))
-                  {
-                      throw "Repository was not cloned successfully."
-                  }
-
-                  Write-Host "Repository cloned successfully."
                   Start-Sleep -Seconds 20
 
                   Write-Host "Remove hidden/system attributes (just in case)"
