@@ -157,6 +157,20 @@ stages:
                   sudo cp -rv /mnt/nirvana/Linux-Temp/NetCoreRepos/${{ parameters.repoName }}/. "$(Build.SourcesDirectory)/"
                   sudo chmod -R 777 "$(Build.SourcesDirectory)"
 
+                  if [ "${{ parameters.repoName }}" = "niveristand-data-sharing-framework-custom-device" ]; then
+                    echo "[special case] Copying dependencies from Nirvana for ${{ parameters.repoName }}..."
+                    baseDir="/mnt/nirvana/data_sharing_framework_CD/NI/export/main"
+                    latestDir=$(find "$baseDir" -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | sort | tail -n 1)
+                    sourceDir="$baseDir/$latestDir/${{ item.version }}/x64/Core"
+                    destDir="$(Build.SourcesDirectory)/Includes"
+
+                    echo "Copying from $sourceDir to $destDir"
+
+                    sudo mkdir -p "$destDir"
+                    sudo cp -rv "$sourceDir"/. "$destDir/"
+                    sudo chmod -R 777 "$destDir"
+
+
                   # -------- COPY DEPENDENCIES (Conditional) --------
                   if [ "${{ parameters.copyDependencies }}" = "yes" ]; then
                     echo "Copying dependencies from Nirvana..."
