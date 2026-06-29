@@ -169,6 +169,7 @@ stages:
                     sudo mkdir -p "$destDir"
                     sudo cp -rv "$sourceDir"/. "$destDir/"
                     sudo chmod -R 777 "$destDir"
+                  fi
 
 
                   # -------- COPY DEPENDENCIES (Conditional) --------
