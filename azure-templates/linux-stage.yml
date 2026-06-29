@@ -161,7 +161,7 @@ stages:
                     echo "[special case] Copying dependencies from Nirvana for ${{ parameters.repoName }}..."
                     baseDir="/mnt/nirvana/data_sharing_framework_CD/NI/export/main"
                     latestDir=$(find "$baseDir" -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | sort | tail -n 1)
-                    sourceDir="$baseDir/$latestDir/${{ item.version }}/x64/Core"
+                    sourceDir="$baseDir/$latestDir/${{ item.version }}/x64/Core/Linux_x64"
                     destDir="$(Build.SourcesDirectory)/Includes"
 
                     echo "Copying from $sourceDir to $destDir"
