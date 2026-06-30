@@ -154,7 +154,12 @@ stages:
                   echo "Removing old copy of SourcesDirectory and Copying netcore version from nirvana..."
                   sudo rm -rf "$(Build.SourcesDirectory)"/*
                   sudo chmod -R 777 "$(Build.SourcesDirectory)"
-                  sudo cp -rv /mnt/nirvana/Linux-Temp/NetCoreRepos/${{ parameters.repoName }}/. "$(Build.SourcesDirectory)/"
+                  if [ "${{ parameters.repoName }}" = "niveristand-custom-device-development-tools" ]; then
+                    sudo cp -rv /mnt/nirvana/Linux-Temp/NetCoreRepos/Temp-devtool/${{ parameters.repoName }}/. "$(Build.SourcesDirectory)/"
+                  else
+                    sudo cp -rv /mnt/nirvana/Linux-Temp/NetCoreRepos/${{ parameters.repoName }}/. "$(Build.SourcesDirectory)/"
+                  fi
+                  
                   sudo chmod -R 777 "$(Build.SourcesDirectory)"
 
                   if [ "${{ parameters.repoName }}" = "niveristand-data-sharing-framework-custom-device" ]; then
