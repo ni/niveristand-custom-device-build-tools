@@ -158,6 +158,7 @@ stages:
                 inputs:
                   targetType: inline
                   script: |
+                    Write-Host "Debug code - Branch name is: $(Build.SourceBranch)"
                     $netCoreDir = "C:\NetCore"
                     $repoDir = Join-Path $netCoreDir "${{ parameters.repoName }}"
 
