@@ -236,6 +236,7 @@ stages:
 
                     projectPath="$(Build.SourcesDirectory)/${{ buildStep.projectLocation }}"
                     echo "Project Path: $projectPath"
+                    sudo chmod -R 777 "$(Build.SourcesDirectory)"
 
                     labviewConfig="/home/nitest/natinst/.config/LabVIEW-${{ item.version }}/labview.conf"
 
