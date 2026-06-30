@@ -194,80 +194,74 @@ stages:
 
                     Write-Host "Repository copied successfully."
                   
-            - task: PowerShell@2
-              displayName: create NetCore repo
-              inputs:
-                targetType: inline
-                failOnStdErr: false
-                script: |
-                  Write-Host "Closing LabVIEW if running..."
-                  Get-Process LabVIEW -ErrorAction SilentlyContinue | Stop-Process -Force
+                    Write-Host "Closing LabVIEW if running..."
+                    Get-Process LabVIEW -ErrorAction SilentlyContinue | Stop-Process -Force
 
-                  $netCoreDir = "C:\NetCore"
-                  $repoDir = Join-Path $netCoreDir "${{ parameters.repoName }}"
+                    $netCoreDir = "C:\NetCore"
+                    $repoDir = Join-Path $netCoreDir "${{ parameters.repoName }}"
 
-                  Write-Host "NetCore directory: $netCoreDir"
-                  Write-Host "Repository directory: $repoDir"
+                    Write-Host "NetCore directory: $netCoreDir"
+                    Write-Host "Repository directory: $repoDir"
 
-                  Start-Sleep -Seconds 20
+                    Start-Sleep -Seconds 20
 
-                  Write-Host "Remove hidden/system attributes (just in case)"
-                  attrib -H -S "$repoDir" /S /D
+                    Write-Host "Remove hidden/system attributes (just in case)"
+                    attrib -H -S "$repoDir" /S /D
 
-                  Write-Host "Setting full permissions on repoDir..."
-                  icacls "$repoDir" /grant "*S-1-1-0:(OI)(CI)F" /T /C
-                  icacls "$repoDir" /grant "SYSTEM:(OI)(CI)F" /T /C
-                  icacls "$repoDir" /grant "$env:USERNAME:(OI)(CI)F" /T /C
+                    Write-Host "Setting full permissions on repoDir..."
+                    icacls "$repoDir" /grant "*S-1-1-0:(OI)(CI)F" /T /C
+                    icacls "$repoDir" /grant "SYSTEM:(OI)(CI)F" /T /C
+                    icacls "$repoDir" /grant "$env:USERNAME:(OI)(CI)F" /T /C
 
-                  $lvPath = "C:\Program Files\National Instruments\LabVIEW 2026\LabVIEW.exe"
-                  $viPath = "C:\DNF2DNC\Convert to DNC.vi"
-                  
-                  Write-Host "Launching LabVIEW 2026..."
-                  
-                  $lv = Start-Process -FilePath "$lvPath" -PassThru
-                  $lv.WaitForInputIdle()
-                  Start-Sleep -Seconds 10
+                    $lvPath = "C:\Program Files\National Instruments\LabVIEW 2026\LabVIEW.exe"
+                    $viPath = "C:\DNF2DNC\Convert to DNC.vi"
+                    
+                    Write-Host "Launching LabVIEW 2026..."
+                    
+                    $lv = Start-Process -FilePath "$lvPath" -PassThru
+                    $lv.WaitForInputIdle()
+                    Start-Sleep -Seconds 10
 
-                  Write-Host "Running DNC conversion..."
+                    Write-Host "Running DNC conversion..."
 
-                  LabVIEWCLI -OperationName RunVI -LabVIEWPath "$lvPath" -PortNumber 3363 -VIPath "$viPath" "True" "$netCoreDir" "" "${{ parameters.repoName }}" "C:\NetCoreDLL"
+                    LabVIEWCLI -OperationName RunVI -LabVIEWPath "$lvPath" -PortNumber 3363 -VIPath "$viPath" "True" "$netCoreDir" "" "${{ parameters.repoName }}" "C:\NetCoreDLL"
 
-                  if ($LASTEXITCODE -ne 0)
-                  {
-                      throw "Convert to DNC VI failed."
-                  }
+                    if ($LASTEXITCODE -ne 0)
+                    {
+                        throw "Convert to DNC VI failed."
+                    }
 
-                  # ---------------- COPY TO NIRVANA ----------------
+                    # ---------------- COPY TO NIRVANA ----------------
 
-                  $nirvanaTarget = "\\nirvana\Measurements\VeriStandAddons\Linux-Temp\NetCoreRepos\${{ parameters.repoName }}"
+                    $nirvanaTarget = "\\nirvana\Measurements\VeriStandAddons\Linux-Temp\NetCoreRepos\${{ parameters.repoName }}"
 
-                  Write-Host "Publishing NetCore repo to Nirvana..."
+                    Write-Host "Publishing NetCore repo to Nirvana..."
 
-                  # Ensure target directory exists
-                  if (-not (Test-Path $nirvanaTarget))
-                  {
-                      Write-Host "Creating Nirvana target directory..."
-                      New-Item -ItemType Directory -Path $nirvanaTarget -Force | Out-Null
-                  }
+                    # Ensure target directory exists
+                    if (-not (Test-Path $nirvanaTarget))
+                    {
+                        Write-Host "Creating Nirvana target directory..."
+                        New-Item -ItemType Directory -Path $nirvanaTarget -Force | Out-Null
+                    }
 
-                  # Copy everything from repoDir → Nirvana
-                  robocopy $repoDir $nirvanaTarget /E /COPY:DAT /XD ".git" /R:3 /W:5
+                    # Copy everything from repoDir → Nirvana
+                    robocopy $repoDir $nirvanaTarget /E /COPY:DAT /XD ".git" /R:3 /W:5
 
-                  $rc = $LASTEXITCODE
+                    $rc = $LASTEXITCODE
 
-                  if ($rc -ge 8)
-                  {
-                      throw "Robocopy failed with exit code $rc"
-                  }
+                    if ($rc -ge 8)
+                    {
+                        throw "Robocopy failed with exit code $rc"
+                    }
 
-                  Write-Host "Robocopy completed with exit code $rc"
-                  $global:LASTEXITCODE = 0
+                    Write-Host "Robocopy completed with exit code $rc"
+                    $global:LASTEXITCODE = 0
 
-                  Write-Host "Successfully published to Nirvana."
+                    Write-Host "Successfully published to Nirvana."
 
-                  # Optional: quick verification
-                  Write-Host "VERIFICATION: Sample files in Nirvana target:"
-                  Get-ChildItem $nirvanaTarget | Select-Object -First 5
+                    # Optional: quick verification
+                    Write-Host "VERIFICATION: Sample files in Nirvana target:"
+                    Get-ChildItem $nirvanaTarget | Select-Object -First 5
 
             - task: PowerShell@2
               displayName: Close LabVIEW
