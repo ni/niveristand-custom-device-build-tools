@@ -258,6 +258,8 @@ stages:
 
                     echo "Starting LabVIEW build..."
 
+                    sudo chmod -R 777 /usr/local/
+
                     if xvfb-run --auto-servernum LabVIEWCLI \
                       -LabVIEWPath "/usr/local/natinst/LabVIEW-${{ item.version }}-64/labview" \
                       -PortNumber 3363 \
