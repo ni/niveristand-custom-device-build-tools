@@ -160,10 +160,8 @@ stages:
                   script: |
                     Write-Host "Debug code - Branch name is: $(Build.SourceBranch)"
                     $netCoreDir = "C:\NetCore"
-                    $repoDir = Join-Path $netCoreDir "${{ parameters.repoName }}"
 
                     Write-Host "NetCore directory: $netCoreDir"
-                    Write-Host "Repository directory: $repoDir"
                     Write-Host "Source directory: $(Build.SourcesDirectory)"
 
                     # Create C:\NetCore if it doesn't exist
@@ -171,6 +169,8 @@ stages:
                     {
                         New-Item -ItemType Directory -Path $netCoreDir -Force | Out-Null
                     }
+
+                    $repoDir = Join-Path $netCoreDir "${{ parameters.repoName }}"
 
                     # Remove existing repository
                     if (Test-Path $repoDir)
@@ -181,7 +181,7 @@ stages:
 
                     # Mirror the repository
                     Write-Host "Copying repository..."
-                    robocopy "$(Build.SourcesDirectory)" "$repoDir" /E /COPY:DAT /XD ".git" /R:3 /W:5
+                    robocopy "$(Build.SourcesDirectory)" "$netCoreDir" /E /COPY:DAT /XD ".git" /R:3 /W:5
 
                     $rc = $LASTEXITCODE
 
@@ -197,12 +197,6 @@ stages:
                   
                     Write-Host "Closing LabVIEW if running..."
                     Get-Process LabVIEW -ErrorAction SilentlyContinue | Stop-Process -Force
-
-                    $netCoreDir = "C:\NetCore"
-                    $repoDir = Join-Path $netCoreDir "${{ parameters.repoName }}"
-
-                    Write-Host "NetCore directory: $netCoreDir"
-                    Write-Host "Repository directory: $repoDir"
 
                     Start-Sleep -Seconds 20
 
