@@ -154,6 +154,7 @@ stages:
             - ${{ if and(parameters.createNetCoreRepo, ne(parameters.repoName, ''),eq(item.version, '2026')) }}:
               - task: PowerShell@2
                 displayName: Prepare NetCore repository
+                timeoutInMinutes: 360
                 condition: succeeded()
                 inputs:
                   targetType: inline
