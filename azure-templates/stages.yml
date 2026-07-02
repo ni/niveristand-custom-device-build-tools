@@ -181,7 +181,7 @@ stages:
 
                     # Mirror the repository
                     Write-Host "Copying repository..."
-                    robocopy "$(Build.SourcesDirectory)" "$netCoreDir" /E /COPY:DAT /XD ".git" /R:3 /W:5
+                    robocopy "$(Build.SourcesDirectory)" "$netCoreDir" /E /COPY:DAT /XD ".git" "Built" "built" /R:3 /W:5
 
                     $rc = $LASTEXITCODE
 
