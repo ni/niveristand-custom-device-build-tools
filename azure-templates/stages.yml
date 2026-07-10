@@ -209,7 +209,7 @@ stages:
                     icacls "$repoDir" /grant "$env:USERNAME:(OI)(CI)F" /T /C
 
                     $lvPath = "C:\Program Files\National Instruments\LabVIEW 2026\LabVIEW.exe"
-                    $viPath = "C:\DNF2DNC\Convert to DNC.vi"
+                    $viPath = "C:\DNF2DNC\new\Convert to DNC.vi"
                     
                     Write-Host "Launching LabVIEW 2026..."
                     
@@ -219,7 +219,7 @@ stages:
 
                     Write-Host "Running DNC conversion..."
 
-                    LabVIEWCLI -OperationName RunVI -LabVIEWPath "$lvPath" -PortNumber 3363 -VIPath "$viPath" "True" "$netCoreDir" "" "${{ parameters.repoName }}" "C:\NetCoreDLL"
+                    LabVIEWCLI -OperationName RunVI -LabVIEWPath "$lvPath" -PortNumber 3363 -VIPath "$viPath" "True" "$netCoreDir" "" "${{ parameters.repoName }}" "C:\NetCoreDLL\unsigned"
 
                     if ($LASTEXITCODE -ne 0)
                     {
