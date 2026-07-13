@@ -154,7 +154,7 @@ stages:
             - ${{ if and(parameters.createNetCoreRepo ,ne(parameters.repoName, '') ,eq(item.version, '2026') ,eq(item.bitness, '64bit')) }}:
               - task: PowerShell@2
                 displayName: Prepare NetCore repository
-                condition: succeeded()
+                condition: and(succeeded(), eq(variables['ConvertNetCore'], 'true'))
                 inputs:
                   targetType: inline
                   script: |
