@@ -58,10 +58,14 @@ parameters:
     type: string
     default: ''
 
+  - name: dependsOn
+    type: object
+    default: []
+
 
 stages:
   - stage: ${{ parameters.stageName }}
-    dependsOn: []
+    dependsOn: ${{ parameters.dependsOn }}
 
     variables:
       CD.BuildCounter: "9999"
