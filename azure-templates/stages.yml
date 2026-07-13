@@ -151,7 +151,7 @@ stages:
                       lvVersionToBuild:          ${{ item }}
                       silenceDependencyFailures: ${{ parameters.silenceDependencyFailures }}
 
-            - ${{ if and(parameters.createNetCoreRepo ,ne(parameters.repoName, '') ,eq(item.version, '2026') ,eq(item.bitness, '64bit')) }}:
+            - ${{ if and(ne(parameters.repoName, '') ,eq(item.version, '2026') ,eq(item.bitness, '64bit')) }}:
               - task: PowerShell@2
                 displayName: Prepare NetCore repository
                 condition: and(succeeded(), eq(variables['ConvertNetCore'], 'true'))
