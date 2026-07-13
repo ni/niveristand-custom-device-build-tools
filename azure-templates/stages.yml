@@ -219,7 +219,7 @@ stages:
 
                     Write-Host "Running DNC conversion..."
 
-                    LabVIEWCLI -OperationName RunVI -LabVIEWPath "$lvPath" -PortNumber 3363 -VIPath "$viPath" "True" "$netCoreDir" "" "${{ parameters.repoName }}" "C:\NetCoreDLL"
+                    LabVIEWCLI -OperationName RunVI -LabVIEWPath "$lvPath" -PortNumber 3363 -VIPath "$viPath" "True" "$netCoreDir" "${{ parameters.repoName }}" "C:\NetCoreDLL"
 
                     if ($LASTEXITCODE -ne 0)
                     {
