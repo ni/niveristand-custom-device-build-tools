@@ -154,10 +154,16 @@ stages:
             - ${{ if and(ne(parameters.repoName, '') ,eq(item.version, '2026') ,eq(item.bitness, '64bit')) }}:
               - task: PowerShell@2
                 displayName: Prepare NetCore repository
-                condition: and(succeeded(), eq(variables['ConvertNetCore'], 'true'))
+                condition: and(succeeded(), eq(lower(variables['ConvertNetCore']), 'true'))
                 inputs:
                   targetType: inline
                   script: |
+                    if ("$(ConvertNetCore)".ToLower() -ne "true")
+                    {
+                        Write-Host "Skipping."
+                        exit 0
+                    }
+
                     Write-Host "Debug code - Branch name is: $(Build.SourceBranch)"
                     $netCoreDir = "C:\NetCore"
 
