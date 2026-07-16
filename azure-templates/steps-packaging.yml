@@ -6,7 +6,10 @@ parameters:
 
 steps:
   - ${{ each package in parameters.packages }}:
-    - ${{ if ne(package.controlFileName, '') }}:
+    # Skip packaging a package for the current LabVIEW version if that version is listed
+    # in the package's optional "exclusions" (list of {version, bitness}). Packages without
+    # an "exclusions" key are always packaged (convertToJson(null) never matches the version).
+    - ${{ if and(ne(package.controlFileName, ''), not(contains(convertToJson(package.exclusions), format('"version": "{0}"', parameters.lvVersion)))) }}:
       - task: PowerShell@2
         displayName: Stage nipkg directory for ${{ package.controlFileName }}
         inputs:
