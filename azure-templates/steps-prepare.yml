@@ -21,6 +21,16 @@ parameters:
   - name: submodules
     type: boolean
     default: False
+  - name: persistCredentials
+    type: boolean
+    default: False
+  - name: privateSubmodules
+    type: boolean
+    default: False
+  - name: manualPAT
+    type: string
+    default: '' 
+
 # the following parameters allow skipping portions of this yaml file
   - name: clearCache
     type: boolean
@@ -31,14 +41,40 @@ parameters:
 
 
 steps:
+  
   - checkout: niveristand-custom-device-build-tools
     displayName: Check out NI VS Custom Device Build Tools repository
 
     # Checkout Self should be second - the checkout order doesn't matter in most cases, 
     # but we want the dev branch (self) to be checked out last so that it's used for PR builds in niveristand-custom-device-build-tools
+    # Perform default submodule update if selected
   - checkout: self
-    displayName: Check out repository to build
+    displayName: Check out repository to build (options - submodules = ${{ parameters.submodules }}, persistCredentials = ${{ parameters.persistCredentials }}, privateSubmodules)
     submodules: ${{ parameters.submodules }}
+    persistCredentials: ${{ parameters.persistCredentials }}
+
+    # if private submodules are enabled, we must update them manually using the provided PAT
+  - ${{ if and(eq(parameters.submodules, False), eq(parameters.privateSubmodules, True)) }}:
+    - powershell: |
+        # Check if PAT variable is configured
+        $pat = $env:MY_GITHUB_PAT
+        if ($pat) {
+            Write-Host "PAT is set."
+        } else {
+            Write-Host "PAT is not set."
+        }
+        # Configure Git to use the PAT for authentication
+        $repo_name = "$env:BUILD_REPOSITORY_NAME" -replace ".+\/", ""
+        Set-Location $env:BUILD_SOURCESDIRECTORY\$repo_name
+        $status = git submodule status
+        Write-Host "Submodule status:"
+        Write-Host $status
+        # Apply PAT to submodules
+        git config --global url."https://$env:MY_GITHUB_PAT@github.com".insteadOf "https://github.com"
+        git submodule update --init --recursive --verbose
+      displayName: 'Update private submodules'
+      env:
+        MY_GITHUB_PAT: ${{ parameters.manualPAT }}
 
   - task: PowerShell@2
     displayName: Configure Source Branch and Custom Device Repository Name
