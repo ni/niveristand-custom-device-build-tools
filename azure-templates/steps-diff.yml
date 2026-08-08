@@ -34,6 +34,7 @@ steps:
     displayName: Diff VIs and publish
     inputs:
       targetType: 'inline'
+      failOnStdErr: True
       script: |
         .\env\Scripts\activate
         cd $(CD.Repository)
