@@ -216,10 +216,10 @@ stages:
                     icacls "$repoDir" /grant "SYSTEM:(OI)(CI)F" /T /C
                     icacls "$repoDir" /grant "$env:USERNAME:(OI)(CI)F" /T /C
 
-                    $lvPath = "C:\Program Files\National Instruments\LabVIEW 2026\LabVIEW.exe"
+                    $lvPath = "C:\Program Files\National Instruments\LabVIEW 2027\LabVIEW.exe"
                     $viPath = "C:\DNF2DNC\new\Convert to DNC.vi"
                     
-                    Write-Host "Launching LabVIEW 2026..."
+                    Write-Host "Launching LabVIEW 2027..."
                     
                     $lv = Start-Process -FilePath "$lvPath" -PassThru
                     $lv.WaitForInputIdle()
