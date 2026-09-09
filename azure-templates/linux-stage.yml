@@ -278,60 +278,60 @@ stages:
                 ls -R "$targetDir"
                 
                 # -------- COPY DEPENDENCIES FOR ALL BUILD STEPS --------
-                - ${{ each buildStep in parameters.buildSteps }}:
-                  - ${{ each dependency in buildStep.copyDependencies }}:
-                
-                    - task: Bash@3
-                      displayName: Copy Dependency - ${{ dependency.source }}
-                      condition: succeeded()
-                      inputs:
-                        targetType: inline
-                        script: |
-                          set -e
-                
-                          baseDir="${{ parameters.archiveLocation }}/ni/export/main"
-                          version="2026"
-                
-                          selectedDir=""
-                
-                          for dir in $(find "$baseDir" \
-                              -mindepth 1 \
-                              -maxdepth 1 \
-                              -type d \
-                              -printf "%f\n" | sort -r); do
-                
-                            if [ -f "$baseDir/$dir/.finished" ]; then
-                              selectedDir="$dir"
-                              echo "Found .finished in $selectedDir"
-                              break
+                - ${{ each item in parameters.lvVersionsToBuild }}:
+                  - ${{ each buildStep in parameters.buildSteps }}:
+                    - ${{ each dependency in buildStep.copyDependencies }}:
+                  
+                      - task: Bash@3
+                        displayName: Copy Dependency - ${{ dependency.source }}
+                        condition: succeeded()
+                        inputs:
+                          targetType: inline
+                          script: |
+                            set -e
+                  
+                            baseDir="${{ parameters.archiveLocation }}/ni/export/main"
+                  
+                            selectedDir=""
+                  
+                            for dir in $(find "$baseDir" \
+                                -mindepth 1 \
+                                -maxdepth 1 \
+                                -type d \
+                                -printf "%f\n" | sort -r); do
+                  
+                              if [ -f "$baseDir/$dir/.finished" ]; then
+                                selectedDir="$dir"
+                                echo "Found .finished in $selectedDir"
+                                break
+                              fi
+                  
+                            done
+                  
+                            if [ -z "$selectedDir" ]; then
+                              echo "ERROR: No version folder contains .finished"
+                              exit 1
                             fi
-                
-                          done
-                
-                          if [ -z "$selectedDir" ]; then
-                            echo "ERROR: No version folder contains .finished"
-                            exit 1
-                          fi
-                
-                          sourceDir="$baseDir/$selectedDir/$version/x64/${{ dependency.source }}"
-                          destDir="$targetDir/$version/${{ dependency.destination }}"
-                
-                          echo "Selected Version Folder: $selectedDir"
-                          echo "FROM: $sourceDir"
-                          echo "TO  : $destDir"
-                
-                          if [ ! -d "$sourceDir" ]; then
-                            echo "ERROR: Source directory does not exist"
-                            echo "$sourceDir"
-                            exit 1
-                          fi
-                
-                          sudo mkdir -p "$destDir"
-                          sudo cp -rv "$sourceDir"/. "$destDir/"
-                          sudo chmod -R 777 "$destDir"
-                
-                          echo "Dependency copied successfully."
-                
+                  
+                            sourceDir="$baseDir/$selectedDir/${{ item.version }}/x64/${{ dependency.source }}"
+                            destDir="$targetDir/${{ item.version }}/${{ dependency.destination }}"
+                  
+                            echo "Selected Version Folder: $selectedDir"
+                            echo "FROM: $sourceDir"
+                            echo "TO  : $destDir"
+                  
+                            if [ ! -d "$sourceDir" ]; then
+                              echo "ERROR: Source directory does not exist"
+                              echo "$sourceDir"
+                              exit 1
+                            fi
+                  
+                            sudo mkdir -p "$destDir"
+                            sudo cp -rv "$sourceDir"/. "$destDir/"
+                            sudo chmod -R 777 "$destDir"
+                  
+                            echo "Dependency copied successfully."
+                  
 
           # ---------------- CLEANUP ----------------
           - task: Bash@3
