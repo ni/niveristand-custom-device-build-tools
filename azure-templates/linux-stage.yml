@@ -38,26 +38,6 @@ parameters:
     type: string
     default: none
 
-  # copyDependencies (optional): string of whether to copy any dependencies from nirvana
-  - name: copyDependencies
-    type: string
-    default: 'no'
-
-  # binaryExportCdName (optional): string of the CDname to export binaries for if copying dependencies from nirvana
-  - name: binaryExportCdName
-    type: string
-    default: ''
-
-  # binariesPath (optional): string of the binaries path
-  - name: binariesPath
-    type: string
-    default: ''
-
-  # destinationPath (optional): string of the destination path for the copied binaries on the build agent
-  - name: destinationPath
-    type: string
-    default: ''
-
   - name: dependsOn
     type: object
     default: []
@@ -182,48 +162,6 @@ stages:
                   fi
 
 
-                  # -------- COPY DEPENDENCIES (Conditional) --------
-                  if [ "${{ parameters.copyDependencies }}" = "yes" ]; then
-                    echo "Copying dependencies from Nirvana..."
-
-                    if [ -z "${{ parameters.binariesPath }}" ] || [ -z "${{ parameters.destinationPath }}" ] || [ -z "${{ parameters.binaryExportCdName }}" ]; then
-                      echo "ERROR: binariesPath, destinationPath, and binaryExportCdName must be provided when copyDependencies is yes."
-                      exit 1
-                    fi
-
-                    if [ "${{ parameters.debugBuild }}" = "yes" ]; then
-                      buildType="Debug"
-                    else
-                      buildType="Release"
-                    fi
-
-                    baseDir="/mnt/nirvana/Linux/${{ parameters.binaryExportCdName }}/${{ parameters.releaseVersion }}/$buildType"
-                    
-                    # Pick latest subdirectory
-                    latestDir=$(find "$baseDir" -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | sort | tail -n 1)
-                    destDir="$(Build.SourcesDirectory)/${{ parameters.destinationPath }}"
-                    sourceDir="$baseDir/$latestDir/${{ item.version }}/${{ parameters.binariesPath }}"
-
-                    if [ ! -d "$sourceDir" ]; then
-                      echo "ERROR: Source directory does not exist: $sourceDir"
-                      exit 1
-                    fi
-
-                    echo "Copying from $sourceDir to $destDir"
-
-                    sudo mkdir -p "$destDir"
-
-                    # Copy and overwrite only matching files, keep rest intact
-                    sudo cp -rv "$sourceDir"/. "$destDir/"
-
-                    echo "Copied dependencies:"
-                    ls -l "$destDir"
-                    sudo chmod -R 777 "$destDir"
-                  else
-                    echo "copyDependencies disabled - skipping"
-                  fi
-
-
 
           # ---------------- BUILD LOOP ----------------
           - ${{ each item in parameters.lvVersionsToBuild }}:
@@ -338,7 +276,64 @@ stages:
 
                 echo "Final Nirvana contents:"
                 ls -R "$targetDir"
-
+                
+                # -------- COPY DEPENDENCIES FOR ALL BUILD STEPS --------
+                - ${{ each item in parameters.lvVersionsToBuild }}:
+                  - ${{ each buildStep in parameters.buildSteps }}:
+                
+                    - ${{ if buildStep.copyDependencies }}:
+                      - ${{ each dependency in buildStep.copyDependencies }}:
+                
+                        - task: Bash@3
+                          displayName: Copy Dependency - ${{ dependency.source }}
+                          condition: succeeded()
+                          inputs:
+                            targetType: inline
+                            script: |
+                              set -e
+                
+                              baseDir="${{ parameters.archiveLocation }}/ni/export/main"
+                
+                              selectedDir=""
+                
+                              for dir in $(find "$baseDir" \
+                                  -mindepth 1 \
+                                  -maxdepth 1 \
+                                  -type d \
+                                  -printf "%f\n" | sort -r); do
+                
+                                if [ -f "$baseDir/$dir/.finished" ]; then
+                                  selectedDir="$dir"
+                                  echo "Found .finished in $selectedDir"
+                                  break
+                                fi
+                
+                              done
+                
+                              if [ -z "$selectedDir" ]; then
+                                echo "ERROR: No version folder contains .finished"
+                                exit 1
+                              fi
+                
+                              sourceDir="$baseDir/$selectedDir/${{ item.version }}/x64/${{ dependency.source }}"
+                              destDir="$targetDir/${{ item.version }}/${{ dependency.destination }}"
+                
+                              echo "Selected Version Folder: $selectedDir"
+                              echo "FROM: $sourceDir"
+                              echo "TO  : $destDir"
+                
+                              if [ ! -d "$sourceDir" ]; then
+                                echo "ERROR: Source directory does not exist"
+                                echo "$sourceDir"
+                                exit 1
+                              fi
+                
+                              sudo mkdir -p "$destDir"
+                              sudo cp -rv "$sourceDir"/. "$destDir/"
+                              sudo chmod -R 777 "$destDir"
+                
+                              echo "Dependency copied successfully."
+                
 
           # ---------------- CLEANUP ----------------
           - task: Bash@3
