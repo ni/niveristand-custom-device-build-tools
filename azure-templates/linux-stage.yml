@@ -10,7 +10,7 @@ parameters:
   - name: lvVersionsToBuild
     type: object
     default:
-      - version: '2026'
+      - version: '2027'
         bitness: '64bit'
 
   - name: buildSteps
@@ -194,7 +194,7 @@ stages:
                     server.vi.access="+*"
                     NIERAutoSendAndSuppressAllDialogs: True
                     unattended: True
-                    DotNetCoreAssemblySearchPaths=/usr/local/niveristand2026
+                    DotNetCoreAssemblySearchPaths=/usr/local/niveristand2027
                     EOF
 
                     sleep 30
