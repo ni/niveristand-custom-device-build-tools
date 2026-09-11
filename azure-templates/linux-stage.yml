@@ -267,6 +267,9 @@ stages:
                 sourceDir="$(Build.ArtifactStagingDirectory)/BuiltBackup"
                 targetDir="/mnt/nirvana/Linux/${{ parameters.repoName }}/${{ parameters.releaseVersion }}/$buildType/$buildTimestamp"
 
+                # Set Azure DevOps pipeline variable
+                echo "##vso[task.setvariable variable=targetDir]$targetDir"
+
                 echo "Publishing builds..."
                 echo "FROM: $sourceDir"
                 echo "TO:   $targetDir"
@@ -290,9 +293,9 @@ stages:
                       targetType: inline
                       script: |
                         set -e
-          
+
                         baseDir="${{ parameters.archiveLocation }}/ni/export/main"
-          
+
                         selectedDir=""
           
                         for dir in $(find "$baseDir" \
@@ -315,7 +318,7 @@ stages:
                         fi
           
                         sourceDir="$baseDir/$selectedDir/${{ item.version }}/x64/${{ dependency.source }}"
-                        destDir="$targetDir/${{ item.version }}/${{ dependency.destination }}"
+                        destDir="$(targetDir)/${{ item.version }}/${{ dependency.destination }}"
           
                         echo "Selected Version Folder: $selectedDir"
                         echo "FROM: $sourceDir"
