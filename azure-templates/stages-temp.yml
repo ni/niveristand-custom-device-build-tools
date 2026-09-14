@@ -1,0 +1,349 @@
+parameters:
+  - name: stageName
+    type: string
+    default: Build
+
+  # dependsOn (optional): list of stage names this stage must wait for.
+  # Default [] preserves the existing behavior of starting immediately.
+  - name: dependsOn
+    type: object
+    default: []
+
+  - name: disableDiff
+    type: boolean
+    default: false
+
+  - name: enableVirtualPackages
+    type: boolean
+    default: false
+
+  - name: silenceDependencyFailures
+    type: boolean
+    default: false
+
+  - name: pool
+    type: string
+    default: DevCentral-VeriStand-CustomDevices
+
+  # lvVersiontoDiff (optional): 64-bit LabVIEW version for VI diff
+  - name: lvVersionToDiff
+    type: string
+    default: '2024'
+
+  # lvVersionsToBuild (optional): list of {version, bitness}
+  - name: lvVersionsToBuild
+    type: object
+    default:
+      - version: '2024'
+        bitness: '64bit'
+      - version: '2025'
+        bitness: '64bit'
+      - version: '2026'
+        bitness: '64bit'
+      - version: '2027'
+        bitness: '64bit'
+
+  # codegenVis (optional): string array of codegen VI paths
+  - name: codegenVis
+    type: object
+    default:
+      - ''
+
+  # dependencies (optional): list of {source, file, destination}
+  - name: dependencies
+    type: object
+    default:
+      - file: ''
+
+  # buildSteps (optional): list of {projectLocation, buildOperation, target, buildSpec}
+  - name: buildSteps
+    type: object
+    default: ''
+
+  # packages (optional): list of {controlFileName, payloadMaps: list of {payloadLocation, installLocation} }
+  - name: packages
+    type: object
+    default:
+      - controlFileName: ''
+
+  # submodules (optional): boolean of whether to use submodules
+  - name: submodules
+    type: boolean
+    default: false
+
+  # strings (releaseVersion, quarterlyReleaseVersion, buildOutputLocation, archiveLocation)
+  - name: releaseVersion
+    type: string
+  - name: buildOutputLocation
+    type: string
+  - name: archiveLocation
+    type: string
+
+  # createNetCoreRepo (optional): boolean of whether to create the .NET Core repository
+  - name: createNetCoreRepo
+    type: boolean
+    default: false
+
+  # repoName (optional): string of the repository name
+  - name: repoName
+    type: string
+    default: ''
+
+# Note: If custom build steps are needed for a particular custom device, copy this entire template into the azure-pipeline and add steps before/after as needed
+stages:
+  - stage: ${{ parameters.stageName }}_DiffVIs
+    dependsOn: []
+    condition: and(eq(variables['Build.Reason'], 'PullRequest'), eq('${{ parameters.disableDiff }}', false))
+    pool:
+      name: ${{ parameters.pool }}
+      demands: 
+        - VeriStand${{ parameters.lvVersionToDiff }} -equals False
+        - agent.os -equals Windows_NT
+    jobs:
+      - job: DiffVIsforPR
+        displayName: Diff VIs for PR
+        variables:
+          - group: niveristand-custom-devices
+        steps:
+          - template: steps-prepare.yml
+            parameters:
+              build: False
+              clearCache: False
+          - template: steps-diff.yml
+            parameters:
+              lvVersionToDiff: ${{ parameters.lvVersionToDiff }}
+
+  - stage: ${{ parameters.stageName }}
+    dependsOn: ${{ parameters.dependsOn }}
+    variables:
+      ${{ if ne(variables['Build.Reason'], 'PullRequest')}}:
+        CD.BuildCounter: $[counter(format('custom {0}', variables['Build.SourceBranch']), 1)]
+      ${{ if eq(variables['Build.Reason'], 'PullRequest')}}:
+        CD.BuildCounter: "9999"
+    pool:
+      name: ${{ parameters.pool }}
+    jobs:
+        # Build Jobs
+      - ${{ each item in parameters.lvVersionsToBuild }}:
+        - job: Job_Build_${{ item.version }}_${{ item.bitness }}
+          timeoutInMinutes: 360
+          pool:
+            name: ${{ parameters.pool }}
+            demands: 
+              - VeriStand${{ item.version }} -equals False
+              - agent.os -equals Windows_NT
+          displayName: Build LabVIEW ${{ item.version }} ${{ item.bitness }}
+          steps:
+            - template: steps-prepare.yml
+              parameters:
+                lvVersion:           ${{ item.version }}
+                bitness:             ${{ item.bitness }}
+                releaseVersion:      ${{ parameters.releaseVersion }}
+                archiveLocation:     ${{ parameters.archiveLocation }}
+                buildOutputLocation: ${{ parameters.buildOutputLocation }}
+                codegenVis:          ${{ parameters.codegenVis }}
+                submodules:          ${{ parameters.submodules }}
+
+            - ${{ if ne( parameters.buildSteps, '' )}}:
+              - ${{ each buildStep in parameters.buildSteps }}:
+                  - template: steps-build.yml
+                    parameters:
+                      buildStep:                 ${{ buildStep }}
+                      dependencies:              ${{ parameters.dependencies }}
+                      lvVersionToBuild:          ${{ item }}
+                      silenceDependencyFailures: ${{ parameters.silenceDependencyFailures }}
+
+            - ${{ if and(ne(parameters.repoName, '') ,eq(item.version, '2027') ,eq(item.bitness, '64bit')) }}:
+              - task: PowerShell@2
+                displayName: Prepare NetCore repository
+                condition: and(succeeded(), eq(lower(variables['ConvertNetCore']), 'true'))
+                inputs:
+                  targetType: inline
+                  script: |
+                    if ("$(ConvertNetCore)".ToLower() -ne "true")
+                    {
+                        Write-Host "Skipping."
+                        exit 0
+                    }
+
+                    Write-Host "Debug code - Branch name is: $(Build.SourceBranch)"
+                    $netCoreDir = "C:\NetCore"
+
+                    Write-Host "NetCore directory: $netCoreDir"
+                    Write-Host "Source directory: $(Build.SourcesDirectory)"
+
+                    # Create C:\NetCore if it doesn't exist
+                    if (-not (Test-Path $netCoreDir))
+                    {
+                        New-Item -ItemType Directory -Path $netCoreDir -Force | Out-Null
+                    }
+
+                    $repoDir = Join-Path $netCoreDir "${{ parameters.repoName }}"
+
+                    # Remove existing repository
+                    if (Test-Path $repoDir)
+                    {
+                        Write-Host "Removing existing repository..."
+                        Remove-Item -Path $repoDir -Recurse -Force
+                    }
+
+                    # Mirror the repository
+                    Write-Host "Copying repository..."
+                    robocopy "$(Build.SourcesDirectory)" "$netCoreDir" /E /COPY:DAT /XD ".git" "Built" "built" /R:3 /W:5
+
+                    $rc = $LASTEXITCODE
+
+                    if ($rc -ge 8)
+                    {
+                        throw "Robocopy failed with exit code $rc"
+                    }
+
+                    Write-Host "Robocopy completed with exit code $rc"
+                    $global:LASTEXITCODE = 0
+
+                    Write-Host "Repository copied successfully."
+                  
+                    Write-Host "Closing LabVIEW if running..."
+                    Get-Process LabVIEW -ErrorAction SilentlyContinue | Stop-Process -Force
+
+                    Start-Sleep -Seconds 20
+
+                    Write-Host "Remove hidden/system attributes (just in case)"
+                    attrib -H -S "$repoDir" /S /D
+
+                    Write-Host "Setting full permissions on repoDir..."
+                    icacls "$repoDir" /grant "*S-1-1-0:(OI)(CI)F" /T /C
+                    icacls "$repoDir" /grant "SYSTEM:(OI)(CI)F" /T /C
+                    icacls "$repoDir" /grant "$env:USERNAME:(OI)(CI)F" /T /C
+
+                    $lvPath = "C:\Program Files\National Instruments\LabVIEW 2027\LabVIEW.exe"
+                    $viPath = "C:\DNF2DNC\new\Convert to DNC.vi"
+                    
+                    Write-Host "Launching LabVIEW 2027..."
+                    
+                    $lv = Start-Process -FilePath "$lvPath" -PassThru
+                    $lv.WaitForInputIdle()
+                    Start-Sleep -Seconds 10
+
+                    Write-Host "Running DNC conversion..."
+
+                    LabVIEWCLI -OperationName RunVI -LabVIEWPath "$lvPath" -PortNumber 3363 -VIPath "$viPath" "True" "$netCoreDir" "${{ parameters.repoName }}" "C:\NetCoreDLL"
+
+                    if ($LASTEXITCODE -ne 0)
+                    {
+                        throw "Convert to DNC VI failed."
+                    }
+
+                    # ---------------- COPY TO NIRVANA ----------------
+
+                    if ("$(Build.SourceBranch)" -eq "refs/heads/main")
+                    {
+                      $nirvanaTarget = "\\nirvana\Measurements\VeriStandAddons\Linux-Temp\NetCoreRepos\${{ parameters.repoName }}"
+
+                      Write-Host "Publishing NetCore repo to Nirvana..."
+
+                      # Ensure target directory exists
+                      if (-not (Test-Path $nirvanaTarget))
+                      {
+                          Write-Host "Creating Nirvana target directory..."
+                          New-Item -ItemType Directory -Path $nirvanaTarget -Force | Out-Null
+                      }
+
+                      # Copy everything from repoDir → Nirvana
+                      robocopy $repoDir $nirvanaTarget /E /COPY:DAT /XD ".git" /R:3 /W:5
+
+                      $rc = $LASTEXITCODE
+
+                      if ($rc -ge 8)
+                      {
+                          throw "Robocopy failed with exit code $rc"
+                      }
+
+                      Write-Host "Robocopy completed with exit code $rc"
+                      $global:LASTEXITCODE = 0
+
+                      Write-Host "Successfully published to Nirvana."
+
+                      # Optional: quick verification
+                      Write-Host "VERIFICATION: Sample files in Nirvana target:"
+                      Get-ChildItem $nirvanaTarget | Select-Object -First 5
+                    }
+
+            - task: PowerShell@2
+              displayName: Close LabVIEW
+              condition: always()
+              inputs:
+                targetType: inline
+                script: |
+                  Get-Process LabVIEW -ErrorAction SilentlyContinue | Stop-Process -Force
+
+            - task: PowerShell@2
+              displayName: Copy built files to Archive location
+              inputs:
+                targetType: 'filePath'
+                filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/archive-build.ps1'
+                failOnStdErr: True
+
+        # Packaging Jobs
+      - job: Job_Package_All
+        pool:
+          name: ${{ parameters.pool }}
+          demands: 
+            - VeriStand${{ parameters.lvVersionToDiff }} -equals False
+            - agent.os -equals Windows_NT
+        dependsOn:
+          - ${{ each item in parameters.lvVersionsToBuild }}:
+            - Job_Build_${{ item.version }}_${{ item.bitness }}
+        displayName: Package Installers
+        variables: 
+          CD.Package.Finished: ""
+        steps:
+          - ${{ each item in parameters.lvVersionsToBuild }}:
+            - template: steps-prepare.yml
+              parameters:
+                  lvVersion:           ${{ item.version }}
+                  bitness:             ${{ item.bitness }}
+                  releaseVersion:      ${{ parameters.releaseVersion }}
+                  archiveLocation:     ${{ parameters.archiveLocation }}
+                  buildOutputLocation: ${{ parameters.buildOutputLocation }}
+                  clearCache:          False
+
+            - template: steps-packaging.yml
+              parameters:
+                lvVersion: ${{ item.version }}
+                packages:  ${{ parameters.packages }}
+
+        # Finalization: if all jobs have passed, place .finished file in top level archive location
+      - job: Finalize
+        pool:
+            name: ${{ parameters.pool }}
+            demands:
+              - VeriStand2026 -equals False
+              - agent.os -equals Windows_NT
+        displayName: Final Validation
+        dependsOn:
+          - Job_Package_All
+        condition: succeeded()
+        steps:
+        - template: steps-prepare.yml
+          parameters:
+            archiveLocation: ${{ parameters.archiveLocation }}
+            build: False
+            clearCache: False
+
+        - task: PowerShell@2
+          displayName: Compare package contents to last successful build in main
+          inputs:
+            targetType: 'filePath'
+            filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/check-count-size.ps1'
+            failOnStdErr: True
+            arguments: > # $$ is used in an argument to pass in a boolean, which requires a $ at the beginning
+              -archiveDir "${{ parameters.archiveLocation }}"
+              -virtualPackages $${{ parameters.enableVirtualPackages }}
+
+        - task: PowerShell@2
+          displayName: Add .finished to directory
+          inputs:
+            targetType: 'filePath'
+            filePath: 'niveristand-custom-device-build-tools/azure-templates/powershell-scripts/finalization.ps1'
+            failOnStdErr: True
