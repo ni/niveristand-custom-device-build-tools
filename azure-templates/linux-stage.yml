@@ -198,7 +198,7 @@ stages:
 
                     sudo chmod -R 777 /usr/local/
 
-                    if xvfb-run --auto-servernum LabVIEWCLI \
+                    if LabVIEWCLI \
                       -LabVIEWPath "/usr/local/natinst/LabVIEW-${{ item.version }}-64/labview" \
                       -PortNumber 3363 \
                       -OperationName "${{ buildStep.buildOperation }}" \
