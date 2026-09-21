@@ -95,7 +95,7 @@ stages:
     pool:
       name: ${{ parameters.pool }}
       demands: 
-        - VeriStand${{ parameters.lvVersionToDiff }} -equals False
+        - agent.name -equals vs-cd-build-05
         - agent.os -equals Windows_NT
     jobs:
       - job: DiffVIsforPR
@@ -128,7 +128,7 @@ stages:
           pool:
             name: ${{ parameters.pool }}
             demands: 
-              - VeriStand${{ item.version }} -equals False
+              - agent.name -equals vs-cd-build-05
               - agent.os -equals Windows_NT
           displayName: Build LabVIEW ${{ item.version }} ${{ item.bitness }}
           steps:
@@ -287,7 +287,7 @@ stages:
         pool:
           name: ${{ parameters.pool }}
           demands: 
-            - VeriStand${{ parameters.lvVersionToDiff }} -equals False
+            - agent.name -equals vs-cd-build-05
             - agent.os -equals Windows_NT
         dependsOn:
           - ${{ each item in parameters.lvVersionsToBuild }}:
@@ -316,7 +316,7 @@ stages:
         pool:
             name: ${{ parameters.pool }}
             demands:
-              - VeriStand2026 -equals False
+              - agent.name -equals vs-cd-build-05
               - agent.os -equals Windows_NT
         displayName: Final Validation
         dependsOn:
