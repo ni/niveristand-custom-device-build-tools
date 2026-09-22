@@ -198,13 +198,23 @@ stages:
 
                     sudo chmod -R 777 /usr/local/
 
-                    if xwfb-run -c weston -- LabVIEWCLI \
-                      -LabVIEWPath "/usr/local/natinst/LabVIEW-${{ item.version }}-64/labview" \
+                    source /etc/os-release
+                    XWFB_CMD="xwfb-run -c weston"
+
+                    if [[ "$ID" == "rhel" && "$VERSION_ID" =~ ^9 ]]; then
+                      echo "RHEL 9 detected. Using headless backend."
+                      XWFB_CMD='xwfb-run -c weston -z "--backend=headless-backend.so --seat=headless"'
+                    else
+                      echo "Using default Weston configuration."
+                    fi
+                    
+                    if eval "$XWFB_CMD -- LabVIEWCLI \
+                      -LabVIEWPath \"/usr/local/natinst/LabVIEW-${{ item.version }}-64/labview\" \
                       -PortNumber 3363 \
-                      -OperationName "${{ buildStep.buildOperation }}" \
-                      -ProjectPath "$projectPath" \
-                      -TargetName "${{ buildStep.target }}" \
-                      -BuildSpecName "${{ buildStep.buildSpec }}"
+                      -OperationName \"${{ buildStep.buildOperation }}\" \
+                      -ProjectPath \"$projectPath\" \
+                      -TargetName \"${{ buildStep.target }}\" \
+                      -BuildSpecName \"${{ buildStep.buildSpec }}\""
                     then
                       echo "Build succeeded."
 
