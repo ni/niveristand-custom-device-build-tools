@@ -23,7 +23,7 @@ This will trigger the branch to run CI builds on `main` and on any `release` bra
 
 Choose the stage template for the LabVIEW version family your custom device uses:
 
-* Use `stages-legacy.yml` for legacy LabVIEW `2024`, `2025`, and `2026` builds:
+* Use `stages-legacy.yml` for LabVIEW `2026` and older builds:
 
 ```yaml
 stages:
@@ -32,7 +32,7 @@ stages:
       # Add the parameters required for your build here.
 ```
 
-* Use `stages.yml` for the newer LabVIEW `2027` build:
+* Use `stages.yml` for LabVIEW `2027` and newer build:
 
 ```yaml
 stages:
