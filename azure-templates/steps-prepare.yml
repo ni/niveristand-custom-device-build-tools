@@ -22,9 +22,6 @@ parameters:
     type: boolean
     default: False
 # the following parameters allow skipping portions of this yaml file
-  - name: clearCache
-    type: boolean
-    default: True
   - name: build
     type: boolean
     default: True
@@ -62,17 +59,6 @@ steps:
           -outputDir      "${{ parameters.buildOutputLocation }}"
           -releaseVersion "${{ parameters.releaseVersion }}"
           -buildTools     "niveristand-custom-device-build-tools"
-
-  - ${{ if eq(parameters.clearCache, True) }}:
-    - task: CmdLine@2
-      displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersion }}
-      inputs:
-        script: |
-          echo on
-          $(CD.LabVIEWCLI) ^
-            -OperationName "SecureRunVI" ^
-            -VIPath "$(CD.Workspace)\$(CD.BuildTools)\lv\operations\Utilities\ClearCache.vi" ^
-            -LogFilePath "$(CD.Workspace)\$(CD.Repository)\lvClearCache.log"
 
   - ${{ each codegenVi in parameters.codegenVis }}:
     - ${{ if ne(codegenVi, '' )}}:

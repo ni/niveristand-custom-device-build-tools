@@ -106,7 +106,6 @@ stages:
           - template: steps-prepare.yml
             parameters:
               build: False
-              clearCache: False
           - template: steps-diff.yml
             parameters:
               lvVersionToDiff: ${{ parameters.lvVersionToDiff }}
@@ -304,7 +303,6 @@ stages:
                   releaseVersion:      ${{ parameters.releaseVersion }}
                   archiveLocation:     ${{ parameters.archiveLocation }}
                   buildOutputLocation: ${{ parameters.buildOutputLocation }}
-                  clearCache:          False
 
             - template: steps-packaging.yml
               parameters:
@@ -327,7 +325,6 @@ stages:
           parameters:
             archiveLocation: ${{ parameters.archiveLocation }}
             build: False
-            clearCache: False
 
         - task: PowerShell@2
           displayName: Compare package contents to last successful build in main
