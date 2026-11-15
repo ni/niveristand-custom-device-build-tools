@@ -129,12 +129,6 @@ stages:
 
                   sudo chmod -R 777 /usr/local/natinst/LabVIEW-${{ item.version }}-64/
 
-                  echo "Copying dev tool binaries to LabVIEW library directory..."
-
-                  sudo cp -rv /mnt/nirvana/Linux-Temp/dev-tool-binaries/. "$VI_LIB_DIR/NI/"
-
-                  sudo chmod -R 777 /usr/local/natinst/LabVIEW-${{ item.version }}-64/
-
                   sudo chmod -R 777 "$(Build.SourcesDirectory)"
 
                   if [ "${{ parameters.repoName }}" = "niveristand-data-sharing-framework-custom-device" ]; then
