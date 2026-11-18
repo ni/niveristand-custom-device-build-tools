@@ -28,7 +28,7 @@ parameters:
 
   - name: branch
     type: string
-    default: main
+    default: refs/heads/main
 
   - name: debugBuild
     type: string
@@ -102,6 +102,37 @@ stages:
                 rm -rf "$safeCopyFolder"
 
                 mkdir -p "$safeCopyFolder"
+                
+          - task: Bash@3
+            displayName: Checkout Requested Branch
+            inputs:
+              targetType: inline
+              script: |
+                set -euxo pipefail
+
+                REPO_DIR="$(Build.SourcesDirectory)"
+                BRANCH_REF="${{ parameters.branch }}"
+
+                echo "Requested ref: $BRANCH_REF"
+
+                cd "$REPO_DIR"
+
+                git remote -v
+
+                git fetch origin --prune
+
+                BRANCH_NAME="${BRANCH_REF#refs/heads/}"
+
+                echo "Branch name: $BRANCH_NAME"
+
+                git checkout -B "$BRANCH_NAME" "origin/$BRANCH_NAME"
+
+                git reset --hard "origin/$BRANCH_NAME"
+
+                echo "Checked out:"
+                git branch --show-current
+                git rev-parse HEAD
+
 
 
           # ---------------- TEMPORARY STEPS ----------------
