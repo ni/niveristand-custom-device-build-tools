@@ -322,12 +322,7 @@ stages:
                         branch_ref="${{ parameters.branch }}"
                         branch_name="${branch_ref#refs/heads/}"
 
-                        # Convert archiveLocation to mounted Nirvana path
-                        archivePath="${{ parameters.archiveLocation }}"
-                        archivePath="${archivePath#\\\\nirvana\\Measurements\\VeriStandAddons\\}"
-                        archivePath="${archivePath//\\//}"
-
-                        baseDir="/mnt/nirvana/${archivePath}/NI/export/${branch_name}"
+                        baseDir="/mnt/nirvana/netcore/${{ parameters.repoName }}/NI/export/${branch_name}"
 
                         echo "Branch     : $branch_name"
                         echo "Base Dir   : $baseDir"
